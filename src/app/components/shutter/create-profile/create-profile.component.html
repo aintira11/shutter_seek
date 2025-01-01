@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="back-button" style="padding: 10px;">
+        <span>&larr; กลับ</span>
+    </div>
+    <div class="container">
+        <div class="column">
+            <img src="/assets/images/user.png" alt="User Profile" class="imag">
+            <a href="#" class="btn-profile" style="margin-top: 10px;">เปลี่ยนรูป Profile</a>
+        </div>
+        <form>
+            <div class="form-group">
+                <label class="label">Username</label>
+                <input type="text" class="input-style" placeholder="ระบุ Username">
+            </div>
+            <div class="form-group">
+                <label class="label">ชื่อ</label>
+                <input type="text" class="input-style" placeholder="ระบุชื่อ">
+            </div>
+            <div class="form-group">
+                <label class="label">นามสกุล</label>
+                <input type="text" class="input-style" placeholder="ระบุนามสกุล">
+            </div>
+            <div class="form-group">
+                <label class="label">อีเมล</label>
+                <input type="email" class="input-style" placeholder="ระบุอีเมล">
+            </div>
+            <div class="form-group">
+                <label class="label">หมายเลขโทรศัพท์</label>
+                <input type="tel" class="input-style" placeholder="ระบุหมายเลขโทรศัพท์">
+            </div>
+            <div class="form-group">
+                <label class="label">จังหวัดของคุณ</label>
+                <select class="input-style">
+                    <option value="">-- เลือกจังหวัด --</option>
+                    <option value="bangkok">กรุงเทพมหานคร</option>
+                    <option value="chiangmai">เชียงใหม่</option>
+                    <option value="phuket">ภูเก็ต</option>
+                    <!-- เพิ่มตัวเลือกจังหวัดตามต้องการ -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="label">ที่อยู่</label>
+                <textarea class="input-style" rows="3" placeholder="ระบุที่อยู่"></textarea>
+            </div>
+            <button type="submit" class="btn-submit">บันทึกและไปต่อ</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,185 @@
+/* ตัวจัดการพื้นที่หน้าเว็บ */
+.container {
+    font-family: 'Arial', sans-serif;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  
+  /* ส่วน Header */
+  .header {
+    display: flex;
+    justify-content: flex-end; 
+    border-bottom: 1px solid #ddd;
+    top: 0; /* Stick to the top of the viewport */
+    right: 0;
+    position: sticky;
+  }
+  
+  .logo-img {
+    max-width: 400px; /* กำหนดขนาดสูงสุดของรูป */
+    max-height: 350px; /* กำหนดความสูงสูงสุด */
+    width: auto; /* ให้ปรับตามสัดส่วนความกว้าง */
+    height: auto; /* ให้ปรับตามสัดส่วนความสูง */
+    margin-right: 250px;
+    object-fit: contain; /* รักษาสัดส่วนของรูป */
+  }
+  
+  
+  /* ปุ่มสร้างบัญชี */
+/* From Uiverse.io by mrhyddenn */ 
+.shadow__btn {
+    padding: 15px 25px;
+    border: none;
+    font-size: 17px;
+    color: #fff;
+    border-radius: 7px;
+    letter-spacing: 1px;
+    font-weight: 700;
+    text-transform: uppercase;
+    transition: 0.5s;
+    transition-property: box-shadow;
+  }
+  
+  .shadow__btn {
+    background: #003399;
+    //box-shadow: 0 0 25px rgb(0,140,255);
+  }
+  
+  .shadow__btn:hover {
+    box-shadow: 0 0 5px rgb(0,140,255),
+                0 0 25px rgb(0,140,255),
+                0 0 50px rgb(0,140,255),
+                0 0 100px rgb(0,140,255);
+  }
+  ////////////
+  
+  .signup-button:hover {
+    background-color: #001f66;
+  }
+  
+  /* ส่วน 3 ขั้นตอน */
+  .steps-title {
+    font-size: 20px;
+    margin-bottom: 20px;
+    font-weight: bold;
+  }
+  
+  .steps {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+    flex-wrap: wrap; /* ทำให้แต่ละ Step ยืดหยุ่นและเรียงใหม่ */
+  }
+  
+  .step {
+    flex: 1;
+    padding: 10px;
+    max-width: 300px;
+  }
+  
+  .step-icon {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 10px;
+  }
+  
+  .step h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #003399;
+  }
+  
+  .step p {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.5;
+  }
+  
+  /* Media Queries สำหรับทำให้ Responsive */
+  @media screen and (max-width: 768px) {
+    .header {
+      flex-direction: column;
+      text-align: center;
+    }
+  
+    .logo-img {
+      width: 200px;
+      height: 150px;
+    }
+  
+    .logo-text {
+      font-size: 20px;
+    }
+  
+    .signup-button {
+      font-size: 16px;
+      padding: 10px 20px;
+    }
+  
+    .steps {
+      flex-direction: column;
+      gap: 20px;
+    }
+  
+    .step {
+      max-width: 100%;
+    }
+  
+    .step-icon {
+      width: 80px;
+      height: 80px;
+    }
+  
+    .step h3 {
+      font-size: 16px;
+    }
+  
+    .step p {
+      font-size: 13px;
+    }
+    .shadow__btn {
+    padding: 15px 25px;
+    border: none;
+    font-size: 15px;
+    color: #fff;
+    border-radius: 7px;
+    letter-spacing: 1px;
+    font-weight: 400;
+    text-transform: uppercase;
+    transition: 0.5s;
+    transition-property: box-shadow;
+  }
+  }
+  
+  @media screen and (max-width: 480px) {
+    .logo-text {
+      font-size: 18px;
+    }
+  
+    .login {
+      font-size: 14px;
+    }
+  
+    .signup-button {
+      font-size: 14px;
+      padding: 8px 16px;
+    }
+  
+    .step h3 {
+      font-size: 14px;
+    }
+  
+    .step p {
+      font-size: 12px;
+    }
+  
+    .step-icon {
+      width: 60px;
+      height: 60px;
+    }
+  }
+
+  
+  
