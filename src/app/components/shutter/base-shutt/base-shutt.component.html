@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
+    <title>Document</title>
+</head>
+<body> 
+    <header>
+        <div class="header">
+            <button mat-button >เข้าสู่ระบบ</button>  
+            <span class="material-symbols-outlined" style="font-size: 2.2em; padding: 5px;">
+                account_circle
+            </span>
+        </div>
+    </header>
+        <div class="container">
+        <!-- <div class="logo-container" > -->
+            <img src="/assets/images/PIXEL (7).png" alt="Logo" class="logo-img" /> 
+        <!-- </div>  -->
+        <h2 style="color: #003ebb;">ข้อมูลเบื่องต้นสำหรับช่างภาพ</h2>
+
+        <div class="column">
+        <form >
+            <div class="form-group">
+                <label class="label">ข้อมูลติดต่อส่วนตัว</label>
+                <input type="text" class="input-style" placeholder="Line ID">
+            </div>
+            <div class="form-group">
+                <label class="label">web site ส่วนตัว</label>
+                <input type="text" class="input-style" placeholder="www.//....">
+            </div>
+            
+            <div class="form-group">
+                <label class="label">สั้นๆเกี่ยวกับคุณ ( รายละเอียดเพิ่มเติม )</label>
+                <textarea class="input-style" rows="3" placeholder="เจ้าของเพจ logo sud cool"></textarea>
+            </div>
+            <div class="column">
+                <button type="submit" class="btn-submit" (click)="next()">บันทึกและไปต่อ</button>
+            </div>
+        </form>
+        </div>
+        </div>
+</body>
+</html>

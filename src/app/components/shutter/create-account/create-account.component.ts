@@ -4,6 +4,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {FormsModule} from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-account',
@@ -18,5 +19,9 @@ import { RouterModule } from '@angular/router';
   styleUrl: './create-account.component.scss'
 })
 export class CreateAccountComponent {
+  constructor(private router : Router,){}
 
+  register() {
+    this.router.navigate(['/creatfro']);
+    }
 }

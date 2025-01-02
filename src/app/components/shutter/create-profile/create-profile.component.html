@@ -11,9 +11,11 @@
     </div>
     <div class="container">
         <div class="column">
-            <img src="/assets/images/user.png" alt="User Profile" class="imag">
-            <a href="#" class="btn-profile" style="margin-top: 10px;">เปลี่ยนรูป Profile</a>
+            <img [src]="imagePreview" alt="User Profile" class="imag" id="profileImage">
+            <input type="file" id="fileInput" style="display: none;" (change)="onFileSelected($event)">
+            <button class="btn-profile" style="margin-top: 10px;" (click)="triggerFileInput()">เปลี่ยนรูป Profile</button>
         </div>
+        
         <form>
             <div class="form-group">
                 <label class="label">Username</label>
@@ -38,18 +40,19 @@
             <div class="form-group">
                 <label class="label">จังหวัดของคุณ</label>
                 <select class="input-style">
-                    <option value="">-- เลือกจังหวัด --</option>
-                    <option value="bangkok">กรุงเทพมหานคร</option>
-                    <option value="chiangmai">เชียงใหม่</option>
-                    <option value="phuket">ภูเก็ต</option>
-                    <!-- เพิ่มตัวเลือกจังหวัดตามต้องการ -->
+                  <option value="">-- เลือกจังหวัด --</option>
+                  <option *ngFor="let thai of thaijson" [value]="thai.name_th">
+                    {{ thai.name_th }}
+                  </option>
                 </select>
-            </div>
+              </div>
             <div class="form-group">
                 <label class="label">ที่อยู่</label>
                 <textarea class="input-style" rows="3" placeholder="ระบุที่อยู่"></textarea>
             </div>
-            <button type="submit" class="btn-submit">บันทึกและไปต่อ</button>
+            <div class="column">
+            <button type="submit" class="btn-submit" (click)="base_for_shutt()">บันทึกและไปต่อ</button>
+            </div>
         </form>
     </div>
 </body>

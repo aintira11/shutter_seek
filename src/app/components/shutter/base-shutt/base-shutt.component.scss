@@ -1,0 +1,132 @@
+
+.container {
+    font-family: 'Arial', sans-serif;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+// .logo-container {
+//     padding: 20px;
+//     max-width: 600px;
+//     margin: 0 auto;
+//     display: flex;
+//     justify-content: flex-start; /* รูปอยู่ทางซ้าย */
+//     align-items: flex-start; /* รูปอยู่มุมบนซ้าย */
+//     padding: 10px; /* เพิ่ม padding รอบรูป */
+//     margin-left: 100px;
+// }
+.logo-img {
+    max-width: 400px; /* กำหนดขนาดสูงสุดของรูป */
+    max-height: 350px; /* กำหนดความสูงสูงสุด */
+    width: auto; /* ให้ปรับตามสัดส่วนความกว้าง */
+    height: auto; /* ให้ปรับตามสัดส่วนความสูง */
+    object-fit: contain; /* รักษาสัดส่วนของรูป */
+    display: flex;
+    justify-content: flex-start; /* รูปอยู่ทางซ้าย */
+    align-items: flex-start; /* รูปอยู่มุมบนซ้าย */
+   // margin-left: -150%;
+}
+
+  .header {
+    display: flex;
+    justify-content: flex-end; 
+    border-bottom: 1px solid #ddd;
+    top: 0; /* Stick to the top of the viewport */
+    right: 0;
+    position: sticky;
+    font-family: 'Arial', sans-serif;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  h2{
+    color: #003ebb;
+    display: flex;
+    justify-content: flex-start; /* รูปอยู่ทางซ้าย */
+    align-items: flex-start; /* รูปอยู่มุมบนซ้าย */
+    margin-left: 10%;
+  }
+
+  form {
+    width: 60%;
+    text-align: left;
+    display: flex;
+    flex-direction: column; /* จัดให้องค์ประกอบเรียงในแนวตั้ง */
+    //  align-items: center;    /* จัดให้องค์ประกอบอยู่กึ่งกลาง */
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+
+.label {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 5px;
+    display: block;
+    color: #333;
+}
+
+.input-style {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+}
+
+.input-style:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.btn-submit {
+    background-color: #003ebb;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    width: 30%;
+    display: flex;
+    flex-direction: column; /* จัดให้องค์ประกอบเรียงในแนวตั้ง */
+    align-items: center;    /* จัดให้องค์ประกอบอยู่กึ่งกลาง */
+}
+
+.btn-submit:hover {
+    background-color: #002fa1;
+}
+
+.column {
+    display: flex;
+    flex-direction: column; /* จัดให้องค์ประกอบเรียงในแนวตั้ง */
+    align-items: center;    /* จัดให้องค์ประกอบอยู่กึ่งกลาง */
+    gap: 10px;  
+    width: 100%;            /* เพิ่มระยะห่างระหว่างองค์ประกอบ */
+}
+
+  /* Media Queries สำหรับทำให้ Responsive */
+  @media screen and (max-width: 768px) {
+    .logo-img {
+        //padding-top: 10px;
+        
+        width: 200px;
+        height: 150px;
+      }
+
+      .logo-text {
+        font-size: 20px;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+        .logo-text {
+          font-size: 18px;
+        }
+    
+    }

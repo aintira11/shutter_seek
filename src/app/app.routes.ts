@@ -5,6 +5,7 @@ import { RegisterComponent } from './components/user/register/register.component
 import { shutt_RegisterComponent } from './components/shutter/shutt_register/register.component';
 import { CreateAccountComponent } from './components/shutter/create-account/create-account.component';
 import { CreateProfileComponent } from './components/shutter/create-profile/create-profile.component';
+import { BaseShuttComponent } from './components/shutter/base-shutt/base-shutt.component';
 
 export const routes: Routes = [
     {path: '',component: HomeComponent},
@@ -12,6 +13,7 @@ export const routes: Routes = [
     {path: 'shutter',component: shutt_RegisterComponent},
     {path: 'createacc',component: CreateAccountComponent},
     {path: 'creatfro',component: CreateProfileComponent},
+    {path: 'base',component: BaseShuttComponent},
     // { 
     //   path: 'myprofile',
     //   component: MyprofileComponent,

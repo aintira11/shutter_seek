@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
-import { LoginComponent } from './components/login/login.component';
-import { HomeComponent } from './components/home/home.component';
 import { HttpClientModule } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
 
 
 @Component({
@@ -10,8 +9,8 @@ import { HttpClientModule } from '@angular/common/http';
   standalone: true,
   imports: [RouterOutlet
             ,RouterModule
-            ,HomeComponent
             ,HttpClientModule
+            ,CommonModule
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
