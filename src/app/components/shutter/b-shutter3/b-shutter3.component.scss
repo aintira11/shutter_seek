@@ -1,0 +1,335 @@
+.container {
+    font-family: 'Arial', sans-serif;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.logo-img {
+    max-width: 400px; /* กำหนดขนาดสูงสุดของรูป */
+    max-height: 350px; /* กำหนดความสูงสูงสุด */
+    width: auto; /* ให้ปรับตามสัดส่วนความกว้าง */
+    height: auto; /* ให้ปรับตามสัดส่วนความสูง */
+    object-fit: contain; /* รักษาสัดส่วนของรูป */
+    display: flex;
+    justify-content: flex-start; /* รูปอยู่ทางซ้าย */
+    align-items: flex-start; /* รูปอยู่มุมบนซ้าย */
+   // margin-left: -150%;
+}
+.header {
+    //position: fixed;
+    display: flex;
+    justify-content: flex-end; 
+    border-bottom: 1px solid #ddd;
+    top: 0; /* Stick to the top of the viewport */
+    right: 0;
+    position: sticky;
+    font-family: 'Arial', sans-serif;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  h2{
+    color: #003ebb;
+    display: flex;
+    justify-content: flex-start; /* รูปอยู่ทางซ้าย */
+    align-items: flex-start; /* รูปอยู่มุมบนซ้าย */
+    margin-left: 10%;
+  }
+  .text {
+    color: #003ebb;
+    display: flex;
+    justify-content: flex-start; /* รูปอยู่ทางซ้าย */
+    align-items: flex-start; /* รูปอยู่มุมบนซ้าย */
+    margin-left: 10%;
+    font-size: 18px;
+  }
+  .hcard{
+    //color: #003ebb;
+    display: flex;
+    justify-content: flex-start; /* รูปอยู่ทางซ้าย */
+    align-items: flex-start; /* รูปอยู่มุมบนซ้าย */
+    font-size: 20px;
+    font-weight: bold;
+    padding-bottom: 10px;
+  }
+
+  .card {
+    width: 80%;
+    display: flex;
+    justify-content: center; /* จัดตำแหน่งให้อยู่ตรงกลาง */
+    margin-left: 10%;
+    padding: 15px; 
+    margin-bottom:  15px;
+    border: 1px solid #003ebb; /* เส้นขอบสีน้ำเงินเข้ม */
+    border-radius: 8px; /* มุมโค้ง */
+    background-color: #fff; /* เพิ่มพื้นหลังสีขาว */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* เงาเพื่อความสวยงาม */
+  }
+  
+  form {
+    width: 100%;
+    text-align: left;
+    display: flex;
+    flex-direction: column; 
+    // display: flex;
+    // justify-content: flex-start; /* รูปอยู่ทางซ้าย */
+    // align-items: flex-start; /* รูปอยู่มุมบนซ้าย */
+    //margin-left: 10%;
+   
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+.input-style {
+    width: 95%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 15px;
+    outline: none;
+}
+
+.input-style:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.label {
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 5px;
+    display: block;
+    color: black;
+}
+
+
+.button-container {
+    //position: fixed;
+    bottom: 0;
+    //left: 0;
+    width: 70%;
+    display: flex;
+    justify-content: space-between; /* ทำให้ปุ่มทั้งสองอยู่ที่ซ้ายและขวา */
+    padding: 30px;
+    //background-color: #fff; /* ตั้งค่าพื้นหลังให้กับแถบปุ่ม */
+    //border-top: 1px solid #ddd; /* ขอบด้านบน */
+    margin: 0 auto;
+    text-align: center;
+  }
+  
+  .button-container .back-button {
+    background-color: rgb(255, 196, 0); /* สีเหลือง */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer
+  }
+  .button-container .back-button:hover {
+    background-color: rgb(255, 187, 0);
+}
+  
+  .button-container .save-button {
+    background-color: #003ebb;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer
+  }
+
+.button-container .save-button:hover {
+    background-color: #002fa1;
+    
+}
+
+/* Add button styling */
+.add-button {
+    background-color: transparent; /* พื้นหลังโปร่งใส */
+    color: #003ebb; /* สีข้อความ */
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center; /* จัดให้อยู่ตรงกลางแนวตั้ง */
+    gap: 10px; /* ระยะห่างระหว่างไอคอนและข้อความ */
+   
+  }
+  
+  .add-button:hover {
+    border-radius: 10px;
+    background-color:rgba(0, 0, 0, 0.114);
+  }
+  .btadd-container{
+    display: flex;
+  justify-content: center; /* จัดให้อยู่กึ่งกลางแนวนอน */
+  align-items: center; /* จัดให้อยู่กึ่งกลางแนวตั้ง */
+  max-width: 1200px;
+  }
+  
+/* Container for the entire input section */
+.price-input-container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+  
+  /* Label styling */
+  .price-label {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+  }
+  
+  /* Wrapper for the input and currency label */
+  .input-wrapper {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ffa500; /* Orange border */
+    border-radius: 4px;
+    overflow: hidden;
+    width: fit-content;
+  }
+  
+  /* Input field styling */
+  .price-input {
+    flex: 1;
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+    outline: none;
+    color: #333;
+  }
+  
+  .price-input::placeholder {
+    color: #aaa;
+  }
+  
+  /* Currency label styling */
+  .currency-label {
+    background-color: #fff;
+    padding: 0 10px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #555;
+    border-left: 1px solid #ffa500; /* Separate the input and label */
+  }
+
+      /* ปุ่มปิดในโมเดล */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  
+  
+/* สไตล์สำหรับโมเดล */
+.modal {
+  display: block;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  /* สไตล์สำหรับเนื้อหาในโมเดล */
+  .modal-content {
+    background-color: #ffffff;
+    color: black;
+    margin: 10% auto;
+    padding: 20px;
+    //border: 2px solid #000000; /* เส้นขอบสีดำ */
+    border-radius: 8px; /* มุมโค้งมน */
+    width: 30%;
+    text-align: center; /* จัดข้อความให้อยู่กึ่งกลาง */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* เงา */
+    // display: flex;
+    // flex-direction: column; 
+  }
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .checkbox-list {
+    text-align: left;
+    margin: 20px 0;
+    margin-left: 25%;
+    
+  }
+  
+  .checkbox-list label {
+    display: flex;
+    align-items: center;
+    font-size: 15px;
+    color: #333333;
+    margin-bottom: 10px;
+  }
+  
+  .checkbox-list input[type="checkbox"] {
+    margin-right: 10px;
+    accent-color: #003ebb; /* สีของกล่องเช็ค */
+    transform: scale(1.5); /* ขยายขนาดของ checkbox */
+  }
+  
+  .confirm-button {
+    background-color: #003ebb;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .confirm-button:hover {
+    background-color: #002a99;
+  }
+  
+
+  /* Media Queries สำหรับทำให้ Responsive */
+  @media screen and (max-width: 768px) {
+    .logo-img {
+        //padding-top: 10px;
+        
+        width: 200px;
+        height: 150px;
+      }
+
+      .text {
+        color: #003ebb;
+        display: flex;
+        justify-content: flex-start; /* รูปอยู่ทางซ้าย */
+        align-items: flex-start; /* รูปอยู่มุมบนซ้าย */
+        margin-left: 10%;
+        font-size: 15px;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+        .text {
+            color: #003ebb;
+            display: flex;
+            justify-content: flex-start; /* รูปอยู่ทางซ้าย */
+            align-items: flex-start; /* รูปอยู่มุมบนซ้าย */
+            margin-left: 10%;
+            font-size: 10px;
+        }
+    
+    }
+

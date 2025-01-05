@@ -21,6 +21,6 @@ export class BaseShuttComponent {
     constructor(private router : Router,){}
     
     next(){
-
+      this.router.navigate(['/base2_1']);
     }
 }

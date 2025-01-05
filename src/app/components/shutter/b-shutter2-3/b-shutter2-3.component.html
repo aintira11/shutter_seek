@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
+    <title>Document</title>
+</head>
+<body>
+    <header>
+        <div class="header">
+            <button mat-button >เข้าสู่ระบบ</button>  
+            <span class="material-symbols-outlined" style="font-size: 2.2em; padding: 5px;">
+                account_circle
+            </span>
+        </div>
+    </header>
+    <div class="container">
+        <img src="/assets/images/PIXEL (7).png" alt="Logo" class="logo-img" /> 
+        <h2 style="color: #003ebb;">ขั้นตอนที่ 2.3 </h2>
+        <p class="text">รูปผลงานของคุณ</p>
+        <br>
+        <p class="label" style="font-weight: bold;">อัพโหลดรูปผลงาน 0/10 ( jpg,png )</p>
+        <p class="label">ลูกค้าอยากเห็นฝีมือของคุณ เลือกรูปเพื่อแสดงผลงานของคุณ</p>
+
+        <!-- Input File -->
+        <div class="file-upload-container">
+            <input 
+              type="file" 
+              id="fileInput" 
+              (change)="onFileSelected($event)" 
+              multiple 
+              accept=".jpg,.png" 
+              [disabled]="files.length >= 10"
+            />
+            <label for="fileInput" [class.disabled]="files.length >= 10">
+              <span *ngIf="files.length < 10">+ เพิ่มรูปภาพ (เลือกได้สูงสุด 10 รูป)</span>
+              <span *ngIf="files.length >= 10" style="color: red;">เลือกรูปครบแล้ว</span>
+            </label>
+        
+
+              <!-- File Preview -->
+            <div class="file-preview">
+                <div class="preview-image" *ngFor="let file of files; let i = index">
+                  <img [src]="file.preview" alt="Image preview {{ i + 1 }}" />
+                  <button (click)="removeFile(i)">ลบ</button>
+                </div>
+              </div>
+  
+            <div class="button-container">
+                <button class="back-button" (click)="back()">กลับ</button>
+                <button class="save-button" (click)="next()" [disabled]="files.length === 0" >บันทึกและไปต่อ</button>
+            </div>
+              
+    </div>
+</div>
+    
+</body>
+</html>

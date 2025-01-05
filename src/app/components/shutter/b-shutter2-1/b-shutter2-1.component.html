@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
+    <title>Document</title>
+</head>
+<body>
+    <header>
+        <div class="header">
+            <button mat-button >เข้าสู่ระบบ</button>  
+            <span class="material-symbols-outlined" style="font-size: 2.2em; padding: 5px;">
+                account_circle
+            </span>
+        </div>
+    </header>
+    <div class="container">
+        <img src="/assets/images/PIXEL (7).png" alt="Logo" class="logo-img" /> 
+        <h2 style="color: #003ebb;">ขั้นตอนที่ 2.1 </h2>
+        <p class="text">เลือกหมวดหมู่งาน</p>
+        <br>
+        
+            <form action="">
+            <div class="form-group">
+                <label class="label">หมวดหมู่งาน</label>
+                <select class="input-style">
+                  <option value="">-- หมวดหมู่งาน--</option>
+                  <!-- <option *ngFor="let thai of thaijson" [value]="thai.name_th">
+                    {{ thai.name_th }}
+                  </option> -->
+                  <option  value="งานถ่ายภาพบุคคล">
+                    งานถ่ายภาพบุคคล
+                  </option>
+                  <option  value="งานถ่ายภาพสินค้า">
+                    งานถ่ายภาพสินค้า
+                  </option>
+                  <option  value="งานถ่ายภาพงานแต่งงาน">
+                    งานถ่ายภาพงานแต่งงาน
+                  </option>
+                  <option  value="งานถ่ายภาพอีเวนต์">
+                    งานถ่ายภาพอีเวนต์
+                  </option>
+                </select>
+              </div>
+            </form>
+
+            <div class="button-container">
+                <button class="back-button" (click)="back()">กลับ</button>
+                <button class="save-button" (click)="next()">บันทึกและไปต่อ</button>
+              </div>
+              
+    </div>
+
+    
+</body>
+</html>

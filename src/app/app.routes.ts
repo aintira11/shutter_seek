@@ -6,6 +6,10 @@ import { shutt_RegisterComponent } from './components/shutter/shutt_register/reg
 import { CreateAccountComponent } from './components/shutter/create-account/create-account.component';
 import { CreateProfileComponent } from './components/shutter/create-profile/create-profile.component';
 import { BaseShuttComponent } from './components/shutter/base-shutt/base-shutt.component';
+import { BShutter21Component } from './components/shutter/b-shutter2-1/b-shutter2-1.component';
+import { BShutter22Component } from './components/shutter/b-shutter2-2/b-shutter2-2.component';
+import { BShutter23Component } from './components/shutter/b-shutter2-3/b-shutter2-3.component';
+import { BShutter3Component } from './components/shutter/b-shutter3/b-shutter3.component';
 
 export const routes: Routes = [
     {path: '',component: HomeComponent},
@@ -14,6 +18,10 @@ export const routes: Routes = [
     {path: 'createacc',component: CreateAccountComponent},
     {path: 'creatfro',component: CreateProfileComponent},
     {path: 'base',component: BaseShuttComponent},
+    {path: 'base2_1',component: BShutter21Component},
+    {path: 'base2_2',component: BShutter22Component},
+    {path: 'base2_3',component: BShutter23Component},
+    {path: 'base3',component: BShutter3Component},
     // { 
     //   path: 'myprofile',
     //   component: MyprofileComponent,

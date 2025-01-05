@@ -1,0 +1,226 @@
+.container {
+    font-family: 'Arial', sans-serif;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.logo-img {
+    max-width: 400px; /* กำหนดขนาดสูงสุดของรูป */
+    max-height: 350px; /* กำหนดความสูงสูงสุด */
+    width: auto; /* ให้ปรับตามสัดส่วนความกว้าง */
+    height: auto; /* ให้ปรับตามสัดส่วนความสูง */
+    object-fit: contain; /* รักษาสัดส่วนของรูป */
+    display: flex;
+    justify-content: flex-start; /* รูปอยู่ทางซ้าย */
+    align-items: flex-start; /* รูปอยู่มุมบนซ้าย */
+   // margin-left: -150%;
+}
+.header {
+    display: flex;
+    justify-content: flex-end; 
+    border-bottom: 1px solid #ddd;
+    top: 0; /* Stick to the top of the viewport */
+    right: 0;
+    position: sticky;
+    font-family: 'Arial', sans-serif;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  h2{
+    color: #003ebb;
+    display: flex;
+    justify-content: flex-start; /* รูปอยู่ทางซ้าย */
+    align-items: flex-start; /* รูปอยู่มุมบนซ้าย */
+    margin-left: 10%;
+  }
+  .text {
+    color: #003ebb;
+    display: flex;
+    justify-content: flex-start; /* รูปอยู่ทางซ้าย */
+    align-items: flex-start; /* รูปอยู่มุมบนซ้าย */
+    margin-left: 10%;
+    font-size: 18px;
+  }
+
+  form {
+    width: 80%;
+    text-align: left;
+    // display: flex;
+    // justify-content: flex-start; /* รูปอยู่ทางซ้าย */
+    // align-items: flex-start; /* รูปอยู่มุมบนซ้าย */
+    margin-left: 10%;
+   
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.label {
+    font-size: 18px;
+    font-weight: 500;
+    text-align: left;
+    margin-left: 10%;
+    margin-bottom: 5px;
+    display: block;
+    color: black;
+}
+
+
+.button-container {
+    //position: fixed;
+    bottom: 0;
+    //left: 0;
+    width: 70%;
+    display: flex;
+    justify-content: space-between; /* ทำให้ปุ่มทั้งสองอยู่ที่ซ้ายและขวา */
+    padding: 30px;
+    //background-color: #fff; /* ตั้งค่าพื้นหลังให้กับแถบปุ่ม */
+    //border-top: 1px solid #ddd; /* ขอบด้านบน */
+    margin: 0 auto;
+    text-align: center;
+  }
+  
+  .button-container .back-button {
+    background-color: rgb(255, 196, 0); /* สีเหลือง */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer
+  }
+  .button-container .back-button:hover {
+    background-color: rgb(255, 187, 0);
+}
+  
+  .button-container .save-button {
+    background-color: #003ebb;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer
+  }
+
+.button-container .save-button:hover {
+    background-color: #002fa1;
+}
+
+.file-upload-container {
+    margin: 20px 0;
+  }
+  
+  .file-upload-container input[type="file"] {
+    display: none;
+  }
+  
+  .file-upload-container label {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .file-upload-container label.disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .file-preview {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 5px;
+    margin-top: 15px;
+  }
+  
+  .preview-image {
+    position: relative;
+    width: 150px; /* กำหนดขนาดความกว้างของรูป */
+    height: 150px; /* กำหนดขนาดความสูงของรูป */
+    margin: 3px; /* เพิ่มระยะห่างระหว่างรูปภาพ */
+    display: inline-block; /* เพื่อให้สามารถแสดงรูปหลาย ๆ รูปแบบแนวนอนได้ */
+  }
+  
+  .preview-image img {
+    width: 100%; /* ปรับขนาดให้พอดีกับ container */
+    height: 100%; /* ปรับขนาดให้พอดีกับ container */
+    object-fit: cover; /* เพื่อให้รูปภาพไม่ผิดสัดส่วน */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .preview-image button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px; /* ปรับขนาดตัวอักษรให้เหมาะสม */
+    z-index: 1; /* ให้ปุ่มลบอยู่เหนือรูปภาพ */
+  }  
+  
+  .actions {
+    margin-top: 20px;
+  }
+  
+  .actions button {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: white;
+    background-color: #28a745;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .actions button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+
+  /* Media Queries สำหรับทำให้ Responsive */
+  @media screen and (max-width: 768px) {
+    .logo-img {
+        //padding-top: 10px;
+        
+        width: 200px;
+        height: 150px;
+      }
+
+      .text {
+        color: #003ebb;
+        display: flex;
+        justify-content: flex-start; /* รูปอยู่ทางซ้าย */
+        align-items: flex-start; /* รูปอยู่มุมบนซ้าย */
+        margin-left: 10%;
+        font-size: 15px;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+        .text {
+            color: #003ebb;
+            display: flex;
+            justify-content: flex-start; /* รูปอยู่ทางซ้าย */
+            align-items: flex-start; /* รูปอยู่มุมบนซ้าย */
+            margin-left: 10%;
+            font-size: 10px;
+        }
+    
+    }

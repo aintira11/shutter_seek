@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
+    <title>Document</title>
+</head>
+<body>
+    <header>
+        <div class="header">
+            <button mat-button >เข้าสู่ระบบ</button>  
+            <span class="material-symbols-outlined" style="font-size: 2.2em; padding: 5px;">
+                account_circle
+            </span>
+        </div>
+    </header>
+    <div class="container">
+        <img src="/assets/images/PIXEL (7).png" alt="Logo" class="logo-img" />
+        <h2 style="color: #003ebb;">ขั้นตอนสุดท้าย </h2>
+        <p class="text">กำหนดราคาและส่งผลการสมัคร</p>
+        <br>
+    
+        <!-- Card Container -->
+        <div class="card" *ngFor="let package of packages; let i = index">
+            
+            <form>
+            <label class="hcard">แพ็กเกจที่ {{ i + 1 }}</label>
+              <div class="form-group">
+                <label class="label">ชื่อ แพ็กเกจ</label>
+                <input type="text" [(ngModel)]="package.name" name="packageName{{ i }}" class="input-style" placeholder="ชื่อแพ็กเกจ">
+              </div>
+              <div class="form-group">
+                <label class="label">กำหนดหมวดหมู่แพ็กเกจ</label>
+                <select [(ngModel)]="package.category" name="packageCategory{{ i }}" class="input-style">
+                  <option value="">-- หมวดหมู่แพ็กเกจ --</option>
+                  <option value="งานถ่ายภาพบุคคล">งานถ่ายภาพบุคคล</option>
+                  <option value="งานถ่ายภาพสินค้า">งานถ่ายภาพสินค้า</option>
+                  <option value="งานถ่ายภาพงานแต่งงาน">งานถ่ายภาพงานแต่งงาน</option>
+                  <option value="งานถ่ายภาพอีเวนต์">งานถ่ายภาพอีเวนต์</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="price-label">รายละเอียดแพ็กเกจ</label>
+                <textarea [(ngModel)]="package.description" name="packageDescription{{ i }}" class="input-style" rows="3" placeholder="รายละเอียดแพ็กเกจ"></textarea>
+              </div>
+              <div class="price-input-container">
+                <label for="packagePrice" class="price-label">ราคาแพ็กเกจ</label>
+                <div class="input-wrapper">
+                  <input type="text" [(ngModel)]="package.price" name="packagePrice{{ i }}" class="price-input" placeholder="5,999" />
+                  <span class="currency-label">บาท</span>
+                </div>
+              </div>
+            </form>
+          </div>
+          
+    
+        <!-- Add Package Button -->
+         <div class="btadd-container">
+        <button class="add-button" (click)="addPackage()">
+            <div class="circle-icon">
+                <span class="material-symbols-outlined">
+                    add_circle
+                </span>
+            </div>
+            เพิ่มแพ็กเกจ
+          </button>
+          
+    </div>
+        <!-- Navigation Buttons -->
+        <div class="button-container">
+            <button class="back-button" (click)="back()">กลับ</button>
+            <button class="save-button" (click)="openModel()">บันทึกและไปต่อ</button>
+        </div>
+
+        <!-- Modal -->
+        <div *ngIf="isModelOpen" class="modal">
+            <div class="modal-content">
+                <span class="close" (click)="closeModel()">&times;</span>
+              <h3 style="align-items: center; font-size: 25px ;font-weight: bold; color: #003ebb;">ยืนยันการสมัคร</h3>
+              <hr>
+              <p>
+                กรุณาทำการยืนยันการสมัครสมาชิกช่างภาพ<br>
+                ระบบจะตรวจสอบและส่งผลการสมัครไปยังอีเมลของคุณ<br>
+                หากผ่านการพิจารณา คุณสามารถเริ่มใช้งานเว็บไซต์ได้ทันที!
+              </p>
+              <div class="checkbox-list">
+                <label>
+                  <input type="checkbox" /> คุณยืนยันการเป็นเจ้าของผลงานจริง
+                </label>
+                <label>
+                  <input type="checkbox" /> ยืนยันความถูกต้องของข้อมูล
+                </label>
+                <label>
+                  <input type="checkbox" /> ยินยอมให้ปฏิบัติตามกฎและเงื่อนไข
+                </label>
+              </div>
+              <button class="confirm-button">ยืนยันและส่งให้ระบบตรวจสอบ</button>
+            </div>
+          </div>
+          
+    </div>
+    
+</body>
+</html>
