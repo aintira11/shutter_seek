@@ -9,6 +9,7 @@
     <div class="login-box">
         <div class="content">
             <div class="logo-section">
+
                 <img src="/assets/images/PIXEL (7).png" alt="Logo" class="logo-image">
             </div>
             <form (ngSubmit)="login()" [formGroup]="loginForm" style="width: 50%;">
@@ -28,7 +29,23 @@
                     </div>
                 </div>
             </form>
+                <img src="/assets/image/logo.png" alt="Logo" class="logo-image">
+            </div>
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="username">อีเมล์:</label>
+                    <input type="text" id="username" name="username" >
+                </div>
+                <div class="form-group">
+                    <label for="password">รหัสผ่าน:</label>
+                    <input type="password" id="password" name="password" >
+                </div>
+                <a href="#" class="forgot-password">ลืมรหัสผ่าน</a>
+                <div class="form-buttons">
+                    <button class="register-btn">สมัครสมาชิก</button>
+                    <button class="login-btn">เข้าสู่ระบบ</button>
+                </div>
+            </div>
         </div>
-    </div>
 </body>
 </html>
