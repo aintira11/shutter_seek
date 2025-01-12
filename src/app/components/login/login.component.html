@@ -11,22 +11,23 @@
             <div class="logo-section">
                 <img src="/assets/images/PIXEL (7).png" alt="Logo" class="logo-image">
             </div>
-            <div class="form-section">
-                <div class="form-group">
-                    <label for="email">อีเมล์:</label>
-                    <input type="email" id="email" name="email" #email>
+            <form (ngSubmit)="login()" [formGroup]="loginForm" style="width: 50%;">
+                <div class="form-section">
+                    <div class="form-group">
+                        <label for="email">อีเมล์:</label>
+                        <input type="email" id="email" formControlName="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">รหัสผ่าน:</label>
+                        <input type="password" id="password" formControlName="password">
+                    </div>
+                    <a href="#" class="forgot-password">ลืมรหัสผ่าน</a>
+                    <div class="form-buttons">
+                        <button type="button" class="register-btn" (click)="goToRegister()">สมัครสมาชิก</button>
+                        <button type="submit" class="login-btn">เข้าสู่ระบบ</button>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="password">รหัสผ่าน:</label>
-                    <input type="password" id="password" name="password" #password>
-                </div>
-                <a href="#" class="forgot-password">ลืมรหัสผ่าน</a>
-                <div class="form-buttons">
-                    <button class="register-btn" (click)="goToRegister()">สมัครสมาชิก</button>
-                    <button class="login-btn"(click)="login(email,password)">เข้าสู่ระบบ</button>
-                  </div>
-                
-            </div>
+            </form>
         </div>
     </div>
 </body>
