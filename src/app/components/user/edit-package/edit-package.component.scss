@@ -1,0 +1,174 @@
+/* styles.css */
+
+/* ทั่วไป */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    display: flex;
+}
+
+/* Sidebar */
+.sidebar {
+    background-color: #0046ad;
+    color: #fff;
+    padding: 20px;
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    height: 100vh;
+}
+
+.sidebar .back-button {
+    color: #fff;
+    font-size: 20px;
+    margin-bottom: 20px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+.sidebar .menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar .menu li {
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+/* Content */
+.content {
+    flex: 1;
+    padding: 20px;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Package Card */
+.package-card {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    padding: 20px;
+    position: relative;
+}
+
+.package-card .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.package-card .header h3 {
+    margin: 0;
+}
+
+.package-card .header .delete-btn {
+    background-color: #ff4d4d;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.package-card .form-group {
+    margin-bottom: 15px;
+}
+
+.package-card label {
+    font-size: 14px;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.package-card input,
+.package-card select,
+.package-card textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.package-card textarea {
+    resize: vertical;
+    height: 100px;
+}
+
+.package-card .submit-btn {
+    background-color: #0046ad;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.add-package-btn {
+    background-color: #0046ad;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 0 auto;
+    display: block;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 200px;
+    }
+
+    .package-card {
+        padding: 15px;
+    }
+
+    .package-card .header h3 {
+        font-size: 16px;
+    }
+
+    .package-card input,
+    .package-card select,
+    .package-card textarea {
+        font-size: 12px;
+    }
+
+    .add-package-btn {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .sidebar {
+        display: none;
+    }
+
+    .content {
+        padding: 10px;
+    }
+
+    .package-card {
+        padding: 10px;
+    }
+
+    .package-card .header h3 {
+        font-size: 14px;
+    }
+
+    .add-package-btn {
+        font-size: 12px;
+    }
+}

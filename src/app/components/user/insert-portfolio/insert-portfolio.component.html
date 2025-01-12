@@ -1,1 +1,59 @@
-<p>insert-portfolio works!</p>
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <div class="container">
+    <aside class="sidebar">
+      <ul>
+        <li><a href="#account">ข้อมูลบัญชี</a></li>
+        <li><a href="#package">แพ็กเกจ</a></li>
+        <li class="active"><a href="#works">ผลงาน</a></li>
+      </ul>
+    </aside>    
+    <main class="content">
+      <form class="form">
+        <div class="form-group">
+          <label for="category">หมวดหมู่งาน</label>
+          <select id="category" name="category">
+            <option value="งานถ่ายภาพบุคคล">งานถ่ายภาพบุคคล</option>
+            <option value="งานถ่ายภาพสินค้า">งานถ่ายภาพสินค้า</option>
+            <option value="งานถ่ายภาพงานแต่งงาน">งานถ่ายภาพงานแต่งงาน</option>
+            <option value="งานถ่ายภาพอีเวนต์">งานถ่ายภาพอีเวนต์</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="job-name">ชื่องาน</label>
+          <input type="text" id="job-name" name="job-name">
+        </div>
+        <div class="form-group">
+          <label for="job-details">รายละเอียดงานเพิ่มเติม</label>
+          <textarea id="job-details" name="job-details"></textarea>
+        </div>
+        <div class="form-group">
+          <label>อัปโหลดรูปผลงาน 0/30</label>
+          <p>ลูกค้าอยากเห็นฝีมือของคุณ เลือกรูปขั้นต่ำ 3 รูป ที่แสดงผลงานที่ดีของคุณ</p>
+          <div class="upload-box">
+            <button type="button" class="upload-btn" onclick="document.getElementById('fileInput').click()">+</button>
+            <input type="file" id="fileInput" style="display:none;" onchange="handleFileUpload(event)">
+            <p>เพิ่มรูปผลงาน</p>
+          </div>
+          
+          <script>
+            // ฟังก์ชันที่จัดการไฟล์ที่เลือก
+            function handleFileUpload(event) {
+              const file = event.target.files[0]; 
+              if (file) {
+                alert('ไฟล์ที่เลือก: ' + file.name); 
+              }
+            }
+          </script>
+          
+        </div>
+      </form>
+    </main>
+  </div>
+</body>
+</html>

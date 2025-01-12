@@ -1,0 +1,206 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    background-color: #f9f9f9;
+}
+
+.sidebar {
+    background-color: #0046ad;
+    color: #fff;
+    padding: 20px;
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    height: 100vh;
+}
+
+.sidebar .back-button {
+    color: #fff;
+    font-size: 20px;
+    margin-bottom: 20px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+.sidebar .menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar .menu li {
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+.content {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.header-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.add-work-btn,
+.featured-btn {
+    background-color: #0046ad;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.featured-btn {
+    background-color: #ffcc00;
+    color: #000;
+}
+
+.gallery {
+    margin-bottom: 20px;
+}
+
+.gallery h4 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.image-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.image-card {
+    position: relative;
+    display: inline-block;
+}
+
+.image-card img {
+    width: 150px;
+    height: 150px;
+    border-radius: 5px;
+    object-fit: cover;
+}
+
+.image-card .delete-btn {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #ff4d4d;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.add-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 150px;
+    height: 150px;
+    background-color: #f2f2f2;
+    border: 1px dashed #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.add-card .add-image-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    font-weight: bold;
+    color: #ccc;
+    cursor: pointer;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.cancel-btn {
+    background-color: #ffcc00;
+    color: #000;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.save-btn {
+    background-color: #0046ad;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 200px;
+    }
+
+    .image-card img {
+        width: 120px;
+        height: 120px;
+    }
+
+    .add-card {
+        width: 120px;
+        height: 120px;
+    }
+
+    .add-work-btn,
+    .featured-btn {
+        font-size: 12px;
+        padding: 8px 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .sidebar {
+        display: none;
+    }
+
+    .content {
+        padding: 10px;
+    }
+
+    .image-card img {
+        width: 100px;
+        height: 100px;
+    }
+
+    .add-card {
+        width: 100px;
+        height: 100px;
+    }
+
+    .add-work-btn,
+    .featured-btn,
+    .cancel-btn,
+    .save-btn {
+        font-size: 12px;
+        padding: 8px 12px;
+    }
+}

@@ -1,1 +1,49 @@
-<p>edit-package works!</p>
+<!-- edit-package<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แก้ไขแพ็กเกจ</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="sidebar">
+        <a href="#" class="back-button">
+            <i class="fas fa-chevron-left"></i>
+        </a>
+        <ul class="menu">
+            <li>ข้อมูลบัญชี</li>
+            <li>แพ็กเกจ</li>
+            <li>ผลงาน</li>
+        </ul>
+    </div>
+    <div class="content">
+        <div class="package-card" *ngFor="let package of packages; let i = index">
+            <div class="header">
+                <h3>แพ็กเกจ {{ i + 1 }}</h3>
+                <button class="delete-btn" (click)="deletePackage(i)">ลบแพ็กเกจ</button>
+            </div>
+            <div class="form-group">
+                <label for="category{{ i }}">กำหนดหมวดหมู่ แพ็กเกจ *</label>
+                <select id="category{{ i }}" [(ngModel)]="package.category" name="category{{ i }}">
+                    <option value="สินค้า">สินค้า</option>
+                    <option value="บริการ">บริการ</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="price{{ i }}">ราคา แพ็กเกจ *</label>
+                <input type="text" id="price{{ i }}" [(ngModel)]="package.price" name="price{{ i }}" value="5,999">
+            </div>
+            <div class="form-group">
+                <label for="details{{ i }}">รายละเอียด แพ็กเกจ *</label>
+                <textarea id="details{{ i }}" [(ngModel)]="package.details" name="details{{ i }}"></textarea>
+            </div>
+            <button class="submit-btn">บันทึก</button>
+        </div>
+
+        <button class="add-package-btn" (click)="addPackage()">+ เพิ่มแพ็กเกจ</button>
+    </div>
+
+    <script src="https://code.angularjs.org/1.7.9/angular.min.js"></script>
+</body>
+</html> -->
