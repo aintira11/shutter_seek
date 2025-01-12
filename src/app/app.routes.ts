@@ -14,7 +14,7 @@ import { ProfileComponent } from './components/user/profile/profile.component';
 import { EditProfileComponent } from './components/user/edit-profile/edit-profile.component';
 
 export const routes: Routes = [
-    {path: '',component: HomeComponent},
+    {path: '',component: HomeComponent}, 
     {path: 'login',component: LoginComponent},
     {path: 'register',component: RegisterComponent},
     {path: 'shutter',component: shutt_RegisterComponent},
@@ -28,7 +28,7 @@ export const routes: Routes = [
 
     {path: 'profile',component: ProfileComponent},
     {path: 'editprofile',component: EditProfileComponent},
-    
+
     // { 
     //   path: 'myprofile',
     //   component: MyprofileComponent,

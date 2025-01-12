@@ -15,51 +15,45 @@
                        
         <div class="form-container">
             <div class="profile-section">
-                <img src="/assets/images/user.png" alt="Profile" id="profileImage" class="profile-image">
-                <input type="file" id="uploadInput" accept="image/*" style="display: none;">
-                <button class="change-profile-btn" onclick="document.getElementById('uploadInput').click();">
+                <img [src]="imagePreview" alt="Profile" id="profileImage" class="profile-image">
+                <input type="file" id="fileInput" style="display: none;" style="display: none;" (change)="onFileSelected($event)">
+                <button class="change-profile-btn" (click)="triggerFileInput()">
                     เปลี่ยนรูป Profile
                 </button>
+                
             </div>
-            <form class="register-form">
+            <form [formGroup]="fromreister" (ngSubmit)="register()" class="register-form">
                 <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username">
+                    <label class="label">Email</label>
+                    <input type="email" class="input-style" placeholder="ระบุอีเมล" formControlName="Email">
                 </div>
                 <div class="form-group">
-                    <label for="first-name">ชื่อ</label>
-                    <input type="text" id="first-name" name="first-name">
+                    <label class="label">Password</label>
+                    <input type="password" class="input-style" placeholder="ระบุรหัสผ่าน" formControlName="Password">
                 </div>
                 <div class="form-group">
-                    <label for="last-name">นามสกุล</label>
-                    <input type="text" id="last-name" name="last-name">
+                    <label class="label">Username</label>
+                    <input type="text" class="input-style" placeholder="ระบุ Username" formControlName="UserName">
                 </div>
                 <div class="form-group">
-                    <label for="email">อีเมล</label>
-                    <input type="email" id="email" name="email">
+                    <label class="label">First Name</label>
+                    <input type="text" class="input-style" placeholder="ระบุชื่อ" formControlName="Name">
                 </div>
                 <div class="form-group">
-                    <label for="phone">หมายเลขโทรศัพท์</label>
-                    <input type="text" id="phone" name="phone">
+                    <label class="label">Last Name</label>
+                    <input type="text" class="input-style" placeholder="ระบุนามสกุล" formControlName="LastName">
                 </div>
                 <div class="form-group">
-                    <label for="address">ที่อยู่</label>
-                    <textarea id="address" name="address"></textarea>
+                    <label class="label">Phone</label>
+                    <input type="tel" class="input-style" placeholder="ระบุหมายเลขโทรศัพท์" formControlName="Phone">
                 </div>
-                <div class="form-group">
-                    <label for="password">รหัสผ่าน</label>
-                    <input type="text" id="password" name="password">
-                </div>
-                <div class="form-group">
-                    <label for="confirmpassword">ยืนยันรหัสผ่าน</label>
-                    <input type="text" id="confirmpassword" name="confirmpassword">
-                </div>
-                <button type="submit" class="submit-btn" (click)="goToLogin()">ยืนยัน</button>
+                <button type="submit" class="submit-btn">บันทึกและไปต่อ</button>
             </form>
+            
         </div>        
     </div>
 
-    <script>
+    <!-- <script>
         document.getElementById('uploadInput').addEventListener('change', function(event) {
             const file = event.target.files[0];
             if (file) {
@@ -70,6 +64,6 @@
                 reader.readAsDataURL(file); // อ่านไฟล์เป็น Base64
             }
         });
-    </script>
+    </script> -->
 </body>
 </html>

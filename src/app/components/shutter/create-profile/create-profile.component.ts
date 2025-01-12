@@ -16,7 +16,7 @@ import { Router } from '@angular/router';
     MatFormFieldModule,
     FormsModule,
     RouterModule,
-    CommonModule
+    CommonModule 
   ],
   templateUrl: './create-profile.component.html',
   styleUrl: './create-profile.component.scss'
