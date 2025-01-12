@@ -10,10 +10,13 @@ import { BShutter21Component } from './components/shutter/b-shutter2-1/b-shutter
 import { BShutter22Component } from './components/shutter/b-shutter2-2/b-shutter2-2.component';
 import { BShutter23Component } from './components/shutter/b-shutter2-3/b-shutter2-3.component';
 import { BShutter3Component } from './components/shutter/b-shutter3/b-shutter3.component';
+import { ProfileComponent } from './components/user/profile/profile.component';
+import { EditProfileComponent } from './components/user/edit-profile/edit-profile.component';
 
 export const routes: Routes = [
     {path: '',component: HomeComponent},
     {path: 'login',component: LoginComponent},
+    {path: 'register',component: RegisterComponent},
     {path: 'shutter',component: shutt_RegisterComponent},
     {path: 'createacc',component: CreateAccountComponent},
     {path: 'creatfro',component: CreateProfileComponent},
@@ -23,7 +26,9 @@ export const routes: Routes = [
     {path: 'base2_3',component: BShutter23Component},
     {path: 'base3',component: BShutter3Component},
 
-    {path: 'register',component: RegisterComponent},
+    {path: 'profile',component: ProfileComponent},
+    {path: 'editprofile',component: EditProfileComponent},
+    
     // { 
     //   path: 'myprofile',
     //   component: MyprofileComponent,
