@@ -22,6 +22,8 @@ export const routes: Routes = [
     {path: 'base2_2',component: BShutter22Component},
     {path: 'base2_3',component: BShutter23Component},
     {path: 'base3',component: BShutter3Component},
+
+    {path: 'register',component: RegisterComponent},
     // { 
     //   path: 'myprofile',
     //   component: MyprofileComponent,

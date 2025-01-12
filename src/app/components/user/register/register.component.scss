@@ -1,0 +1,179 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #ffffff;
+    color: #333;
+}
+
+.container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    padding-top: 40px;
+}
+
+.back-button {
+    margin-bottom: 20px;
+}
+
+.back-button a {
+    text-decoration: none;
+    font-size: 16px;
+    color: #000;
+}
+
+.form-container {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.profile-section {
+    margin-bottom: 20px;
+}
+
+.profile-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background-color: #ddd;
+    display: inline-block;
+}
+
+.change-profile-btn {
+    display: block;
+    margin: 10px auto 0;
+    padding: 8px 12px;
+    font-size: 14px;
+    background-color: rgba(0, 74, 173, 1);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.change-profile-btn:hover {
+    background-color: rgba(0, 74, 173, 1);
+}
+
+.register-form {
+    text-align: left;
+    margin-top: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+input,
+textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+textarea {
+    resize: vertical;
+}
+
+.submit-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: rgba(0, 74, 173, 1);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    width: 100%; /* Stretch to full width */
+    max-width: 300px; /* Set a maximum width */
+    margin: 20px auto; /* Center the button */
+    display: block;
+    text-align: center;
+}
+
+.submit-btn:hover {
+    background-color: #00338a;
+}
+
+.back-button {
+    position: absolute;
+    top: 30px;
+    left: 50px;
+}
+
+.back-button a {
+    text-decoration: none;
+    font-size: 16px;
+    color: #000;
+    display: flex;
+    align-items: center;
+}
+
+.back-button i {
+    font-size: 20px;
+    margin-right: 5px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+
+    .profile-image {
+        width: 100px;
+        height: 100px;
+    }
+
+    .change-profile-btn {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+
+    .form-group {
+        margin-bottom: 10px;
+    }
+
+    label {
+        font-size: 13px;
+    }
+
+    input,
+    textarea {
+        font-size: 13px;
+        padding: 8px;
+    }
+
+    .submit-btn {
+        font-size: 14px;
+        padding: 8px 16px;
+    }
+
+    .back-button {
+        top: 20px;
+        left: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-image {
+        width: 80px;
+        height: 80px;
+    }
+
+    .change-profile-btn {
+        font-size: 10px;
+        padding: 4px 8px;
+    }
+
+    .submit-btn {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+}

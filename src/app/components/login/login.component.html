@@ -1,1 +1,37 @@
-<p>login works!</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+</head>
+<body>
+    <div class="login-box">
+        <div class="content">
+            <div class="logo-section">
+                <img src="/assets/images/PIXEL (7).png" alt="Logo" class="logo-image">
+            </div>
+            <form [formGroup]="fromreister" (ngSubmit)="login()">
+                <div class="form-section">
+                  <div class="form-group">
+                    <label for="username">อีเมล์:</label>
+                    <input type="email" id="email" formControlName="email">
+                  </div>
+                  <div class="form-group">
+                    <label for="password">รหัสผ่าน:</label>
+                    <input type="password" id="password" formControlName="password">
+                  </div>
+                  <a href="#" class="forgot-password">ลืมรหัสผ่าน</a>
+                  <div class="form-buttons">
+                    <button type="button" class="register-btn" (click)="goToRegister()">สมัครสมาชิก</button>
+                    <button type="submit" class="login-btn">เข้าสู่ระบบ</button>
+                  </div>
+                </div>
+              </form>
+              
+        </div>
+    </div>
+</body>
+</html>
+

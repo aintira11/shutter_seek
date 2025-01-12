@@ -1,1 +1,72 @@
-<p>register works!</p>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สมัครสมาชิก</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="back-button">
+            <a href="../login/login.component.html">
+                <i class="fas fa-chevron-left"></i> กลับ
+            </a>            
+            <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+        </div>
+                       
+
+        <div class="form-container">
+            <div class="profile-section">
+                <img src="/assets/images/user.png" alt="Profile" id="profileImage" class="profile-image">
+                <input type="file" id="uploadInput" accept="image/*" style="display: none;">
+                <button class="change-profile-btn" onclick="document.getElementById('uploadInput').click();">
+                    เปลี่ยนรูป Profile
+                </button>
+            </div>
+            <form class="register-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username">
+                </div>
+                <div class="form-group">
+                    <label for="first-name">ชื่อ</label>
+                    <input type="text" id="first-name" name="first-name">
+                </div>
+                <div class="form-group">
+                    <label for="last-name">นามสกุล</label>
+                    <input type="text" id="last-name" name="last-name">
+                </div>
+                <div class="form-group">
+                    <label for="email">อีเมล</label>
+                    <input type="email" id="email" name="email">
+                </div>
+                <div class="form-group">
+                    <label for="phone">หมายเลขโทรศัพท์</label>
+                    <input type="text" id="phone" name="phone">
+                </div>
+                <div class="form-group">
+                    <label for="address">ที่อยู่</label>
+                    <textarea id="address" name="address"></textarea>
+                </div>
+                <button type="submit" class="submit-btn">บันทึกและไปต่อ</button>
+            </form>
+        </div>        
+    </div>
+
+    <script>
+        document.getElementById('uploadInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profileImage').src = e.target.result; // แสดงรูปที่เลือก
+                };
+                reader.readAsDataURL(file); // อ่านไฟล์เป็น Base64
+            }
+        });
+    </script>
+</body>
+</html>
+
