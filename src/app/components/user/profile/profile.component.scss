@@ -1,3 +1,5 @@
+/* Global Styles */
+
 * {
     margin: 0;
     padding: 0;
@@ -6,10 +8,9 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #fff;
-    color: #000;
+    background-color: #f9f9f9;
+    color: #333;
     padding: 20px;
-    line-height: 1.6;
 }
 
 .profile-container {
@@ -92,31 +93,48 @@ body {
 
 .works-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 20px;
 }
 
 .work-card {
-    position: relative;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     text-align: center;
 }
 
-.work-image {
-    width: 100%;
-    height: auto;
-    border-radius: 10px;
-    object-fit: cover;
+.work-details {
+    display: flex;
+    align-items: center; /* จัดให้ข้อความอยู่กลางกับรูป */
 }
 
-.work-owner {
-    margin: 10px 0;
-    font-size: 16px;
+.owner-image {
+    margin-right: 10px; /* ระยะห่างระหว่างรูปและข้อความ */
+}
+
+.owner-info {
+    display: flex;
+    flex-direction: column; /* ให้ข้อความเรียงกันในแนวตั้ง */
 }
 
 .work-like {
-    font-size: 24px;
+    font-size: 15px;
     color: red;
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
+    margin-bottom: 10px;
+    margin-right: 150px;
+}
+
+@media (max-width: 768px) {
+    .works-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .works-grid {
+        grid-template-columns: 1fr;
+    }
 }

@@ -15,4 +15,11 @@ export class ProfileComponent {
     this.router.navigate(['/editprofile']);
   }
 
+  back(){
+    this.router.navigate(['']);
+  }
+
+  cancelEdit(){
+    this.router.navigate(['/profile']);
+  }
 }

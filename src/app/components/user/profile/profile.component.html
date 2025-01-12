@@ -4,11 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>โปรไฟล์สมาชิก</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="profile-container">
-        <!-- Back Button -->
-        <button class="back-button">←</button>
+        <div class="back-button">
+            <i class="fas fa-chevron-left"></i>
+        </div>
 
         <!-- Profile Section -->
         <div class="profile-header">
@@ -19,7 +21,7 @@
                 <p>เป็นสมาชิกเมื่อ 20/06/2023</p>
             </div>
             <div class="profile-actions">
-                <button class="edit-button" (click)="goEdit()">แก้ไข</button>
+                <button class="edit-button">แก้ไข</button>
                 <button class="logout-button">สลับบัญชี</button>
             </div>
         </div>
@@ -31,17 +33,57 @@
         <div class="favorite-works">
             <h3>งานที่ถูกใจ</h3>
             <div class="works-grid">
-                <!-- Work Card -->
+                <!-- Work Cards -->
                 <div class="work-card">
                     <img src="https://via.placeholder.com/300x200" alt="Work Image" class="work-image">
-                    <p class="work-owner">name: บุคคล</p>
-                    <div class="work-like">❤️</div>
+                    <div class="work-details">
+                        <img src="https://via.placeholder.com/50" alt="Owner Profile" class="owner-image">
+                        <div class="owner-info">
+                            <p class="owner-title">namijang</p>
+                            <p class="work-owner">
+                                บุคคล
+                                <span class="work-like">❤️</span>
+                            </p>
+                        </div>
+                    </div>                    
                 </div>
+                
                 <div class="work-card">
                     <img src="https://via.placeholder.com/300x200" alt="Work Image" class="work-image">
-                    <p class="work-owner">name: งานแต่ง</p>
+                    <div class="work-details">
+                        <img src="https://via.placeholder.com/50" alt="Owner Profile" class="owner-image">
+                        <div class="owner-info">
+                            <p class="owner-title">ชื่อผู้ใช้งาน: namijang</p>
+                            <p class="work-owner">บุคคล</p>
+                        </div>
+                    </div>
                     <div class="work-like">❤️</div>
                 </div>
+                
+                <div class="work-card">
+                    <img src="https://via.placeholder.com/300x200" alt="Work Image" class="work-image">
+                    <div class="work-details">
+                        <img src="https://via.placeholder.com/50" alt="Owner Profile" class="owner-image">
+                        <div class="owner-info">
+                            <p class="owner-title">ชื่อผู้ใช้งาน: namijang</p>
+                            <p class="work-owner">บุคคล</p>
+                        </div>
+                    </div>
+                    <div class="work-like">❤️</div>
+                </div>
+                
+                <div class="work-card">
+                    <img src="https://via.placeholder.com/300x200" alt="Work Image" class="work-image">
+                    <div class="work-details">
+                        <img src="https://via.placeholder.com/50" alt="Owner Profile" class="owner-image">
+                        <div class="owner-info">
+                            <p class="owner-title">ชื่อผู้ใช้งาน: namijang</p>
+                            <p class="work-owner">บุคคล</p>
+                        </div>
+                    </div>
+                    <div class="work-like">❤️</div>
+                </div>
+                
             </div>
         </div>
     </div>
