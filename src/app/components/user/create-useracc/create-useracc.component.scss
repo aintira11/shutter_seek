@@ -1,0 +1,180 @@
+// /* ตัวจัดการพื้นที่หน้าเว็บ */
+// .container {
+//     font-family: 'Arial', sans-serif;
+//     padding: 20px;
+//     max-width: 1200px;
+//     margin: 0 auto;
+//     text-align: center;
+//   }
+//    /* ส่วน Header */
+//    .header {
+//     display: flex;
+//     justify-content: flex-end; 
+//     border-bottom: 1px solid #ddd;
+//     top: 0; /* Stick to the top of the viewport */
+//     right: 0;
+//     position: sticky;
+//   }
+
+//   .logo-img {
+//     max-width: 400px; /* กำหนดขนาดสูงสุดของรูป */
+//     max-height: 350px; /* กำหนดความสูงสูงสุด */
+//     width: auto; /* ให้ปรับตามสัดส่วนความกว้าง */
+//     height: auto; /* ให้ปรับตามสัดส่วนความสูง */
+//     margin-right: 250px;
+//     object-fit: contain; /* รักษาสัดส่วนของรูป */
+//   }
+
+//   .input-style {
+//     padding: 10px;
+//     border: 2px solid #ccc;
+//     border-radius: 5px;
+//     font-size: 16px;
+//     color: #555;
+//     outline: none;
+//   }
+  
+//   .input-style:focus {
+//     border-color: #007bff;
+//     box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+//   }
+
+//   form i {
+//     margin-left: -30px;
+//     cursor: pointer;
+// }
+
+//   .error {
+//     color: red;
+//     font-size: 12px;
+//     margin-top: -5px;
+//     margin-bottom: 10px;
+//   }
+
+//   .column {
+//     display: flex;
+//     flex-direction: column;
+//     width: 60%;
+//     //align-items: center;
+//   }
+
+//   .label {
+//     text-align: left;
+//     margin-bottom: 10px;
+//     font-size: 17px;
+//     font-weight: bold;
+//   }
+
+//   .password-container {
+//     display: flex;
+//     align-items: center;
+//     border: 1px solid #ccc;
+//     border-radius: 5px;
+//     margin-bottom: 10px;
+//   }
+//   .password-container input {
+//     flex: 1;
+//     border: none;
+//     padding: 10px;
+//   }
+//   .password-container .toggle-visibility {
+//     padding: 10px;
+//     cursor: pointer;
+//   }
+
+//   /* Media Queries สำหรับทำให้ Responsive */
+//   @media screen and (max-width: 768px) {
+//     .logo-img {
+//         width: 200px;
+//         height: 150px;
+//       }
+//   }
+
+//   @media screen and (max-width: 480px) {
+
+
+//   }
+.container {
+    font-family: 'Arial', sans-serif;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+.header {
+    display: flex;
+    justify-content: flex-end; 
+    border-bottom: 1px solid #ddd;
+    position: sticky;
+    top: 0;
+}
+.logo-img {
+    max-width: 400px;
+    max-height: 350px;
+    width: auto;
+    height: auto;
+    margin-right: 250px;
+    object-fit: contain;
+}
+.input-style {
+    padding: 10px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #555;
+    outline: none;
+    width: calc(100% - 30px);
+}
+.input-style:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+.column {
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+    margin: auto;
+}
+.label {
+    text-align: left;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    font-size: 17px;
+    font-weight: bold;
+}
+.password-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.password-container input {
+    flex: 1;
+    padding: 10px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+}
+.password-container .toggle-visibility {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+    font-size: 20px;
+    color: #555;
+}
+// button {
+//     background-color: #003ebb;
+//     color: white;
+//     border: none;
+//     padding: 10px 20px;
+//     font-size: 16px;
+//     border-radius: 5px;
+//     cursor: pointer;
+// }
+// button:hover {
+//     background-color: #002ea6;
+// }
+@media screen and (max-width: 768px) {
+    .logo-img {
+        width: 200px;
+        height: 150px;
+    }
+}
