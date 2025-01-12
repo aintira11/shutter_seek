@@ -10,13 +10,9 @@
 <body>
     <div class="container">
         <div class="back-button">
-            <a href="../login/login.component.html">
-                <i class="fas fa-chevron-left"></i> กลับ
-            </a>            
-            <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+                <i class="fas fa-chevron-left" (click)="back()"></i> กลับ
         </div>
                        
-
         <div class="form-container">
             <div class="profile-section">
                 <img src="/assets/images/user.png" alt="Profile" id="profileImage" class="profile-image">
@@ -50,7 +46,15 @@
                     <label for="address">ที่อยู่</label>
                     <textarea id="address" name="address"></textarea>
                 </div>
-                <button type="submit" class="submit-btn">บันทึกและไปต่อ</button>
+                <div class="form-group">
+                    <label for="password">รหัสผ่าน</label>
+                    <input type="text" id="password" name="password">
+                </div>
+                <div class="form-group">
+                    <label for="confirmpassword">ยืนยันรหัสผ่าน</label>
+                    <input type="text" id="confirmpassword" name="confirmpassword">
+                </div>
+                <button type="submit" class="submit-btn" (click)="goToLogin()">ยืนยัน</button>
             </form>
         </div>        
     </div>
