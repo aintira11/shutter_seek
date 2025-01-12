@@ -15,7 +15,7 @@ import { ReactiveFormsModule } from '@angular/forms';
   standalone: true,
   imports: [RouterModule, CommonModule,ReactiveFormsModule],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss'], // ใช้ styleUrls แก้เป็น stylesUrl
+  styleUrl: './login.component.scss', // ใช้ styleUrls แก้เป็น stylesUrl
 })
 export class LoginComponent {
   loginForm: FormGroup;

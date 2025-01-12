@@ -129,6 +129,7 @@ textarea {
     .profile-image {
         width: 100px;
         height: 100px;
+        object-fit: cover;
     }
 
     .change-profile-btn {
