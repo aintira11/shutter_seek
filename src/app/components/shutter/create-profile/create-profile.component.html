@@ -6,54 +6,57 @@
     <title>Document</title>
 </head>
 <body>
-    <div class="back-button" style="padding: 10px;">
+    <!-- <div class="back-button" style="padding: 10px;">
         <span>&larr; กลับ</span>
-    </div>
+    </div> -->
     <div class="container">
         <div class="column">
             <img [src]="imagePreview" alt="User Profile" class="imag" id="profileImage">
             <input type="file" id="fileInput" style="display: none;" (change)="onFileSelected($event)">
             <button class="btn-profile" style="margin-top: 10px;" (click)="triggerFileInput()">เปลี่ยนรูป Profile</button>
         </div>
-        
-        <form>
+        <div *ngIf="datauser.length > 0" style="width:100%;">
+        <div *ngFor="let item  of datauser">
+        <form [formGroup]="fromreister" (ngSubmit)="base_for_shutt()" >
             <div class="form-group">
                 <label class="label">Username</label>
-                <input type="text" class="input-style" placeholder="ระบุ Username">
+                <input type="text" class="input-style" placeholder="ระบุ Username" formControlName="username">
             </div>
             <div class="form-group">
                 <label class="label">ชื่อ</label>
-                <input type="text" class="input-style" placeholder="ระบุชื่อ">
+                <input type="text" class="input-style" placeholder="ระบุชื่อ" formControlName="first_name">
             </div>
             <div class="form-group">
                 <label class="label">นามสกุล</label>
-                <input type="text" class="input-style" placeholder="ระบุนามสกุล">
+                <input type="text" class="input-style" placeholder="ระบุนามสกุล" formControlName="last_name">
             </div>
             <div class="form-group">
                 <label class="label">อีเมล</label>
-                <input type="email" class="input-style" placeholder="ระบุอีเมล">
+                <input type="email" class="input-style" formControlName="email">
             </div>
             <div class="form-group">
                 <label class="label">หมายเลขโทรศัพท์</label>
-                <input type="tel" class="input-style" placeholder="ระบุหมายเลขโทรศัพท์"> 
+                <input type="tel" class="input-style" formControlName="phone"> 
             </div>
             <div class="form-group">
                 <label class="label">จังหวัดของคุณ</label>
-                <select class="input-style">
+                <select class="input-style" formControlName="province">
                   <option value="">-- เลือกจังหวัด --</option>
-                  <option *ngFor="let thai of thaijson" [value]="thai.name_th">
+                  <option *ngFor="let thai of thaijson" [value]="thai.name_th" >
                     {{ thai.name_th }}
                   </option>
                 </select>
               </div>
             <div class="form-group">
                 <label class="label">ที่อยู่</label>
-                <textarea class="input-style" rows="3" placeholder="ระบุที่อยู่"></textarea>
+                <textarea class="input-style" rows="3" placeholder="ระบุที่อยู่" formControlName="address"></textarea>
             </div>
             <div class="column">
-            <button type="submit" class="btn-submit" (click)="base_for_shutt()">บันทึกและไปต่อ</button>
+            <button type="submit" class="btn-submit" >บันทึกและไปต่อ</button>
             </div>
         </form>
+    </div>
+</div>
     </div>
 </body>
 </html>

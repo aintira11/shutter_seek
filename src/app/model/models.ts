@@ -3,7 +3,7 @@ export interface DataMembers {
     first_name:     string;
     last_name:      string;
     username:       string;
-    email:          string;
+    email:          string; 
     password:       string;
     phone:          string;
     address:        null;
@@ -14,5 +14,5 @@ export interface DataMembers {
     description:    null;
     date_of_member: Date;
     type_user:      number;
-    sht_status:     null;
+    sht_status:     number;
 }

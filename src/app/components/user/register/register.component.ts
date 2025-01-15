@@ -19,9 +19,11 @@ export class RegisterComponent {
     this.fromreister = this.fromBuilder.group({
       Email: ['', [Validators.required, Validators.email]],
       Password: ['', Validators.required],
+      confirmPassword: ['', Validators.required],
       UserName: ['', Validators.required],
       Name: ['', Validators.required],
       LastName: ['', Validators.required],
+      address: ['', Validators.required],
       Phone: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]]
   });
   
@@ -29,6 +31,7 @@ export class RegisterComponent {
   }
 
   imagePreview: string = '/assets/images/user.png';
+  
 
   goToLogin(): void {
     this.router.navigate(['/login']);
@@ -55,12 +58,12 @@ export class RegisterComponent {
   }
 
   register() {
-    const url = this.Constants.API_ENDPOINT + '/register/member';
-
-    if (this.fromreister.invalid) {
-        alert('กรุณากรอกข้อมูลให้ครบถ้วน');
-        return;
+    if(this.fromreister.value.Password != this.fromreister.value.confirmPassword){
+      alert('ยืนยันรหัสผ่านไม่ถูกต้อง');
     }
+
+    const url = this.Constants.API_ENDPOINT + '/register/member';
+    let image = 'https://www.hotelbooqi.com/wp-content/uploads/2021/12/128-1280406_view-user-icon-png-user-circle-icon-png.png';
 
     const formData = {
         email: this.fromreister.value.Email,
@@ -68,7 +71,10 @@ export class RegisterComponent {
         username: this.fromreister.value.UserName,
         first_name: this.fromreister.value.Name,
         last_name: this.fromreister.value.LastName,
-        phone: this.fromreister.value.Phone
+        phone: this.fromreister.value.Phone,
+        image_profile :image,
+        //image_profile: this.formRegister.value.image_profile || null,
+        address:this.fromreister.value.address,
     };
 
     console.log(formData);
@@ -81,8 +87,15 @@ export class RegisterComponent {
         error: (err) => {
             console.error('Error :', err);
             //this.signerr = 'ไม่สามารถสมัครสมาชิกได้ กรุณาลองอีกครั้ง';
+            if (err.status === 409) {
+              // หากสถานะตอบกลับเป็น 409
+              alert('มีอีเมลนี้อยู่ในระบบแล้ว');
+          } else {
+              // สำหรับกรณี Error อื่น ๆ
+              alert('ไม่สามารถสมัครสมาชิกได้ กรุณาลองอีกครั้ง');
+          }
         }
     });
 }
-
 }
+

@@ -23,29 +23,43 @@
                 
             </div>
             <form [formGroup]="fromreister" (ngSubmit)="register()" class="register-form">
-                <div class="form-group">
-                    <label class="label">Email</label>
-                    <input type="email" class="input-style" placeholder="ระบุอีเมล" formControlName="Email">
-                </div>
-                <div class="form-group">
-                    <label class="label">Password</label>
-                    <input type="password" class="input-style" placeholder="ระบุรหัสผ่าน" formControlName="Password">
-                </div>
+
                 <div class="form-group">
                     <label class="label">Username</label>
                     <input type="text" class="input-style" placeholder="ระบุ Username" formControlName="UserName">
                 </div>
+
                 <div class="form-group">
-                    <label class="label">First Name</label>
+                    <label class="label">ชื่อ</label>
                     <input type="text" class="input-style" placeholder="ระบุชื่อ" formControlName="Name">
                 </div>
+
                 <div class="form-group">
-                    <label class="label">Last Name</label>
+                    <label class="label">นามสกุล</label>
                     <input type="text" class="input-style" placeholder="ระบุนามสกุล" formControlName="LastName">
                 </div>
                 <div class="form-group">
-                    <label class="label">Phone</label>
+                    <label class="label">อีเมล</label>
+                    <input type="email" class="input-style" placeholder="ระบุอีเมล" formControlName="Email">
+                </div>
+                
+                <div class="form-group">
+                    <label class="label">หมายเลขโทรศัพท์</label>
                     <input type="tel" class="input-style" placeholder="ระบุหมายเลขโทรศัพท์" formControlName="Phone">
+                </div>
+
+                <div class="form-group">
+                    <label class="label">ที่อยู่</label>
+                    <textarea class="input-style" rows="3" placeholder="ระบุที่อยู่" formControlName="address"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="label">ระบุรหัสผ่าน </label>
+                    <input type="password" class="input-style" placeholder="ระบุรหัสผ่าน" formControlName="Password">
+                </div>
+                <div class="form-group">
+                    <label class="label">ยืนยันรหัสผ่าน</label>
+                    <input type="password" class="input-style" placeholder="ระบุรหัสผ่าน" formControlName="confirmPassword">
                 </div>
                 <button type="submit" class="submit-btn">บันทึกและไปต่อ</button>
             </form>

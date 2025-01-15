@@ -26,30 +26,50 @@
                 </div>
             </div>
             <hr style="border: 1px solid #ddd; width: 100%; margin: 20px auto; margin-top: 30px;" />
-            <form class="example-form" method="post">
+            <form [formGroup]="fromreister" (ngSubmit)="register()" class="example-form">
                 <div class="column">
-                    <label class="label">อีเมลที่ติดต่อได้</label>
-                    <input placeholder="ระบุอีเมล" class="input-style" type="email" required />
-
-                    <label class="label">เบอร์โทรที่ติดต่อได้</label>
-                    <input placeholder="ระบุเบอร์โทร" class="input-style" type="text" required />
-
-                    <label class="label">รหัสผ่าน</label>
-                    <div class="password-container">
-                        <input placeholder="ระบุรหัสผ่าน" class="input-style" type="password" id="password" required />
-                        <i class="bi bi-eye-slash toggle-visibility" id="togglePassword"></i>
-                    </div>
-
-                    <label class="label">ยืนยันรหัสผ่าน</label>
-                    <div class="password-container" style="margin-bottom: 15px;">
-                        <input placeholder="ระบุยืนยันรหัสผ่าน" class="input-style" type="password" id="confirm-password" required />
-                        <i class="bi bi-eye-slash toggle-visibility" id="toggleConfirmPassword"></i>
-                    </div>
+                  <label class="label">อีเมลที่ติดต่อได้</label>
+                  <input placeholder="ระบุอีเมล" class="input-style" type="email" formControlName="Email" required />
+              
+                  <label class="label">เบอร์โทรที่ติดต่อได้</label>
+                  <input placeholder="ระบุเบอร์โทร" class="input-style" type="text" formControlName="Phone" required />
+              
+                  <label class="label">รหัสผ่าน</label>
+                  <div class="password-container">
+                    <input
+                      [type]="hidePassword ? 'password' : 'text'"
+                      placeholder="ระบุรหัสผ่าน"
+                      class="input-style"
+                      formControlName="Password"
+                      required
+                    />
+                    <i
+                      class="bi toggle-icon"
+                      [ngClass]="hidePassword ? 'bi-eye-slash' : 'bi-eye'"
+                      (click)="togglePasswordVisibility('password')"
+                    ></i>
+                  </div>
+              
+                  <label class="label">ยืนยันรหัสผ่าน</label>
+                  <div class="password-container">
+                    <input
+                      [type]="hideConfirmPassword ? 'password' : 'text'"
+                      placeholder="ระบุยืนยันรหัสผ่าน"
+                      class="input-style"
+                      formControlName="confirmPassword"
+                      required
+                    />
+                    <i
+                      class="bi toggle-icon"
+                      [ngClass]="hideConfirmPassword ? 'bi-eye-slash' : 'bi-eye'"
+                      (click)="togglePasswordVisibility('confirmPassword')"
+                    ></i>
+                  </div>
                 </div>
-                <button mat-flat-button style="background-color: #003ebb; color: white;" type="submit" id="submit" (click)="register()">
-                    สร้างบัญชี
+                <button mat-flat-button style="background-color: #003ebb; color: white;margin-top: 30px;" type="submit">
+                  สร้างบัญชี
                 </button>
-            </form>
+              </form>         
         </div>
 
         <script>

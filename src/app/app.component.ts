@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
             ,RouterModule
             ,HttpClientModule
             ,CommonModule
+            
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
