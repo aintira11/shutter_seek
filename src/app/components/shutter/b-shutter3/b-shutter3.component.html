@@ -34,13 +34,14 @@
               <div class="form-group">
                 <label class="label">กำหนดหมวดหมู่แพ็กเกจ</label>
                 <select [(ngModel)]="package.category" name="packageCategory{{ i }}" class="input-style">
-                  <option value="">-- หมวดหมู่แพ็กเกจ --</option>
-                  <option value="งานถ่ายภาพบุคคล">งานถ่ายภาพบุคคล</option>
-                  <option value="งานถ่ายภาพสินค้า">งานถ่ายภาพสินค้า</option>
-                  <option value="งานถ่ายภาพงานแต่งงาน">งานถ่ายภาพงานแต่งงาน</option>
-                  <option value="งานถ่ายภาพอีเวนต์">งานถ่ายภาพอีเวนต์</option>
+                  <option value="">-- ทั้งหมด --</option>
+                  <option *ngFor="let data of Tags" [value]="data.tags_id">
+                    {{ data.name_tags }}
+                  </option>
                 </select>
+                
               </div>
+              
               <div class="form-group">
                 <label class="price-label">รายละเอียดแพ็กเกจ</label>
                 <textarea [(ngModel)]="package.description" name="packageDescription{{ i }}" class="input-style" rows="3" placeholder="รายละเอียดแพ็กเกจ"></textarea>
@@ -71,7 +72,7 @@
         <!-- Navigation Buttons -->
         <div class="button-container">
             <button class="back-button" (click)="back()">กลับ</button>
-            <button class="save-button" (click)="openModel()">บันทึกและไปต่อ</button>
+            <button class="save-button"  (click)="openModel()">บันทึกและไปต่อ</button>
         </div>
 
         <!-- Modal -->
@@ -87,16 +88,16 @@
               </p>
               <div class="checkbox-list">
                 <label>
-                  <input type="checkbox" /> คุณยืนยันการเป็นเจ้าของผลงานจริง
+                  <input type="checkbox" [(ngModel)]="checkboxesStatus[0]" /> คุณยืนยันการเป็นเจ้าของผลงานจริง
                 </label>
                 <label>
-                  <input type="checkbox" /> ยืนยันความถูกต้องของข้อมูล
+                  <input type="checkbox" [(ngModel)]="checkboxesStatus[1]" /> ยืนยันความถูกต้องของข้อมูล
                 </label>
                 <label>
-                  <input type="checkbox" /> ยินยอมให้ปฏิบัติตามกฎและเงื่อนไข
+                  <input type="checkbox" [(ngModel)]="checkboxesStatus[2]" /> ยินยอมให้ปฏิบัติตามกฎและเงื่อนไข
                 </label>
               </div>
-              <button class="confirm-button">ยืนยันและส่งให้ระบบตรวจสอบ</button>
+              <button class="confirm-button" (click)="savePackages()">ยืนยันและส่งให้ระบบตรวจสอบ</button>
             </div>
           </div>
           

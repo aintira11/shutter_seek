@@ -16,3 +16,7 @@ export interface DataMembers {
     type_user:      number;
     sht_status:     number;
 }
+export interface DataTegs {
+    tags_id:   number;
+    name_tags: string;
+}

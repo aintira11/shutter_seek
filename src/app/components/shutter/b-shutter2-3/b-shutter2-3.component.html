@@ -29,7 +29,7 @@
             <input 
               type="file" 
               id="fileInput" 
-              (change)="onFileSelected($event)" 
+              (change)="onInput($event)" 
               multiple 
               accept=".jpg,.png" 
               [disabled]="files.length >= 10"
@@ -38,9 +38,8 @@
               <span *ngIf="files.length < 10">+ เพิ่มรูปภาพ (เลือกได้สูงสุด 10 รูป)</span>
               <span *ngIf="files.length >= 10" style="color: red;">เลือกรูปครบแล้ว</span>
             </label>
-        
 
-              <!-- File Preview -->
+            <!-- File Preview -->
             <div class="file-preview">
                 <div class="preview-image" *ngFor="let file of files; let i = index">
                   <img [src]="file.preview" alt="Image preview {{ i + 1 }}" />
@@ -50,11 +49,11 @@
   
             <div class="button-container">
                 <button class="back-button" (click)="back()">กลับ</button>
-                <button class="save-button" (click)="next()" [disabled]="files.length === 0" >บันทึกและไปต่อ</button>
+                <button class="save-button" (click)="onSubmit()" [disabled]="files.length === 0" >บันทึกและไปต่อ</button>
             </div>
-              
+        </div>
     </div>
-</div>
-    
+    <!-- <input type="file" (change)="onInput($event)"> -->
+
 </body>
 </html>

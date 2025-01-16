@@ -47,7 +47,7 @@
   }
 
   form {
-    width: 70%;
+    width: 80%;
     text-align: left;
     // display: flex;
     // justify-content: flex-start; /* รูปอยู่ทางซ้าย */
@@ -83,13 +83,13 @@
 }
 
 .button-container {
-    position: fixed;
+    //position: fixed;
     bottom: 0;
     //left: 0;
-    width: 70%;
+    width: 100%;
     display: flex;
     justify-content: space-between; /* ทำให้ปุ่มทั้งสองอยู่ที่ซ้ายและขวา */
-    padding: 30px;
+    //padding: 30px;
     //background-color: #fff; /* ตั้งค่าพื้นหลังให้กับแถบปุ่ม */
     //border-top: 1px solid #ddd; /* ขอบด้านบน */
     margin: 0 auto;

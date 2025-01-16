@@ -2,6 +2,7 @@
 <h1 style="text-align: center;">ล็อกอินสำเร็จจ้า</h1>
 <div *ngIf="datauser ; else kkkk">
     <div *ngFor="let data of datauser">
+      <img src="{{ data.image_profile }}" alt="">
         <p>Email: {{ data.email }}</p>
         <div *ngIf="data.type_user == 1">
             <p>Type User: สมาชิก</p>

@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Constants } from '../../../config/constants';
 import { DataMembers } from '../../../model/models';
+import { ImageUploadService } from '../../../services_image/image-upload.service';
 
 @Component({
   selector: 'app-create-profile',
@@ -29,13 +30,15 @@ export class CreateProfileComponent implements OnInit {
   thaijson = jsonData
   thai : any;
   imagePreview: string = '/assets/images/user.png'; // รูปภาพเริ่มต้น
+  selectedFile?: File; // เก็บไฟล์รูปภาพที่เลือก
 
   data: any = {};
   // data = 9;
   datauser: DataMembers[] = [];
   fromreister!: FormGroup;
+  files: { file: File; preview: string; newName?: string }[] = [];
 
-  constructor(private fb: FormBuilder,private router : Router,private Constants: Constants, private route: ActivatedRoute, private http: HttpClient){ 
+  constructor(private fb: FormBuilder,private router : Router,private Constants: Constants, private route: ActivatedRoute, private http: HttpClient,private readonly imageUploadService: ImageUploadService){ 
     console.log(this.thaijson);
 
      this.fromreister = this.fb.group({
@@ -93,54 +96,65 @@ getdatauser(id: number) {
   });
 }
 
-
-  base_for_shutt() {
-    let image = 'https://www.hotelbooqi.com/wp-content/uploads/2021/12/128-1280406_view-user-icon-png-user-circle-icon-png.png';
-    const url = this.Constants.API_ENDPOINT + '/shutter/update/'+this.datauser[0].user_id;
-      const formData = {
-        email: this.fromreister.value.email,
-        phone: this.fromreister.value.phone,
-        username: this.fromreister.value.username,
-        first_name: this.fromreister.value.first_name,
-        last_name: this.fromreister.value.last_name,
-        address: this.fromreister.value.address,
-        province: this.fromreister.value.province,
-        image_profile :image,
-       
-    };
-    this.http.post(url, formData).subscribe({
-      next: (res) => {
-          console.log(res);
-          this.router.navigate(['/base',{ state: { data: this.data } }]);
-      },
-      error: (err) => {
-          console.error('Error :', err);
-          //this.signerr = 'ไม่สามารถสมัครสมาชิกได้ กรุณาลองอีกครั้ง';
-          if (err.status === 409) {
-            // หากสถานะตอบกลับเป็น 409
-            alert('มีอีเมลนี้อยู่ในระบบแล้ว');
-        } else {
-            // สำหรับกรณี Error อื่น ๆ
-            alert('ไม่สามารถสมัครสมาชิกได้ กรุณาลองอีกครั้ง');
-        }
-      }
-
-  });
+private generateRandomFileName(originalName: string): string {
+  const extension = originalName.split('.').pop();
+  return `${Date.now()}-${Math.random().toString(36).substring(2, 10)}.${extension}`;
 }
 
-   triggerFileInput() {
-    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
-    fileInput.click();
-  }
+async base_for_shutt() {
+  if (this.selectedFile) {
+    const randomName = this.generateRandomFileName(this.selectedFile.name);
 
-  onFileSelected(event: any) {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.imagePreview = reader.result as string; // อัปเดตตัวแปรรูปภาพ
-      };
-      reader.readAsDataURL(file);
-    }
+    // อัปโหลดรูปภาพ
+    const response: any = await this.imageUploadService.uploadImage(this.selectedFile).toPromise();
+    const image = response.data.url;
+
+    const url = this.Constants.API_ENDPOINT + '/shutter/update/' + this.datauser[0].user_id;
+    const formData = {
+      email: this.fromreister.value.email,
+      phone: this.fromreister.value.phone,
+      username: this.fromreister.value.username,
+      first_name: this.fromreister.value.first_name,
+      last_name: this.fromreister.value.last_name,
+      address: this.fromreister.value.address,
+      province: this.fromreister.value.province,
+      image_profile: image,
+    };
+
+    this.http.post(url, formData).subscribe({
+      next: (res) => {
+        console.log('data :', res);
+        const responseData = { ...res };
+        this.router.navigate(['/base'], { state: { data: responseData } });
+      },
+      error: (err) => {
+        console.error('Error :', err);
+        if (err.status === 409) {
+          alert('มีอีเมลนี้อยู่ในระบบแล้ว');
+        } else {
+          alert('ไม่สามารถสมัครสมาชิกได้ กรุณาลองอีกครั้ง');
+        }
+      },
+    });
+  } else {
+    alert('กรุณาอัปโหลดรูปภาพก่อนดำเนินการ');
   }
+}
+
+triggerFileInput() {
+  const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+  fileInput.click();
+}
+
+onFileSelected(event: any) {
+  const file = event.target.files[0];
+  if (file) {
+    this.selectedFile = file; // เก็บไฟล์ที่เลือก
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imagePreview = reader.result as string; // อัปเดตตัวแปรรูปภาพ
+    };
+    reader.readAsDataURL(file);
+  }
+}
 }
