@@ -1,18 +1,26 @@
 <!DOCTYPE html>
-<html lang="th">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
+<html>
+<title>เพิ่มข้อมูล</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
 <body>
-  <div class="container">
-    <aside class="sidebar">
-      <ul>
-        <li><a href="#account">ข้อมูลบัญชี</a></li>
-        <li><a href="#package">แพ็กเกจ</a></li>
-        <li class="active"><a href="#works">ผลงาน</a></li>
-      </ul>
-    </aside>    
+  
+  <!-- Sidebar -->
+  <div class="w3-sidebar w3-bar-block w3-collapse w3-card w3-animate-left" style="width:200px;left:0;" *ngIf="isSidebarOpen" id="mySidebar">
+    <button id="w3-toggle-btn" class="w3-button w3-xlarge w3-left" (click)="w3_toggle()">&lt;</button>
+    <button class="w3-bar-item w3-button" (click)="goToEditProfile()">ข้อมูลบัญชี</button>
+    <button class="w3-bar-item w3-button" (click)="goToPackagePack()">แพ็กเกจ</button>
+    <button class="w3-bar-item w3-button" (click)="goToInsertport()">ผลงาน</button>
+  </div>
+<div>
+  <!-- Button to toggle Sidebar -->
+  <button id="w3-toggle-btn" class="w3-button w3-xlarge w3-left" (click)="w3_toggle()">&#9776;</button>
+</div>
+
+  <!-- Main content -->
+  <div class="w3-main" id="main" [style.transform]="isSidebarOpen ? 'translateX(200px)' : 'translateX(0)'">
+
     <main class="content">
       <form class="form">
         <div class="form-group">
@@ -55,5 +63,7 @@
       </form>
     </main>
   </div>
+  
 </body>
 </html>
+ 

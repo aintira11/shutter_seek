@@ -11,8 +11,11 @@ import { Router } from '@angular/router';
 export class ProfileComponent {
 
   constructor(private router : Router,){}
-  goEdit(): void {
+  goToEditPro(): void {
     this.router.navigate(['/editprofile']);
+  }
+  goToShutter(): void {
+    this.router.navigate(['']);
   }
 
   back(){
