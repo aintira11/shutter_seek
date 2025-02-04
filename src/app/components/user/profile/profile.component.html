@@ -1,91 +1,179 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>โปรไฟล์สมาชิก</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-</head>
-<body>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
     <div class="profile-container">
-        <div class="back-button">
-            <i class="fas fa-chevron-left"></i>
-        </div>
+      <div class="back-button">
+        <i class="fas fa-chevron-left" (click)="back()"></i>
+      </div>
 
-        <!-- Profile Section -->
-        <div class="profile-header">
-            <img src="https://via.placeholder.com/150" alt="Profile" class="profile-image">
-            <div class="profile-info">
-                <h2>namijang</h2>
-                <p>กำลังติดตาม 3 คน</p>
-                <p>เป็นสมาชิกเมื่อ 20/06/2023</p>
-            </div>
-            <div class="profile-actions">
-                <button class="edit-button">แก้ไข</button>
-                <button class="logout-button">สลับบัญชี</button>
-            </div>
+      <!-- Profile Section -->
+      <div class="profile-header">
+        <img
+          src="/assets/images/user.png"
+          alt="Profile"
+          class="profile-image"
+        />
+        <div class="profile-info">
+          <h2>namijang</h2>
+          <p>กำลังติดตาม 3 คน</p>
+          <p>เป็นสมาชิกเมื่อ 20/06/2023</p>
         </div>
-
-        <!-- Divider -->
-        <hr class="divider">
-
-        <!-- Favorite Works Section -->
-        <div class="favorite-works">
-            <h3>งานที่ถูกใจ</h3>
-            <div class="works-grid">
-                <!-- Work Cards -->
-                <div class="work-card">
-                    <img src="https://via.placeholder.com/300x200" alt="Work Image" class="work-image">
-                    <div class="work-details">
-                        <img src="https://via.placeholder.com/50" alt="Owner Profile" class="owner-image">
-                        <div class="owner-info">
-                            <p class="owner-title">namijang</p>
-                            <p class="work-owner">
-                                บุคคล
-                                <span class="work-like">❤️</span>
-                            </p>
-                        </div>
-                    </div>                    
-                </div>
-                
-                <div class="work-card">
-                    <img src="https://via.placeholder.com/300x200" alt="Work Image" class="work-image">
-                    <div class="work-details">
-                        <img src="https://via.placeholder.com/50" alt="Owner Profile" class="owner-image">
-                        <div class="owner-info">
-                            <p class="owner-title">ชื่อผู้ใช้งาน: namijang</p>
-                            <p class="work-owner">บุคคล</p>
-                        </div>
-                    </div>
-                    <div class="work-like">❤️</div>
-                </div>
-                
-                <div class="work-card">
-                    <img src="https://via.placeholder.com/300x200" alt="Work Image" class="work-image">
-                    <div class="work-details">
-                        <img src="https://via.placeholder.com/50" alt="Owner Profile" class="owner-image">
-                        <div class="owner-info">
-                            <p class="owner-title">ชื่อผู้ใช้งาน: namijang</p>
-                            <p class="work-owner">บุคคล</p>
-                        </div>
-                    </div>
-                    <div class="work-like">❤️</div>
-                </div>
-                
-                <div class="work-card">
-                    <img src="https://via.placeholder.com/300x200" alt="Work Image" class="work-image">
-                    <div class="work-details">
-                        <img src="https://via.placeholder.com/50" alt="Owner Profile" class="owner-image">
-                        <div class="owner-info">
-                            <p class="owner-title">ชื่อผู้ใช้งาน: namijang</p>
-                            <p class="work-owner">บุคคล</p>
-                        </div>
-                    </div>
-                    <div class="work-like">❤️</div>
-                </div>
-                
-            </div>
+        <div class="profile-actions">
+          <button class="edit-button" (click)="goToEditPro()">แก้ไข</button>
+          <button class="logout-button" (click)="goToShutter()">สลับบัญชี</button>
         </div>
+      </div>
+
+      <!-- Divider -->
+      <hr class="divider" />
+
+      <h3><i class='fas fa-heart' style='color:red'></i>งานที่ถูกใจ</h3>
+      
+      <div class="favorite-works">
+        <div class="works-grid">
+          <!-- Work Card 1 -->
+          <div class="work-card">
+            <img
+              src="/assets/images/orm.jpeg"
+              alt="Work Image"
+              class="work-image"
+            />
+            <div class="work-details">
+              <img
+                src="/assets/images/user.png"
+                alt="Owner Profile"
+                class="owner-image"
+              />
+              <div class="owner-info">
+                <p class="owner-title">name :</p>
+                <p class="work-owner">บุคคล</p>
+                <div class="work-like">
+                  <button class="btn">
+                    <svg
+                      class="icon"
+                      width="30"
+                      height="30"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z"
+                      ></path>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="work-card">
+            <img
+              src="/assets/images/tang.jpg"
+              alt="Work Image"
+              class="work-image"
+            />
+            <div class="work-details">
+              <img
+                src="/assets/images/user.png"
+                alt="Owner Profile"
+                class="owner-image"
+              />
+              <div class="owner-info">
+                <p class="owner-title">name :</p>
+                <p class="work-owner">งานแต่ง</p>
+                <div class="work-like">
+                    <button class="btn">
+                        <svg
+                          class="icon"
+                          width="30"
+                          height="30"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg">
+                          <path
+                            d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z"
+                          ></path>
+                        </svg>
+                      </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="work-card">
+            <img
+              src="/assets/images/jo.jpg"
+              alt="Work Image"
+              class="work-image"
+            />
+            <div class="work-details">
+              <img
+                src="/assets/images/user.png"
+                alt="Owner Profile"
+                class="owner-image"
+              />
+              <div class="owner-info">
+                <p class="owner-title">name :</p>
+                <p class="work-owner">รับปริญญา</p>
+                <div class="work-like">
+                    <button class="btn">
+                        <svg
+                          class="icon"
+                          width="30"
+                          height="30"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg">
+                          <path
+                            d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z"
+                          ></path>
+                        </svg>
+                      </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="work-card">
+            <img
+              src="/assets/images/unnamed.jpg"
+              alt="Work Image"
+              class="work-image"
+            />
+            <div class="work-details">
+              <img
+                src="/assets/images/user.png"
+                alt="Owner Profile"
+                class="owner-image"
+              />
+              <div class="owner-info">
+                <p class="owner-title">name :</p>
+                <p class="work-owner">สถาปัตยกรรม</p>
+                <div class="work-like">
+                    <button class="btn">
+                        <svg
+                          class="icon"
+                          width="30"
+                          height="30"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg">
+                          <path
+                            d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z"
+                          ></path>
+                        </svg>
+                      </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-</body>
-</html>
+    
+  </body>
+</html> 

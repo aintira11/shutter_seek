@@ -1,0 +1,210 @@
+/* Global Styles */
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;  /* ตั้งความสูงของ body ให้เต็มหน้าจอ */
+  overflow-y: auto;  /* ทำให้หน้าเว็บสามารถเลื่อนขึ้นลงได้ */
+  background-color: white;  /* สีพื้นหลัง */
+}
+  
+  .container {
+    display: flex;
+    min-height: 100vh;
+  }
+  
+  .content {
+    flex: 1;
+    background-color: white;
+    padding: 30px;
+  }
+ 
+  .form {
+    background-color: transparent; /* เอาพื้นหลังออก */
+    padding: 0; /* เอา Padding ออก */
+    border-radius: 0; /* เอามุมโค้งออก */
+    box-shadow: none; /* เอาเงาออก */
+    display: flex; /* ใช้ Flexbox จัดการ */
+    flex-direction: column; /* จัดเรียงแนวตั้ง */
+    align-items: flex-start; /* จัดให้อยู่ทางด้านซ้าย */
+    justify-content: flex-start; /* จัดให้อยู่ด้านบน */
+    margin-left: 150px; /* เพิ่มช่องว่างทางซ้าย */
+    padding-top: 50px; /* เพิ่มช่องว่างด้านบน */
+  }
+  
+  .form-group {
+    width: 100%; /* ให้ช่องกรอกกว้างเต็มพื้นที่ */
+    max-width: 400px; /* จำกัดความกว้างสูงสุด */
+    margin-bottom: 20px;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 18px; /* ลดระยะห่าง */
+    font-weight: bold;
+    color: black;
+  }
+  
+  .form-group p {
+    margin: 0; 
+    margin-bottom: 10px; 
+    font-size: 16px;
+    line-height: 1.2; /* ลดระยะห่างระหว่างบรรทัด */
+    display: inline;
+    white-space: nowrap; 
+  }
+  
+  input, textarea, select {
+    width:250%;  /* ให้ช่องกรอกเต็มความกว้าง */
+    padding: 30px;  
+    border: 1px solid #ffcc00;  
+    border-radius: 4px;  
+    font-size: 18px; 
+  }
+  
+  .upload-box {
+    width: 100%; /* ขยายให้กว้างเต็มที่ */
+    max-width: 700px; /* ความกว้างสูงสุด */
+    border: 1px dashed black;
+    border-radius: 8px;
+    text-align: center;
+    padding: 40px;
+    background-color: #f9f9f9;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 30px;
+  }
+
+  .upload-btn {
+    font-size: 30px;
+    color: rgba(0, 74, 173, 1);
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .upload-box p {
+    margin-top: 10px; /* เพิ่มระยะห่างจากปุ่ม */
+    color: #666;
+    font-size: 14px;
+  }
+
+  //////////////////////////////
+  .w3-sidebar {
+    display: none;
+    width: 200px;
+    position: fixed;
+    height: 100%;
+    background-color: rgba(0, 74, 173, 1);
+    overflow-x: hidden;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    box-shadow: none; /* ลบเงาออกถ้ามี */
+  }
+  
+  
+  .w3-main {
+    background-color: #f4f4f4;
+    min-height: 100vh;  /* ความสูงของ main ให้เท่ากับความสูงของหน้าจอ */
+    box-sizing: border-box;
+    overflow-y: auto;  /* ทำให้เนื้อหาภายใน main สามารถเลื่อนขึ้นลงได้ */
+  }
+
+  .w3-teal {
+    color: white;
+    padding: 10px;
+    position: relative; /* รักษาตำแหน่งเดิม */
+    z-index: 10; /* ให้อยู่เหนือ .w3-main */
+    background-color: transparent;
+  }
+
+  .w3-button {
+    background-color: rgba(0, 74, 173, 1); /* เปลี่ยนเป็นสีเข้มที่ต้องการ */
+    color: white; /* สีตัวอักษร */
+    border: none; /* เอาขอบออก */
+  }
+
+  .w3-button:hover {
+      background-color: rgba(0, 50, 120, 1); /* สีปุ่มตอน hover */
+      transition: background-color 0.3s ease; /* เพิ่ม animation */
+  }
+
+  .w3-button:focus {
+      outline: none; /* เอาเส้นขอบตอนกดออก */
+      background-color: rgba(0, 60, 150, 1); /* เปลี่ยนสีเมื่อปุ่มอยู่ในโฟกัส */
+  }
+
+  .w3-toggle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+  
+  .w3-hide-large {
+    display: none;
+  }
+  
+  
+
+  
+  /* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;  /* แสดงฟอร์มและเนื้อหาคู่กันในคอลัมน์เมื่อหน้าจอเล็ก */
+  }
+
+  .form {
+    margin-left: 0;  /* เอาช่องว่างด้านซ้ายออก */
+    padding-top: 20px;  /* ลดช่องว่างด้านบน */
+  }
+
+  .form-group {
+    width: 100%;  /* ให้ช่องกรอกเต็มพื้นที่ */
+    margin-bottom: 15px;  /* ลดระยะห่างระหว่างกล่องกรอกข้อมูล */
+  }
+
+  input, textarea, select {
+    width: 100%;  /* ความกว้างเต็มพื้นที่ */
+    padding: 15px;  /* ลด Padding */
+    font-size: 16px;  /* ขนาดฟอนต์เล็กลง */
+  }
+
+  .upload-box {
+    width: 90%;  /* ให้ upload-box ยืดหยุ่นในหน้าจอเล็ก */
+    max-width: 100%;  /* ให้ขยายเต็มที่ในหน้าจอเล็ก */
+    padding: 20px;  /* ลด Padding */
+  }
+
+  .upload-btn {
+    font-size: 25px;  /* ลดขนาดฟอนต์ */
+  }
+
+  .w3-sidebar {
+    width: 100%;  /* เปลี่ยนขนาด sidebar ให้เต็มหน้าจอ */
+  }
+
+  .w3-main {
+    padding: 20px;  /* ลด Padding ของ main content */
+  }
+}
+
+/* การจัดการ Responsive สำหรับหน้าจอเล็กสุด (มือถือ) */
+@media (max-width: 480px) {
+  /* ปรับขนาดฟอนต์ในป้ายชื่อ */
+  label {
+    font-size: 14px;  /* ลดขนาดฟอนต์ */
+  }
+
+  /* ปรับช่องกรอกให้มีขนาดเหมาะสม */
+  input, textarea, select {
+    padding: 12px;  /* ลด Padding */
+    font-size: 14px;  /* ลดขนาดฟอนต์ */
+  }
+
+  .upload-box p {
+    font-size: 12px;  /* ลดขนาดข้อความ */
+  }
+}

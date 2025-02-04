@@ -65,8 +65,9 @@ export class LoginComponent {
         const user = this.dataLogin[0]; // สมมติว่าใช้ผู้ใช้งานคนแรก
         if (user.type_user === 3) {
           this.router.navigate(['/admin'], { state: { data: user } });
-        } else if (user.type_user === 2) {
-          this.router.navigate(['/shutter'], { state: { data: user} });
+        } else if (user.type_user === 2 && user.sht_status === 2) {
+          // this.router.navigate(['/shutter'], { state: { data: user} });
+          this.router.navigate(['/'], { state: { data: user } });
         } else if (user.type_user === 1) {
           this.router.navigate(['/'], { state: { data: user} });
         }
