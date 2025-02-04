@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './components/home/home.component';
 import { LoginComponent } from './components/login/login.component';
-import { RegisterComponent } from './components/user/register/register.component';
 import { shutt_RegisterComponent } from './components/shutter/shutt_register/register.component';
 import { CreateAccountComponent } from './components/shutter/create-account/create-account.component';
 import { CreateProfileComponent } from './components/shutter/create-profile/create-profile.component';
@@ -11,12 +10,17 @@ import { BShutter22Component } from './components/shutter/b-shutter2-2/b-shutter
 import { BShutter23Component } from './components/shutter/b-shutter2-3/b-shutter2-3.component';
 import { BShutter3Component } from './components/shutter/b-shutter3/b-shutter3.component';
 import { ProfileComponent } from './components/user/profile/profile.component';
-import { EditProfileComponent } from './components/user/edit-profile/edit-profile.component';
+import { EditProfileComponent } from './components/shutter/edit-profile/edit-profile.component';
+import { CreateUseraccComponent } from './components/user/create-useracc/create-useracc.component';
+import { EditPortfolioComponent } from './components/shutter/edit-portfolio/edit-portfolio.component';
+import { EditPackageComponent } from './components/shutter/edit-package/edit-package.component';
+import { EditShutterComponent } from './components/shutter/edit-shutter/edit-shutter.component';
+import { EditUserComponent } from './components/user/edit-user/edit-user.component';
+import { InsertPortfolioComponent } from './components/shutter/insert-portfolio/insert-portfolio.component';
 
 export const routes: Routes = [
     {path: '',component: HomeComponent}, 
     {path: 'login',component: LoginComponent},
-    {path: 'register',component: RegisterComponent},
     {path: 'shutter',component: shutt_RegisterComponent},
     {path: 'createacc',component: CreateAccountComponent},
     {path: 'creatfro',component: CreateProfileComponent},
@@ -26,9 +30,14 @@ export const routes: Routes = [
     {path: 'base2_3',component: BShutter23Component},
     {path: 'base3',component: BShutter3Component},
 
-    {path: 'profile',component: ProfileComponent},
+    {path: 'createuser',component: CreateUseraccComponent},
+    {path: 'profile',component: ProfileComponent}, 
+    {path: 'edituser',component: EditUserComponent}, 
     {path: 'editprofile',component: EditProfileComponent},
-
+    {path: 'editshutter',component: EditShutterComponent},
+    {path: 'editportfol',component: EditPortfolioComponent},
+    {path: 'editpac',component: EditPackageComponent},
+    {path: 'insertport',component: InsertPortfolioComponent},
     // { 
     //   path: 'myprofile',
     //   component: MyprofileComponent,

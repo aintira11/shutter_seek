@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>แก้ไขประวัติ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="w3-sidebar w3-bar-block w3-collapse w3-card w3-animate-left" style="width:200px;left:0;" *ngIf="isSidebarOpen" id="mySidebar">
+        <button id="w3-toggle-btn" class="w3-button w3-xlarge w3-left" (click)="w3_toggle()">&lt;</button>
+        <button class="w3-bar-item w3-button" (click)="goToEditProfile()">ข้อมูลบัญชี</button>
+        <button class="w3-bar-item w3-button" (click)="goToPackagePack()">แพ็กเกจ</button>
+        <button class="w3-bar-item w3-button" (click)="goToInsertport()">ผลงาน</button>
+    </div>
+
+    <!-- Button to toggle Sidebar -->
+    <div>
+        <button id="w3-toggle-btn" class="w3-button w3-xlarge w3-left" (click)="w3_toggle()">&#9776;</button>
+    </div>
+
+  <!-- Main content -->
+  <div class="w3-main" id="main" [style.transform]="isSidebarOpen ? 'translateX(200px)' : 'translateX(0)'">
+
+        <main class="content">
+            <form class="edit-form">
+                <div class="profile-section">
+                    <img src="https://via.placeholder.com/120" alt="Profile" class="profile-image">
+                    <button class="change-profile-btn">แก้ไขรูปภาพ</button>
+                </div>
+                <div class="form-fields">
+                    <div class="form-group">
+                        <label for="name">ชื่อ นามสกุล</label>
+                        <input type="text" id="name" name="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="username">ชื่อผู้ใช้</label>
+                        <input type="text" id="username" name="username">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">เบอร์โทร</label>
+                        <input type="text" id="phone" name="phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">อีเมล์</label>
+                        <input type="email" id="email" name="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="website">เว็บไซต์ (Facebook, อื่นๆ)</label>
+                        <input type="text" id="website" name="website">
+                    </div>
+                    <div class="form-group">
+                        <label for="line">Line ID</label>
+                        <input type="text" id="line" name="line">
+                    </div>
+                    <div class="form-group">
+                        <label for="address">ที่อยู่</label>
+                        <input type="text" id="address" name="address">
+                    </div>
+                    <div class="form-group">
+                        <label for="service">สถานที่ให้บริการ</label>
+                        <input type="text" id="service" name="service">
+                    </div>
+                    <div class="form-group">
+                        <label for="details">รายละเอียดเพิ่มเติม</label>
+                        <textarea id="details" name="details"></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">บันทึก</button>
+                </div>
+            </form>
+        </main>
+    </div>
+</body>
+</html>
