@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แก้ไขประวัติ</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <a href="#" class="back-button">
+                <i class="fas fa-chevron-left"></i>
+            </a>
+            <ul class="menu">
+                <li>ข้อมูลบัญชี</li>
+                <li>แพ็กเกจ</li>
+                <li>ผลงาน</li>
+            </ul>
+        </div>
+        <div class="content">
+            <form class="edit-form">
+                <div class="profile-section">
+                    <img src="https://via.placeholder.com/120" alt="Profile" class="profile-image">
+                    <button class="change-profile-btn">แก้ไขรูปภาพ</button>
+                </div>
+                <div class="form-fields">
+                    <div class="form-group">
+                        <label for="name">ชื่อ นามสกุล</label>
+                        <input type="text" id="name" name="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="username">ชื่อผู้ใช้</label>
+                        <input type="text" id="username" name="username">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">เบอร์โทร</label>
+                        <input type="text" id="phone" name="phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">อีเมล์</label>
+                        <input type="email" id="email" name="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="website">เว็บไซต์ (Facebook, อื่นๆ)</label>
+                        <input type="text" id="website" name="website">
+                    </div>
+                    <div class="form-group">
+                        <label for="line">Line ID</label>
+                        <input type="text" id="line" name="line">
+                    </div>
+                    <div class="form-group">
+                        <label for="address">ที่อยู่</label>
+                        <input type="text" id="address" name="address">
+                    </div>
+                    <div class="form-group">
+                        <label for="service">สถานที่ให้บริการ</label>
+                        <input type="text" id="service" name="service">
+                    </div>
+                    <div class="form-group">
+                        <label for="details">รายละเอียดเพิ่มเติม</label>
+                        <textarea id="details" name="details"></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">บันทึก</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
