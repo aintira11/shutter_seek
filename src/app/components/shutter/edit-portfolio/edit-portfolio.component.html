@@ -3,23 +3,28 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>แก้ไขผลงาน</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 
 </head>
 <body>
-    <div class="sidebar">
-        <a href="#" class="back-button">
-            <i class="fas fa-chevron-left"></i>
-        </a>
-        <ul class="menu">
-            <li>ข้อมูลบัญชี</li>
-            <li>แพ็กเกจ</li>
-            <li>ผลงาน</li>
-        </ul>
+      <!-- Sidebar -->
+      <div class="w3-sidebar w3-bar-block w3-collapse w3-card w3-animate-left" style="width:200px;left:0;" *ngIf="isSidebarOpen" id="mySidebar">
+        <button id="w3-toggle-btn" class="w3-button w3-xlarge w3-left" (click)="w3_toggle()">&lt;</button>
+        <button class="w3-bar-item w3-button" (click)="goToEditProfile()">ข้อมูลบัญชี</button>
+        <button class="w3-bar-item w3-button" (click)="goToPackagePack()">แพ็กเกจ</button>
+        <button class="w3-bar-item w3-button" (click)="goToInsertport()">ผลงาน</button>
     </div>
-    <div class="content">
+    <div>
+    <!-- Button to toggle Sidebar -->
+    <button id="w3-toggle-btn" class="w3-button w3-xlarge w3-left" (click)="w3_toggle()">&#9776;</button>
+    </div>
+
+  <!-- Main content -->
+    <div class="w3-main" id="main" [style.transform]="isSidebarOpen ? 'translateX(200px)' : 'translateX(0)'">
+        <main class="content">
+            <form class="form">
         <div class="header-actions">
             <button class="add-work-btn"><i class="fas fa-plus"></i> เพิ่มผลงาน</button>
             <button class="featured-btn">พรีเดดดัง</button>
@@ -67,6 +72,8 @@
             <button class="cancel-btn">ยกเลิก</button>
             <button class="save-btn">บันทึก</button>
         </div>
+    </form>
+    </main>
     </div>
 </body>
 </html>

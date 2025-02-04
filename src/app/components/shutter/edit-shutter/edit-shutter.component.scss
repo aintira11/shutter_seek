@@ -1,0 +1,165 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+}
+
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.content {
+    flex: 1;
+    background-color: #fff;
+    padding: 20px;
+}
+
+.edit-form {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.profile-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.change-profile-btn {
+    padding: 8px 16px;
+    background-color: #0046ad;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.change-profile-btn:hover {
+    background-color: #00338a;
+}
+
+.form-fields {
+    flex: 1;
+    display: flex;
+    flex-direction: column; /* จัดช่องกรอกและชื่อช่องให้อยู่ในแนวตั้ง */
+    align-items: flex-end; /* จัดทุกอย่างให้อยู่ทางขวา */
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column; /* จัดให้ label อยู่ด้านบน input */
+    width: 70%; /* กำหนดความกว้างรวมของแต่ละฟอร์ม */
+    margin-bottom: 15px;
+}
+
+label {
+    text-align: left; /* จัดข้อความ label ให้ชิดซ้ายภายในกล่องของตัวเอง */
+    margin-bottom: 5px; /* เพิ่มระยะห่างระหว่าง label กับ input */
+    font-size: 14px;
+}
+
+input,
+textarea {
+    width: 100%; /* ความกว้างของช่องกรอกจะเท่ากับฟอร์ม */
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.submit-btn {
+    width: 70%; /* กำหนดความกว้างให้ปุ่มเท่ากับฟอร์ม */
+    padding: 10px;
+    background-color: #0046ad;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.submit-btn:hover {
+    background-color: #00338a;
+}
+
+// sidebar
+.w3-sidebar {
+    display: none;
+    width: 200px;
+    position: fixed;
+    height: 100%;
+    background-color: rgba(0, 74, 173, 1);
+    overflow-x: hidden;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    box-shadow: none; /* ลบเงาออกถ้ามี */
+  }
+  
+  
+  .w3-main {
+    background-color: #f4f4f4;
+    min-height: 100vh;  /* ความสูงของ main ให้เท่ากับความสูงของหน้าจอ */
+    box-sizing: border-box;
+    overflow-y: auto;  /* ทำให้เนื้อหาภายใน main สามารถเลื่อนขึ้นลงได้ */
+  }
+
+  .w3-teal {
+    color: white;
+    padding: 10px;
+    position: relative; /* รักษาตำแหน่งเดิม */
+    z-index: 10; /* ให้อยู่เหนือ .w3-main */
+    background-color: transparent;
+  }
+
+  .w3-button {
+    background-color: rgba(0, 74, 173, 1); /* เปลี่ยนเป็นสีเข้มที่ต้องการ */
+    color: white; /* สีตัวอักษร */
+    border: none; /* เอาขอบออก */
+  }
+
+  .w3-button:hover {
+      background-color: rgba(0, 50, 120, 1); /* สีปุ่มตอน hover */
+      transition: background-color 0.3s ease; /* เพิ่ม animation */
+  }
+
+  .w3-button:focus {
+      outline: none; /* เอาเส้นขอบตอนกดออก */
+      background-color: rgba(0, 60, 150, 1); /* เปลี่ยนสีเมื่อปุ่มอยู่ในโฟกัส */
+  }
+
+  .w3-toggle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+  
+  .w3-hide-large {
+    display: none;
+  }
+  
+/* Responsive Design */
+@media (max-width: 768px) {
+    .edit-form {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .profile-section {
+        margin-bottom: 20px;
+    }
+
+    .form-fields {
+        width: 100%;
+    }
+}

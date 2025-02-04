@@ -5,36 +5,6 @@ body {
     background-color: #f9f9f9;
 }
 
-.sidebar {
-    background-color: #0046ad;
-    color: #fff;
-    padding: 20px;
-    width: 250px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    height: 100vh;
-}
-
-.sidebar .back-button {
-    color: #fff;
-    font-size: 20px;
-    margin-bottom: 20px;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-}
-
-.sidebar .menu {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.sidebar .menu li {
-    font-size: 18px;
-    margin: 10px 0;
-}
 
 .content {
     flex: 1;
@@ -204,3 +174,59 @@ body {
         padding: 8px 12px;
     }
 }
+
+.w3-sidebar {
+    display: none;
+    width: 200px;
+    position: fixed;
+    height: 100%;
+    background-color: rgba(0, 74, 173, 1);
+    overflow-x: hidden;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    box-shadow: none; /* ลบเงาออกถ้ามี */
+  }
+  
+  
+  .w3-main {
+    background-color: #f4f4f4;
+    min-height: 100vh;  /* ความสูงของ main ให้เท่ากับความสูงของหน้าจอ */
+    box-sizing: border-box;
+    overflow-y: auto;  /* ทำให้เนื้อหาภายใน main สามารถเลื่อนขึ้นลงได้ */
+  }
+
+  .w3-teal {
+    color: white;
+    padding: 10px;
+    position: relative; /* รักษาตำแหน่งเดิม */
+    z-index: 10; /* ให้อยู่เหนือ .w3-main */
+    background-color: transparent;
+  }
+
+  .w3-button {
+    background-color: rgba(0, 74, 173, 1); /* เปลี่ยนเป็นสีเข้มที่ต้องการ */
+    color: white; /* สีตัวอักษร */
+    border: none; /* เอาขอบออก */
+  }
+
+  .w3-button:hover {
+      background-color: rgba(0, 50, 120, 1); /* สีปุ่มตอน hover */
+      transition: background-color 0.3s ease; /* เพิ่ม animation */
+  }
+
+  .w3-button:focus {
+      outline: none; /* เอาเส้นขอบตอนกดออก */
+      background-color: rgba(0, 60, 150, 1); /* เปลี่ยนสีเมื่อปุ่มอยู่ในโฟกัส */
+  }
+
+  .w3-toggle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+  
+  .w3-hide-large {
+    display: none;
+  }
+  
