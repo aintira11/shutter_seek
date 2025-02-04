@@ -20,3 +20,22 @@ export interface DataTegs {
     tags_id:   number;
     name_tags: string;
 }
+
+export interface DataPortfolio {
+    user_id:       number;
+    first_name:    null | string;
+    last_name:     null | string;
+    username:      null | string;
+    email:         string;
+    address:       null | string;
+    lineID:        null | string;
+    facebook:      null | string;
+    province:      null | string;
+    image_profile: string;
+    description:   null | string;
+    portfolio_id:  number | null;
+    name_work:     null | string;
+    tags_id:       number | null;
+    name_tags:     null | string;
+    image_urls:    string[];
+}

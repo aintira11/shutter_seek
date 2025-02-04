@@ -1,0 +1,46 @@
+//CSS สำหรับเลื่อนแนวนอน
+.tags-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    overflow: hidden; /* ซ่อนส่วนที่เกิน */
+}
+
+.tags-wrapper {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth; /* ทำให้เลื่อนนุ่มนวล */
+    white-space: nowrap;
+    width: 90%; /* ปรับให้เว้นที่สำหรับลูกศร */
+    scrollbar-width: none; /* ซ่อน scrollbar */
+    
+}
+
+.tags-wrapper::-webkit-scrollbar {
+    display: none; /* ซ่อน scrollbar บน Chrome */
+}
+
+.tag-button {
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+
+.scroll-btn {
+    background: white;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+}
+
+.scroll-btn.left {
+    left: 0;
+}
+
+.scroll-btn.right {
+    right: 0;
+}
