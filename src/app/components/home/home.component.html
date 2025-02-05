@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -63,52 +62,59 @@
  
   <section class="container mt-5">
     <h4>ช่างภาพแนะนำ</h4>
-    <div class="row" *ngIf="Portfolio.length > 0">
-      <div class="col-md-4" *ngFor="let photographer of Portfolio; let portfolioIndex = index">
-        <div class="card border-0">
-          <!-- Bootstrap Carousel -->
-          <div class="carousel slide" [attr.id]="'carousel' + photographer.portfolio_id" data-bs-ride="carousel">
-            <div class="carousel-inner">
-              <div *ngFor="let image of photographer.image_urls; let i = index">  
-                <div *ngIf="image">
-                  <!-- <p>{{image}}</p> -->
-                  <div class="carousel-item" [class.active]="i === (currentSlideIndex[portfolioIndex] || 0)">
-
-                    <img [src]="image" class="d-block w-100 rounded" alt="portfolio image">
-
-                  </div>
+    <div class="row justify-content-center" *ngIf="Portfolio.length > 0">
+        <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3 px-2" *ngFor="let photographer of Portfolio; let portfolioIndex = index">
+            <div class="card border-0 text-center p-2 shadow-sm" style="max-width: 250px; margin: auto;">
+                <!-- Bootstrap Carousel -->
+                <div class="carousel slide rounded" [attr.id]="'carousel' + photographer.portfolio_id" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <div *ngFor="let image of photographer.image_urls; let i = index">
+                            <div class="carousel-item" [class.active]="i === (currentSlideIndex[portfolioIndex] || 0)">
+                                <img [src]="image" class="d-block w-100 rounded img-fluid"
+                                    style="height: 200px; object-fit: cover;" alt="portfolio image">
+                            </div>
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button"
+                        [attr.data-bs-target]="'#carousel' + photographer.portfolio_id" data-bs-slide="prev"
+                        (click)="getPrev(portfolioIndex)">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    </button>
+                    <button class="carousel-control-next" type="button"
+                        [attr.data-bs-target]="'#carousel' + photographer.portfolio_id" data-bs-slide="next"
+                        (click)="getNext(portfolioIndex)">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    </button>
                 </div>
-                <div *ngIf="!image">
-                  <p>ไม่มีรูปภาพ</p> <!-- แสดงข้อความเมื่อไม่มีภาพ -->
+
+                <!-- ส่วนข้อมูลช่างภาพ -->
+                <div class="d-flex align-items-center justify-content-between mt-2 px-2">
+                    <!-- รูปโปรไฟล์ -->
+                    <img [src]="photographer.image_profile" class="rounded-circle border border-primary"
+                        width="40" height="40" alt="profile">
+
+                    <!-- ข้อมูลช่างภาพ -->
+                    <div class="text-center flex-grow-1">
+                        <p class="mb-0 text-muted" style="font-size: 12px;">{{ photographer.name_tags }}</p>
+                        <p class="fw-bold mb-0" style="font-size: 14px;">{{ photographer.name_work }}</p>
+                    </div>
+
+                    <!-- ไอคอนหัวใจ -->
+                    <label >
+                      <input type="checkbox">
+                      <svg id="Layer_1" version="1.0" viewBox="0 0 24 24" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="border-radius: 10px; overflow: hidden;"><path d="M16.4,4C14.6,4,13,4.9,12,6.3C11,4.9,9.4,4,7.6,4C4.5,4,2,6.5,2,9.6C2,14,12,22,12,22s10-8,10-12.4C22,6.5,19.5,4,16.4,4z"></path></svg>
+                    </label>
                 </div>
-              </div>
-              
             </div>
-            <button class="carousel-control-prev" type="button" 
-                [attr.data-bs-target]="'#carousel' + photographer.portfolio_id" data-bs-slide="prev" (click)="getPrev(portfolioIndex)"> 
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            </button>
-            <button class="carousel-control-next" type="button" 
-                [attr.data-bs-target]="'#carousel' + photographer.portfolio_id" data-bs-slide="next" (click)="getNext(portfolioIndex)">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            </button>
-          </div>
-          <!-- ส่วนข้อมูลช่างภาพ -->
-          <div class="text-center mt-3">
-            <img [src]="photographer.image_profile" class="rounded-circle" width="50" height="50" alt="profile">
-            <p class="mt-2">name : <b>{{ photographer.name_work }}</b></p>
-            <button class="btn btn-outline-dark">♥</button>
-          </div>
         </div>
-      </div>
     </div>
-  </section>
-  
+</section>
+
   <footer class="text-center p-3 mt-5 border-top">
     <div class="tags-container">
         <button class="scroll-btn left" (click)="scrollTags('left')">❮</button>
         <div class="tags-wrapper" #tagList style="margin-left: 3%;">
-            <button *ngFor="let data of Tags" [value]="data.tags_id" class="btn btn-outline-primary tag-button">
+            <button *ngFor="let data of Tags" [value]="data.tags_id" class="btn btn-outline-primary tag-button" (click)="getPortfolioIfId(data.tags_id)">
                 {{ data.name_tags }}
             </button>
         </div>
@@ -116,7 +122,54 @@
     </div>
 </footer>
 
-  
+<section class="container mt-5">
+  <div class="row justify-content-center" *ngIf="PortfolioID.length > 0">
+      <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3 px-2" *ngFor="let photographer of PortfolioID; let portfolioIndex = index">
+          <div class="card border-0 text-center p-2 shadow-sm" style="max-width: 250px; margin: auto;">
+              <!-- Bootstrap Carousel -->
+              <div class="carousel slide rounded" [attr.id]="'carousel' + photographer.portfolio_id" data-bs-ride="carousel">
+                  <div class="carousel-inner">
+                      <div *ngFor="let image of photographer.image_urls; let i = index">
+                          <div class="carousel-item" [class.active]="i === (currentSlideIndex1[portfolioIndex] || 0)">
+                              <img [src]="image" class="d-block w-100 rounded img-fluid"
+                                  style="height: 200px; object-fit: cover;" alt="portfolio image">
+                          </div>
+                      </div>
+                  </div>
+                  <button class="carousel-control-prev" type="button"
+                      [attr.data-bs-target]="'#carousel' + photographer.portfolio_id" data-bs-slide="prev"
+                      (click)="getPrev(portfolioIndex)">
+                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  </button>
+                  <button class="carousel-control-next" type="button"
+                      [attr.data-bs-target]="'#carousel' + photographer.portfolio_id" data-bs-slide="next"
+                      (click)="getNext(portfolioIndex)">
+                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  </button>
+              </div>
+
+              <!-- ส่วนข้อมูลช่างภาพ -->
+              <div class="d-flex align-items-center justify-content-between mt-2 px-2">
+                  <!-- รูปโปรไฟล์ -->
+                  <img [src]="photographer.image_profile" class="rounded-circle border border-primary"
+                      width="40" height="40" alt="profile">
+
+                  <!-- ข้อมูลช่างภาพ -->
+                  <div class="text-center flex-grow-1">
+                      <p class="mb-0 text-muted" style="font-size: 12px;">{{ photographer.name_tags }}</p>
+                      <p class="fw-bold mb-0" style="font-size: 14px;">{{ photographer.name_work }}</p>
+                  </div>
+
+                  <!-- ไอคอนหัวใจ -->
+                  <label >
+                    <input type="checkbox">
+                    <svg id="Layer_1" version="1.0" viewBox="0 0 24 24" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="border-radius: 10px; overflow: hidden;"><path d="M16.4,4C14.6,4,13,4.9,12,6.3C11,4.9,9.4,4,7.6,4C4.5,4,2,6.5,2,9.6C2,14,12,22,12,22s10-8,10-12.4C22,6.5,19.5,4,16.4,4z"></path></svg>
+                  </label>
+              </div>
+          </div>
+      </div>
+  </div>
+</section>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
