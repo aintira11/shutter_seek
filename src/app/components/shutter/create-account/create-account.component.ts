@@ -55,7 +55,7 @@ export class CreateAccountComponent implements OnInit{
           return;
         }
     
-        const url = this.Constants.API_ENDPOINT + '/shutter/register/shutt';
+        const url = this.Constants.API_ENDPOINT + '/register/shutt';
         const formData = {
           email: this.fromreister.value.Email,
           password: this.fromreister.value.Password,

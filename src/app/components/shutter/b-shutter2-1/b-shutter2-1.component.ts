@@ -51,7 +51,7 @@ export class BShutter21Component implements OnInit{
   }
 
   gettegs() {
-    const url = this.Constants.API_ENDPOINT + '/admin/tegs' ;
+    const url = this.Constants.API_ENDPOINT + '/tegs' ;
     this.http.get(url).subscribe((response: any) => {
       this.Tags = response;
       console.log("data Tegs :", this.Tags);
@@ -60,7 +60,7 @@ export class BShutter21Component implements OnInit{
       
   next() {
     console.log('Form value:', this.fromreister.value);
-    const url = this.Constants.API_ENDPOINT + '/shutter/add/Portfolio';
+    const url = this.Constants.API_ENDPOINT + '/add/Portfolio';
     const formData = {
       user_id: this.data.user_id,
       tags_id: this.fromreister.value.tags_id,

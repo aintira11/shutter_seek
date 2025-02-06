@@ -39,3 +39,23 @@ export interface DataPortfolio {
     name_tags:     null | string;
     image_urls:    string[];
 }
+
+export interface DataSreach {
+    user_id:       number;
+    first_name:    string;
+    last_name:     string;
+    username:      string;
+    email:         string;
+    address:       string;
+    lineID:        string;
+    phone:         string;
+    province:      string;
+    image_profile: string;
+    description:   string;
+    portfolio_id:  number;
+    name_work:     string;
+    tags_id:       number;
+    name_tags:     string;
+    price:         number;
+    image_urls:    string[];
+}

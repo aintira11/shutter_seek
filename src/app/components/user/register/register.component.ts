@@ -62,7 +62,7 @@ export class RegisterComponent {
       alert('ยืนยันรหัสผ่านไม่ถูกต้อง');
     }
 
-    const url = this.Constants.API_ENDPOINT + '/register/member';
+    const url = this.Constants.API_ENDPOINT + '/member';
     let image = 'https://www.hotelbooqi.com/wp-content/uploads/2021/12/128-1280406_view-user-icon-png-user-circle-icon-png.png';
 
     const formData = {
