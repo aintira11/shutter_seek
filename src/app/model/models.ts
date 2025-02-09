@@ -59,3 +59,14 @@ export interface DataSreach {
     price:         number;
     image_urls:    string[];
 }
+
+export interface DataLike {
+    user_id:       number;
+    email:         string;
+    image_profile: string;
+    portfolio_id:  number;
+    name_work:     string;
+    tags_id:       number;
+    name_tags:     string;
+    image_urls:    string[];
+}

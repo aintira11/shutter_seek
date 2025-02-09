@@ -34,6 +34,8 @@ export class HomeComponent implements OnInit{
   // กำหนด index ของแต่ละ Portfolio ที่แสดง
   currentSlideIndex: number[] = [];
   currentSlideIndex1: number[] = [];
+  currentSlideIndexSearch: number[]=[];
+  
 
   constructor(private fb: FormBuilder,private Constants: Constants, private route: ActivatedRoute, private http: HttpClient,private router : Router){
     this.form = this.fb.group({
@@ -66,7 +68,10 @@ export class HomeComponent implements OnInit{
       });
       this.PortfolioID.forEach((_, index) => {
         this.currentSlideIndex1[index] = 0;
-      });      
+      });     
+      this.PortfolioID.forEach((_, index) => {
+        this.currentSlideIndexSearch[index] = 0;
+      });  
   } 
   // ฟังก์ชันสำหรับการแสดงภาพปัจจุบัน
 //   getSlide(index: number, portfolioIndex: number) {
@@ -87,6 +92,11 @@ getNext(portfolioIndex: number) {
     this.currentSlideIndex1[portfolioIndex] = (this.currentSlideIndex1[portfolioIndex] + 1) % (maxIndex + 1);
     console.log(this.currentSlideIndex1);
   }
+  if (this.dataSreach[portfolioIndex]?.image_urls?.length > 0) {
+    const maxIndex = this.dataSreach[portfolioIndex].image_urls.length - 1;
+    this.currentSlideIndexSearch[portfolioIndex] = (this.currentSlideIndexSearch[portfolioIndex] - 1 + maxIndex + 1) % (maxIndex + 1);
+    console.log(this.currentSlideIndexSearch);
+  }
 
 }
 
@@ -101,6 +111,11 @@ getPrev(portfolioIndex: number) {
     const maxIndex = this.PortfolioID[portfolioIndex].image_urls.length - 1;
     this.currentSlideIndex1[portfolioIndex] = (this.currentSlideIndex1[portfolioIndex] - 1 + (maxIndex + 1)) % (maxIndex + 1);
     console.log(this.currentSlideIndex1);
+  }
+  if (this.dataSreach[portfolioIndex]?.image_urls?.length > 0) {
+    const maxIndex = this.dataSreach[portfolioIndex].image_urls.length - 1;
+    this.currentSlideIndexSearch[portfolioIndex] = (this.currentSlideIndexSearch[portfolioIndex] - 1 + (maxIndex + 1)) % (maxIndex + 1);
+    console.log(this.currentSlideIndexSearch);
   }
 }
 
@@ -180,6 +195,12 @@ getPrev(portfolioIndex: number) {
         this.dataSreach = response;
         console.log("ผลลัพธ์ที่ค้นหา:", response);
       });
+    }
+    profile(){
+      if(this.datauser[0].type_user == 1 ){
+        this.router.navigate(['/profile'], { state: { data: this.datauser } });
+      }
+      this.router.navigate(['/'], { state: { data: this.datauser } });
     }
     
     
