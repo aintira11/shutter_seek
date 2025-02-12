@@ -51,7 +51,7 @@ getPrev(portfolioIndex: number) {
 }
 
   goToEditPro(): void {
-    this.router.navigate(['/editprofile'],{ state: { data: this.data } });
+    this.router.navigate(['/edituser'],{ state: { data: this.data } });
   }
   goToShutter(): void {
     this.router.navigate(['']);
