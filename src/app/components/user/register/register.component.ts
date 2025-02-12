@@ -4,6 +4,8 @@ import { FormBuilder,Validators,FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Constants } from '../../../config/constants';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ImageUploadService } from '../../../services_image/image-upload.service';
+
 
 @Component({
   selector: 'app-register',
@@ -14,7 +16,9 @@ import { ReactiveFormsModule } from '@angular/forms';
 })
 export class RegisterComponent {
   fromreister: FormGroup;
-  constructor(private Constants :Constants ,private http:HttpClient ,private fromBuilder : FormBuilder ,private router : Router)
+  selectedFile?: File; // เก็บไฟล์รูปภาพที่เลือก
+  files: { file: File; preview: string; newName?: string }[] = [];
+  constructor(private Constants :Constants ,private http:HttpClient ,private fromBuilder : FormBuilder ,private router : Router,private readonly imageUploadService: ImageUploadService)
   {
     this.fromreister = this.fromBuilder.group({
       Email: ['', [Validators.required, Validators.email]],
@@ -45,10 +49,11 @@ export class RegisterComponent {
     const fileInput = document.getElementById('fileInput') as HTMLInputElement;
     fileInput.click();
   }
-
+  
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
+      this.selectedFile = file; // เก็บไฟล์ที่เลือก
       const reader = new FileReader();
       reader.onload = () => {
         this.imagePreview = reader.result as string; // อัปเดตตัวแปรรูปภาพ
@@ -57,13 +62,23 @@ export class RegisterComponent {
     }
   }
 
-  register() {
+  private generateRandomFileName(originalName: string): string {
+    const extension = originalName.split('.').pop();
+    return `${Date.now()}-${Math.random().toString(36).substring(2, 10)}.${extension}`;
+  }
+
+  async register() {
     if(this.fromreister.value.Password != this.fromreister.value.confirmPassword){
       alert('ยืนยันรหัสผ่านไม่ถูกต้อง');
     }
+    if(this.selectedFile){
+      const randomName = this.generateRandomFileName(this.selectedFile.name);
+    // อัปโหลดรูปภาพ
+    const response: any = await this.imageUploadService.uploadImage(this.selectedFile).toPromise();
+    const image = response.data.url;
 
     const url = this.Constants.API_ENDPOINT + '/register/member';
-    let image = 'https://www.hotelbooqi.com/wp-content/uploads/2021/12/128-1280406_view-user-icon-png-user-circle-icon-png.png';
+    // let image = 'https://www.hotelbooqi.com/wp-content/uploads/2021/12/128-1280406_view-user-icon-png-user-circle-icon-png.png';
 
     const formData = {
         email: this.fromreister.value.Email,
@@ -76,6 +91,7 @@ export class RegisterComponent {
         //image_profile: this.formRegister.value.image_profile || null,
         address:this.fromreister.value.address,
     };
+  
 
     console.log(formData);
 
@@ -95,7 +111,12 @@ export class RegisterComponent {
               alert('ไม่สามารถสมัครสมาชิกได้ กรุณาลองอีกครั้ง');
           }
         }
+        
     });
+  }
+  else{
+    console.log("เลือกรูป");
+  }
 }
 }
 

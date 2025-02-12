@@ -53,7 +53,7 @@ checkboxesStatus = [false, false, false]; // ตัวอย่าง: false ห
       this.gettegs();
   }
   gettegs() {
-    const url = this.Constants.API_ENDPOINT + '/admin/tegs' ;
+    const url = this.Constants.API_ENDPOINT + '/tegs' ;
     this.http.get(url).subscribe((response: any) => {
       this.Tags = response;
       console.log("data Tegs :", this.Tags);
@@ -74,7 +74,7 @@ checkAllChecked() {
 }
   async savePackages() {
     if (this.checkAllChecked()) {
-    const apiUrl = `${this.Constants.API_ENDPOINT}/shutter/add/package`;
+    const apiUrl = `${this.Constants.API_ENDPOINT}/package`;
   
     // ส่งข้อมูลทีละแพ็กเกจ
     for (let packageData of this.packages) {

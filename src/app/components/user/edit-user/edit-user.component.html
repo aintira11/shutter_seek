@@ -1,60 +1,54 @@
 <div class="profile-container">
-    <div class="back-button"(click)="back()">
-      <button>&lt;</button>
-      <span>ข้อมูลบัญชี</span>
-    </div>  
-  
-    <div class="profile-content">
-      <!-- รูปโปรไฟล์ -->
-      <div class="profile-picture-section">
-        <img
-          class="profile-picture"
-          src="src/assets/images/user.png"
-          alt="Profile Picture"
-          id="profile-picture"
-        />
-        <button class="edit-picture-button" onclick="document.getElementById('file-input').click()">แก้ไขรูปภาพ</button>
-        <input type="file" id="file-input" style="display: none;" onchange="previewImage(event)" />
-      </div>
-  
-      <!-- แบบฟอร์มข้อมูล -->
-      <div class="profile-form">
-        <div class="form-section">
-          <div class="form-group">
-            <label>ชื่อ นามสกุล</label>
-            <input type="text" id="first-name" />
-          </div>
-          <div class="form-group">
-            <label>ชื่อผู้ใช้</label>
-            <input type="text" id="username" placeholder="namijung" disabled />
-          </div>
-          <div class="form-group">
-            <label>รหัสผ่าน</label>
-            <input type="password" id="password">
-          </div>
+  <div class="back-button" (click)="back()">
+    <button>&lt;</button>
+    <span>ข้อมูลบัญชี</span>
+  </div>  
+
+  <div class="profile-content">
+    <div class="profile-picture-section">
+      <img class="profile-picture" [src]="data[0].image_profile " alt="Profile Picture" />
+      <button class="edit-picture-button" (click)="triggerFileInput()">แก้ไขรูปภาพ</button>
+      <input type="file" id="file-input" hidden (change)="onFileSelected($event)" />
+    </div>
+
+    <div class="profile-form">
+      <form [formGroup]="fromreister" (ngSubmit)="save()" class="register-form">
+      <div class="form-section">
+        <div class="form-group">
+          <label>ชื่อ</label>
+          <input type="text" [(ngModel)]="data[0].first_name" formControlName="Name" />
         </div>
-  
-        <div class="form-section">
-          <h2>ข้อมูลติดต่อ</h2>
-          <div class="form-group">
-            <label>อีเมล์</label>
-            <input type="email" id="email">
-          </div>
-          <div class="form-group">
-            <label>เบอร์โทร</label>
-            <input type="tel" id="phone">
-          </div>
-          <div class="form-group">
-            <label>ที่อยู่ปัจจุบัน</label>
-            <input type="text" id="current-address">
-          </div>
+        <div class="form-group">
+          <label>นามสกุล</label>
+          <input type="text" [(ngModel)]="data[0].last_name" formControlName="LastName"/>
         </div>
-  
-        <!-- ปุ่ม -->
-        <div class="button-group">
-          <button class="cancel-button">ยกเลิก</button>
-          <button class="save-button">บันทึก</button>
+        <div class="form-group">
+          <label>ชื่อผู้ใช้</label>
+          <input type="text" [(ngModel)]="data[0].username" formControlName="UserName"/>
         </div>
       </div>
+
+      <div class="form-section">
+        <h2>ข้อมูลติดต่อ</h2>
+        <div class="form-group">
+          <label>อีเมล์</label>
+          <input type="email" [(ngModel)]="data[0].email" formControlName="Email"/>
+        </div>
+        <div class="form-group">
+          <label>เบอร์โทร</label>
+          <input type="tel" [(ngModel)]="data[0].phone" formControlName="Phone"/>
+        </div>
+        <div class="form-group">
+          <label>ที่อยู่</label>
+          <input type="tel" [(ngModel)]="data[0].address" formControlName="address"/>
+        </div>
+      </div>
+
+      <div class="button-group">
+        <button class="cancel-button" (click)="back()">ยกเลิก</button>
+        <button class="save-button" type="submit">บันทึก</button>
+      </div>
+    </form>
     </div>
   </div>
+</div>

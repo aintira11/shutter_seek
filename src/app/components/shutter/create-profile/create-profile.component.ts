@@ -76,7 +76,7 @@ export class CreateProfileComponent implements OnInit {
 
 getdatauser(id: number) {
   console.log('id', id);
-  const url = this.Constants.API_ENDPOINT + '/shutter/read/' + id;
+  const url = this.Constants.API_ENDPOINT + '/read/' + id;
   this.http.get(url).subscribe((response: any) => {
     this.datauser = response;
     console.log("data user :", this.datauser);
@@ -109,7 +109,7 @@ async base_for_shutt() {
     const response: any = await this.imageUploadService.uploadImage(this.selectedFile).toPromise();
     const image = response.data.url;
 
-    const url = this.Constants.API_ENDPOINT + '/shutter/update/' + this.datauser[0].user_id;
+    const url = this.Constants.API_ENDPOINT + '/update/' + this.datauser[0].user_id;
     const formData = {
       email: this.fromreister.value.email,
       phone: this.fromreister.value.phone,

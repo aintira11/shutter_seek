@@ -139,7 +139,7 @@ export class BShutter23Component {
           const imageUrl = response.data.url;
   
           // บันทึก URL รูปภาพในฐานข้อมูล
-          const apiUrl = this.Constants.API_ENDPOINT + '/shutter/update/Portfolio/image';
+          const apiUrl = this.Constants.API_ENDPOINT + '/update/Portfolio/image';
           const payload = {
             // portfolio_id: this.data.last_idx, // ดึงจากข้อมูลที่ถูกส่งมาหน้า component
             portfolio_id: this.data.last_idx,

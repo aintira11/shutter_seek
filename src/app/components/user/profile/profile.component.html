@@ -8,6 +8,9 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
       rel="stylesheet"
     />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@40,400,0,0&icon_names=search" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   </head>
   <body>
     <div class="profile-container">
@@ -16,16 +19,16 @@
       </div>
 
       <!-- Profile Section -->
-      <div class="profile-header">
+      <div class="profile-header" >
         <img
-          src="/assets/images/user.png"
+          src="{{data[0].image_profile}}"
           alt="Profile"
           class="profile-image"
         />
         <div class="profile-info">
-          <h2>namijang</h2>
+          <h2>{{data[0].username}}</h2>
           <p>กำลังติดตาม 3 คน</p>
-          <p>เป็นสมาชิกเมื่อ 20/06/2023</p>
+          <p>เป็นสมาชิกเมื่อ {{ data[0].date_of_member | date:'dd/MM/yyyy' }}</p>
         </div>
         <div class="profile-actions">
           <button class="edit-button" (click)="goToEditPro()">แก้ไข</button>
@@ -38,141 +41,59 @@
 
       <h3><i class='fas fa-heart' style='color:red'></i>งานที่ถูกใจ</h3>
       
-      <div class="favorite-works">
-        <div class="works-grid">
-          <!-- Work Card 1 -->
-          <div class="work-card">
-            <img
-              src="/assets/images/orm.jpeg"
-              alt="Work Image"
-              class="work-image"
-            />
-            <div class="work-details">
-              <img
-                src="/assets/images/user.png"
-                alt="Owner Profile"
-                class="owner-image"
-              />
-              <div class="owner-info">
-                <p class="owner-title">name :</p>
-                <p class="work-owner">บุคคล</p>
-                <div class="work-like">
-                  <button class="btn">
-                    <svg
-                      class="icon"
-                      width="30"
-                      height="30"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg">
-                      <path
-                        d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z"
-                      ></path>
-                    </svg>
-                  </button>
-                </div>
+      <div *ngIf="Like.length > 0 ; else aaaa " >
+        <section class="container mt-5">
+          <div class="row justify-content-center" >
+              <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3 px-2" *ngFor="let photographer of Like; let portfolioIndex = index">
+                  <div class="card border-0 text-center p-2 shadow-sm" style="max-width: 250px; margin: auto;">
+                      <!-- Bootstrap Carousel -->
+                      <div class="carousel slide rounded" [attr.id]="'carousel' + photographer.portfolio_id" data-bs-ride="carousel">
+                          <div class="carousel-inner">
+                              <div *ngFor="let image of photographer.image_urls; let i = index">
+                                  <div class="carousel-item" [class.active]="i === (currentSlideIndex[portfolioIndex] || 0)">
+                                      <img [src]="image" class="d-block w-100 rounded img-fluid"
+                                          style="height: 200px; object-fit: cover;" alt="portfolio image">
+                                  </div>
+                              </div>
+                          </div>
+                          <button class="carousel-control-prev" type="button"
+                              [attr.data-bs-target]="'#carousel' + photographer.portfolio_id" data-bs-slide="prev"
+                              (click)="getPrev(portfolioIndex)">
+                              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                          </button>
+                          <button class="carousel-control-next" type="button"
+                              [attr.data-bs-target]="'#carousel' + photographer.portfolio_id" data-bs-slide="next"
+                              (click)="getNext(portfolioIndex)">
+                              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                          </button>
+                      </div>
+      
+                      <!-- ส่วนข้อมูลช่างภาพ -->
+                      <div class="d-flex align-items-center justify-content-between mt-2 px-2">
+                          <!-- รูปโปรไฟล์ -->
+                          <img [src]="photographer.image_profile" class="rounded-circle border border-primary"
+                              width="40" height="40" alt="profile">
+      
+                          <!-- ข้อมูลช่างภาพ -->
+                          <div class="text-center flex-grow-1">
+                              <p class="mb-0 text-muted" style="font-size: 12px;">{{ photographer.name_tags }}</p>
+                              <p class="fw-bold mb-0" style="font-size: 14px;">{{ photographer.name_work }}</p>
+                          </div>
+      
+                          <!-- ไอคอนหัวใจ -->
+                          <label >
+                            <input type="checkbox">
+                            <svg id="Layer_1" version="1.0" viewBox="0 0 24 24" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="border-radius: 10px; overflow: hidden;"><path d="M16.4,4C14.6,4,13,4.9,12,6.3C11,4.9,9.4,4,7.6,4C4.5,4,2,6.5,2,9.6C2,14,12,22,12,22s10-8,10-12.4C22,6.5,19.5,4,16.4,4z"></path></svg>
+                          </label>
+                      </div>
+                  </div>
               </div>
-            </div>
           </div>
-
-          <div class="work-card">
-            <img
-              src="/assets/images/tang.jpg"
-              alt="Work Image"
-              class="work-image"
-            />
-            <div class="work-details">
-              <img
-                src="/assets/images/user.png"
-                alt="Owner Profile"
-                class="owner-image"
-              />
-              <div class="owner-info">
-                <p class="owner-title">name :</p>
-                <p class="work-owner">งานแต่ง</p>
-                <div class="work-like">
-                    <button class="btn">
-                        <svg
-                          class="icon"
-                          width="30"
-                          height="30"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg">
-                          <path
-                            d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z"
-                          ></path>
-                        </svg>
-                      </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="work-card">
-            <img
-              src="/assets/images/jo.jpg"
-              alt="Work Image"
-              class="work-image"
-            />
-            <div class="work-details">
-              <img
-                src="/assets/images/user.png"
-                alt="Owner Profile"
-                class="owner-image"
-              />
-              <div class="owner-info">
-                <p class="owner-title">name :</p>
-                <p class="work-owner">รับปริญญา</p>
-                <div class="work-like">
-                    <button class="btn">
-                        <svg
-                          class="icon"
-                          width="30"
-                          height="30"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg">
-                          <path
-                            d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z"
-                          ></path>
-                        </svg>
-                      </button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="work-card">
-            <img
-              src="/assets/images/unnamed.jpg"
-              alt="Work Image"
-              class="work-image"
-            />
-            <div class="work-details">
-              <img
-                src="/assets/images/user.png"
-                alt="Owner Profile"
-                class="owner-image"
-              />
-              <div class="owner-info">
-                <p class="owner-title">name :</p>
-                <p class="work-owner">สถาปัตยกรรม</p>
-                <div class="work-like">
-                    <button class="btn">
-                        <svg
-                          class="icon"
-                          width="30"
-                          height="30"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg">
-                          <path
-                            d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z"
-                          ></path>
-                        </svg>
-                      </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      </section>
       </div>
+      <ng-template #aaaa>
+        <h3 style="text-align: center;">ยังไม่มีผลงานที่คุณถูกใจ ❤️ </h3>
+      </ng-template>
     </div>
     
   </body>

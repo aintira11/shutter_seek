@@ -50,7 +50,7 @@ export class BaseShuttComponent {
 
     
     next(){
-      const url = this.Constants.API_ENDPOINT + '/shutter/updateline/'+this.data.user_id;
+      const url = this.Constants.API_ENDPOINT + '/updateline/'+this.data.user_id;
       const formData = {
         lineID: this.fromreister.value.lineID,
         facebook: this.fromreister.value.facebook,
