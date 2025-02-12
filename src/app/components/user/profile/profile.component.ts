@@ -51,18 +51,18 @@ getPrev(portfolioIndex: number) {
 }
 
   goToEditPro(): void {
-    this.router.navigate(['/editprofile']);
+    this.router.navigate(['/editprofile'],{ state: { data: this.data } });
   }
   goToShutter(): void {
     this.router.navigate(['']);
   }
 
   back(){
-    this.router.navigate(['']);
+    this.router.navigate([''],{ state: { data: this.data } });
   }
 
   cancelEdit(){
-    this.router.navigate(['/profile']);
+    this.router.navigate(['/profile'],{ state: { data: this.data } });
   }
 
   getMyLike(id : number){

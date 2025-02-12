@@ -12,6 +12,7 @@ import { BShutter23Component } from './components/shutter/b-shutter2-3/b-shutter
 import { BShutter3Component } from './components/shutter/b-shutter3/b-shutter3.component';
 import { ProfileComponent } from './components/user/profile/profile.component';
 import { EditProfileComponent } from './components/shutter/edit-profile/edit-profile.component';
+import { EditUserComponent } from './components/user/edit-user/edit-user.component';
 
 export const routes: Routes = [
     {path: '',component: HomeComponent}, 
@@ -27,7 +28,7 @@ export const routes: Routes = [
     {path: 'base3',component: BShutter3Component},
 
     {path: 'profile',component: ProfileComponent},
-    {path: 'editprofile',component: EditProfileComponent},
+    {path: 'editprofile',component: EditUserComponent},
 
     // { 
     //   path: 'myprofile',

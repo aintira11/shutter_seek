@@ -16,6 +16,7 @@ import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angul
     HttpClientModule,
     CommonModule,
     ReactiveFormsModule,
+    
     ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
@@ -50,29 +51,47 @@ export class HomeComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    //รับข้อมูล จากหน้าที่ส่งมา 
+    // รับข้อมูลจากหน้าที่ส่งมา
     this.route.paramMap.subscribe(() => {
-      this.data =window.history.state.data;
-      console.log('Response:', this.data);
-        // this.printdata();
-        if (this.data?.user_id) { // เช็กว่ามี user_id หรือไม่
-          this.getdatauser(this.data.user_id);
-        }
-
-        console.log("Calling gettegs()");
-        this.gettegs();
-        this.getPortfolio();
-      });
+      const receivedData = window.history.state.data;
+  
+      // ตรวจสอบว่า receivedData เป็นอาร์เรย์และมีข้อมูลหรือไม่
+      if (Array.isArray(receivedData) && receivedData.length > 0) {
+        this.data = receivedData[0]; // ดึงข้อมูลจากอาร์เรย์ตำแหน่งแรก
+      } else {
+        this.data = receivedData; // ถ้าไม่ใช่อาร์เรย์ ใช้ค่าตามเดิม
+      }
+  
+      console.log('Response1:', this.data);
+  
+      if (this.data?.user_id) {
+        this.getdatauser(this.data.user_id);
+      }
+  
+      console.log("Calling gettegs()");
+      this.gettegs();
+      this.getPortfolio();
+    });
+  
+    // ตรวจสอบว่ามี Portfolio หรือไม่ ก่อนวนลูป
+    if (this.Portfolio) {
       this.Portfolio.forEach((_, index) => {
         this.currentSlideIndex[index] = 0;
       });
+    }
+  
+    if (this.PortfolioID) {
       this.PortfolioID.forEach((_, index) => {
         this.currentSlideIndex1[index] = 0;
-      });     
+      });
+    }
+    if (this.dataSreach) {
       this.PortfolioID.forEach((_, index) => {
         this.currentSlideIndexSearch[index] = 0;
-      });  
-  } 
+      });
+    }
+  }
+   
   // ฟังก์ชันสำหรับการแสดงภาพปัจจุบัน
 //   getSlide(index: number, portfolioIndex: number) {
 //     const image = this.Portfolio[portfolioIndex]?.image_urls?.[index];
@@ -92,7 +111,7 @@ getNext(portfolioIndex: number) {
     this.currentSlideIndex1[portfolioIndex] = (this.currentSlideIndex1[portfolioIndex] + 1) % (maxIndex + 1);
     console.log(this.currentSlideIndex1);
   }
-  if (this.dataSreach[portfolioIndex]?.image_urls?.length > 0) {
+    if (this.dataSreach[portfolioIndex] && this.dataSreach[portfolioIndex].image_urls) {
     const maxIndex = this.dataSreach[portfolioIndex].image_urls.length - 1;
     this.currentSlideIndexSearch[portfolioIndex] = (this.currentSlideIndexSearch[portfolioIndex] - 1 + maxIndex + 1) % (maxIndex + 1);
     console.log(this.currentSlideIndexSearch);
@@ -124,7 +143,7 @@ getPrev(portfolioIndex: number) {
     const url = this.Constants.API_ENDPOINT+'/read/'+id;
     this.http.get(url).subscribe((response: any) => {
       this.datauser = response; 
-      console.log("Image User :",this.datauser); 
+      console.log("data User :",this.datauser); 
     });
   }
 
@@ -197,10 +216,12 @@ getPrev(portfolioIndex: number) {
       });
     }
     profile(){
-      if(this.datauser[0].type_user == 1 ){
-        this.router.navigate(['/profile'], { state: { data: this.datauser } });
+      const type = Number(this.datauser[0].type_user);
+      console.log("ค่าของ type:", type, "| ประเภท:", typeof type); // ✅ ดูค่าที่แท้จริง
+      if(type === 2 ){
+        this.router.navigate(['/'], { state: { data: this.datauser } });
       }
-      this.router.navigate(['/'], { state: { data: this.datauser } });
+      this.router.navigate(['/profile'], { state: { data: this.datauser } });
     }
     
     

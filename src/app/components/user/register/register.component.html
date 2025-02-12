@@ -12,18 +12,18 @@
         <div class="back-button">
                 <i class="fas fa-chevron-left" (click)="back()"></i> กลับ
         </div>
+        <div class="profile-section">
+            <img [src]="imagePreview" alt="Profile" id="profileImage" class="profile-image" >
+            <input type="file" id="fileInput" style="display: none;" style="display: none;" (change)="onFileSelected($event)">
+            <button class="change-profile-btn" (click)="triggerFileInput()">
+                เปลี่ยนรูป Profile
+            </button>
+            
+        </div>
                        
         <div class="form-container">
-            <div class="profile-section">
-                <img [src]="imagePreview" alt="Profile" id="profileImage" class="profile-image">
-                <input type="file" id="fileInput" style="display: none;" style="display: none;" (change)="onFileSelected($event)">
-                <button class="change-profile-btn" (click)="triggerFileInput()">
-                    เปลี่ยนรูป Profile
-                </button>
-                
-            </div>
             <form [formGroup]="fromreister" (ngSubmit)="register()" class="register-form">
-
+                
                 <div class="form-group">
                     <label class="label">Username</label>
                     <input type="text" class="input-style" placeholder="ระบุ Username" formControlName="UserName">

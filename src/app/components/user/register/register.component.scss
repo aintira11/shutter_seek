@@ -29,6 +29,8 @@ body {
 
 .profile-section {
     margin-bottom: 20px;
+    display: grid;
+    place-items: center; /* จัดให้อยู่ตรงกลางทั้งแนวตั้งและแนวนอน */
 }
 
 .profile-image {
@@ -127,6 +129,7 @@ textarea {
     }
 
     .profile-image {
+        align-items: center;
         width: 100px;
         height: 100px;
         object-fit: cover;
