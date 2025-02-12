@@ -17,6 +17,8 @@ import { EditPackageComponent } from './components/shutter/edit-package/edit-pac
 import { EditShutterComponent } from './components/shutter/edit-shutter/edit-shutter.component';
 import { EditUserComponent } from './components/user/edit-user/edit-user.component';
 import { InsertPortfolioComponent } from './components/shutter/insert-portfolio/insert-portfolio.component';
+import { AdminHomeComponent } from './components/admin/admin-home/admin-home.component';
+import { AddminComponent } from './components/admin/addmin/addmin.component';
 
 export const routes: Routes = [
     {path: '',component: HomeComponent}, 
@@ -38,6 +40,10 @@ export const routes: Routes = [
     {path: 'editportfol',component: EditPortfolioComponent},
     {path: 'editpac',component: EditPackageComponent},
     {path: 'insertport',component: InsertPortfolioComponent},
+
+    {path: 'admin',component: AdminHomeComponent},
+    {path: 'addmin',component: AddminComponent},
+
     // { 
     //   path: 'myprofile',
     //   component: MyprofileComponent,
