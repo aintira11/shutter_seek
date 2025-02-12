@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="admin-container">
+        <header>
+        <div class="logo">
+            <img src="/assets/images/PIXEL (8).png" alt="Shutter Seek Logo" />
+            <button class="add-btn" (click)="goToadd()">+</button>
+        </div>
+        <button class="logout-btn" (click)="goToLogin()">ออกจากระบบ</button>
+        </header>
+    
+        <h1>ผู้ดูแลระบบ</h1>
+        <p class="user-info">ชื่อผู้ใช้: ผู้ดูแลระบบ1</p>
+    
+        <div class="search-container">
+        <input type="text" placeholder="ชื่อ | อีเมลล์ | เบอร์โทร" [(ngModel)]="searchQuery" />
+        <button class="button">
+            <i class="fa fa-search"></i>
+        </button>
+        <button class="pushable"(click)="openCategoryModal()">
+            <span class="shadow"></span>
+            <span class="edge"></span>
+            <span class="front"> ประเภทที่เลือก </span>
+        </button>
+        </div>
+    
+        <div class="tabs">
+        <button (click)="filterUsers('all')" [class.active]="selectedTab === 'all'">ทั้งหมด ({{ users.length }})</button>
+        <button (click)="filterUsers('ผู้ดูแลระบบ')" [class.active]="selectedTab === 'ผู้ดูแลระบบ'">ผู้ดูแลระบบ({{ adminCount }})</button>
+        <button (click)="filterUsers('สมาชิก')" [class.active]="selectedTab === 'สมาชิก'">สมาชิก ({{ memberCount }})</button>
+        <button (click)="filterUsers('ช่างภาพ')" [class.active]="selectedTab === 'ช่างภาพ'">ช่างภาพ ({{ photographerCount }})</button>
+        </div>
+    
+        <div class="user-list">
+            <div *ngFor="let user of filteredUsers" class="user-card">
+                <img [src]="user.avatar || 'assets/default-avatar.png'" alt="User Avatar" class="avatar" />
+                <div class="user-info">
+                    <h3>{{ user.name || 'ชื่อผู้ใช้' }}</h3>
+                    <p class="role">{{ user.role }}</p>
+                </div>
+
+                <div class="actions">
+                    <button *ngIf="user.role === 'ช่างภาพ'" class="report-btn" (click)="openReportDialog(user)">รายงาน</button>
+                    <button class="detail-btn">รายละเอียด</button>
+                    <button class="delete-btn" (click)="deleteUser(user.id)">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </div>  
+
+        <!-- Modal แก้ไขประเภทงาน -->
+        <div class="modal" *ngIf="isCategoryModal">
+            <div class="modal-content">
+                <p>แก้ไขประเภทงาน</p>
+                <hr />
+                <div class="category-list">
+                    <div *ngFor="let category of jobCategories; let i = index" class="category-item">
+                        <input [(ngModel)]="jobCategories[i]" type="text" [readonly]="!isEditing[i]" />
+                        <button class="edit-btn" *ngIf="!isEditing[i]" (click)="enableEditing(i)">แก้ไข</button>
+                        <button class="save-btn" *ngIf="isEditing[i]" (click)="saveEdit(i)">บันทึก</button>
+                    </div>
+                    <div class="category-item">
+                        <input [(ngModel)]="newCategory" type="text" placeholder="เพิ่มประเภทใหม่" />
+                        <button class="addd-btn" (click)="addCategory()">เพิ่ม</button>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button class="close-btn" (click)="closeCategoryModal()">ปิด</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal รายงาน -->
+        <div class="modal" *ngIf="isModal">
+            <div class="modal-content">
+            <h2>ชื่อผู้ใช้ : <strong>{{ selectedUserForReport?.name }}</strong></h2>
+            <hr />
+            <p>รายงานทั้งหมด {{ reports.length }} รายการ</p>
+            <div class="report-list">
+                <div *ngFor="let report of reports" class="report-item">
+                <strong>{{ report.username }}</strong>
+                <p>{{ report.detail }}</p>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="close-btn" (click)="closeModal()">ปิด</button>
+            </div>
+            </div>
+        </div>
+   </div>
+</body>
+</html>

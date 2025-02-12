@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Addmin</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="admin-add-container">
+        <h1>เพิ่มผู้ดูแลระบบ</h1>
+        <div class="form-wrapper">
+            <div class="logo-section">
+                <img src="assets/images/PIXEL (7).png" alt="Shutter Seek Logo" />
+            </div>
+            <div class="form-section">
+                <form (ngSubmit)="submitForm()">
+                    <label>
+                        <span>ชื่อ-นามสกุล:</span>
+                        <input type="text" [(ngModel)]="adminData.fullName" name="fullName" required />
+                    </label>
+                    <label>
+                        <span>อีเมล:</span>
+                        <input type="email" [(ngModel)]="adminData.email" name="email" required />
+                    </label>
+                    <label>
+                        <span>ชื่อผู้ใช้งาน:</span>
+                        <input type="text" [(ngModel)]="adminData.username" name="username" required />
+                    </label>
+                    <label>
+                        <span>รหัสผ่าน:</span>
+                        <input type="password" [(ngModel)]="adminData.password" name="password" required />
+                    </label>
+                </form>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button type="button" class="cancel-btn" (click)=" goToadmin()">ยกเลิก</button>
+            <button type="submit" class="confirm-btn" (click)=" goToadmin()">ยืนยัน</button>
+        </div>
+    </div>
+    
+</body>
+</html>
