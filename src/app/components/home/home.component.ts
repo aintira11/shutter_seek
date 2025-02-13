@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { RouterModule,Router } from '@angular/router';
-import { DataMembers, DataPortfolio, DataSreach, DataTegs } from '../../model/models';
+import { DataLike, DataMembers, DataPortfolio, DataSreach, DataTegs } from '../../model/models';
 import { Constants } from '../../config/constants';
 import { ActivatedRoute,Params  } from '@angular/router';
 import { HttpClient, HttpParams } from '@angular/common/http';
@@ -31,6 +31,8 @@ export class HomeComponent implements OnInit{
   PortfolioID:DataPortfolio[]=[];
   dataSreach:DataSreach []=[];
   form: FormGroup;
+  Like :DataLike[]=[];
+  
 
   // กำหนด index ของแต่ละ Portfolio ที่แสดง
   currentSlideIndex: number[] = [];
@@ -71,6 +73,7 @@ export class HomeComponent implements OnInit{
       console.log("Calling gettegs()");
       this.gettegs();
       this.getPortfolio();
+      
     });
   
     // ตรวจสอบว่ามี Portfolio หรือไม่ ก่อนวนลูป
@@ -91,6 +94,12 @@ export class HomeComponent implements OnInit{
       });
     }
   }
+
+  isLiked(portfolio_id: number): boolean {
+    return this.Like.some(like => like.portfolio_id === portfolio_id);
+  }
+  
+  
    
   // ฟังก์ชันสำหรับการแสดงภาพปัจจุบัน
 //   getSlide(index: number, portfolioIndex: number) {
@@ -144,6 +153,7 @@ getPrev(portfolioIndex: number) {
     this.http.get(url).subscribe((response: any) => {
       this.datauser = response; 
       console.log("data User :",this.datauser); 
+      this.getMyLike(this.datauser[0].user_id);
     });
   }
 
@@ -223,6 +233,49 @@ getPrev(portfolioIndex: number) {
       }
       this.router.navigate(['/profile'], { state: { data: this.datauser } });
     }
+
+    Liked(portfolioId: number | null) {
+      const validPortfolioId = portfolioId ?? 0;
+      if (validPortfolioId === 0) {
+        console.error("Invalid portfolio_id!");
+        return;
+      }
     
+      const userId = this.datauser?.[0]?.user_id ?? 0;
+      if (userId === 0) {
+        console.error("Invalid user_id!");
+        return;
+      }
+
+        const url = `${this.Constants.API_ENDPOINT}/like/${validPortfolioId}/${userId}`;
+        this.http.post(url, {}).subscribe({
+          next: () => {
+            console.log("Unlike success");
+  
+          },
+          error: (error) => console.error("Unlike error:", error)
+        });
+
+      
+    }
+    
+
+    getMyLike(portfolioId: number) {
+      const userId = this.datauser?.[0]?.user_id ?? 0;
+      if (userId === 0) {
+        console.error("Invalid user_id!");
+        return;
+      }
+    
+      const url = `${this.Constants.API_ENDPOINT}/get/like/${portfolioId}`;
+      this.http.get(url).subscribe((response: any) => {
+        this.Like = response;
+        
+        // ตรวจสอบว่าผู้ใช้เคยกดถูกใจ portfolio นี้หรือไม่
+        // this.likeStatus = this.Like.some((like: any) => like.user_id === userId);
+      
+       
+      });
+    }
     
 }

@@ -45,39 +45,76 @@
     right: 0;
 }
  // icon like
- /* From Uiverse.io by andrew-demchenk0 */ 
-.container input {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
-    height: 0;
-    width: 0;
-  }
-  
-  .container {
-    display: block;
-    position: relative;
-    cursor: pointer;
-    user-select: none;
-  }
-  
-  .container svg {
-    position: relative;
-    top: 0;
-    left: 0;
-    height: 30px;
-    width: 30px;
-    transition: all 0.3s;
-    fill: #666;
-  }
-  
-  .container svg:hover {
-    transform: scale(1.1);
-  }
-  
-  .container input:checked ~ svg {
-    fill: #E3474F;
-  }
+ .container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.container {
+  display: block;
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+}
+
+.container svg {
+  position: relative;
+  top: 0;
+  left: 0;
+  height: 30px;
+  width: 30px;
+  transition: all 0.3s;
+  fill: #666; /* สีเทาปกติ */
+}
+
+.container svg:hover {
+  transform: scale(1.1);
+}
+
+.container input:checked ~ svg {
+  fill: #E3474F; /* สีแดงเมื่อถูกใจ */
+}
+// .like-container input {
+//   position: absolute;
+//   opacity: 0;
+//   cursor: pointer;
+//   height: 0;
+//   width: 0;
+// }
+
+// .like-container {
+//   display: block;
+//   position: relative;
+//   cursor: pointer;
+//   user-select: none;
+// }
+
+// .like-container svg {
+//   position: relative;
+//   top: 0;
+//   left: 0;
+//   height: 30px;
+//   width: 30px;
+//   transition: all 0.3s;
+//   fill: #666; /* สีเทาปกติ */
+// }
+
+// .like-container svg:hover {
+//   transform: scale(1.1);
+// }
+
+// .like-container input:checked ~ svg {
+//   fill: #E3474F; /* สีแดงเมื่อกด */
+// }
+
+// /* คลาสสำหรับสีแดงเมื่อเคยถูกใจ */
+// .liked {
+//   fill: #E3474F; /* สีแดงเมื่อไลค์ */
+// }
+
 
   //ปุ่มโปรไฟล์
   .circle-button {
