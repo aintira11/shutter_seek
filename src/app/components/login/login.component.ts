@@ -39,7 +39,7 @@ export class LoginComponent {
   }
 
   async login(): Promise<void> {
-    const url = this.constants.API_ENDPOINT+'/login'; // URL API Login
+    const url = this.constants.API_ENDPOINT+'/login'; 
 
     if (this.loginForm.invalid) {
       alert('กรุณากรอกอีเมลและรหัสผ่านให้ครบถ้วน');
@@ -62,7 +62,7 @@ export class LoginComponent {
       
       if (this.dataLogin.length > 0) {
         console.log('Login Successful:', this.dataLogin);
-        const user = this.dataLogin[0]; // สมมติว่าใช้ผู้ใช้งานคนแรก
+        const user = this.dataLogin[0]; 
         if (user.type_user === 3) {
           this.router.navigate(['/admin'], { state: { data: user } });
         } else if (user.type_user === 2 ) {

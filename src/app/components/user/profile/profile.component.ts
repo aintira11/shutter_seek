@@ -16,6 +16,7 @@ export class ProfileComponent implements OnInit{
   data: DataMembers[]=[];
   currentSlideIndex: number[] = [];
   Like :DataLike[]=[];
+  Follow:[]=[];
 
   constructor(private router : Router, private route: ActivatedRoute,private Constants: Constants, private http: HttpClient){}
   ngOnInit(): void {
@@ -32,6 +33,7 @@ export class ProfileComponent implements OnInit{
         this.currentSlideIndex[index] = 0;
       });
       this.getMyLike(this.data[0].user_id);
+      this.getfollow(this.data[0].user_id);
   }
    // ฟังก์ชันเพื่อไปยังภาพถัดไป (เลื่อนเฉพาะ portfolio ของตัวเอง)
 getNext(portfolioIndex: number) {
@@ -60,6 +62,9 @@ getPrev(portfolioIndex: number) {
   back(){
     this.router.navigate([''],{ state: { data: this.data } });
   }
+  tofollow(){
+    this.router.navigate(['/tofollow'],{ state: { data: this.data } });
+  }
 
   cancelEdit(){
     this.router.navigate(['/profile'],{ state: { data: this.data } });
@@ -70,6 +75,14 @@ getPrev(portfolioIndex: number) {
     this.http.get(url).subscribe((response: any) => {
       this.Like = response;
       console.log("data Tegs :", this.Like);
+    });
+  }
+
+  getfollow(id : number){
+    const url = this.Constants.API_ENDPOINT + '/get/follow/'+ id;
+    this.http.get(url).subscribe((response: any) => {
+      this.Follow = response;
+      console.log("data Tegs :", this.Follow);
     });
   }
 }

@@ -27,7 +27,9 @@
         />
         <div class="profile-info">
           <h2>{{data[0].username}}</h2>
-          <p>กำลังติดตาม 3 คน</p>
+          <button class="btn me-2" (click)="tofollow()">
+            <p>กำลังติดตาม {{Follow.length}} คน</p>
+          </button>
           <p>เป็นสมาชิกเมื่อ {{ data[0].date_of_member | date:'dd/MM/yyyy' }}</p>
         </div>
         <div class="profile-actions">

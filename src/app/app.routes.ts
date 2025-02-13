@@ -19,6 +19,7 @@ import { EditUserComponent } from './components/user/edit-user/edit-user.compone
 import { InsertPortfolioComponent } from './components/shutter/insert-portfolio/insert-portfolio.component';
 import { AdminHomeComponent } from './components/admin/admin-home/admin-home.component';
 import { AddminComponent } from './components/admin/addmin/addmin.component';
+import { UserFollowComponent } from './components/user/user-follow/user-follow.component';
 
 export const routes: Routes = [
     {path: '',component: HomeComponent}, 
@@ -40,6 +41,7 @@ export const routes: Routes = [
     {path: 'editportfol',component: EditPortfolioComponent},
     {path: 'editpac',component: EditPackageComponent},
     {path: 'insertport',component: InsertPortfolioComponent},
+    {path: 'tofollow',component: UserFollowComponent},
 
     {path: 'admin',component: AdminHomeComponent},
     {path: 'addmin',component: AddminComponent},

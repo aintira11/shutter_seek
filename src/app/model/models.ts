@@ -70,3 +70,14 @@ export interface DataLike {
     name_tags:     string;
     image_urls:    string[];
 }
+
+export interface DataFollow {
+    user_id:       number;
+    email:         string;
+    image_profile: string;
+    username:      string;
+    follow_id:     number;
+    follower_id:   number;
+    followed_id:   number;
+    date_follow:   Date;
+}

@@ -3,39 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <title>ติดตาม</title>
     
 </head>
 <body>
     <div class="container">
+        <button class="btn me-2" (click)="back()">
         <div class="header">
             <span class="back-button">&#8592;</span>
             ติดตาม
         </div>
-        <p>กำลังติดตาม 3 คน</p>
+     </button>
+        <div *ngIf="Follow.length > 0 ; else aaaa ">
+
+        <p>กำลังติดตาม {{Follow.length}} คน</p>
+
+        <div  *ngFor="let data of Follow">
         <ul class="user-list">
             <li class="user-item">
                 <div class="user-info">
-                    <img src="user1.jpg" alt="User 1" class="user-avatar">
-                    <span>ชื่อผู้ใช้งาน</span>
+                    <img src="{{data.image_profile}}" alt="User 1" class="user-avatar">
+                    <span>{{data.username}}</span>
                 </div>
-                <button class="unfollow-button">เลิกติดตาม</button>
+                <button class="unfollow-button" (click)="unfollow(data.followed_id)">เลิกติดตาม</button>
             </li>
-            <li class="user-item">
-                <div class="user-info">
-                    <img src="user2.jpg" alt="User 2" class="user-avatar">
-                    <span>ชื่อผู้ใช้งาน</span>
-                </div>
-                <button class="unfollow-button">เลิกติดตาม</button>
-            </li>
-            <li class="user-item">
-                <div class="user-info">
-                    <img src="user3.jpg" alt="User 3" class="user-avatar">
-                    <span>ชื่อผู้ใช้งาน</span>
-                </div>
-                <button class="unfollow-button">เลิกติดตาม</button>
-            </li>
+            
         </ul>
+    </div>
+    </div>
+    <ng-template #aaaa>
+        <h3 style="text-align: center;">ยังไม่มีผลงานที่คุณถูกใจ ❤️ </h3>
+      </ng-template>
     </div>
 </body>
 </html>
