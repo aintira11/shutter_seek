@@ -20,7 +20,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 export class LoginComponent {
   loginForm: FormGroup;
   dataLogin: DataMembers[] = [];
-
+  // สร้างตัวแปรสถานะเริ่มต้นโมเดลเป็นปิด
+  isModelOpen: boolean = false;
   constructor(
     private constants: Constants,
     private router: Router,
@@ -60,7 +61,7 @@ export class LoginComponent {
       // แสดงข้อมูลใน Console
       console.log('API Response:', this.dataLogin);
       
-      if (this.dataLogin.length > 0) {
+      if (this.dataLogin.length == 1) {
         console.log('Login Successful:', this.dataLogin);
         const user = this.dataLogin[0]; 
         if (user.type_user === 3) {
@@ -72,12 +73,23 @@ export class LoginComponent {
           this.router.navigate(['/'], { state: { data: user} });
         }
       } else {
-        alert('ไม่พบผู้ใช้งาน กรุณาตรวจสอบข้อมูลอีกครั้ง');
+        this.isModelOpen = true;
       }
     } catch (error) {
       console.error('Login Failed:', error);
       alert('เกิดข้อผิดพลาดในการเข้าสู่ระบบ');
     }
-
   }
+  choose(type_user : number){
+
+    if (type_user === 2 ) {
+      // this.router.navigate(['/shutter'], { state: { data: user} });
+      this.router.navigate(['/shutter']);
+      this.isModelOpen = false;
+    } else if (type_user === 1) {
+      this.router.navigate(['/'], { state: { data: this.dataLogin} });
+      this.isModelOpen = false;
+    }
+  }
+    
 }

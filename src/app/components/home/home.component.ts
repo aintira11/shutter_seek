@@ -38,7 +38,9 @@ export class HomeComponent implements OnInit{
   currentSlideIndex: number[] = [];
   currentSlideIndex1: number[] = [];
   currentSlideIndexSearch: number[]=[];
-  
+
+  isLoading: boolean = false;
+  lastVoteTime: Date | null = null; // เวลาล่าสุดที่โหวต
 
   constructor(private fb: FormBuilder,private Constants: Constants, private route: ActivatedRoute, private http: HttpClient,private router : Router){
     this.form = this.fb.group({
@@ -52,7 +54,7 @@ export class HomeComponent implements OnInit{
     // this.PortfolioID.forEach(() => this.currentSlideIndex1.push(0));
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     // รับข้อมูลจากหน้าที่ส่งมา
     this.route.paramMap.subscribe(() => {
       const receivedData = window.history.state.data;
@@ -93,12 +95,19 @@ export class HomeComponent implements OnInit{
         this.currentSlideIndexSearch[index] = 0;
       });
     }
+
+    this.isLoading = true;
+      await this.delay(3500); // รอเวลา 5 วินาที
+      this.isLoading = false;
   }
 
   isLiked(portfolio_id: number): boolean {
     return this.Like.some(like => like.portfolio_id === portfolio_id);
   }
   
+  delay(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
   
    
   // ฟังก์ชันสำหรับการแสดงภาพปัจจุบัน

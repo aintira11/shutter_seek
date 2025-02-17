@@ -33,6 +33,14 @@
   <div>
     <img src="/assets/images/PIXEL (8).png" alt="" >
   </div>
+
+  <div *ngIf="isLoading; else content" style="margin-top: 10%;display: flex;justify-content: center;">
+    <!-- แสดง Loading Spinner หรือข้อความ Loading ตามต้องการ -->
+
+    <img src="/assets/images/Loading Stage ・ Animation.gif" alt="" style="width: 30%;">
+  </div>
+
+  <ng-template #content>
   <section>
     <form [formGroup]="form" (ngSubmit)="sreach()">
       <section>
@@ -148,7 +156,7 @@
     </div>
 </footer>
 
-   
+
 <section class="container mt-5">
   <div class="row justify-content-center" *ngIf="PortfolioID.length > 0">
       <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3 px-2" *ngFor="let photographer of PortfolioID; let portfolioIndex = index">
@@ -200,6 +208,9 @@
   </div>
 </section>
 </div>
+</ng-template>
+
+<!-- ส่วน ค้นหา -->
 <ng-template #aaaa>
   <div class="container mt-3">
     <h5 class="mb-3"><i class="bi bi-search"></i> ผลการค้นหา</h5>

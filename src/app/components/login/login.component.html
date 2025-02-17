@@ -31,6 +31,40 @@
             </form>
         </div>
     </div>
-               
+    <!-- Modal -->
+    <div *ngIf="isModelOpen" class="modal" >
+        <!-- From Uiverse.io by Alaner-xs --> 
+        
+        <div *ngIf="dataLogin.length > 1" class="card">
+            <div class="card-border-top"></div>
+           
+                <img class="img" src="{{dataLogin[0].image_profile}}" alt="">
+          
+            <span>{{dataLogin[0].username}}</span>
+            <div *ngIf="dataLogin[0].sht_status != null ; else kkkk">
+                <p class="job">Shutter</p>
+            </div>
+            <ng-template #kkkk>
+                <p class="job">Member</p>
+            </ng-template>
+            <button (click)="choose(dataLogin[0].type_user)">Click</button>
+        </div>
+    
+        <div class="card">
+            <div class="card-border-top"></div>
+
+                <img class="img" src="{{dataLogin[1].image_profile}}" alt="">
+         
+            <span>{{dataLogin[1].username}}</span>
+            <div *ngIf="dataLogin[1].sht_status != null ; else kkkk">
+                <p class="job">Shutter</p>
+            </div>
+            <ng-template #kkkk>
+                <p class="job">Member</p>
+            </ng-template>
+            <button (click)="choose(dataLogin[1].type_user)">Click</button>
+        </div>
+    
+    </div>          
 </body>
 </html>
