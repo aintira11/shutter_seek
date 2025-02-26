@@ -20,6 +20,8 @@ import { InsertPortfolioComponent } from './components/shutter/insert-portfolio/
 import { AdminHomeComponent } from './components/admin/admin-home/admin-home.component';
 import { AddminComponent } from './components/admin/addmin/addmin.component';
 import { UserFollowComponent } from './components/user/user-follow/user-follow.component';
+import { HomeShutterComponent } from './components/shutter/home-shutter/home-shutter.component';
+import { RegisterComponent } from './components/user/register/register.component';
 
 export const routes: Routes = [
     {path: '',component: HomeComponent}, 
@@ -42,9 +44,12 @@ export const routes: Routes = [
     {path: 'editpac',component: EditPackageComponent},
     {path: 'insertport',component: InsertPortfolioComponent},
     {path: 'tofollow',component: UserFollowComponent},
+    {path: 'register',component: RegisterComponent},
+    {path: 'homeshutter',component: HomeShutterComponent},
 
     {path: 'admin',component: AdminHomeComponent},
     {path: 'addmin',component: AddminComponent},
+    
 
     // { 
     //   path: 'myprofile',

@@ -1,0 +1,225 @@
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    padding: 20px;
+}
+.row {
+    display: flex;
+    flex-direction: row;
+    gap: 10px; /* กำหนดระยะห่างระหว่าง p */
+}
+
+.profile-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.back-button {
+    font-size: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.profile-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ccc;
+}
+
+.profile-info {
+    flex-grow: 1;
+}
+
+.profile-info h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.profile-actions {
+    display: flex;
+    gap: 10px;
+}
+
+
+.divider {
+    margin: 20px 0;
+    border: 0;
+    height: 1.5px; 
+    background: black; 
+}
+
+
+h3 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center; 
+}
+
+h3 i {
+    margin-right: 10px;
+}
+.edit-button, .logout-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+.logout-button {
+    background-color: #004AAD;
+    color: white;
+}
+// card 1
+.card1 {
+    width: 400px;
+    height: 300px;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    margin-bottom: 20px; /* เว้นระยะห่างจากด้านล่าง */
+}
+
+.card1-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 20px; /* เว้นระยะห่างระหว่างการ์ด */
+}
+/* Flexbox สำหรับการจัดตำแหน่ง */
+.row1 {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 2%;
+    flex-wrap: wrap; /* ทำให้ไม่เกินขอบหน้าจอ */
+    padding-left: 7%;
+    padding-right: 7%;
+}
+/* card  เกี่ยวกับ ฉัน*/ 
+.card-container {
+    width: 400px;
+    height: 300px;
+    position: relative;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+  }
+  
+  .card {
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+  }
+  
+  .card .front-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1)
+  }
+  
+  .card .front-content p {
+    font-size: 32px;
+    font-weight: 700;
+    opacity: 1;
+    background: linear-gradient(-45deg, #2943c9 0%, #7bc3df 100% );
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1)
+  }
+  
+  .card .content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 10px;
+    background: linear-gradient(-45deg, #27399f 0%, #1f97dc 100% );
+    color: #e8e8e8;
+    padding: 20px;
+    line-height: 1.5;
+    border-radius: 5px;
+    pointer-events: none;
+    transform: translateY(-96%);
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+  }
+  
+  .card .content .heading {
+    font-size: 22px;
+    font-weight: 700;
+    
+  }
+  .p{
+    font-size: 20px;
+    font-weight: 500;
+  }
+  
+  .card:hover .content {
+    transform: translateY(0);
+  }
+  
+  .card:hover .front-content {
+    transform: translateY(30%);
+  }
+  
+  .card:hover .front-content p {
+    opacity: 0;
+  }
+  
+  
+
+  /* Media Queries */
+@media (max-width: 768px) {
+    .works-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 columns on medium screens */
+    }
+    .card {
+        width: 100%; /* ให้การ์ดกว้าง 100% บนอุปกรณ์ขนาดเล็ก */
+        height: auto; /* ปรับความสูงอัตโนมัติ */
+    }
+
+    .row {
+        flex-direction: column; /* เปลี่ยนแถวเป็นคอลัมน์บนอุปกรณ์ที่มีหน้าจอเล็ก */
+        align-items: center; /* จัดกึ่งกลาง */
+    }
+
+    .card-container {
+        margin-left: 0; /* ลบระยะห่างด้านซ้าย */
+    }
+}
+
+@media (max-width: 480px) {
+    .works-grid {
+        grid-template-columns: 1fr; /* 1 column on small screens */
+    }
+}

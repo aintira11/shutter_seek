@@ -286,5 +286,34 @@ getPrev(portfolioIndex: number) {
        
       });
     }
+
+    toShutter(id_shutter: number) {
+      console.log("📤 Sending id_shutter:", id_shutter);
+      console.log("📤 Sending datauser:", this.datauser[0]);
+    
+      if (!id_shutter) {
+        console.error("❌ Error: id_shutter is undefined or invalid");
+        return;
+      }
+      if (!this.datauser || this.datauser.length === 0) {
+        console.error("❌ Error: this.datauser is empty or undefined");
+        return;
+      }
+    
+      this.router.navigate(['/homeshutter'], { 
+        state: { 
+          datauser: this.datauser[0], 
+          idshutter: id_shutter 
+        } 
+      });
+    }
+    
+    testShutter(id: number) {
+      console.log("✅ Clicked photographer ID:", id);
+      this.toShutter(id);
+    }
+
+      
+    
     
 }

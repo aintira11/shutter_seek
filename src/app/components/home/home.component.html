@@ -95,7 +95,7 @@
                         <div *ngFor="let image of photographer.image_urls; let i = index">
                             <div class="carousel-item" [class.active]="i === (currentSlideIndex[portfolioIndex] || 0)">
                                 <img [src]="image" class="d-block w-100 rounded img-fluid"
-                                    style="height: 200px; object-fit: cover;" alt="portfolio image">
+                                    style="height: 200px; object-fit: cover;" alt="portfolio image" >
                             </div>
                         </div>
                     </div>
@@ -115,8 +115,9 @@
                 <div class="d-flex align-items-center justify-content-between mt-2 px-2">
                     <!-- รูปโปรไฟล์ -->
                     <img [src]="photographer.image_profile" class="rounded-circle border border-primary"
-                        width="40" height="40" alt="profile">
-
+                    width="40" height="40" alt="profile" 
+                    (click)="toShutter(photographer.user_id)">
+                    
                     <!-- ข้อมูลช่างภาพ -->
                     <div class="text-center flex-grow-1">
                         <p class="mb-0 text-muted" style="font-size: 12px;">{{ photographer.name_tags }}</p>

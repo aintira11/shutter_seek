@@ -71,6 +71,7 @@ export interface DataLike {
     image_urls:    string[];
 }
 
+//หน้า user 
 export interface DataFollow {
     user_id:       number;
     email:         string;
@@ -80,4 +81,29 @@ export interface DataFollow {
     follower_id:   number;
     followed_id:   number;
     date_follow:   Date;
+}
+
+export interface Datapackages {
+    package_id:   number;
+    user_id:      number;
+    name_package: string;
+    detail:       string;
+    price:        number;
+    tags_id:      number;
+    name_tags:    string;
+}
+
+export interface Datawork {
+    portfolio_id: number;
+    name_work:    string;
+    tags_id:      number;
+    name_tags:    string;
+    image_urls:   string[];
+}
+
+export interface DataFollower {
+    follow_id:   number;
+    follower_id: number;
+    followed_id: number;
+    date_follow: Date;
 }
