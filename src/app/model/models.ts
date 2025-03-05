@@ -107,3 +107,15 @@ export interface DataFollower {
     followed_id: number;
     date_follow: Date;
 }
+
+export interface DataReview {
+    review_id:     number;
+    reviewer_id:   number;
+    reviewed_id:   number;
+    comment:       string;
+    rating:        number;
+    date_review:   Date;
+    reviewer_name: string;
+    profile:       string;
+}
+

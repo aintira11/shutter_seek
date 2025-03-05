@@ -1,81 +1,231 @@
+
+#first {
+  // height: 100vh;
+  // background: #4280c3;
+  position: relative;
+  width: 100%;
+  min-height: 400px; /* ความสูงเริ่มต้น */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  overflow: hidden; /* ป้องกันรูปเลยขอบ */
+}
+
+#second {
+  // background: #699bcf;
+}
+
+#third {
+  border-radius: 10px;
+  padding: 2%;
+  // border: 2px solid #7b9bbe; /* เส้นขอบสีฟ้า */
+  background: transparent; /* ทำให้พื้นหลังโปร่งใส */
+  background: linear-gradient(45deg,rgba(211, 214, 9, 0.413),rgba(3, 41, 212, 0.922));
+}
+
+#four {
+ 
+  background: #7b9bbe;
+}
+
+
+.header-container {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  position: sticky;
+  top: 0;  /* ต้องใส่ top เพื่อให้มันติดขอบบน */
+  z-index: 1000;  /* ให้แน่ใจว่าอยู่เหนือ element อื่น */
+  background: rgb(255, 255, 255); /* เฮดเดอร์มีพื้นหลัง */
+  border-radius: 10px;
+  padding: 1rem 2rem;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1); /* ให้ดูแยกออกจากพื้นหลัง */
+}
+/* ปรับแต่งโลโก้ */
+.logo {
+  height: 50px;
+}
+
+/* ปรับแต่งเมนู */
+.nav-link {
+  text-decoration: none;
+  color: black;
+  margin-right: 15px;
+}
+.nav-link:hover {
+  color: #007bff; /* เปลี่ยนสีเมื่อเมาส์ชี้ */
+  // text-shadow: 0px 0px 5px #007bff; /* ทำให้มีเงาสีฟ้า */
+}
+
+/* ส่วนของรูปที่ซ้อนอยู่ข้างหลัง */
+.image-overlay {
+  position: absolute;
+  top: -50px; /* ดันรูปขึ้นไปให้เหมือนในภาพ */
+  left: 0;
+  width: 100%;
+  z-index: 1; /* ให้ต่ำกว่า header */
+  backdrop-filter: blur(5px);
+  background-color: rgba(0, 0, 0, 0.3); /* เพิ่มสีดำโปร่งใสให้ดูสวย */
+}
+
+.background-image {
+  // width: 100%;
+  // // opacity: 0.6; /* ปรับความโปร่งใสให้ดูเนียน */
+  // object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('./../../../assets/images/back.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 1;
+  transition: height 0.3s ease-in-out; /* ให้ลดขนาดแบบ Smooth */
+  filter: blur(3px) brightness(0.6); /* เบลอ + ลดแสงให้ข้อความชัดขึ้น */
+}
+
+/* ข้อความอยู่บนพื้นหลัง */
+.content {
+  position: relative;
+  z-index: 2;
+  color: #fff;
+  max-width: 800px;
+  padding: 20px;
+}
+//////////
+body {
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+// header {
+//   position: sticky;
+//   top: 0;
+//   background: #d2c1c1a4;
+//   padding: 1rem 2rem;
+// }
+
+nav {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 45px;
+  font-weight: bold;
+  color: black;
+  text-decoration: none;
+}
+
+ul {
+  display: flex;  
+  box-sizing: border-box;
+
+}
+
+li {
+  list-style: none;
+  margin-right: 20px;
+  font-size: 25px;
+  font-weight: bold;
+}
+li a {
+  text-decoration: none;
+  color: black;
+}
+// section {
+//   height: 100vh;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   font-size: 50px;
+//   font-weight: bold;
+// }
+
 //CSS สำหรับเลื่อนแนวนอน
 .tags-container {
-    display: flex;
-    align-items: center;
-    position: relative;
-    width: 100%;
-    overflow: hidden; /* ซ่อนส่วนที่เกิน */
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  overflow: hidden; /* ซ่อนส่วนที่เกิน */
 }
 
 .tags-wrapper {
-    display: flex;
-    overflow-x: auto;
-    scroll-behavior: smooth; /* ทำให้เลื่อนนุ่มนวล */
-    white-space: nowrap;
-    width: 90%; /* ปรับให้เว้นที่สำหรับลูกศร */
-    scrollbar-width: none; /* ซ่อน scrollbar */
-    
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth; /* ทำให้เลื่อนนุ่มนวล */
+  white-space: nowrap;
+  width: 90%; /* ปรับให้เว้นที่สำหรับลูกศร */
+  scrollbar-width: none; /* ซ่อน scrollbar */
+  
 }
 
 .tags-wrapper::-webkit-scrollbar {
-    display: none; /* ซ่อน scrollbar บน Chrome */
+  display: none; /* ซ่อน scrollbar บน Chrome */
 }
 
 .tag-button {
-    margin-right: 10px;
-    flex-shrink: 0;
+  margin-right: 10px;
+  flex-shrink: 0;
 }
 
 .scroll-btn {
-    background: white;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 10;
+  background: white;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
 }
 
 .scroll-btn.left {
-    left: 0;
+  left: 0;
 }
 
 .scroll-btn.right {
-    right: 0;
+  right: 0;
 }
- // icon like
- .container input {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-  height: 0;
-  width: 0;
+// icon like
+.container input {
+position: absolute;
+opacity: 0;
+cursor: pointer;
+height: 0;
+width: 0;
 }
 
 .container {
-  display: block;
-  position: relative;
-  cursor: pointer;
-  user-select: none;
+display: block;
+position: relative;
+cursor: pointer;
+user-select: none;
 }
 
 .container svg {
-  position: relative;
-  top: 0;
-  left: 0;
-  height: 30px;
-  width: 30px;
-  transition: all 0.3s;
-  fill: #666; /* สีเทาปกติ */
+position: relative;
+top: 0;
+left: 0;
+height: 30px;
+width: 30px;
+transition: all 0.3s;
+fill: #666; /* สีเทาปกติ */
 }
 
 .container svg:hover {
-  transform: scale(1.1);
+transform: scale(1.1);
 }
 
 .container input:checked ~ svg {
-  fill: #E3474F; /* สีแดงเมื่อถูกใจ */
+fill: #E3474F; /* สีแดงเมื่อถูกใจ */
 }
 // .like-container input {
 //   position: absolute;
@@ -116,22 +266,46 @@
 // }
 
 
-  //ปุ่มโปรไฟล์
-  .circle-button {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden; /* ป้องกันภาพล้นออกจากปุ่ม */
+.button-container {
+    display: flex;  /* Use flexbox for layout */
+    align-items: center;  /* Align items vertically at the center */
+    gap: 10px;  /* Optional: Adjust the gap between buttons */
+    position: absolute;  /* Fix the buttons at a specific position */
+    right: 0;  /* Align the container to the right edge of the screen */
+    margin-right: 2%;
+}
+
+/* ปุ่มโปรไฟล์ */
+.circle-button {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden; /* ป้องกันภาพล้นออกจากปุ่ม */
+}
+
+.circle-button img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Responsive สำหรับมือถือ */
+@media (max-width: 768px) {
+  #first {
+    min-height: 300px;
   }
-  
-  .circle-button img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  .background-image {
+    height: 300px;
   }
-  
-  
+  .form-container {
+    width: 90%;
+  }
+  .content {
+    font-size: 14px;
+    padding: 10px;
+  }
+}

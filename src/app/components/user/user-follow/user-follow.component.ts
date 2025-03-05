@@ -49,8 +49,8 @@ export class UserFollowComponent implements OnInit{
         console.error("Invalid user_id!");
         return;
       }
-    const url = this.Constants.API_ENDPOINT + '/unfollow/'+ userId +'/'+id;
-    this.http.delete(url, {}).subscribe({
+    const url = this.Constants.API_ENDPOINT + '/Follow/'+ userId +'/'+id;
+    this.http.post(url, {}).subscribe({
       next: () => {
         console.log("UnFollow success");
         this.router.navigate(['/tofollow'],{ state: { data: this.data } }).then(() => {
