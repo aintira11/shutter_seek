@@ -1,16 +1,18 @@
 import { Component, OnInit,ElementRef, ViewChild, HostListener  } from '@angular/core';
-import { DataFollower, DataMembers, Datapackages, DataReview, Datawork } from '../../../model/models';
+import { DataFollower, DataLike, DataMembers, Datapackages, DataReview, Datawork } from '../../../model/models';
 import { Constants } from '../../../config/constants';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-home-shutter',
   standalone: true,
-  imports: [CommonModule,MatCardModule, MatButtonModule],
+  imports: [CommonModule,MatCardModule, MatButtonModule,ReactiveFormsModule],
   templateUrl: './home-shutter.component.html',
   styleUrl: './home-shutter.component.scss'
 })
@@ -22,6 +24,7 @@ export class HomeShutterComponent implements OnInit{
   datafollower : DataFollower[] =[] ;
   datareview:DataReview[]=[];
   idshutter : number = 0 ;
+  Like :DataLike[]=[];
 
   rating: number = 0; // ค่าเริ่มต้นของการให้คะแนน
   hoverRating = 0;
@@ -32,10 +35,18 @@ export class HomeShutterComponent implements OnInit{
   isModelOpen_Success : boolean = false;
   isModelOpen_danger : boolean = false;
 
-  constructor(private route: ActivatedRoute,private router : Router,private Constants: Constants , private http: HttpClient){}
+  reviewform: FormGroup;
+  constructor(private formBuilder: FormBuilder,private route: ActivatedRoute,private router : Router,private Constants: Constants , private http: HttpClient){
+    // สร้างฟอร์มจาก FormBuilder
+    this.reviewform = this.formBuilder.group({
+      // reviewed_id: ['', [Validators.required]],
+      comment: ['', Validators.required],
+      // rating: [0, Validators.rating], // เพิ่ม rating ในฟอร์ม
+    });
+  }
   
   ngOnInit() { 
-    this.route.paramMap.subscribe(() => {
+    this.route.paramMap.subscribe(() => {                
       setTimeout(() => { // เพิ่ม setTimeout() เพื่อให้ state โหลดเสร็จก่อน
         this.data = window.history.state.datauser || [];
         this.idshutter = window.history.state.idshutter || null;
@@ -53,6 +64,7 @@ export class HomeShutterComponent implements OnInit{
         this.getdatauser(this.idshutter); // เรียก API หลังจากแน่ใจว่าข้อมูลมาแล้ว
       }, 100);
     });
+    
   }
 
   delay(ms: number) {
@@ -77,27 +89,33 @@ export class HomeShutterComponent implements OnInit{
     this.http.post<{ success: boolean, message: string }>(url, {}).subscribe({
       next: async (response) => {
         if (response.message === "Unfollowed successfully") {
+          
           this.isModelOpen_danger = true;
           await this.delay(2000);
           this.isModelOpen_danger = false;
           console.log("Unfollow success");
+          
         } else {
+          
           this.isModelOpen_Success = true;
           await this.delay(2000);
           this.isModelOpen_Success = false;
           console.log("Follow success");
+          
+          
         }
+        window.location.reload();
       },
       error: (error) => console.error("Follow/Unfollow error:", error)
     });
   }
 
-  rate(value: number) {
-    this.rating = value;
+  rate(star: number) {
+    this.rating = star;
   }
 
-  hover(value: number) {
-    this.hoverRating = value;
+  hover(star: number) {
+    this.hoverRating = star;
   }
 
   getdatauser(id : number){
@@ -113,6 +131,14 @@ export class HomeShutterComponent implements OnInit{
     });
   }
   
+  getLikework(portfolio_id:number){
+    const url = this.Constants.API_ENDPOINT+'/get/likes/'+portfolio_id;
+    this.http.get(url).subscribe((response: any) => {
+      this.datapackages = response; 
+      console.log("datapackages :",this.datapackages); 
+      
+    });
+  }
   getpackages(id : number){
     console.log('id',id);
     const url = this.Constants.API_ENDPOINT+'/get/packages/'+id;
@@ -152,12 +178,48 @@ export class HomeShutterComponent implements OnInit{
     });
   }
 
-  postreview(){
+  postreview() { 
+    const userId = (this.data as DataMembers).user_id; // ✅ บอกให้ TypeScript รู้ว่าเป็น Object
+    const url = this.Constants.API_ENDPOINT + '/post/review/' + userId; 
+    console.log(this.reviewform.value);  // แสดงค่าทั้งหมดในฟอร์ม
+    console.log('Rating:', this.rating); // แสดงค่า rating ที่เลือก
 
+    if (!this.reviewform.valid) {
+      alert('กรุณากรอกข้อมูลให้ครบ');
+      return;
+    }
+
+    try {
+      // const formData = this.reviewform.value;
+      const formData = {
+        reviewed_id: this.datauser[0].user_id,
+        comment: this.reviewform.value.comment,
+        rating: this.rating, 
+      };
+  
+      this.http.post(url, formData).subscribe({
+        next: (res) => {
+          console.log('respon:', res);
+          this.isModelOpen = false;
+          window.location.reload();
+        },
+        error: (err) => {
+          console.error('Error:', err);
+          alert(err.status === 409 ? 'เกิดข้อผิดพลาด' : 'กรุณาลองอีกครั้ง');
+        }
+      });
+    } catch (error) {
+      console.error('Review Failed:', error);
+      alert('เกิดข้อผิดพลาดในการรีวิว');
+    }
   }
+  
+
   postreport(){
 
   }
+ 
+
   profile(){
     const type = Number(this.datauser[0].type_user);
     console.log("ค่าของ type:", type, "| ประเภท:", typeof type); // ✅ ดูค่าที่แท้จริง

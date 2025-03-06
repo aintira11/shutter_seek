@@ -31,7 +31,7 @@ export class BShutter3Component {
   fromreister!: FormGroup;
   data: any;
   // ประกาศตัวแปรสำหรับเก็บสถานะของ checkbox แต่ละตัว
-checkboxesStatus = [false, false, false]; // ตัวอย่าง: false หมายถึงไม่ได้ติ๊ก
+checkboxesStatus = [false]; // ตัวอย่าง: false หมายถึงไม่ได้ติ๊ก
 
   
   constructor(private router: Router,
@@ -41,23 +41,28 @@ checkboxesStatus = [false, false, false]; // ตัวอย่าง: false ห
         
   ) {}
   async ngOnInit(): Promise<void> {
-    //รับข้อมูล จากหน้าที่ส่งมา 
-     this.route.queryParams.subscribe(params => {
-      // this.route.queryParams.subscribe(params => {
-      this.data =window.history.state.data;
-      // this.data = params['id'];
-      console.log('Response:', this.data);
-      //this.next(this.data.user_id);      
-      });
-
-      this.gettegs();
-  }
-  gettegs() {
-    const url = this.Constants.API_ENDPOINT + '/tegs' ;
-    this.http.get(url).subscribe((response: any) => {
-      this.Tags = response;
-      console.log("data Tegs :", this.Tags);
+    this.route.queryParams.subscribe(params => {
+      this.data = window.history.state.data;
+      console.log('ข้อมูลที่ได้รับ:', this.data);
+      
+      if (!this.data || !this.data.user_id) {
+        console.error('ไม่พบ user_id ในข้อมูล:', this.data);
+        // อาจแสดงแจ้งเตือนหรือเปลี่ยนเส้นทาง
+      }
     });
+  
+    await this.gettegs();
+  }
+  async gettegs() {
+    try {
+      const url = this.Constants.API_ENDPOINT + '/tegs';
+      const response: any = await this.http.get(url).toPromise();
+      this.Tags = response;
+      console.log("ข้อมูลแท็ก:", this.Tags);
+    } catch (error) {
+      console.error("เกิดข้อผิดพลาดในการโหลดแท็ก:", error);
+      this.Tags = [];
+    }
   }
   //----------------------------------------------------------------------------------------------
   packages: { name: string; category: string; description: string; price: string }[] = [
@@ -72,40 +77,64 @@ checkboxesStatus = [false, false, false]; // ตัวอย่าง: false ห
 checkAllChecked() {
   return this.checkboxesStatus.every(status => status); // ตรวจสอบว่าทุก status เป็น true หรือไม่
 }
-  async savePackages() {
-    if (this.checkAllChecked()) {
-    const apiUrl = `${this.Constants.API_ENDPOINT}/package`;
+async savePackages() {
+  if (!this.checkAllChecked()) {
+    alert("กรุณาติ๊กทุกช่องก่อนกดยืนยัน"); 
+    return;
+  }
   
-    // ส่งข้อมูลทีละแพ็กเกจ
-    for (let packageData of this.packages) {
-      // หาค่า tags_id ที่ตรงกับ category ที่ผู้ใช้เลือก
-      const selectedTag = this.Tags.find(tag => tag.tags_id === Number(packageData.category)); // แปลง package.category เป็น number
+  // ตรวจสอบว่าแพ็กเกจมีข้อมูลที่จำเป็นหรือไม่
+  const hasEmptyPackages = this.packages.some(pkg => 
+    !pkg.name || !pkg.category || !pkg.description || !pkg.price
+  );
   
-      // ตรวจสอบว่าพบ tags_id หรือไม่
-      if (selectedTag) {
-        const payload = {
-          tags_id: selectedTag.tags_id,  // ส่ง tags_id จาก this.Tags
-          user_id: this.data.user_id,  // ดึง user_id จากข้อมูลที่ส่งมาจากหน้าก่อนหน้า
-          name_package: packageData.name,
-          detail: packageData.description,
-          price: packageData.price,
-        };
-  
-        try {
-          const response = await this.http.post(apiUrl, payload).toPromise();
-          console.log("Response from API:", response);
-        } catch (error) {
-          console.error("Error while sending package data:", error);
-        }
-      } else {
-        console.error("Selected category not found in tags.");
-      }
-    }
+  if (hasEmptyPackages) {
+    alert("กรุณากรอกข้อมูลแพ็กเกจให้ครบทุกช่อง");
+    return;
+  }
 
+  const apiUrl = `${this.Constants.API_ENDPOINT}/add/package`;
+  let hasErrors = false;
+
+  for (let packageData of this.packages) {
+    // ดึงข้อมูลแท็กที่เลือก
+    const selectedTag = this.Tags.find(tag => tag.tags_id === parseInt(packageData.category));
+    
+    if (!selectedTag) {
+      console.error("ไม่พบหมวดหมู่ที่เลือกในแท็ก");
+      hasErrors = true;
+      continue;
+    }
+    
+    const payload = {
+      tags_id: selectedTag.tags_id,
+      user_id: this.data?.user_id,  // เพิ่มการตรวจสอบ null
+      name_package: packageData.name,
+      detail: packageData.description,
+      price: packageData.price,
+    };
+    // ภายในเมธอด savePackages ก่อนการโพสต์ HTTP:
+      console.log("กำลังส่งข้อมูล:", {
+        apiUrl,
+        payload,
+        allTags: this.Tags,
+        selectedTagId: packageData.category,
+        dataType: typeof packageData.category
+      });
+    try {
+      const response = await this.http.post(apiUrl, payload).toPromise();
+      console.log("การตอบสนองจาก API:", response);
+    } catch (error) {
+      console.error("เกิดข้อผิดพลาดขณะส่งข้อมูลแพ็กเกจ:", error);
+      hasErrors = true;
+    }
+  }
+
+  if (!hasErrors) {
     this.isModelOpen = false;
-    this.router.navigate(['']); // ตัวอย่าง: เปลี่ยนเส้นทางไปยังหน้าสำเร็จ
+    this.router.navigate(['']);
   } else {
-    alert("กรุณาติ๊กทุกช่องก่อนกดยืนยัน"); // แจ้งเตือนหากยังติ๊กไม่ครบ
+    alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล กรุณาลองใหม่อีกครั้ง");
   }
 }
   

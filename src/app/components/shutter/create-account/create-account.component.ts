@@ -94,4 +94,6 @@ export class CreateAccountComponent implements OnInit{
       this.hideConfirmPassword = !this.hideConfirmPassword;
     }
   }
+
+  
 } 

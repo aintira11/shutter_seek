@@ -1,54 +1,64 @@
+<div *ngIf="isLoading; else content" style="margin-top: 10%;display: flex;justify-content: center;">
+  <!-- แสดง Loading Spinner หรือข้อความ Loading ตามต้องการ -->
+
+  <img src="/assets/images/Loading Stage ・ Animation.gif" alt="" style="width: 30%;">
+</div>
+
+<ng-template #content>
 <div class="profile-container">
   <div class="back-button" (click)="back()">
     <button>&lt;</button>
     <span>ข้อมูลบัญชี</span>
   </div>  
 
-  <div class="profile-content">
+  <div class="profile-card">
     <div class="profile-picture-section">
-      <img class="profile-picture" [src]="data[0].image_profile " alt="Profile Picture" />
+      <img class="profile-picture" [src]="imagePreview || data[0].image_profile" alt="Profile Picture" />
+
       <button class="edit-picture-button" (click)="triggerFileInput()">แก้ไขรูปภาพ</button>
-      <input type="file" id="file-input" hidden (change)="onFileSelected($event)" />
+      <input type="file" #fileInput hidden (change)="onFileSelected($event)" />
     </div>
 
     <div class="profile-form">
       <form [formGroup]="fromreister" (ngSubmit)="save()" class="register-form">
-      <div class="form-section">
-        <div class="form-group">
-          <label>ชื่อ</label>
-          <input type="text" [(ngModel)]="data[0].first_name" formControlName="Name" />
+        <div class="form-section">
+          <div class="form-group">
+            <label>ชื่อ</label>
+            <input type="text" [(ngModel)]="data[0].first_name" formControlName="Name" />
+          </div>
+          <div class="form-group">
+            <label>นามสกุล</label>
+            <input type="text" [(ngModel)]="data[0].last_name" formControlName="LastName"/>
+          </div>
+          <div class="form-group">
+            <label>ชื่อผู้ใช้</label>
+            <input type="text" [(ngModel)]="data[0].username" formControlName="UserName"/>
+          </div>
         </div>
-        <div class="form-group">
-          <label>นามสกุล</label>
-          <input type="text" [(ngModel)]="data[0].last_name" formControlName="LastName"/>
-        </div>
-        <div class="form-group">
-          <label>ชื่อผู้ใช้</label>
-          <input type="text" [(ngModel)]="data[0].username" formControlName="UserName"/>
-        </div>
-      </div>
 
-      <div class="form-section">
-        <h2>ข้อมูลติดต่อ</h2>
-        <div class="form-group">
-          <label>อีเมล์</label>
-          <input type="email" [(ngModel)]="data[0].email" formControlName="Email"/>
+        <div class="form-section">
+          <h2>ข้อมูลติดต่อ</h2>
+          <div class="form-group">
+            <label>อีเมล์</label>
+            <input type="email" [(ngModel)]="data[0].email" formControlName="Email"/>
+          </div>
+          <div class="form-group">
+            <label>เบอร์โทร</label>
+            <input type="tel" [(ngModel)]="data[0].phone" formControlName="Phone"/>
+          </div>
+          <div class="form-group">
+            <label>ที่อยู่</label>
+            <input type="text" [(ngModel)]="data[0].address" formControlName="address"/>
+          </div>
         </div>
-        <div class="form-group">
-          <label>เบอร์โทร</label>
-          <input type="tel" [(ngModel)]="data[0].phone" formControlName="Phone"/>
-        </div>
-        <div class="form-group">
-          <label>ที่อยู่</label>
-          <input type="tel" [(ngModel)]="data[0].address" formControlName="address"/>
-        </div>
-      </div>
 
-      <div class="button-group">
-        <button class="cancel-button" (click)="back()">ยกเลิก</button>
-        <button class="save-button" type="submit">บันทึก</button>
-      </div>
-    </form>
+        <div class="button-group">
+          <button class="cancel-button" (click)="back()">ยกเลิก</button>
+          <button class="save-button" type="submit">บันทึก</button>
+        </div>
+      </form>
     </div>
   </div>
+
 </div>
+</ng-template>

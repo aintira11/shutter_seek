@@ -99,6 +99,7 @@ export interface Datawork {
     tags_id:      number;
     name_tags:    string;
     image_urls:   string[];
+    like_count:   number;
 }
 
 export interface DataFollower {

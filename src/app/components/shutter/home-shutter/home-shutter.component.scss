@@ -521,6 +521,28 @@ h3 i {
   text-shadow: none;
 }
 
+.Reviewbutton-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+.btn-submit {
+  background: #004AAD;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.btn-submit:disabled {
+  background: gray;
+  cursor: not-allowed;
+}
+
+
   /* Media Queries */
 @media (max-width: 768px) {
     .works-grid {

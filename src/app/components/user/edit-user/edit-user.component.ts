@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Constants } from '../../../config/constants';
 import { DataMembers } from '../../../model/models';
@@ -20,6 +20,8 @@ export class EditUserComponent {
    files: { file: File; preview: string; newName?: string }[] = [];
    selectedFile?: File;
    imagePreview: string ="";
+   isLoading: boolean = false;
+
   constructor(private fb: FormBuilder,private router : Router, private route: ActivatedRoute,private Constants: Constants, private http: HttpClient,private readonly imageUploadService: ImageUploadService){
     this.fromreister = this.fb.group({
       Email: ['', [Validators.required, Validators.email]],
@@ -33,15 +35,18 @@ export class EditUserComponent {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(() => {
-      this.data =window.history.state.data;
+      this.data = window.history.state.data || []; // ป้องกัน `undefined`
       console.log('Response:', this.data);
-        // this.printdata();
-        if (this.data[0]) { // เช็กว่ามี user_id หรือไม่
-          //this.getdatauser(this.data.user_id);
-          console.log("datauser",this.data);
-        }
-      });
-      this.imagePreview = this.data[0].image_profile;
+  
+      if (this.data.length > 0) {
+        console.log("datauser", this.data);
+        this.imagePreview = this.data[0]?.image_profile || ""; // ป้องกัน `undefined`
+      }
+    });
+  }
+  
+  delay(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
   // goToLogin(): void {
   //   this.router.navigate(['/login']);
@@ -50,10 +55,11 @@ export class EditUserComponent {
   back(){
     this.router.navigate(['/profile'],{ state: { data: this.data } });
   }
-
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   triggerFileInput() {
-    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
-    fileInput.click();
+    if (this.fileInput) {
+      this.fileInput.nativeElement.click();
+    }
   }
   
   onFileSelected(event: any) {
@@ -61,26 +67,28 @@ export class EditUserComponent {
     if (file) {
       this.selectedFile = file; // เก็บไฟล์ที่เลือก
       const reader = new FileReader();
-      reader.onload = () => {
-        this.imagePreview = reader.result as string; // อัปเดตตัวแปรรูปภาพ
+      reader.onload = (e: any) => {
+        this.imagePreview = e.target.result; // อัปเดตรูปตัวอย่างทันที
       };
       reader.readAsDataURL(file);
     }
   }
+  
 
   private generateRandomFileName(originalName: string): string {
     const extension = originalName.split('.').pop();
     return `${Date.now()}-${Math.random().toString(36).substring(2, 10)}.${extension}`;
   }
   async save() {
-    if (!this.data[0].user_id) {
+    if (!this.data || this.data.length === 0 || !this.data[0].user_id) {
       console.error("User ID is missing!");
+      alert("ไม่พบข้อมูลผู้ใช้");
       return;
     }
   
-    let image = this.data[0].image_profile; // ใช้รูปเก่าเป็นค่าเริ่มต้น
+    let image = this.data[0]?.image_profile || ""; // ใช้ค่าเริ่มต้น
   
-    // อัปโหลดเฉพาะกรณีที่มีไฟล์ใหม่ถูกเลือก
+    // ถ้ามีไฟล์ใหม่ อัปโหลดก่อน
     if (this.selectedFile) {
       try {
         const response: any = await this.imageUploadService.uploadImage(this.selectedFile).toPromise();
@@ -92,17 +100,21 @@ export class EditUserComponent {
       }
     }
   
-    const url = this.Constants.API_ENDPOINT + '/edit/' + this.data[0].user_id;
+    const url = `${this.Constants.API_ENDPOINT}/edit/${this.data[0].user_id}`;
     const formData = {
       email: this.fromreister.value.Email,
       username: this.fromreister.value.UserName,
       first_name: this.fromreister.value.Name,
       last_name: this.fromreister.value.LastName,
       phone: this.fromreister.value.Phone,
-      image_profile: image, // ใช้รูปเก่าหากไม่ได้อัปโหลดใหม่
+      image_profile: image,
       address: this.fromreister.value.address,
     };
-  
+      this.isLoading = true;
+      // ไม่ต้องรอให้เสร็จ ทำงานอื่นไปเลย
+      new Promise(resolve => setTimeout(resolve, 3500)).then(() => {
+      this.isLoading = false;
+      });
     this.http.post(url, formData).subscribe({
       next: (response) => {
         console.log("Update success:", response);
@@ -115,5 +127,6 @@ export class EditUserComponent {
       }
     });
   }
+  
   
 }

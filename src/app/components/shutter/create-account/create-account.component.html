@@ -26,9 +26,12 @@
                 </div>
             </div>
             <hr style="border: 1px solid #ddd; width: 100%; margin: 20px auto; margin-top: 30px;" />
-            <!-- <h2 style="color: #003ebb; text-align: start;">ขั้นตอนที่ 1</h2> -->
+            
+            
             <form [formGroup]="fromreister" (ngSubmit)="register()" class="example-form">
+              
                 <div class="column">
+                  <h2 style="color: #003ebb; text-align: start;">ขั้นตอนที่ 1</h2>
                   <label class="label">อีเมลที่ติดต่อได้</label>
                   <input placeholder="ระบุอีเมล" class="input-style" type="email" formControlName="Email" required />
               

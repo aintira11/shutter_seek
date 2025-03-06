@@ -83,18 +83,18 @@
               <hr>
               <p>
                 กรุณาทำการยืนยันการสมัครสมาชิกช่างภาพ<br>
-                ระบบจะตรวจสอบและส่งผลการสมัครไปยังอีเมลของคุณ<br>
-                หากผ่านการพิจารณา คุณสามารถเริ่มใช้งานเว็บไซต์ได้ทันที!
+                ระบบจะตรวจสอบและส่งผลการสมัครไปทางกล่องข้อความของคุณ <br>
+                หากผ่านการพิจารณา ผลงานของคุณจะปรากฎให้ทุกคนได้เห็นทันที !
               </p>
               <div class="checkbox-list">
                 <label>
-                  <input type="checkbox" [(ngModel)]="checkboxesStatus[0]" /> คุณยืนยันการเป็นเจ้าของผลงานจริง
+                  ✔️ คุณยืนยันการเป็นเจ้าของผลงานจริง
                 </label>
                 <label>
-                  <input type="checkbox" [(ngModel)]="checkboxesStatus[1]" /> ยืนยันความถูกต้องของข้อมูล
+                  ✔️ ยืนยันความถูกต้องของข้อมูล
                 </label>
                 <label>
-                  <input type="checkbox" [(ngModel)]="checkboxesStatus[2]" /> ยินยอมให้ปฏิบัติตามกฎและเงื่อนไข
+                  <input type="checkbox" [(ngModel)]="checkboxesStatus[0]" /> ยินยอมให้ปฏิบัติตามกฎและเงื่อนไข
                 </label>
               </div>
               <button class="confirm-button" (click)="savePackages()">ยืนยันและส่งให้ทีมงานตรวจสอบ</button>

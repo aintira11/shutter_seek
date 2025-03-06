@@ -1,47 +1,138 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
-    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" />
+    <title>ลงทะเบียนช่างภาพ - ข้อมูลเบื้องต้น</title>
 </head>
 <body> 
     <header>
         <div class="header">
-            <button mat-button >เข้าสู่ระบบ</button>  
-            <span class="material-symbols-outlined" style="font-size: 2.2em; padding: 5px;">
-                account_circle
-            </span>
+            <button class="login-btn">เข้าสู่ระบบ</button>  
+            <span class="material-symbols-outlined profile-icon">account_circle</span>
         </div>
     </header>
-        <div class="container">
-        <!-- <div class="logo-container" > -->
-            <img src="/assets/images/PIXEL (7).png" alt="Logo" class="logo-img" /> 
-        <!-- </div>  -->
-        <h2 style="color: #003ebb;">ข้อมูลเบื่องต้นสำหรับช่างภาพ</h2>
 
-        <div class="column">
-        <form [formGroup]="fromreister" (ngSubmit)="next()">
-            <div class="form-group">
-                <label class="label">ข้อมูลติดต่อส่วนตัว</label>
-                <input type="text" class="input-style" placeholder="Line ID" formControlName="lineID">
+    <div class="container">
+        <div class="logo-wrapper">
+            <img src="/assets/images/PIXEL (7).png" alt="Logo" class="logo-img" /> 
+        </div>
+        
+        <div class="content-container">
+            <div class="page-title">
+                <h2>ขั้นตอนที่ 2</h2>
+                <h3>ข้อมูลเบื้องต้นสำหรับช่างภาพ</h3>
             </div>
-            <div class="form-group">
-                <label class="label">web site ส่วนตัว</label>
-                <input type="text" class="input-style" placeholder="www.//...." formControlName="facebook">
-            </div>
+
+            <div class="form-sections">
+                <!-- ส่วนที่ 1: ข้อมูลส่วนตัว -->
+                <section class="form-section" id="personal-info">
+                    <form [formGroup]="photographerForm" (ngSubmit)="savePersonalInfo()">
+                        <div class="form-group">
+                            <label class="label">ข้อมูลติดต่อส่วนตัว</label>
+                            <input type="text" class="input-style" placeholder="Line ID" formControlName="lineID">
+                            <div *ngIf="photographerForm.get('lineID')?.invalid && photographerForm.get('lineID')?.touched" class="error-message">
+                                กรุณากรอก Line ID
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="label">ใส่ลิ้งค์เว็บไซต์ส่วนตัวของคุณ (ถ้ามี)</label>
+                            <input type="text" class="input-style" placeholder="เช่น เพจเฟซบุก" formControlName="facebook">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="label">แนะนำตัวคุณให้ลูกค้าได้รู้จักคุณมากขึ้น (รายละเอียดเพิ่มเติม)</label>
+                            <textarea class="input-style" rows="4" placeholder="เช่น ประสบการณ์การถ่ายภาพ, สไตล์การถ่ายภาพที่ถนัด" formControlName="description"></textarea>
+                            <div *ngIf="photographerForm.get('description')?.invalid && photographerForm.get('description')?.touched" class="error-message">
+                                กรุณากรอกข้อมูลแนะนำตัว
+                            </div>
+                        </div>
+
+                        <div class="button-container">
+                            <button type="submit" class="save-button" [disabled]="!photographerForm.valid">บันทึกข้อมูลส่วนตัว</button>
+                        </div>
+                    </form>
+                </section>
+
+                <div class="section-divider"></div>
+
+                <!-- ส่วนที่ 2: หมวดหมู่ผลงาน -->
+                <section class="form-section" id="portfolio-category">
+                    <h3>เลือกหมวดหมู่ผลงานของคุณ</h3>
+                    
+                    <form [formGroup]="portfolioForm" (ngSubmit)="savePortfolioInfo()">
+                        <div class="form-group">
+                            <label class="label">ชื่อผลงาน</label>
+                            <input type="text" class="input-style" placeholder="เช่น งานแต่งงาน, ถ่ายภาพบุคคล" formControlName="name_work">
+                            <div *ngIf="portfolioForm.get('name_work')?.invalid && portfolioForm.get('name_work')?.touched" class="error-message">
+                                กรุณากรอกชื่อผลงาน
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="label">หมวดหมู่ผลงาน</label>
+                            <select class="input-style" formControlName="tags_id">
+                                <option value="">-- เลือกหมวดหมู่ --</option>
+                                <option *ngFor="let tag of Tags" [value]="tag.tags_id">
+                                    {{ tag.name_tags }}
+                                </option>
+                            </select>
+                            <div *ngIf="portfolioForm.get('tags_id')?.invalid && portfolioForm.get('tags_id')?.touched" class="error-message">
+                                กรุณาเลือกหมวดหมู่
+                            </div>
+                        </div>
+                        <div class="button-container">
+                            <button type="submit" class="save-button" [disabled]="!portfolioForm.valid">บันทึกข้อมูลผลงาน</button>
+                        </div>
+                    </form>
+                </section>
+
+                <div class="section-divider"></div>
+
+                <!-- ส่วนที่ 3: อัปโหลดรูปผลงาน -->
+                <section class="form-section" id="portfolio-upload">
+                    <h3>อัปโหลดรูปผลงานของคุณ</h3>
+                    
+                    <div class="upload-info">
+                        <p class="upload-count">อัพโหลดรูปผลงาน {{ files.length }}/10 (jpg, png)</p>
+                        <p class="upload-description">ลูกค้าอยากเห็นฝีมือของคุณ เลือกรูปเพื่อแสดงผลงานของคุณ</p>
+                    </div>
             
-            <div class="form-group">
-                <label class="label">สั้นๆเกี่ยวกับคุณ ( รายละเอียดเพิ่มเติม )</label>
-                <textarea class="input-style" rows="3" placeholder="เจ้าของเพจ logo sud cool" formControlName="description"></textarea>
+                    <div class="file-upload-container">
+                        <input 
+                            type="file" 
+                            id="fileInput" 
+                            (change)="onFileSelect($event)" 
+                            multiple 
+                            accept=".jpg,.jpeg,.png" 
+                            [disabled]="files.length >= 10"
+                        />
+                        <label for="fileInput" [class.disabled]="files.length >= 10" class="upload-label">
+                            <i class="bi bi-cloud-upload"></i>
+                            <span *ngIf="files.length < 10">เพิ่มรูปภาพ (เลือกได้สูงสุด 10 รูป)</span>
+                            <span *ngIf="files.length >= 10" class="max-files">เลือกรูปครบแล้ว</span>
+                        </label>
+            
+                        <!-- ส่วนแสดงตัวอย่างรูปภาพ -->
+                        <div class="file-preview" *ngIf="files.length > 0">
+                            <div class="preview-image" *ngFor="let file of files; let i = index">
+                                <img [src]="file.preview" alt="รูปผลงาน {{ i + 1 }}" />
+                                <button type="button" class="remove-image" (click)="removeFile(i)">
+                                    <i class="bi bi-x"></i>
+                                </button>
+                            </div>
+                        </div>
+                
+                        <div class="button-container final-step">
+                            <button type="button" class="back-button" (click)="goBack()">ย้อนกลับ</button>
+                            <button type="button" class="save-button" (click)="uploadImages()" [disabled]="files.length === 0">บันทึกและไปต่อ</button>
+                        </div>
+                    </div>
+                </section>
             </div>
-            <div class="column">
-                <button type="submit" class="btn-submit" >บันทึกและไปต่อ</button>
-            </div>
-        </form>
         </div>
-        </div>
+    </div>
 </body>
 </html>

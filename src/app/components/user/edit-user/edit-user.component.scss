@@ -1,150 +1,135 @@
 .profile-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-  
-    .back-button {
-      display: flex;
-      align-items: center;
-      margin-bottom: 20px;
-  
-      button {
-        background: none;
-        border: none;
-        font-size: 24px;
-        cursor: pointer;
-      }
-  
-      span {
-        font-size: 18px;
-        font-weight: bold;
-        margin-left: 10px;
-      }
-    }
-  
-    .profile-content {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-  
-      @media (min-width: 768px) {
-        flex-direction: row;
-        justify-content: space-between;
-      }
-  
-      .profile-picture-section {
-        text-align: center;
-        margin-bottom: 20px;
-  
-        .profile-picture {
-          width: 150px;
-          height: 150px;
-          border-radius: 50%;
-          object-fit: cover;
-          border: 2px solid #ccc;
-        }
-  
-        .edit-picture-button {
-          display: block;
-          margin-top: 10px;
-          background-color: rgba(0, 74, 173, 0.74);
-          color: white;
-          border: none;
-          padding: 10px 15px;
-          cursor: pointer;
-          border-radius: 5px;
-  
-          &:hover {
-            background-color: rgba(0, 74, 173, 0.74);
-          }
-        }
-      }
-  
-      .profile-form {
-        width: 100%;
-        max-width: 600px;
-  
-        .form-section {
-          margin-bottom: 30px;
-  
-          h2 {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 15px;
-          }
-  
-          .form-group {
-            margin-bottom: 15px;
-  
-            label {
-              display: block;
-              font-size: 14px;
-              margin-bottom: 5px;
-            }
-  
-            input {
-              width: calc(100% - 40px); 
-              padding: 10px;
-              font-size: 14px;
-              border: 2px solid #000000; 
-              border-radius: 15px;
-  
-              &:disabled {
-                background-color: #f4f4f4;
-              }
-            }
-  
-            /* สำหรับช่องกรอก: ชื่อ, นามสกุล, ชื่อผู้ใช้, รหัสผ่าน */
-            #first-name,
-            #last-name,
-            #username,
-            #password {
-              background-color: rgba(255, 187, 55, 0.6); 
-            }
-  
-            /* สำหรับช่องกรอก: อีเมล์, เบอร์โทร, ที่อยู่ปัจจุบัน */
-            #email,
-            #phone,
-            #current-address {
-              background-color: rgba(0, 74, 173, 0.74); 
-            }
-          }
-        }
-  
-        .button-group {
-          display: flex;
-          justify-content: flex-end; 
-          gap: 12px;
-          margin-right: 15px; 
-  
-          button {
-            padding: 9px 28px; 
-            font-size: 17px; 
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-          }
-  
-          .cancel-button {
-            background-color: rgba(255, 187, 55, 1);
-            color: white;
-  
-            &:hover {
-              background-color: rgba(255, 187, 55, 1);
-            }
-          }
-  
-          .save-button {
-            background-color: rgba(0, 74, 173, 1);
-            color: white;
-  
-            &:hover {
-              background-color: rgba(0, 74, 173, 1);
-            }
-          }
-        }
-      }
-    }
-  }
-  
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.back-button button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.back-button span {
+  font-size: 18px;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+/* ✅ การ์ดโปรไฟล์ */
+.profile-card {
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  background: transparent; /* ทำให้พื้นหลังโปร่งใส */
+  background: linear-gradient(45deg,rgba(211, 214, 9, 0.413),rgba(3, 41, 212, 0.922));
+}
+
+/* ✅ ส่วนรูปโปรไฟล์ */
+.profile-picture-section {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.profile-picture {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ccc;
+}
+
+.edit-picture-button {
+  display: block;
+  margin: 10px auto;
+  background-color: #004aad;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.edit-picture-button:hover {
+  background-color: #003080;
+}
+
+/* ✅ ฟอร์มโปรไฟล์ */
+.profile-form {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.form-section {
+  margin-bottom: 30px;
+}
+
+.form-section h2 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 2px solid #000000;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.button-group button {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+}
+
+.cancel-button {
+  background-color: #ffbb37;
+  color: white;
+}
+
+.cancel-button:hover {
+  background-color: #e6a500;
+}
+
+.save-button {
+  background-color: #004aad;
+  color: white;
+}
+
+.save-button:hover {
+  background-color: #003080;
+}

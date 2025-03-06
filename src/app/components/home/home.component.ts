@@ -55,6 +55,12 @@ export class HomeComponent implements OnInit{
   }
 
   async ngOnInit(): Promise<void> {
+
+    this.isLoading = true;
+    // ไม่ต้องรอให้เสร็จ ทำงานอื่นไปเลย
+    new Promise(resolve => setTimeout(resolve, 3500)).then(() => {
+    this.isLoading = false;
+    });
     // รับข้อมูลจากหน้าที่ส่งมา
     this.route.paramMap.subscribe(() => {
       const receivedData = window.history.state.data;
@@ -96,9 +102,10 @@ export class HomeComponent implements OnInit{
       });
     }
 
-    this.isLoading = true;
-      await this.delay(3500); // รอเวลา 5 วินาที
-      this.isLoading = false;
+      //บังคับให้รอ
+      // this.isLoading = true;
+      // await this.delay(3500); // รอเวลา 5 วินาที
+      // this.isLoading = false;
   }
 
   isLiked(portfolio_id: number): boolean {
