@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@40,400,0,0&icon_names=search" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
+
+</head>
+
+<body >
+    <mat-sidenav-container class="sidenav-container">
+        <!-- Sidebar -->
+        <mat-sidenav #sidenav mode="side" [(opened)]="opened" class="sidebar">
+            <div class="sidebar-header">
+              
+              <button mat-icon-button (click)="toggleSidenav()" class="menu-toggle">
+                <mat-icon>menu</mat-icon>
+              </button>
+              <div class="logo-container">
+                <h3 style="margin-top: 15px;">แถบเมนู</h3>
+              </div>
+            </div>
+            
+            <div class="sidebar-content">
+                <ul class="nav-links">
+                  <li class="nav-item" >
+                    <div (click)="goToHomeShutter()" class="nav-link">
+                      <mat-icon style="margin-top: 5px;">home</mat-icon>
+                      <span style="font-size: 20px;padding: 5px;">หน้าหลัก</span>
+                    </div>
+                  </li>
+                  <li class="nav-item" >
+                    <div (click)="goToEditProfile()" class="nav-link">
+                      <mat-icon style="margin-top: 5px;">account_circle</mat-icon>
+                      <span style="font-size: 20px;padding: 5px;">ข้อมูลบัญชี</span>
+                    </div>
+                  </li>
+                  <li class="nav-item" >
+                    <div (click)="goToPackagePack()" class="nav-link">
+                      <mat-icon style="margin-top: 5px;">card_membership</mat-icon>
+                      <span style="font-size: 20px;padding: 5px;">แพ็กเกจ</span>
+                    </div>
+                  </li>
+                  <li class="nav-item">
+                        <div class="nav-link">
+                      <mat-icon style="margin-top: 5px;">work</mat-icon>
+                      <span style="font-size: 20px;padding: 5px;">ผลงาน</span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              
+            
+            <div class="sidebar-footer">
+              <!-- <a href="#" class="nav-link"> -->
+                <div class="nav-link">
+                <mat-icon style="margin-top: 5px;">help</mat-icon>
+                <span style="font-size: 20px;padding: 5px;">ช่วยเหลือ</span>
+            </div>
+            </div>
+          </mat-sidenav>
+
+        <!-- Main Content -->
+        <mat-sidenav-content>
+
+<!-- Wrapper สำหรับแสดงผลให้เป็นแถวเดียวกัน -->
+<div class="header-wrapper d-flex align-items-center p-3">
+
+    <!-- ปุ่มเมนู (อยู่นอก Header) -->
+    <button mat-button class="menu-button me-3" (click)="toggleSidenav()">☰</button>
+  
+    <!-- Header -->
+    <header class="header-container d-flex justify-content-between align-items-center flex-grow-1">
+      <!-- ด้านซ้าย: โลโก้ + เมนูนำทาง -->
+      <div class="d-flex align-items-center">
+        <img src="/assets/images/PIXEL (8).png" alt="SHUTTER seek" class="logo">
+        <nav class="ms-3">
+          <a href="/" class="nav-link" style="color: black;">หน้าแรก</a>
+          <a href="/contact" class="nav-link" style="color: black;">ติดต่อเรา</a>
+          <a href="/shutter" class="nav-link" style="color: black;">กล่องข้อความ</a>
+        </nav>
+      </div>
+  
+      <!-- ด้านขวา: ปุ่มเข้าสู่ระบบ / ออกจากระบบ -->
+      <div class="d-flex align-items-center">
+        <button class="btn btn-outline-primary me-2" (click)="logout()">ลงทะเบียน</button>
+        <button class="btn btn-primary me-2" (click)="logout()">ออกจากระบบ</button>
+      </div>
+    </header>
+  </div>
+  
+      <div class="content">
+    
+      <!-- Dashboard Alert -->
+      <!-- <div class="dashboard-alert">
+        <strong>ยินดีต้อนรับกลับ!</strong> คุณสามารถจัดการโปรไฟล์ช่างภาพของคุณได้ที่นี่
+      </div> -->
+    
+      <!-- Stats Overview
+      <div class="stats-container">
+        <div class="stat-card">
+          <div class="number">125</div>
+          <div class="label">ยอดเข้าชม</div>
+        </div>
+    
+        <div class="stat-card">
+          <div class="number">15</div>
+          <div class="label">ผู้ติดตาม</div>
+        </div>
+        <div class="stat-card">
+          <div class="number">4.7</div>
+          <div class="label">คะแนนเฉลี่ย</div>
+        </div>
+      </div> -->
+    
+      <section id="first">
+        <div class="profile-container">
+            <!-- <div class="back-button">
+              <i class="fas fa-chevron-left" (click)="back()"></i>
+            </div> -->
+      
+            <!-- Profile Section -->
+            <div class="profile-header" >
+              <img
+              *ngIf="data[0].image_profile" [src]="data[0].image_profile"
+                alt="Profile"
+                class="profile-image"
+              />
+              <div class="profile-info">
+                <h2>{{data[0].username}}</h2>
+                <button class="btn me-2" >
+                  <p>มีผู้ติดตาม {{datafollower.length}} คน</p>
+                </button>
+                <p>เป็นสมาชิกเมื่อ {{ data[0].date_of_member | date:'dd/MM/yyyy' }}</p>
+              </div>
+              <div class="profile-actions">
+                <!-- <button class="edit-button" (click)="goToEditPro()">แก้ไข</button> -->
+                <button class="logout-button" >สลับบัญชี</button>
+              </div>
+            </div>
+      
+            <!-- Divider --> 
+            <hr class="divider" />
+            <div style="display: flex; flex-direction: row;justify-content: space-between; padding-left: 5%;padding-right: 5%;">
+                <button class="btn me-2" (click)="scrollTo()">
+                  <p>ภาพรวม</p>
+                </button>
+                <button class="btn me-2" (click)="scrollTopack()">
+                  <p>แพ็กเกจ</p>
+                </button>
+                <button class="btn me-2" (click)="scrollToport()">
+                  <p>ผลงาน</p>
+                </button>
+                <button class="btn me-2" (click)="scrollToreview()">
+                  <p>รีวิว</p>
+                </button>
+            </div>
+    
+            <div class="row1" id="description">
+              <div class="card1" *ngIf="data">
+                <p  style="text-align: center;padding: 2%;font-size: 23px;"> ข้อมูลส่วนตัว</p>
+                <p style="margin-left: 10%;margin-bottom: 5%;"> ชื่อจริง : {{ data[0].first_name }}   {{data[0].last_name}}</p>
+                <p style="margin-left: 10%;margin-bottom: 5%;"> เบอร์โทร : {{data[0].phone}} </p>
+                <p style="margin-left: 10%;margin-bottom: 5%;"> Line ID : {{data[0].lineID}} </p>
+                <p style="margin-left: 10%;margin-bottom: 5%;"> Email : {{data[0].email}} </p>
+                <p style="margin-left: 10%;margin-bottom: 5%;"> เว็บไซต์ : {{data[0].facebook}} </p>
+                <!-- <p style="margin-left: 10%;"> พื้นที่ที่รับงาน : {{datauser[0].first_name}} </p> -->
+              </div>
+              <!-- aboub me --> 
+                <div class="card1" style="background-color: rgb(255, 187, 55);">
+                  <p style="text-align: center;padding: 2%;font-size: 23px;color: white;">เพิ่มเติมเกี่ยวกับฉัน</p>
+                  <p style="margin-left: 10%;margin-bottom: 5%;color: white;">
+                   {{data[0].description}}
+                  </p>
+              </div>
+            </div>
+    
+        </div>
+      </section>
+      <section id="second">
+        <h2>แพ็กเกจ</h2>
+        <br>
+      
+        <mat-card *ngFor="let package of datapackages" style="background-color: #004AAD; color: white; margin-bottom: 15px;">
+          <mat-card-header style="display: flex; justify-content: space-between;">
+            <div class="package-header">
+              <mat-card-title>{{ package.name_package }}</mat-card-title>
+              <mat-card-title>ราคา {{ package.price }} บาท</mat-card-title>
+            </div>
+          </mat-card-header>
+          <mat-card-subtitle style="color: rgb(255, 187, 55); margin-left: 1.5%;">
+            หมวดหมู่ของแพ็กเกจ: {{ package.name_tags }}
+          </mat-card-subtitle>
+          <hr>
+          <div mat-card-image></div>
+          <mat-card-content>
+            <p>{{ package.detail }}</p>
+          </mat-card-content>
+        </mat-card>
+      
+      </section>
+      
+    
+      <section id="third">
+        <h2> ผลงาน</h2>
+        <br>
+        <div *ngFor="let data of datawork" >
+          <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+          <button class="logout-button">
+              {{data.name_tags}}
+          </button>
+      
+          <!-- ไอคอนหัวใจกับจำนวนไลค์ด้านขวา -->
+          <div style="display: flex; align-items: center; gap: 5px;">
+              <img src="https://cdn-icons-png.flaticon.com/128/2589/2589175.png" alt="Like" width="24">
+              <p style="margin: 0;">{{data.like_count}}</p>
+          </div>
+        </div>
+          <div class="image-container" >
+            <button class="scroll-btn left" (click)="scrollLeft()">&#60;</button> 
+            <div class="image-wrapper" #wrapper >
+              <div class="image-row" style="display: flex; flex-direction: row;" >
+              <div *ngFor="let imgUrl of data.image_urls">
+                <img [src]="imgUrl" alt="image1" style="border: 2px solid #004AAD;">
+              </div>
+            </div>
+          </div>
+            <button class="scroll-btn right" (click)="scrollRight()">&#62;</button>
+          </div>
+          <br>
+          <hr>
+          <br>
+        </div>
+      </section>
+       <br>
+    
+      <section id="four">
+          <div style="display: flex ;flex-direction: row;justify-content: space-between;">
+              <p>รีวิวจากผู้ใช้บริการ ({{datareview.length}})</p>
+    
+            </div>
+            <div class="star-container">
+              <p>How was your experience?</p>
+              <div class="stars">
+                <button *ngFor="let star of stars; let i = index" 
+                        class="star" 
+                        [ngClass]="{'active': i < rating, 'hover': i < hoverRating}" 
+                        (click)="rate(i + 1)" 
+                        (mouseover)="hover(i + 1)" 
+                        (mouseleave)="hover(0)">
+                  &#9733;
+                </button>
+              </div>
+              <p class="rating-text">{{ rating }} of 5</p>
+            </div>
+            
+            <br>
+            <div *ngFor="let review of datareview">
+            <div class="review-card">
+              <div class="review-header">
+                <img src="{{review.profile}}" alt="User Avatar" class="avatar">
+                <div class="review-info">
+                  <h4 class="username">{{review.reviewer_name}}</h4>
+                  <p class="review-date">{{review.date_review | date:'dd/MM/yyyy'}}</p>
+                </div>
+                <div class="review-rating">
+                  <span >⭐</span>
+                  <span class="rating-value">{{review.rating}}.0</span>
+                </div>
+              </div>
+              <div class="review-content">
+                {{review.comment}}
+              </div>
+            </div>
+            <br>
+          </div>
+            
+      </section>
+    
+       <button *ngIf="showButton" class="scroll-to-top" (click)="scrollToTop()">
+        ⬆ เลื่อนขึ้น
+      </button>
+      
+    </div>
+</mat-sidenav-content>
+</mat-sidenav-container>
+      
+</body>
+</html>

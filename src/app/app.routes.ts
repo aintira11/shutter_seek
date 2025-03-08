@@ -22,6 +22,7 @@ import { AddminComponent } from './components/admin/addmin/addmin.component';
 import { UserFollowComponent } from './components/user/user-follow/user-follow.component';
 import { HomeShutterComponent } from './components/shutter/home-shutter/home-shutter.component';
 import { RegisterComponent } from './components/user/register/register.component';
+import { MainShutterComponent } from './components/shutter/main-shutter/main-shutter.component';
 
 export const routes: Routes = [
     {path: '',component: HomeComponent}, 
@@ -46,6 +47,8 @@ export const routes: Routes = [
     {path: 'tofollow',component: UserFollowComponent},
     {path: 'register',component: RegisterComponent},
     {path: 'homeshutter',component: HomeShutterComponent},
+    
+    {path: 'mainshutter',component: MainShutterComponent},
 
     {path: 'admin',component: AdminHomeComponent},
     {path: 'addmin',component: AddminComponent},

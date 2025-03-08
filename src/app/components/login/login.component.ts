@@ -4,7 +4,6 @@ import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
 import { DataMembers } from '../../model/models';
 import { Constants } from '../../config/constants';
-import { HttpClientModule } from '@angular/common/http';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { lastValueFrom } from 'rxjs';
@@ -64,11 +63,12 @@ export class LoginComponent {
       if (this.dataLogin.length == 1) {
         console.log('Login Successful:', this.dataLogin);
         const user = this.dataLogin[0]; 
+        const userShutter = this.dataLogin[1]; 
         if (user.type_user === 3) {
           this.router.navigate(['/admin'], { state: { data: user } });
         } else if (user.type_user === 2 ) {
-          // this.router.navigate(['/shutter'], { state: { data: user} });
-          this.router.navigate(['/'], { state: { data: user } });
+          // this.router.navigate(['/mainshutter']);
+          this.router.navigate(['/mainshutter'], { state: { data: user } });
         } else if (user.type_user === 1) {
           this.router.navigate(['/'], { state: { data: user} });
         }
@@ -84,10 +84,10 @@ export class LoginComponent {
 
     if (type_user === 2 ) {
       // this.router.navigate(['/shutter'], { state: { data: user} });
-      this.router.navigate(['/shutter']);
+      this.router.navigate(['/mainshutter'], { state: { data: this.dataLogin[1]} });
       this.isModelOpen = false;
     } else if (type_user === 1) {
-      this.router.navigate(['/'], { state: { data: this.dataLogin} });
+      this.router.navigate(['/'], { state: { data: this.dataLogin[0]} });
       this.isModelOpen = false;
     }
   }

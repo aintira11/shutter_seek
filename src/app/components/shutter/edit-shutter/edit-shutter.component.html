@@ -8,68 +8,252 @@
 </head>
 <body>
     <!-- Sidebar -->
-    <div class="w3-sidebar w3-bar-block w3-collapse w3-card w3-animate-left" style="width:200px;left:0;" *ngIf="isSidebarOpen" id="mySidebar">
+    <!-- <div class="w3-sidebar w3-bar-block w3-collapse w3-card w3-animate-left" style="width:200px;left:0;" *ngIf="isSidebarOpen" id="mySidebar">
         <button id="w3-toggle-btn" class="w3-button w3-xlarge w3-left" (click)="w3_toggle()">&lt;</button>
         <button class="w3-bar-item w3-button" (click)="goToEditProfile()">ข้อมูลบัญชี</button>
         <button class="w3-bar-item w3-button" (click)="goToPackagePack()">แพ็กเกจ</button>
         <button class="w3-bar-item w3-button" (click)="goToInsertport()">ผลงาน</button>
-    </div>
+    </div> -->
 
     <!-- Button to toggle Sidebar -->
-    <div>
+    <!-- <div>
         <button id="w3-toggle-btn" class="w3-button w3-xlarge w3-left" (click)="w3_toggle()">&#9776;</button>
-    </div>
+    </div> -->
 
   <!-- Main content -->
-  <div class="w3-main" id="main" [style.transform]="isSidebarOpen ? 'translateX(200px)' : 'translateX(0)'">
+  <!-- <div class="w3-main" id="main" [style.transform]="isSidebarOpen ? 'translateX(200px)' : 'translateX(0)'"> -->
 
-        <main class="content">
-            <form class="edit-form">
-                <div class="profile-section">
-                    <img src="https://via.placeholder.com/120" alt="Profile" class="profile-image">
-                    <button class="change-profile-btn">แก้ไขรูปภาพ</button>
+    <mat-sidenav-container class="sidenav-container">
+        <!-- Sidebar -->
+        <mat-sidenav #sidenav mode="side" [(opened)]="opened" class="sidebar">
+            <div class="sidebar-header">
+              
+              <button mat-icon-button (click)="toggleSidenav()" class="menu-toggle">
+                <mat-icon>menu</mat-icon>
+              </button>
+              <div class="logo-container">
+                <h3 style="margin-top: 15px;">แถบเมนู</h3>
+              </div>
+            </div>
+            
+            <div class="sidebar-content">
+                <ul class="nav-links">
+                  <li class="nav-item" >
+                    <div (click)="goToHomeShutter()" class="nav-link">
+                      <mat-icon style="margin-top: 5px;">home</mat-icon>
+                      <span style="font-size: 20px;padding: 5px;">หน้าหลัก</span>
+                    </div>
+                  </li>
+                  <li class="nav-item" >
+                    <div (click)="goToEditProfile()" class="nav-link">
+                      <mat-icon style="margin-top: 5px;">account_circle</mat-icon>
+                      <span style="font-size: 20px;padding: 5px;">ข้อมูลบัญชี</span>
+                    </div>
+                  </li>
+                  <li class="nav-item" >
+                    <div (click)="goToPackagePack()" class="nav-link">
+                      <mat-icon style="margin-top: 5px;">card_membership</mat-icon>
+                      <span style="font-size: 20px;padding: 5px;">แพ็กเกจ</span>
+                    </div>
+                  </li>
+                  <li class="nav-item">
+                        <div class="nav-link">
+                      <mat-icon style="margin-top: 5px;">work</mat-icon>
+                      <span style="font-size: 20px;padding: 5px;">ผลงาน</span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              
+            
+            <div class="sidebar-footer">
+              <!-- <a href="#" class="nav-link"> -->
+                <div class="nav-link">
+                <mat-icon style="margin-top: 5px;">help</mat-icon>
+                <span style="font-size: 20px;padding: 5px;">ช่วยเหลือ</span>
+            </div>
+            </div>
+          </mat-sidenav>
+
+        <!-- Main Content -->
+        <!-- <div *ngIf="isLoading; else content" style="margin-top: 10%;display: flex;justify-content: center;">
+            <img src="/assets/images/Loading Stage ・ Animation.gif" alt="" style="width: 30%;">
+          </div>
+
+    <ng-template #content> -->
+        <mat-sidenav-content>
+            <button mat-button class="menu-button me-3" (click)="toggleSidenav()">☰</button>
+
+            <main class="content">
+                <div class="profile-container">
+                  <!-- Profile Header -->
+                  <div class="profile-header">
+                    <h2>แก้ไขข้อมูลส่วนตัว</h2>
+                    <p>อัปเดตข้อมูลส่วนตัวและการติดต่อของคุณ</p>
+                  </div>
+                  
+                  <!-- Main Form Container -->
+                  <div class="form-container">
+                    <!-- Profile Section -->
+                    <div class="profile-section">
+                        <div class="profile-image-container">
+                          <img [src]="imagePreview || data[0].image_profile" alt="Profile" class="profile-image">
+                          <div class="profile-overlay">
+                            <input type="file" #fileInput hidden (change)="onFileSelected($event)" />
+                          </div>
+                        </div>
+                        <button class="change-profile-btn" (click)="triggerFileInput()">
+                          <mat-icon>edit</mat-icon>
+                          แก้ไขรูปภาพ
+                        </button>
+                      </div>
+                      
+                    
+                    <!-- Form Fields -->
+                    <form class="edit-form" [formGroup]="photographerForm" (ngSubmit)="savePersonalInfo()">
+                      <!-- Basic Information Section -->
+                      <div class="form-section">
+                        <h3 class="section-title">ข้อมูลพื้นฐาน</h3>
+                        
+                        <div class="form-row">
+                          <div class="form-group">
+                            <label for="first_name">ชื่อ</label>
+                            <div class="input-container">
+                              <mat-icon>person</mat-icon>
+                              <input type="text" id="first_name" formControlName="first_name" 
+                                        placeholder="กรอกชื่อ">
+                            </div>
+                          </div>
+                          
+                          <div class="form-group">
+                            <label for="last_name">นามสกุล</label>
+                            <div class="input-container">
+                              <mat-icon>person</mat-icon>
+                              <input type="text" id="last_name" formControlName="last_name" 
+                                     placeholder="กรอกนามสกุล" 
+                                     >
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div class="form-row">
+                          <div class="form-group">
+                            <label for="username">ชื่อผู้ใช้</label>
+                            <div class="input-container">
+                              <mat-icon>account_circle</mat-icon>
+                              <input type="text" id="username" formControlName="username" 
+                                     placeholder="กรอกชื่อผู้ใช้" 
+                                     >
+                            </div>
+                          </div>
+                          
+                          <div class="form-group">
+                            <label for="phone">เบอร์โทร</label>
+                            <div class="input-container">
+                              <mat-icon>phone</mat-icon>
+                              <input type="text" id="phone" formControlName="phone" 
+                                     placeholder="กรอกเบอร์โทรศัพท์" 
+                                     >
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div class="form-row">
+                          <div class="form-group">
+                            <label for="email">อีเมล์</label>
+                            <div class="input-container">
+                              <mat-icon>email</mat-icon>
+                              <input type="email" id="email" formControlName="email" 
+                                     placeholder="กรอกอีเมล์" 
+                                     >
+                            </div>
+                          </div>
+
+                          
+                            <div class="form-group">
+                              <label for="province">จังหวัดที่คุณอาศัยอยู่</label>
+                              <div class="input-container">
+                                <mat-icon>place</mat-icon>
+                                <select id="province" formControlName="province">
+                                  <option value="" disabled>เลือกจังหวัด</option>
+                                  <option *ngFor="let thai of thaijson" [value]="thai.name_th" >{{ thai.name_th }}</option>
+                                  <!-- เพิ่มจังหวัดอื่นๆ -->
+                                </select>
+                              </div>
+                            </div>
+
+                          <!-- <div class="form-row"> -->
+                          <div class="form-group">
+                            <label for="address">ที่อยู่</label>
+                            <div class="input-container">
+                              <mat-icon>home</mat-icon>
+                              <input type="text" id="address" formControlName="address" 
+                                     placeholder="กรอกที่อยู่" 
+                                     >
+                            </div>
+                          </div>
+                        </div>
+                    <!-- </div> -->
+                        
+                        
+                      </div>
+                      
+                      <!-- Contact Information Section -->
+                      <div class="form-section">
+                        <h3 class="section-title">ข้อมูลติดต่อเพิ่มเติม</h3>
+
+                        <div class="form-group">
+                            <label for="lineID">Line ID</label>
+                            <div class="input-container">
+                              <mat-icon>chat</mat-icon>
+                              <input type="text" id="lineID" formControlName="lineID" 
+                                     placeholder="กรอก Line ID" 
+                                     >
+                            </div>
+                            <div *ngIf="photographerForm.get('lineID')?.invalid && photographerForm.get('lineID')?.touched" class="error-message">
+                              กรุณากรอก Line ID
+                            </div>
+                          </div>
+                        
+                        <div class="form-row">
+                          <div class="form-group full-width">
+                            <label for="facebook">ลิ้งค์เว็บไซต์ส่วนตัว</label>
+                            <div class="input-container">
+                              <mat-icon>language</mat-icon>
+                              <input type="text" id="facebook" formControlName="facebook" 
+                                     placeholder="เช่น เพจเฟซบุก" 
+                                     >
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                          <label for="description">แนะนำตัวคุณให้ลูกค้าได้รู้จักคุณมากขึ้น</label>
+                          <div class="input-container textarea-container">
+                            <textarea id="description" formControlName="description" rows="4"
+                              placeholder="แนะนำตัวเอง"></textarea>
+                            </div>
+                          <div *ngIf="photographerForm.get('description')?.invalid && photographerForm.get('description')?.touched" class="error-message">
+                            กรุณากรอกข้อมูลแนะนำตัว
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <!-- Submit Button -->
+                      <div class="button-container">
+                        <button type="button" class="cancel-button">ยกเลิก</button>
+                        <button type="submit" class="save-button" [disabled]="!photographerForm.valid">
+                          <mat-icon>save</mat-icon>
+                          บันทึกข้อมูลส่วนตัว
+                        </button>
+                      </div>
+                    </form>
+                  </div>
                 </div>
-                <div class="form-fields">
-                    <div class="form-group">
-                        <label for="name">ชื่อ นามสกุล</label>
-                        <input type="text" id="name" name="name">
-                    </div>
-                    <div class="form-group">
-                        <label for="username">ชื่อผู้ใช้</label>
-                        <input type="text" id="username" name="username">
-                    </div>
-                    <div class="form-group">
-                        <label for="phone">เบอร์โทร</label>
-                        <input type="text" id="phone" name="phone">
-                    </div>
-                    <div class="form-group">
-                        <label for="email">อีเมล์</label>
-                        <input type="email" id="email" name="email">
-                    </div>
-                    <div class="form-group">
-                        <label for="website">เว็บไซต์ (Facebook, อื่นๆ)</label>
-                        <input type="text" id="website" name="website">
-                    </div>
-                    <div class="form-group">
-                        <label for="line">Line ID</label>
-                        <input type="text" id="line" name="line">
-                    </div>
-                    <div class="form-group">
-                        <label for="address">ที่อยู่</label>
-                        <input type="text" id="address" name="address">
-                    </div>
-                    <div class="form-group">
-                        <label for="service">สถานที่ให้บริการ</label>
-                        <input type="text" id="service" name="service">
-                    </div>
-                    <div class="form-group">
-                        <label for="details">รายละเอียดเพิ่มเติม</label>
-                        <textarea id="details" name="details"></textarea>
-                    </div>
-                    <button type="submit" class="submit-btn">บันทึก</button>
-                </div>
-            </form>
-        </main>
-    </div>
+              </main>
+    <!-- </div> -->
+</mat-sidenav-content>
+<!-- </ng-template> -->
+</mat-sidenav-container>
 </body>
 </html>

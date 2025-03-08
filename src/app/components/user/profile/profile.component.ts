@@ -17,7 +17,7 @@ export class ProfileComponent implements OnInit{
   currentSlideIndex: number[] = [];
   Like :DataLike[]=[];
   Follow:[]=[];
-
+ 
   constructor(private router : Router, private route: ActivatedRoute,private Constants: Constants, private http: HttpClient){}
   ngOnInit(): void {
     this.route.paramMap.subscribe(() => {

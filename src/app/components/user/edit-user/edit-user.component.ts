@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Constants } from '../../../config/constants';
 import { DataMembers } from '../../../model/models';
@@ -14,7 +14,7 @@ import { ImageUploadService } from '../../../services_image/image-upload.service
   templateUrl: './edit-user.component.html',
   styleUrl: './edit-user.component.scss'
 })
-export class EditUserComponent {
+export class EditUserComponent implements OnInit{
   data: DataMembers[]=[];
    fromreister!: FormGroup;
    files: { file: File; preview: string; newName?: string }[] = [];
