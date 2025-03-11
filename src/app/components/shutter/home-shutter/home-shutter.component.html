@@ -137,11 +137,11 @@
     </div>
   </section>
     
-  <section id="second">
+  <!-- <section id="second">
     <h2>แพ็กเกจ</h2>
-    <br>
+    <br> -->
   
-    <mat-card *ngFor="let package of datapackages" style="background-color: #004AAD; color: white; margin-bottom: 15px;">
+    <!-- <mat-card *ngFor="let package of datapackages" style="background-color: #004AAD; color: white; margin-bottom: 15px;">
       <mat-card-header style="display: flex; justify-content: space-between;">
         <div class="package-header">
           <mat-card-title>{{ package.name_package }}</mat-card-title>
@@ -156,42 +156,65 @@
       <mat-card-content>
         <p>{{ package.detail }}</p>
       </mat-card-content>
-    </mat-card>
+    </mat-card> -->
   
-  </section>
+  <!-- </section> -->
   
 
   <section id="third">
     <h2> ผลงาน</h2>
     <br>
-    <div *ngFor="let data of datawork" >
+    <div *ngFor="let data of datawork">
       <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-      <button class="logout-button">
-          {{data.name_tags}}
-      </button>
+        <button class="logout-button">
+          {{ data.name_tags }}
+        </button>
   
-      <!-- ไอคอนหัวใจกับจำนวนไลค์ด้านขวา -->
-      <div style="display: flex; align-items: center; gap: 5px;">
+        <!-- ไอคอนหัวใจกับจำนวนไลค์ด้านขวา -->
+        <div style="display: flex; align-items: center; gap: 5px;">
           <img src="https://cdn-icons-png.flaticon.com/128/2589/2589175.png" alt="Like" width="24">
-          <p style="margin: 0;">{{data.like_count}}</p>
-      </div>
-    </div>
-      <div class="image-container" >
-        <button class="scroll-btn left" (click)="scrollLeft()">&#60;</button> 
-        <div class="image-wrapper" #wrapper >
-          <div class="image-row" style="display: flex; flex-direction: row;" >
-          <div *ngFor="let imgUrl of data.image_urls">
-            <img [src]="imgUrl" alt="image1" style="border: 2px solid #004AAD;">
-          </div>
+          <p style="margin: 0;">{{ data.like_count }}</p>
         </div>
       </div>
+      
+      <!-- แสดงรูปภาพ -->
+      <div class="image-container">
+        <button class="scroll-btn left" (click)="scrollLeft()">&#60;</button>
+        <div class="image-wrapper" #wrapper>
+          <div class="image-row" style="display: flex; flex-direction: row;">
+            <div *ngFor="let imgUrl of data.image_urls">
+              <img [src]="imgUrl" alt="image1" style="border: 2px solid #004AAD;">
+            </div>
+          </div>
+        </div>
         <button class="scroll-btn right" (click)="scrollRight()">&#62;</button>
       </div>
       <br>
+      <h3 id="second">แพ็กเกจ ของงานนี้</h3>
+      
+      <!-- วนลูปแพ็กเกจภายใน datawork -->
+      <mat-card *ngFor="let package of data.packages" style="background-color: #004AAD; color: white; margin-bottom: 15px;">
+        <mat-card-header style="display: flex; justify-content: space-between;">
+          <div class="package-header">
+            <mat-card-title>{{ package.name_package }}</mat-card-title>
+            <mat-card-title>ราคา {{ package.price }} บาท</mat-card-title>
+          </div>
+        </mat-card-header>
+        <mat-card-subtitle style="color: rgb(255, 187, 55); margin-left: 1.5%;">
+          หมวดหมู่ของแพ็กเกจ: {{ data.name_tags }}
+        </mat-card-subtitle>
+        <hr>
+        <div mat-card-image></div>
+        <mat-card-content>
+          <p>{{ package.detail }}</p>
+        </mat-card-content>
+      </mat-card>
+  
       <hr>
       <br>
     </div>
   </section>
+  
    <br>
 
   <section id="four">

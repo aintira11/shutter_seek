@@ -286,11 +286,18 @@ export class BaseShuttComponent {
       this.showAlert('เกิดข้อผิดพลาดระหว่างการอัปโหลด กรุณาลองใหม่อีกครั้ง');
     }
   }
-  
-  // Navigation
-  navigateToNextStep(): void {
-    this.router.navigate(['/base3'], { state: { data: this.userData } });
-  }
+
+ // Navigation - ส่ง user_id, tags_id, portfolio_id ไปหน้าถัดไป
+navigateToNextStep(): void {
+  const navigationData = {
+    user_id: this.userData.user_id,
+    tags_id: this.portfolioForm.value.tags_id,
+    portfolio_id: this.userData.last_idx, // ใช้ค่า portfolio_id ล่าสุดที่บันทึกไป
+  };
+
+  this.router.navigate(['/base3'], { state: { data: navigationData } });
+}
+
   
   goBack(): void {
     window.history.back();

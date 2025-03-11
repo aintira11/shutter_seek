@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>แก้ไขประวัติ</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 </head>
 <body>
     <!-- Sidebar -->
@@ -31,9 +31,9 @@
               <button mat-icon-button (click)="toggleSidenav()" class="menu-toggle">
                 <mat-icon>menu</mat-icon>
               </button>
-              <div class="logo-container">
+              <!-- <div class="logo-container">
                 <h3 style="margin-top: 15px;">แถบเมนู</h3>
-              </div>
+              </div> -->
             </div>
             
             <div class="sidebar-content">
@@ -97,7 +97,7 @@
                     <!-- Profile Section -->
                     <div class="profile-section">
                         <div class="profile-image-container">
-                          <img [src]="imagePreview || data[0].image_profile" alt="Profile" class="profile-image">
+                          <img [src]="imagePreview || data[0].image_profile || data.image_profile" alt="Profile" class="profile-image">
                           <div class="profile-overlay">
                             <input type="file" #fileInput hidden (change)="onFileSelected($event)" />
                           </div>

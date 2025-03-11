@@ -36,6 +36,7 @@ export class EditShutterComponent{
   selectedFile?: File;
   imagePreview: string | null = null;
   isLoading: boolean = false;
+
 constructor(
   private router : Router,
   private fb: FormBuilder,
@@ -84,6 +85,7 @@ ngOnInit(): void {
   //   this.cdRef.detectChanges(); // บังคับให้ Angular อัปเดต
   // }, 0);
   this.getdatauser(this.data.user_id);
+ 
 }
 
   private initForms(): void {
@@ -252,7 +254,7 @@ ngOnInit(): void {
       });
     });
   }
-  
+
 
 
 toggleSidenav() {
@@ -272,11 +274,11 @@ toggleSidenav() {
  }
 
  goToPackagePack(): void {
-   this.router.navigate(['/editpac']);
+   this.router.navigate(['/editpac'], { state: { data: this.data[0]} });
  }
 
  goToEditProfile(): void {
-   this.router.navigate(['/editshutter']);
+   this.router.navigate(['/editshutter'], { state: { data: this.data[0]} });
  }
  goToHomeShutter(){
   this.router.navigate(['/mainshutter'], { state: { data: this.data[0]} });

@@ -69,6 +69,7 @@ export interface DataLike {
     tags_id:       number;
     name_tags:     string;
     image_urls:    string[];
+    date_likes:    Date;
 }
 
 //หน้า user 
@@ -87,6 +88,7 @@ export interface Datapackages {
     package_id:   number;
     user_id:      number;
     name_package: string;
+    portfolio_id: number;
     detail:       string;
     price:        number;
     tags_id:      number;
@@ -120,3 +122,46 @@ export interface DataReview {
     profile:       string;
 }
 
+export interface DataTopten {
+    user_id:        number;
+    first_name:     string;
+    last_name:      string;
+    username:       string;
+    email:          string;
+    address:        string;
+    lineID:         string;
+    facebook:       string;
+    province:       string;
+    image_profile:  string;
+    description:    string;
+    portfolio_id:   number;
+    name_work:      string;
+    tags_id:        number;
+    name_tags:      string;
+    image_urls:     string[];
+    follower_count: number;
+}
+
+export interface DataShowWork {
+    portfolio_id: number;
+    name_work:    string;
+    tags_id:      number;
+    name_tags:    string;
+    image_urls:   string[];
+    like_count:   number;
+    packages:     Package[];
+}
+
+export interface Package {
+    package_id:   number;
+    name_package: string;
+    detail:       string;
+    price:        number;
+}
+
+export interface DataTypeforPacke {
+    portfolio_id: number;
+    user_id:      number;
+    tags_id:      number;
+    name_work:    string;
+}

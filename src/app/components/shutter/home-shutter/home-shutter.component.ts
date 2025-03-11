@@ -1,5 +1,5 @@
 import { Component, OnInit,ElementRef, ViewChild, HostListener  } from '@angular/core';
-import { DataFollower, DataLike, DataMembers, Datapackages, DataReview, Datawork } from '../../../model/models';
+import { DataFollower, DataLike, DataMembers, Datapackages, DataReview, DataShowWork, Datawork } from '../../../model/models';
 import { Constants } from '../../../config/constants';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -20,7 +20,7 @@ export class HomeShutterComponent implements OnInit{
   data: DataMembers | null = null; // ✅ ถูกต้อง
   datauser: DataMembers[] = [];
   datapackages : Datapackages[] = [];
-  datawork : Datawork[] = [];
+  datawork : DataShowWork[] = [];
   datafollower : DataFollower[] =[] ;
   datareview:DataReview[]=[];
   idshutter : number = 0 ;
@@ -151,7 +151,7 @@ export class HomeShutterComponent implements OnInit{
 
   getwork(id : number){ //เพิ่มเอาคนที่ถูกใจออกมาด้วย
     console.log('id',id);
-    const url = this.Constants.API_ENDPOINT+'/get/work/'+id;
+    const url = this.Constants.API_ENDPOINT+'/get/workAndPack/'+id;
     this.http.get(url).subscribe((response: any) => {
       this.datawork = response; 
       console.log("datawork :",this.datawork); 

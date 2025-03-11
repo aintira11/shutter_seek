@@ -1,50 +1,130 @@
-
-<!-- edit-package<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>แก้ไขแพ็กเกจ</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <title>Document</title>
 </head>
 <body>
-    <div class="sidebar">
-        <a href="#" class="back-button">
-            <i class="fas fa-chevron-left"></i>
-        </a>
-        <ul class="menu">
-            <li>ข้อมูลบัญชี</li>
-            <li>แพ็กเกจ</li>
-            <li>ผลงาน</li>
-        </ul>
-    </div>
-    <div class="content">
-        <div class="package-card" *ngFor="let package of packages; let i = index">
-            <div class="header">
-                <h3>แพ็กเกจ {{ i + 1 }}</h3>
-                <button class="delete-btn" (click)="deletePackage(i)">ลบแพ็กเกจ</button>
-            </div>
-            <div class="form-group">
-                <label for="category{{ i }}">กำหนดหมวดหมู่ แพ็กเกจ *</label>
-                <select id="category{{ i }}" [(ngModel)]="package.category" name="category{{ i }}">
-                    <option value="สินค้า">สินค้า</option>
-                    <option value="บริการ">บริการ</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="price{{ i }}">ราคา แพ็กเกจ *</label>
-                <input type="text" id="price{{ i }}" [(ngModel)]="package.price" name="price{{ i }}" value="5,999">
-            </div>
-            <div class="form-group">
-                <label for="details{{ i }}">รายละเอียด แพ็กเกจ *</label>
-                <textarea id="details{{ i }}" [(ngModel)]="package.details" name="details{{ i }}"></textarea>
-            </div>
-            <button class="submit-btn">บันทึก</button>
-        </div>
 
-        <button class="add-package-btn" (click)="addPackage()">+ เพิ่มแพ็กเกจ</button>
-    </div>
+    <mat-sidenav-container class="sidenav-container">
+        <!-- Sidebar -->
+        <mat-sidenav #sidenav mode="side" [(opened)]="opened" class="sidebar">
+            <div class="sidebar-header">
+              
+              <button mat-icon-button (click)="toggleSidenav()" class="menu-toggle">
+                <mat-icon>menu</mat-icon>
+              </button>
+              <!-- <div class="logo-container">
+                <h3 style="margin-top: 15px;">แถบเมนู</h3>
+              </div> -->
+            </div>
+            
+            <div class="sidebar-content">
+                <ul class="nav-links">
+                  <li class="nav-item" >
+                    <div (click)="goToHomeShutter()" class="nav-link">
+                      <mat-icon style="margin-top: 5px;">home</mat-icon>
+                      <span style="font-size: 20px;padding: 5px;">หน้าหลัก</span>
+                    </div>
+                  </li>
+                  <li class="nav-item" >
+                    <div (click)="goToEditProfile()" class="nav-link">
+                      <mat-icon style="margin-top: 5px;">account_circle</mat-icon>
+                      <span style="font-size: 20px;padding: 5px;">ข้อมูลบัญชี</span>
+                    </div>
+                  </li>
+                  <li class="nav-item" >
+                    <div (click)="goToPackagePack()" class="nav-link">
+                      <mat-icon style="margin-top: 5px;">card_membership</mat-icon>
+                      <span style="font-size: 20px;padding: 5px;">แพ็กเกจ</span>
+                    </div>
+                  </li>
+                  <li class="nav-item">
+                        <div class="nav-link">
+                      <mat-icon style="margin-top: 5px;">work</mat-icon>
+                      <span style="font-size: 20px;padding: 5px;">ผลงาน</span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              
+            
+            <div class="sidebar-footer">
+              <!-- <a href="#" class="nav-link"> -->
+                <div class="nav-link">
+                <mat-icon style="margin-top: 5px;">help</mat-icon>
+                <span style="font-size: 20px;padding: 5px;">ช่วยเหลือ</span>
+            </div>
+            </div>
+          </mat-sidenav>
 
-    <script src="https://code.angularjs.org/1.7.9/angular.min.js"></script>
+        <mat-sidenav-content>
+            <button mat-button class="menu-button me-3" (click)="toggleSidenav()">☰</button>
+            
+            <main class="content">
+              <!-- Card Container -->
+              <div class="card" *ngFor="let package of packages; let i = index">
+                <form>
+                  <div class="package-header">
+                    <label class="hcard">แพ็กเกจที่ {{ i + 1 }}</label>
+                    <!-- Delete button -->
+                    <button type="button" class="delete-button" (click)="deletePackage(i)">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label class="label">ชื่อ แพ็กเกจ</label>
+                    <input type="text" [(ngModel)]="package.name_package" name="packageName{{ i }}" class="input-style" placeholder="ชื่อแพ็กเกจ">
+                  </div>
+                  
+                  <div class="form-group" *ngIf="TagsWork && TagsWork.length > 0">
+                    <label class="label">เลือกผลงานสำหรับแพ็กเกจ</label>
+                    <select [(ngModel)]="package.portfolio_id" name="portfolioId{{ i }}" class="input-style">
+                      <option value="" disabled>-- เลือกผลงาน --</option>
+                      <option *ngFor="let data of TagsWork" [value]="data.portfolio_id"
+                        [selected]="data.portfolio_id == package.portfolio_id">
+                        {{ data.name_work }}
+                      </option>
+                    </select>
+                  </div>
+                   
+                  
+                  <div class="form-group">
+                    <label class="price-label">รายละเอียดแพ็กเกจ</label>
+                    <textarea [(ngModel)]="package.detail" name="packageDescription{{ i }}" class="input-style" rows="3" placeholder="รายละเอียดแพ็กเกจ"></textarea>
+                  </div>
+                  
+                  <div class="price-input-container">
+                    <label for="packagePrice" class="price-label">ราคาแพ็กเกจ</label>
+                    <div class="input-wrapper">
+                      <input type="text" [(ngModel)]="package.price" name="packagePrice{{ i }}" class="price-input" placeholder="5999" />
+                      <span class="currency-label">บาท</span>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              
+              <!-- Add Package Button -->
+              <div class="btadd-container">
+                <button class="add-button" (click)="addPackage()">
+                  <div class="circle-icon">
+                    <mat-icon>add_circle</mat-icon>
+                  </div>
+                  เพิ่มแพ็กเกจ
+                </button>
+              </div>
+              
+              <!-- Save/Cancel buttons -->
+              <div class="button-container">
+                <button class="back-button" (click)="goToHomeShutter()">ยกเลิก</button>
+                <button class="save-button" (click)="savePackages()">บันทึก</button>
+              </div>
+            </main>
+        </mat-sidenav-content>
+        <!-- </ng-template> -->
+        </mat-sidenav-container>
+    
 </body>
-</html> -->
+</html>

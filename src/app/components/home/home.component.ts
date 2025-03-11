@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { RouterModule,Router } from '@angular/router';
-import { DataLike, DataMembers, DataPortfolio, DataSreach, DataTegs } from '../../model/models';
+import { DataLike, DataMembers, DataPortfolio, DataSreach, DataTegs, DataTopten } from '../../model/models';
 import { Constants } from '../../config/constants';
 import { ActivatedRoute,Params  } from '@angular/router';
 import { HttpClient, HttpParams } from '@angular/common/http';
@@ -27,7 +27,7 @@ export class HomeComponent implements OnInit{
   data: any;
   datauser: DataMembers[] = [];
   Tags:DataTegs[]=[];
-  Portfolio:DataPortfolio[]=[];
+  Portfolio:DataTopten[]=[];
   PortfolioID:DataPortfolio[]=[];
   dataSreach:DataSreach []=[];
   form: FormGroup;
@@ -40,7 +40,7 @@ export class HomeComponent implements OnInit{
   currentSlideIndexSearch: number[]=[];
 
   isLoading: boolean = false;
-  lastVoteTime: Date | null = null; // เวลาล่าสุดที่โหวต
+  // lastVoteTime: Date | null = null; // เวลาล่าสุดที่โหวต
 
   constructor(private fb: FormBuilder,private Constants: Constants, private route: ActivatedRoute, private http: HttpClient,private router : Router){
     this.form = this.fb.group({
@@ -195,7 +195,7 @@ getPrev(portfolioIndex: number) {
         }
     }
     getPortfolio(){
-      const url = this.Constants.API_ENDPOINT + '/get/portfolio' ;
+      const url = this.Constants.API_ENDPOINT + '/get/portfolio/count' ;
       this.http.get(url).subscribe((response: any) => {
         this.Portfolio = response;
         this.currentSlideIndex = new Array(this.Portfolio.length).fill(0); // กำหนด index ให้ทุก portfolio

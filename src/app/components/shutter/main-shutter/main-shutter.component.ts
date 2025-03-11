@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { DataFollower, DataMembers, Datapackages, DataReview, Datawork } from '../../../model/models';
+import { DataFollower, DataMembers, Datapackages, DataReview, DataShowWork, Datawork } from '../../../model/models';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Constants } from '../../../config/constants';
 import { HttpClient } from '@angular/common/http';
@@ -31,7 +31,7 @@ import {MatIconModule} from '@angular/material/icon';
 export class MainShutterComponent implements OnInit{
   dataLogin:any
   data: any = {}; 
-  datawork:Datawork[]=[]
+  datawork:DataShowWork[]=[]
   datareview:any[]=[]
   datafollower : DataFollower[] =[] ;
   datapackages : Datapackages[] = [];
@@ -84,7 +84,7 @@ export class MainShutterComponent implements OnInit{
   }
   getwork(id : number){ //เพิ่มเอาคนที่ถูกใจออกมาด้วย
     console.log('id',id);
-    const url = this.Constants.API_ENDPOINT+'/get/work/'+id;
+    const url = this.Constants.API_ENDPOINT+'/get/workAndPack/'+id;
     this.http.get(url).subscribe((response: any) => {
       this.datawork = response; 
       console.log("datawork :",this.datawork); 
@@ -195,7 +195,7 @@ scrollTopack() {
         }
        
         goToPackagePack(): void {
-          this.router.navigate(['/editpac']);
+          this.router.navigate(['/editpac'], { state: { data: this.data[0]} });
         }
        
         goToEditProfile(): void {
