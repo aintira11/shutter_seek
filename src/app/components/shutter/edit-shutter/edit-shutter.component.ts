@@ -269,10 +269,9 @@ toggleSidenav() {
    this.isSidebarOpen = !this.isSidebarOpen;
  }
  
- goToInsertport(): void {
-   this.router.navigate(['/insertport']);
- }
-
+ goToEditWork(){
+  this.router.navigate(['/insertport'], { state: { data: this.data[0]} });
+}
  goToPackagePack(): void {
    this.router.navigate(['/editpac'], { state: { data: this.data[0]} });
  }

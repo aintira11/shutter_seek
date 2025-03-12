@@ -1,4 +1,15 @@
 
+/* ไอคอนที่มุมขวาล่างของจอ */
+.fixed-chat-icon {
+  position: fixed;
+  bottom: 20px; /* ระยะห่างจากด้านล่าง */
+  right: 20px;  /* ระยะห่างจากด้านขวา */
+  font-size: 40px;
+  color:#004AAD;
+  cursor: pointer; /* เพิ่ม cursor แบบ pointer */
+  z-index: 1000; /* ทำให้ไอคอนอยู่เหนือส่วนอื่น */
+  transform: scale(1.5);
+}
 .package-header {
     display: flex;
     justify-content: space-between; /* ให้ข้อความกระจายซ้าย-ขวา */

@@ -101,7 +101,6 @@ export interface Datawork {
     tags_id:      number;
     name_tags:    string;
     image_urls:   string[];
-    like_count:   number;
 }
 
 export interface DataFollower {
@@ -164,4 +163,12 @@ export interface DataTypeforPacke {
     user_id:      number;
     tags_id:      number;
     name_work:    string;
+}
+
+export interface DataWorkforEdit {
+    portfolio_id: number;
+    name_work:    string;
+    tags_id:      number;
+    name_tags:    string;
+    image_urls:   string[];
 }

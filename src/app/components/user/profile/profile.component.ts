@@ -21,18 +21,27 @@ export class ProfileComponent implements OnInit{
   constructor(private router : Router, private route: ActivatedRoute,private Constants: Constants, private http: HttpClient){}
   ngOnInit(): void {
     this.route.paramMap.subscribe(() => {
-      this.data =window.history.state.data;
+      this.data=window.history.state.data;
+      // const receivedData =window.history.state.data;
+
+       // ตรวจสอบว่า receivedData เป็นอาร์เรย์และมีข้อมูลหรือไม่
+      //  if (Array.isArray(receivedData) && receivedData.length > 0) {
+      //   this.data = receivedData[0]; // ดึงข้อมูลจากอาร์เรย์ตำแหน่งแรก
+      // } else {
+      //   this.data = receivedData; // ถ้าไม่ใช่อาร์เรย์ ใช้ค่าตามเดิม
+      // }
       console.log('Response:', this.data);
         // this.printdata();
         if (this.data[0]) { // เช็กว่ามี user_id หรือไม่
           //this.getdatauser(this.data.user_id);
           console.log("datauser",this.data);
         }
+
       });
       this.Like.forEach((_, index) => {
         this.currentSlideIndex[index] = 0;
       });
-      this.getMyLike(this.data[0].user_id);
+      this.getMyLike(this.data[0].user_id );
       this.getfollow(this.data[0].user_id);
   }
    // ฟังก์ชันเพื่อไปยังภาพถัดไป (เลื่อนเฉพาะ portfolio ของตัวเอง)

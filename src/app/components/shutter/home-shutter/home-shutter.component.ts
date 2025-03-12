@@ -224,9 +224,9 @@ export class HomeShutterComponent implements OnInit{
     const type = Number(this.datauser[0].type_user);
     console.log("ค่าของ type:", type, "| ประเภท:", typeof type); // ✅ ดูค่าที่แท้จริง
     if(type === 2 ){
-      this.router.navigate(['/'], { state: { data: this.datauser } });
+      this.router.navigate(['/'], { state: { data: this.data } });
     }
-    this.router.navigate(['/profile'], { state: { data: this.datauser } });
+    this.router.navigate(['/profile'], { state: { data: this.data } });
   }
 
   scrollTopack() {
@@ -271,6 +271,19 @@ export class HomeShutterComponent implements OnInit{
   async closeModel() {
     // เปลี่ยนสถานะเป็นปิดเพื่อปิดโมเดล
     this.isModelOpen = false;
+  }
+
+  navigateHome() {
+    this.router.navigate(['/'], { state: { data: this.data } });  // ส่งข้อมูลผ่าน 'state'
+  }
+  out(){
+     // 1. เคลียร์ข้อมูลใน LocalStorage หรือ SessionStorage
+     localStorage.clear(); // หรือใช้ sessionStorage.clear()
+
+     // 3. นำทางกลับไปที่หน้า Login
+     this.router.navigate(['/login']).then(() => {
+       window.location.reload(); // รีเฟรชหน้า เพื่อให้ UI โหลดใหม่
+      });
   }
 }
 //api -> /read/:User_Id

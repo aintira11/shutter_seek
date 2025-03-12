@@ -296,8 +296,8 @@ const selectedPortfolio = this.TagsWork.find(
     this.opened = !this.opened;
   }
   
-  goToInsertport(): void {
-    this.router.navigate(['/insertport']);
+  goToEditWork(){
+    this.router.navigate(['/insertport'], { state: { data: this.data} });
   }
  
   goToPackagePack(): void {

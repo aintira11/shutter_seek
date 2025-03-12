@@ -7,62 +7,191 @@
 <body>
   
   <!-- Sidebar -->
-  <div class="w3-sidebar w3-bar-block w3-collapse w3-card w3-animate-left" style="width:200px;left:0;" *ngIf="isSidebarOpen" id="mySidebar">
+  <!-- <div class="w3-sidebar w3-bar-block w3-collapse w3-card w3-animate-left" style="width:200px;left:0;" *ngIf="isSidebarOpen" id="mySidebar">
     <button id="w3-toggle-btn" class="w3-button w3-xlarge w3-left" (click)="w3_toggle()">&lt;</button>
     <button class="w3-bar-item w3-button" (click)="goToEditProfile()">ข้อมูลบัญชี</button>
-    <button class="w3-bar-item w3-button" (click)="goToPackagePack()">แพ็กเกจ</button>
-    <button class="w3-bar-item w3-button" (click)="goToInsertport()">ผลงาน</button>
-  </div>
-<div>
+    <button class="w3-bar-item w3-button" (click)="goToPackagePack()">แพ็กเกจ</button> -->
+    <!-- <button class="w3-bar-item w3-button" (click)="goToInsertport()">ผลงาน</button> -->
+  <!-- </div>
+<div> -->
   <!-- Button to toggle Sidebar -->
-  <button id="w3-toggle-btn" class="w3-button w3-xlarge w3-left" (click)="w3_toggle()">&#9776;</button>
-</div>
+  <!-- <button id="w3-toggle-btn" class="w3-button w3-xlarge w3-left" (click)="w3_toggle()">&#9776;</button>
+</div> -->
 
   <!-- Main content -->
-  <div class="w3-main" id="main" [style.transform]="isSidebarOpen ? 'translateX(200px)' : 'translateX(0)'">
+  <!-- <div class="w3-main" id="main" [style.transform]="isSidebarOpen ? 'translateX(200px)' : 'translateX(0)'"> -->
 
-    <main class="content">
-      <form class="form">
-        <div class="form-group">
-          <label for="category">หมวดหมู่งาน</label>
-          <select id="category" name="category">
-            <option value="งานถ่ายภาพบุคคล">งานถ่ายภาพบุคคล</option>
-            <option value="งานถ่ายภาพสินค้า">งานถ่ายภาพสินค้า</option>
-            <option value="งานถ่ายภาพงานแต่งงาน">งานถ่ายภาพงานแต่งงาน</option>
-            <option value="งานถ่ายภาพอีเวนต์">งานถ่ายภาพอีเวนต์</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="job-name">ชื่องาน</label>
-          <input type="text" id="job-name" name="job-name">
-        </div>
-        <div class="form-group">
-          <label for="job-details">รายละเอียดงานเพิ่มเติม</label>
-          <textarea id="job-details" name="job-details"></textarea>
-        </div>
-        <div class="form-group">
-          <label>อัปโหลดรูปผลงาน 0/30</label>
-          <p>ลูกค้าอยากเห็นฝีมือของคุณ เลือกรูปขั้นต่ำ 3 รูป ที่แสดงผลงานที่ดีของคุณ</p>
-          <div class="upload-box">
-            <button type="button" class="upload-btn" onclick="document.getElementById('fileInput').click()">+</button>
-            <input type="file" id="fileInput" style="display:none;" onchange="handleFileUpload(event)">
-            <p>เพิ่มรูปผลงาน</p>
+    <mat-sidenav-container class="sidenav-container">
+      <!-- Sidebar -->
+      <mat-sidenav #sidenav mode="side" [(opened)]="opened" class="sidebar">
+          <div class="sidebar-header">
+            
+            <button mat-icon-button (click)="toggleSidenav()" class="menu-toggle">
+              <mat-icon>menu</mat-icon>
+            </button>
+            <!-- <div class="logo-container">
+              <h3 style="margin-top: 15px;">แถบเมนู</h3>
+            </div> -->
           </div>
           
-          <script>
-            // ฟังก์ชันที่จัดการไฟล์ที่เลือก
-            function handleFileUpload(event) {
-              const file = event.target.files[0]; 
-              if (file) {
-                alert('ไฟล์ที่เลือก: ' + file.name); 
-              }
-            }
-          </script>
+          <div class="sidebar-content">
+              <ul class="nav-links">
+                <li class="nav-item" >
+                  <div (click)="goToHomeShutter()" class="nav-link">
+                    <mat-icon style="margin-top: 5px;">home</mat-icon>
+                    <span style="font-size: 20px;padding: 5px;">หน้าหลัก</span>
+                  </div>
+                </li>
+                <li class="nav-item" >
+                  <div (click)="goToEditProfile()" class="nav-link">
+                    <mat-icon style="margin-top: 5px;">account_circle</mat-icon>
+                    <span style="font-size: 20px;padding: 5px;">ข้อมูลบัญชี</span>
+                  </div>
+                </li>
+                <li class="nav-item" >
+                  <div (click)="goToPackagePack()" class="nav-link">
+                    <mat-icon style="margin-top: 5px;">card_membership</mat-icon>
+                    <span style="font-size: 20px;padding: 5px;">แพ็กเกจ</span>
+                  </div>
+                </li>
+                <li class="nav-item">
+                      <div (click)="goToEditWork()" class="nav-link">
+                    <mat-icon style="margin-top: 5px;">work</mat-icon>
+                    <span style="font-size: 20px;padding: 5px;">ผลงาน</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            
           
+          <div class="sidebar-footer">
+            <!-- <a href="#" class="nav-link"> -->
+              <div class="nav-link">
+              <mat-icon style="margin-top: 5px;">help</mat-icon>
+              <span style="font-size: 20px;padding: 5px;">ช่วยเหลือ</span>
+          </div>
+          </div>
+        </mat-sidenav>
+
+      <mat-sidenav-content>
+          <button mat-button class="menu-button me-3" (click)="toggleSidenav()">☰</button>
+      <!-- ส่วนแสดงผล -->
+      <main class="content">
+        <div class="portfolio-container">
+          <div class="portfolio-header">
+            <h2>จัดการผลงาน</h2>
+            <button class="add-work-btn" (click)="addCategory()">+ เพิ่มผลงาน</button>
+          </div>
+          
+          <!-- Portfolio List View -->
+          <div *ngIf="selectedCategoryIndex === null">
+            <div *ngIf="dataWork.length === 0" class="no-content">
+              <p>ยังไม่มีผลงาน คลิกปุ่ม "เพิ่มผลงาน" เพื่อเริ่มต้น</p>
+            </div>
+            
+            <div *ngFor="let category of dataWork; let catIndex = index" class="category-section">
+              <span class="category-title" style="padding: 20px;">  หมวดหมู่งาน : {{ category.name_tags }}</span>
+              <div class="category-header">
+                
+                <span class="category-title">{{ category.name_work || 'ไม่มีชื่อ' }}</span>
+                <div class="category-actions">
+                  <button class="edit-btn" (click)="editCategory(catIndex)">
+                    <mat-icon>edit</mat-icon> แก้ไข
+                  </button>
+                  <button class="delete-btn" (click)="deleteCategory(catIndex)">
+                    <mat-icon>delete</mat-icon> ลบ
+                  </button>
+                </div>
+              </div>
+              
+              <div class="category-preview">
+                <div *ngIf="category.image_urls && category.image_urls.length > 0" class="image-preview-grid">
+                  <div *ngFor="let image of category.image_urls.slice(0, 4)" class="preview-image-container">
+                    <img [src]="image" alt="ภาพตัวอย่างผลงาน" class="preview-image">
+                  </div>
+                  <div *ngIf="category.image_urls.length > 4" class="more-images">
+                    +{{ category.image_urls.length - 4 }} รูปภาพ
+                  </div>
+                </div>
+                <div *ngIf="!category.image_urls || category.image_urls.length === 0" class="no-images">
+                  <p>ยังไม่มีรูปภาพ</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- ในส่วน Category Edit View -->
+              <div *ngIf="selectedCategoryIndex !== null">
+                <div class="category-edit-section">
+                  <div class="form-group">
+                    <label class="label">ชื่อผลงาน</label>
+                    <input 
+                      type="text" 
+                      [value]="dataWork[selectedCategoryIndex].name_work"
+                      (input)="updateWorkName(selectedCategoryIndex, $event)" 
+                      class="input-style" 
+                      placeholder="กรุณาระบุชื่อผลงาน">
+                  </div>
+
+                  <!-- แสดงการเลือกหมวดหมู่เฉพาะเมื่อเพิ่มผลงานใหม่ -->
+                  <div class="form-group" *ngIf="isAddingNewCategory">
+                    <label class="label">หมวดหมู่งาน</label>
+                    <select class="input-style" [(ngModel)]="selectedTagId">
+                      <option value="" disabled selected>กรุณาเลือกหมวดหมู่</option>
+                      <option *ngFor="let tag of Tags" [value]="tag.tags_id" [disabled]="isTagDisabled(tag.tags_id)">
+                        {{ tag.name_tags }}
+                      </option>
+                    </select>
+                  </div>
+                  
+              
+              <div class="image-section">
+                <h3>รูปภาพผลงาน</h3>
+                
+                <div class="image-list">
+                  <div *ngIf="dataWork[selectedCategoryIndex].image_urls.length === 0" class="no-images">
+                    <p>ยังไม่มีรูปภาพ กรุณาเพิ่มรูปภาพ</p>
+                  </div>
+                  
+                  <div *ngFor="let image of dataWork[selectedCategoryIndex].image_urls; let imgIndex = index" class="image-item">
+                    <div class="image-container">
+                      <img [src]="image" alt="ผลงาน">
+                      <div class="image-overlay">
+                        <button class="remove-btn" (click)="removeImage(selectedCategoryIndex, imgIndex)">
+                          <mat-icon>delete</mat-icon>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="add-image">
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      style="display: none"
+                      #fileInput 
+                      (change)="onCategoryImageSelected($event, selectedCategoryIndex)">
+                    <div (click)="fileInput.click()" class="add-image-button" [class.disabled]="isUploading">
+                      <mat-icon *ngIf="!isUploading">add_photo_alternate</mat-icon>
+                      <mat-spinner *ngIf="isUploading" diameter="24"></mat-spinner>
+                      <span *ngIf="!isUploading">เพิ่มรูปภาพ</span>
+                      <span *ngIf="isUploading">กำลังอัปโหลด</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="actions">
+                <button class="cancel-btn" (click)="cancelEdit()">ยกเลิก</button>
+                <button class="save-btn" [disabled]="isUploading" (click)="savePortfolio()">บันทึก</button>
+              </div>
+            </div>
+          </div>
         </div>
-      </form>
-    </main>
-  </div>
+      </main>
+  </mat-sidenav-content>
+  <!-- </ng-template> -->
+  </mat-sidenav-container>
   
 </body>
 </html>

@@ -1,8 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
-import { DataFollower, DataMembers, Datapackages, DataReview, DataShowWork, Datawork } from '../../../model/models';
+import { DataFollower, DataMembers, Datapackages, DataReview, DataShowWork } from '../../../model/models';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Constants } from '../../../config/constants';
 import { HttpClient } from '@angular/common/http';
@@ -190,9 +189,6 @@ scrollTopack() {
         scrollToTop() {
           window.scrollTo({ top: 0, behavior: 'smooth' }); // เลื่อนไปบนสุดแบบ Smooth
         }
-        goToInsertport(): void {
-          this.router.navigate(['/insertport']);
-        }
        
         goToPackagePack(): void {
           this.router.navigate(['/editpac'], { state: { data: this.data[0]} });
@@ -203,7 +199,10 @@ scrollTopack() {
           this.router.navigate(['/editshutter'], { state: { data: this.data[0]} });
         }
         goToHomeShutter(){
-         this.router.navigate(['/mainshutter']);
+         this.router.navigate(['/mainshutter'], { state: { data: this.data[0]} });
+        }
+        goToEditWork(){
+          this.router.navigate(['/insertport'], { state: { data: this.data[0]} });
         }
 
         logout(){
