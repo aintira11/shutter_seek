@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>แบบฟอร์มรายงานช่างภาพ</title>
+</head>
+<body>
+    <header class="header-container d-flex justify-content-between align-items-center p-3 ">
+        <nav>
+          <!-- <div *ngIf="datauser[0]; else kkkk" > -->
+              <!-- <div class="d-flex align-items-center">
+                <img src="/assets/images/PIXEL (8).png" alt="SHUTTER seek" class="logo">
+                <nav class="ms-3">
+                    <a href="javascript:void(0)" class="nav-link" (click)="navigateHome()">หน้าแรก</a>
+                    <a href="/contact" class="nav-link">ติดต่อเรา</a>
+                    <a href="/shutter" class="nav-link" >สนใจเป็นช่างภาพ</a>
+                </nav>
+                <div class="button-container">
+                  <button class="btn btn-outline-primary me-2" routerLink="/login">ลงทะเบียน</button>
+                  <button class="btn btn-primary" (click)="out()">ออกจากระบบ</button>
+                  <button mat-button class="circle-button" >
+                    <img [src]="datauser[0].image_profile" alt="" class="circle-button" (click)="profile()">
+                  </button>
+                  </div>
+            </div> -->
+        <!-- </div> -->
+        <!-- <ng-template #kkkk> -->
+          <div class="d-flex align-items-center">
+            <div style="display: flex;flex-direction: row;">
+            <img src="/assets/images/PIXEL (8).png" alt="SHUTTER seek" class="logo">
+            <nav class="ms-3">
+                <a href="/" class="nav-link">หน้าแรก</a>
+                <a href="/contact" class="nav-link">ติดต่อเรา</a>
+                <!-- <a href="/shutter" class="nav-link" >สนใจเป็นช่างภาพ</a> -->
+            </nav>
+        </div>
+        <div>
+        </div>
+          <!-- <button class="btn btn-outline-primary me-2" routerLink="/login">ลงทะเบียน</button>
+          <button class="btn btn-primary" routerLink="/login">เข้าสู่ระบบ</button> -->
+          
+        </div>
+        <!-- </ng-template> -->
+    
+      </nav>
+    </header>
+  <div class="container">
+    <h1>แบบฟอร์มรายงานช่างภาพ</h1>
+    
+    <form id="photographerReportForm">
+      <!-- ข้อมูลผู้รายงาน -->
+      <div class="form-group">
+        <h2>ข้อมูลผู้รายงาน</h2>
+        <div class="form-group">
+          <label for="reporterName" class="required">ชื่อ-นามสกุล</label>
+          <input type="text" id="reporterName" name="reporterName" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="reporterEmail" class="required">อีเมล</label>
+          <input type="email" id="reporterEmail" name="reporterEmail" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="reporterPhone">เบอร์โทรศัพท์</label>
+          <input type="tel" id="reporterPhone" name="reporterPhone">
+        </div>
+      </div>
+      
+      <!-- ข้อมูลช่างภาพ -->
+      <div class="form-group">
+        <h2>ข้อมูลช่างภาพ</h2>
+        <div class="form-group">
+          <label for="photographerName" class="required">ชื่อช่างภาพ/สตูดิโอ</label>
+          <input type="text" id="photographerName" name="photographerName" required>
+        </div>
+        
+      </div>
+      
+      <!-- รายละเอียดการว่าจ้าง -->
+      <div class="form-group">
+        <h2>รายละเอียดการว่าจ้าง</h2>
+        <div class="form-group">
+          <label for="serviceType" class="required">ประเภทงานถ่ายภาพ</label>
+          <select id="serviceType" name="serviceType" required>
+            <option value="">-- เลือกประเภทงาน --</option>
+            <option value="wedding">งานแต่งงาน</option>
+            <option value="prewedding">พรีเวดดิ้ง</option>
+            <option value="graduation">งานรับปริญญา</option>
+            <option value="event">งานอีเวนต์</option>
+            <option value="product">ถ่ายภาพสินค้า</option>
+            <option value="portrait">ถ่ายภาพบุคคล</option>
+            <option value="family">ถ่ายภาพครอบครัว</option>
+            <option value="other">อื่นๆ</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="otherServiceType">ประเภทงานอื่นๆ (โปรดระบุ)</label>
+          <input type="text" id="otherServiceType" name="otherServiceType">
+        </div>
+        
+        <div class="form-group">
+          <label for="serviceDate" class="required">วันที่ใช้บริการ</label>
+          <input type="date" id="serviceDate" name="serviceDate" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="serviceLocation">สถานที่</label>
+          <input type="text" id="serviceLocation" name="serviceLocation">
+        </div>
+        
+        <div class="form-group">
+          <label for="servicePrice">ค่าบริการ (บาท)</label>
+          <input type="text" id="servicePrice" name="servicePrice">
+        </div>
+      </div>
+      
+      <!-- รายละเอียดปัญหา -->
+      <div class="form-group">
+        <h2>รายละเอียดปัญหา</h2>
+        <div class="form-group">
+          <label for="problemType" class="required">ประเภทของปัญหา</label>
+          <select id="problemType" name="problemType" required>
+            <option value="">-- เลือกประเภทปัญหา --</option>
+            <option value="quality">คุณภาพงานไม่ตรงตามที่ตกลง</option>
+            <option value="delay">ส่งงานล่าช้า</option>
+            <option value="missing">ไม่ได้รับงานหลังชำระเงิน</option>
+            <option value="attitude">พฤติกรรมไม่เหมาะสม</option>
+            <option value="contract">ผิดสัญญา/ข้อตกลง</option>
+            <option value="other">อื่นๆ</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="problemDescription" class="required">รายละเอียดปัญหา</label>
+          <textarea id="problemDescription" name="problemDescription" required placeholder="กรุณาอธิบายรายละเอียดปัญหาที่เกิดขึ้น"></textarea>
+        </div>
+      </div>
+      
+      <!-- การดำเนินการ -->
+      <div class="form-group">
+        <h2>การดำเนินการ</h2>
+        <div class="form-group">
+          <label for="actionTaken" class="required">ท่านได้ดำเนินการอย่างไรกับช่างภาพ</label>
+          <textarea id="actionTaken" name="actionTaken" required placeholder="กรุณาระบุการดำเนินการที่ผ่านมา เช่น การติดต่อกลับ การเจรจา"></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label for="expectation">สิ่งที่ท่านต้องการให้ดำเนินการ</label>
+          <textarea id="expectation" name="expectation" placeholder="กรุณาระบุความคาดหวังหรือสิ่งที่ท่านต้องการให้ดำเนินการ"></textarea>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="additionalInfo">ข้อมูลเพิ่มเติม</label>
+        <textarea id="additionalInfo" name="additionalInfo"></textarea>
+      </div>
+      
+      <div class="form-group">
+        <input type="checkbox" id="confirmInfo" name="confirmInfo" required>
+        <label for="confirmInfo" class="required">ข้าพเจ้าขอรับรองว่าข้อมูลทั้งหมดเป็นความจริง</label>
+      </div>
+
+      <div class="button-container">
+        <button type="button" class="cancel-btn" (click)="resetForm()">ยกเลิก</button>
+        <button type="submit" class="submit-btn" [disabled]="photographerReportForm.invalid">ส่งแบบฟอร์ม</button>
+      </div>
+
+    </form>
+  </div>
+    
+</body>
+</html>

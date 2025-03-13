@@ -229,12 +229,12 @@ this.http.request('delete', url, { body: { package_id: packageToDelete.package_i
     const apiUrl = `${this.Constants.API_ENDPOINT}`;
     let hasErrors = false;
   
-    for (let packageData of this.packages) {
-      // หาผลงานที่เลือกเพื่อรับ tags_id
-      const portfolioId = Number(packageData.portfolio_id); // แปลงเป็นตัวเลขเพื่อป้องกัน type mismatch
-const selectedPortfolio = this.TagsWork.find(
-  portfolio => portfolio.portfolio_id === portfolioId
-);
+        for (let packageData of this.packages) {
+          // หาผลงานที่เลือกเพื่อรับ tags_id
+          const portfolioId = Number(packageData.portfolio_id); // แปลงเป็นตัวเลขเพื่อป้องกัน type mismatch
+          const selectedPortfolio = this.TagsWork.find(
+          portfolio => portfolio.portfolio_id === portfolioId
+        );
 
   
       if (!selectedPortfolio) {

@@ -75,6 +75,20 @@
   <strong>Oh snap!</strong> ทำไมถึงเลิกติดตาม {{datauser[0]?.username}} ล่ะฮือออออ.
 </div>
 
+<!-- ปุ่มรายงาน -->
+<div class="menu-wrapper">
+  <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="เปิดเมนู">
+    <mat-icon>more_vert</mat-icon>
+  </button>
+  <mat-menu #menu="matMenu" >
+    <button mat-menu-item (click)="report()">
+      <span>รายงานช่างภาพคนนี้</span>
+    </button>
+  </mat-menu>
+</div>
+
+
+
  <section id="first">
     <div class="profile-container">
         <!-- <div class="back-button">
@@ -195,6 +209,8 @@
       <br>
       <h3 id="second">แพ็กเกจ ของงานนี้</h3>
       
+       <!-- เช็คว่าแพ็กเกจมีอยู่หรือไม่ -->
+    <div *ngIf="data.packages && data.packages.length > 0 && data.packages[0].package_id != null; else noPackages">
       <!-- วนลูปแพ็กเกจภายใน datawork -->
       <mat-card *ngFor="let package of data.packages" style="background-color: #004AAD; color: white; margin-bottom: 15px;">
         <mat-card-header style="display: flex; justify-content: space-between;">
@@ -212,6 +228,15 @@
           <p>{{ package.detail }}</p>
         </mat-card-content>
       </mat-card>
+    </div>
+    <ng-template #noPackages>
+      <!-- <h3 id="second" >แพ็กเกจ ของงานนี้</h3> -->
+      <mat-card  style="background-color: #004AAD; color: white; margin-bottom: 15px;">
+        <mat-card-header style="display: flex; justify-content: space-between;">
+        </mat-card-header>
+        <mat-card-title>ยังไม่มีแพ็กเกจ</mat-card-title>
+        </mat-card>
+    </ng-template>
   
       <hr>
       <br>

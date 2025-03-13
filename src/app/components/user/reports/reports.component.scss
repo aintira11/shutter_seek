@@ -1,0 +1,152 @@
+body {
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  .header-container {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    position: sticky;
+    top: 0;  /* ต้องใส่ top เพื่อให้มันติดขอบบน */
+    z-index: 1000;  /* ให้แน่ใจว่าอยู่เหนือ element อื่น */
+    background: rgb(255, 255, 255); /* เฮดเดอร์มีพื้นหลัง */
+    border-radius: 10px;
+    padding: 1rem 2rem;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1); /* ให้ดูแยกออกจากพื้นหลัง */
+}
+
+//   .button-container {
+//     display: flex;  /* Use flexbox for layout */
+//     align-items: center;  /* Align items vertically at the center */
+//     gap: 10px;  /* Optional: Adjust the gap between buttons */
+//     position: absolute;  /* Fix the buttons at a specific position */
+//     right: 0;  /* Align the container to the right edge of the screen */
+//     margin-right: 2%;
+//   }
+  
+  /* ปรับแต่งโลโก้ */
+  .logo {
+    height: 50px;
+  }
+  ul {
+    display: flex;  
+    box-sizing: border-box;
+  
+  }
+  
+li {
+    list-style: none;
+    margin-right: 20px;
+    font-size: 25px;
+    font-weight: bold;
+  }
+  li a {
+    text-decoration: none;
+    color: black;
+  }
+  nav {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+  }
+  
+  /* ปรับแต่งเมนู */
+  .nav-link {
+    text-decoration: none;
+    color: black;
+    margin-right: 15px;
+  }
+  .nav-link:hover {
+    color: #007bff; /* เปลี่ยนสีเมื่อเมาส์ชี้ */
+    // text-shadow: 0px 0px 5px #007bff; /* ทำให้มีเงาสีฟ้า */
+  }
+
+  ////
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+  h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+  }
+  .form-group {
+    margin-bottom: 20px;
+  }
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="date"],
+  textarea,
+  select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px;
+  }
+  .radio-group {
+    display: flex;
+    gap: 15px;
+  }
+  .radio-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  textarea {
+    min-height: 120px;
+  }
+  .button-container {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    margin-top: 20px;
+  
+    button {
+      background-color: #004AAD;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      flex: 1;
+      transition: background-color 0.3s;
+  
+      &:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+      }
+    }
+  
+    .cancel-btn {
+      background-color: #6c757d;
+      
+      &:hover:not(:disabled) {
+        background-color: #5a6268;
+      }
+    }
+  
+    .submit-btn:hover:not(:disabled) {
+      background-color: #0040AA;
+    }
+}
+  .required:after {
+    content: " *";
+    color: red;
+  }

@@ -7,12 +7,14 @@ import { CommonModule } from '@angular/common';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { lastValueFrom } from 'rxjs';
+// import { lastValueFrom } from 'rxjs';
+import {MatIconModule} from '@angular/material/icon';
+import {MatMenuModule} from '@angular/material/menu';
 
 @Component({
   selector: 'app-home-shutter',
   standalone: true,
-  imports: [CommonModule,MatCardModule, MatButtonModule,ReactiveFormsModule],
+  imports: [CommonModule,MatCardModule, MatButtonModule,ReactiveFormsModule, MatMenuModule, MatIconModule],
   templateUrl: './home-shutter.component.html',
   styleUrl: './home-shutter.component.scss'
 })
@@ -284,6 +286,26 @@ export class HomeShutterComponent implements OnInit{
      this.router.navigate(['/login']).then(() => {
        window.location.reload(); // รีเฟรชหน้า เพื่อให้ UI โหลดใหม่
       });
+  }
+  report(){
+    console.log("📤 Sending data shutter:", this.datauser[0]);
+    console.log("📤 Sending datauser:", this.data);
+  
+    if (!this.datauser[0]) {
+      console.error("❌ Error: data shutter is undefined or invalid");
+      return;
+    }
+    if (!this.datauser || this.datauser.length === 0) {
+      console.error("❌ Error: this.datauser is empty or undefined");
+      return;
+    }
+  
+    this.router.navigate(['/reports'], { 
+      state: { 
+        datauser: this.data, 
+        datashutter: this.datauser[0] 
+      } 
+    });
   }
 }
 //api -> /read/:User_Id

@@ -20,6 +20,12 @@
 #first {
     margin-top: 3%;
   }
+
+  .menu-wrapper {
+    display: flex;
+    justify-content: flex-end; /* ดันเมนูไปขวาสุด */
+    width: 100%;
+  }
   
   // #second {
   //   margin-left: 10%;

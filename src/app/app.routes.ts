@@ -23,6 +23,7 @@ import { UserFollowComponent } from './components/user/user-follow/user-follow.c
 import { HomeShutterComponent } from './components/shutter/home-shutter/home-shutter.component';
 import { RegisterComponent } from './components/user/register/register.component';
 import { MainShutterComponent } from './components/shutter/main-shutter/main-shutter.component';
+import { ReportsComponent } from './components/user/reports/reports.component';
 
 export const routes: Routes = [
     {path: '',component: HomeComponent}, 
@@ -49,6 +50,7 @@ export const routes: Routes = [
     {path: 'homeshutter',component: HomeShutterComponent},
     
     {path: 'mainshutter',component: MainShutterComponent},
+    {path: 'reports',component: ReportsComponent},
 
     {path: 'admin',component: AdminHomeComponent},
     {path: 'addmin',component: AddminComponent},
