@@ -1,5 +1,5 @@
 import { Component, OnInit,ElementRef, ViewChild, HostListener  } from '@angular/core';
-import { DataFollower, DataLike, DataMembers, Datapackages, DataReview, DataShowWork, Datawork } from '../../../model/models';
+import { DataFollower, DataLike, DataMembers, Datapackages, DataReview, DataShowWork } from '../../../model/models';
 import { Constants } from '../../../config/constants';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -63,7 +63,7 @@ export class HomeShutterComponent implements OnInit{
           console.error("❌ Error: idshutter is undefined or missing");
         }
   
-        this.getdatauser(this.idshutter); // เรียก API หลังจากแน่ใจว่าข้อมูลมาแล้ว
+        this.getdatauser((String(this.idshutter))); // เรียก API หลังจากแน่ใจว่าข้อมูลมาแล้ว
       }, 100);
     });
     
@@ -120,7 +120,7 @@ export class HomeShutterComponent implements OnInit{
     this.hoverRating = star;
   }
 
-  getdatauser(id : number){
+  getdatauser(id : string){
     console.log('id',id);
     const url = this.Constants.API_ENDPOINT+'/read/'+id;
     this.http.get(url).subscribe((response: any) => {

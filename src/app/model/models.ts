@@ -13,7 +13,7 @@ export interface DataMembers {
     image_profile:  string;
     description:    null;
     date_of_member: Date;
-    type_user:      number;
+    type_user:      string;
     sht_status:     number;
 }
 export interface DataTegs {

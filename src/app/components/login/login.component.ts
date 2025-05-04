@@ -29,7 +29,7 @@ export class LoginComponent {
   ) {
     // สร้างฟอร์มจาก FormBuilder
     this.loginForm = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
+      username: ['', [Validators.required]],
       password: ['', Validators.required],
     });
   }
@@ -42,7 +42,7 @@ export class LoginComponent {
     const url = this.constants.API_ENDPOINT+'/login'; 
 
     if (this.loginForm.invalid) {
-      alert('กรุณากรอกอีเมลและรหัสผ่านให้ครบถ้วน');
+      alert('กรุณากรอกusernameและรหัสผ่านให้ครบถ้วน');
       return;
     }
 
@@ -64,12 +64,13 @@ export class LoginComponent {
         console.log('Login Successful:', this.dataLogin);
         const user = this.dataLogin[0]; 
         const userShutter = this.dataLogin[1]; 
-        if (user.type_user === 3) {
+        const userType = Number(user.type_user); // แปลงจาก string เป็น number
+        if (userType=== 3) {
           this.router.navigate(['/admin'], { state: { data: user } });
-        } else if (user.type_user === 2 ) {
+        } else if (userType === 2 ) {
           // this.router.navigate(['/mainshutter']);
           this.router.navigate(['/mainshutter'], { state: { data: user } });
-        } else if (user.type_user === 1) {
+        } else if (userType === 1) {
           this.router.navigate(['/'], { state: { data: user} });
         }
       } else {
@@ -80,13 +81,13 @@ export class LoginComponent {
       alert('เกิดข้อผิดพลาดในการเข้าสู่ระบบ');
     }
   }
-  choose(type_user : number){
+  choose(type_user : string){
 
-    if (type_user === 2 ) {
+    if (type_user === '2' ) {
       // this.router.navigate(['/shutter'], { state: { data: user} });
       this.router.navigate(['/mainshutter'], { state: { data: this.dataLogin[1]} });
       this.isModelOpen = false;
-    } else if (type_user === 1) {
+    } else if (type_user === '1') {
       this.router.navigate(['/'], { state: { data: this.dataLogin[0]} });
       this.isModelOpen = false;
     }

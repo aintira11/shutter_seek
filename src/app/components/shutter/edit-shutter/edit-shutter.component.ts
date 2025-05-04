@@ -73,11 +73,11 @@ ngOnInit(): void {
     username: [this.data.username, Validators.required],
     phone: [this.data.phone, Validators.required],
     email: [this.data.email, [Validators.required, Validators.email]],
-    address: [this.data.address, Validators.required],
+    address: [this.data.address],
     province: [this.data.province, Validators.required],
-    lineID: [this.data.lineID, Validators.required],
+    lineID: [this.data.lineID],
     facebook: [this.data.facebook],
-    description: [this.data.description, Validators.required]
+    description: [this.data.description]
   });
 
   // setTimeout(() => {
@@ -188,9 +188,9 @@ ngOnInit(): void {
     // });
 
   
-    // ตรวจสอบว่ามีข้อมูลใน personalData หรือไม่
-    const isPersonalDataValid = Object.values(personalData).some(value => value && value !== "");
-    if (isPersonalDataValid) {
+    // ตรวจสอบว่ามีข้อมูลใน personalData หรือไม่ เพิ่ม เงื่อนไขเช็ค .some()
+    // const isPersonalDataValid = Object.values(personalData).some(value => value && value !== "");
+    // if (isPersonalDataValid) {
       const url = `${this.Constants.API_ENDPOINT}/update/${userId}`;
       this.http.post(url, personalData).subscribe({
         next: (response) => {
@@ -205,13 +205,13 @@ ngOnInit(): void {
           // alert("เกิดข้อผิดพลาดในการอัปเดตข้อมูลส่วนตัว");
         }
       });
-    } 
+    // } 
   
     // ตรวจสอบว่ามีข้อมูลใน additionalData หรือไม่
-    const isAdditionalDataValid = Object.values(additionalData).some(value => value && value !== "");
-    if (isAdditionalDataValid) {
-      const url = this.Constants.API_ENDPOINT + '/updateline/' + userId;
-      this.http.post(url, additionalData).subscribe({
+    // const isAdditionalDataValid = Object.values(additionalData).some(value => value && value !== "");
+    // if (isAdditionalDataValid) {
+      const urls = this.Constants.API_ENDPOINT + '/updateline/' + userId;
+      this.http.post(urls, additionalData).subscribe({
         next: (response) => {
           console.log("Update success (Additional Data):", response);
           alert("บันทึกข้อมูลเพิ่มเติมเรียบร้อย!");
@@ -224,7 +224,7 @@ ngOnInit(): void {
           // alert("เกิดข้อผิดพลาดในการอัปเดตข้อมูลเพิ่มเติม");
         }
       });
-    }
+    // }
   
     // เมื่อบันทึกเสร็จแล้ว ให้กลับไปหน้า editshutter
     // this.router.navigate(['/editshutter'], { state: { data: this.data } });

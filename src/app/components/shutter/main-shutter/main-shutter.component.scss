@@ -22,13 +22,6 @@
     margin-top: 3%;
   }
   
-  // #second {
-  //   margin-left: 10%;
-  //   margin-right: 10%;
-  //   margin-bottom: 5%;
-  //   margin-top: 5%;
-    
-  // }
   
   #third {
     margin-left: 10%;
@@ -100,16 +93,6 @@ li {
     
   }
   
-//   /* ปรับแต่งเมนู */
-//   .nav-link {
-//     text-decoration: none;
-//     color: black;
-//     margin-right: 15px;
-//   }
-//   .nav-link:hover {
-//     color: #007bff; /* เปลี่ยนสีเมื่อเมาส์ชี้ */
-//     // text-shadow: 0px 0px 5px #007bff; /* ทำให้มีเงาสีฟ้า */
-//   }
 
 /* Global Styles */
 * {
@@ -456,44 +439,6 @@ h3 i {
 .menu-button:hover {
   background: #ffaa00;
 }
-/* สไตล์สำหรับโมเดล */
-// .modal {
-//   display: block;
-//   position: fixed;
-//   z-index: 1;
-//   left: 0;
-//   top: 0;
-//   width: 100%;
-//   height: 100%;
-//   overflow: auto;
-//   background-color: rgba(0, 0, 0, 0.447);
-// }
-
-// /* สไตล์สำหรับเนื้อหาในโมเดล */
-// .modal-content {
-//   background-color: #fefefe;
-//   color: black;
-//   margin: 15% auto;
-//   padding: 20px;
-//   border: 1px solid #888;
-//   width: 50%;
-// }
-
-
-// /* ปุ่มปิดในโมเดล */
-// .close {
-//   color: #aaa;
-//   float: left;
-//   font-size: 28px;
-//   font-weight: bold;
-// }
-
-// .close:hover,
-// .close:focus {
-//   color: black;
-//   text-decoration: none;
-//   cursor: pointer;
-// }
 
 //sidebar
 .sidebar {
@@ -523,14 +468,6 @@ h3 i {
     left: 0;
   }
   
-//   .logo-container {
-//     display: flex;
-//     align-items: center;
-//   }
-  
-//   .logo {
-//     max-height: 40px;
-//   }
   
   .menu-toggle {
     color: white;

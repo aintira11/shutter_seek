@@ -4,10 +4,10 @@ import util from "util";
 export const conn = mysql.createPool(
     {
         connectionLimit: 10,
-        host: "202.28.34.197",
-        user: "web66_65011212152",
-        password: "65011212152@csmsu",
-        database: "web66_65011212152",
+        host: "191.101.230.103",
+        user: "u528477660_shutter",
+        password: "Oh#2DbQa",
+        database: "u528477660_shutter",
     }
 );
 

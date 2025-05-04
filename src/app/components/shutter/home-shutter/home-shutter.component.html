@@ -52,24 +52,10 @@
   </nav>
 </header>
 
-<!-- model Alert Success (สำเร็จ) -->
-<!-- <div *ngIf="isModelOpen_Success">
-  <div class="alert fade alert-simple alert-success alert-dismissible text-left font__family-montserrat font__size-16 font__weight-light brk-library-rendered rendered show">
-  
-    <strong class="font__weight-semibold font__family-thai">ขอบคุณน้าาา!</strong> คุณติดตามช่างภาพ {{datauser[0]?.username}} เรียบร้อยแล้ว.
-  </div>
-</div> -->
-<!-- Dashboard Alert -->
 <div class="dashboard-alert" *ngIf="isModelOpen_Success">
   <strong>ขอบคุณน้าาา!</strong> คุณติดตามช่างภาพ {{datauser[0]?.username}} เรียบร้อยแล้ว.
 </div>
-<!-- model Alert danger -->
- <!-- <div *ngIf="isModelOpen_danger">
-<div class="alert fade alert-simple alert-danger alert-dismissible text-left font__family-montserrat font__size-16 font__weight-light brk-library-rendered rendered show">
-  
-  <strong class="font__weight-semibold font__family-thai">Oh snap!</strong> ทำไมถึงเลิกติดตาม {{datauser[0]?.username}} ล่ะฮือออออ.
-</div>
-</div> -->
+
 
 <div class="dashboard-alert1" *ngIf="isModelOpen_danger">
   <strong>Oh snap!</strong> ทำไมถึงเลิกติดตาม {{datauser[0]?.username}} ล่ะฮือออออ.
