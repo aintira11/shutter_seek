@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { DataFollower, DataMembers, Datapackages, DataReview, DataShowWork } from '../../../model/models';
+import { DataFollow, DataMembers, Datapackages, DataReview, DataShowWork } from '../../../model/models';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Constants } from '../../../config/constants';
 import { HttpClient } from '@angular/common/http';
@@ -32,7 +32,7 @@ export class MainShutterComponent implements OnInit{
   data: any = {}; 
   datawork:DataShowWork[]=[]
   datareview:any[]=[]
-  datafollower : DataFollower[] =[] ;
+  datafollower : DataFollow[] =[] ;
   datapackages : Datapackages[] = [];
 
   rating: number = 0; // ค่าเริ่มต้นของการให้คะแนน
@@ -42,6 +42,7 @@ export class MainShutterComponent implements OnInit{
   showButton = false; // ซ่อนปุ่มก่อน
   isLoading: boolean = false;
   opened = true;
+  isModelOpen: boolean = false;
   constructor(private fb: FormBuilder,private router : Router,private route: ActivatedRoute,private Constants: Constants , private http: HttpClient){
     
    
@@ -216,7 +217,17 @@ scrollTopack() {
           this.router.navigate(['/login']).then(() => {
             window.location.reload(); // รีเฟรชหน้า เพื่อให้ UI โหลดใหม่
               
-              });
-    
-            }
+        });
+      }
+
+  viewProfile(follower: any) {
+    console.log('View', follower.username);
+  }
+openModel(){
+  this.isModelOpen = true;
+}
+closeList() {
+  // ใส่ logic ปิด modal หรือ element
+    this.isModelOpen = false;
+}
 }

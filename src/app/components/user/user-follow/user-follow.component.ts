@@ -35,7 +35,7 @@ export class UserFollowComponent implements OnInit{
     const url = this.Constants.API_ENDPOINT + '/get/follow/'+ id;
     this.http.get(url).subscribe((response: any) => {
       this.Follow = response;
-      console.log("data Tegs :", this.Follow);
+      console.log("data getfollow :", this.Follow);
     });
   }
 

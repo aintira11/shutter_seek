@@ -138,7 +138,8 @@
                     <label class="label">หมวดหมู่งาน</label>
                     <select class="input-style" [(ngModel)]="selectedTagId">
                       <option value="" disabled selected>กรุณาเลือกหมวดหมู่</option>
-                      <option *ngFor="let tag of Tags" [value]="tag.tags_id" [disabled]="isTagDisabled(tag.tags_id)">
+                      <!-- <option *ngFor="let tag of Tags" [value]="tag.tags_id" [disabled]="isTagDisabled(tag.tags_id)"> -->
+                      <option *ngFor="let tag of Tags" [value]="tag.tags_id">
                         {{ tag.name_tags }}
                       </option>
                     </select>

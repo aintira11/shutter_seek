@@ -4,11 +4,12 @@ import { DataLike, DataMembers } from '../../../model/models';
 import { CommonModule } from '@angular/common';
 import { Constants } from '../../../config/constants';
 import { HttpClient } from '@angular/common/http';
+import { FormsModule } from '@angular/forms'
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,FormsModule],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
@@ -46,18 +47,19 @@ export class ProfileComponent implements OnInit{
   }
    // ฟังก์ชันเพื่อไปยังภาพถัดไป (เลื่อนเฉพาะ portfolio ของตัวเอง)
 getNext(portfolioIndex: number) {
-  if (this.Like[portfolioIndex] && this.Like[portfolioIndex].image_urls) {
-    // if (this.Like[portfolioIndex]?.image_urls?.length > 0) {
+  if (this.Like[portfolioIndex]?.image_urls?.length > 0) {
     const maxIndex = this.Like[portfolioIndex].image_urls.length - 1;
-    this.currentSlideIndex[portfolioIndex] = (this.currentSlideIndex[portfolioIndex] + 1) % (maxIndex + 1);
-  }
+    // +1 เพื่อไปภาพถัดไป และ mod ด้วยจำนวนภาพทั้งหมด
+    this.currentSlideIndex[portfolioIndex] = ( (this.currentSlideIndex[portfolioIndex] || 0) + 1 ) % (maxIndex + 1);
+    console.log(this.currentSlideIndex);
 }
-
+}
 getPrev(portfolioIndex: number) {
-  if (this.Like[portfolioIndex] && this.Like[portfolioIndex].image_urls) {
-    // if (this.Like[portfolioIndex]?.image_urls?.length > 0) {
+ if (this.Like[portfolioIndex]?.image_urls?.length > 0) {
     const maxIndex = this.Like[portfolioIndex].image_urls.length - 1;
-    this.currentSlideIndex[portfolioIndex] = (this.currentSlideIndex[portfolioIndex] - 1 + (maxIndex + 1)) % (maxIndex + 1);
+    // -1 เพื่อกลับภาพก่อนหน้า (ถ้าน้อยกว่า 0 ให้วนกลับไปท้าย)
+    this.currentSlideIndex[portfolioIndex] = ((this.currentSlideIndex[portfolioIndex] || 0) - 1 + (maxIndex + 1)) % (maxIndex + 1);
+    console.log(this.currentSlideIndex);
   }
 }
 
@@ -79,13 +81,41 @@ getPrev(portfolioIndex: number) {
     this.router.navigate(['/profile'],{ state: { data: this.data } });
   }
 
-  getMyLike(id : number){
-    const url = this.Constants.API_ENDPOINT + '/get/like/'+ id;
-    this.http.get(url).subscribe((response: any) => {
-      this.Like = response;
-      console.log("data Tegs :", this.Like);
-    });
-  }
+getMyLike(id: number) {
+  const url = this.Constants.API_ENDPOINT + '/get/like/' + id;
+  this.http.get(url).subscribe((response: any) => {
+    this.Like = response.map((item: any) => ({
+      ...item,
+      isLiked: true  // เพิ่ม isLiked = true
+    }));
+    console.log("data Tegs :", this.Like);
+  });
+}
+
+likeCancel(portfolioId: number | null) {
+      const validPortfolioId = portfolioId ?? 0;
+      if (validPortfolioId === 0) {
+        console.error("Invalid portfolio_id!");
+        return;
+      }
+    
+      const userId = this.data?.[0]?.user_id ?? 0;
+      if (userId === 0) {
+        console.error("Invalid user_id!");
+        return;
+      }
+
+        const url = `${this.Constants.API_ENDPOINT}/like/${validPortfolioId}/${userId}`;
+        this.http.post(url, {}).subscribe({
+          next: () => {
+            console.log("Unlike success");
+  
+          },
+          error: (error) => console.error("Unlike error:", error)
+        });
+  
+    }
+
 
   getfollow(id : number){
     const url = this.Constants.API_ENDPOINT + '/get/follow/'+ id;

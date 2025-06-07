@@ -58,7 +58,7 @@ export class HomeComponent implements OnInit{
 
     this.isLoading = true;
     // ไม่ต้องรอให้เสร็จ ทำงานอื่นไปเลย
-    new Promise(resolve => setTimeout(resolve, 3500)).then(() => {
+    new Promise(resolve => setTimeout(resolve, 2500)).then(() => {
     this.isLoading = false;
     });
     // รับข้อมูลจากหน้าที่ส่งมา
@@ -107,10 +107,7 @@ export class HomeComponent implements OnInit{
       // await this.delay(3500); // รอเวลา 5 วินาที
       // this.isLoading = false;
   }
-
-  isLiked(portfolio_id: number): boolean {
-    return this.Like.some(like => like.portfolio_id === portfolio_id);
-  }
+  
   
   delay(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -136,9 +133,10 @@ getNext(portfolioIndex: number) {
     this.currentSlideIndex1[portfolioIndex] = (this.currentSlideIndex1[portfolioIndex] + 1) % (maxIndex + 1);
     console.log(this.currentSlideIndex1);
   }
-    if (this.dataSreach[portfolioIndex] && this.dataSreach[portfolioIndex].image_urls) {
+    if (this.dataSreach[portfolioIndex]?.image_urls?.length > 0) {
     const maxIndex = this.dataSreach[portfolioIndex].image_urls.length - 1;
-    this.currentSlideIndexSearch[portfolioIndex] = (this.currentSlideIndexSearch[portfolioIndex] - 1 + maxIndex + 1) % (maxIndex + 1);
+    // +1 เพื่อไปภาพถัดไป และ mod ด้วยจำนวนภาพทั้งหมด
+    this.currentSlideIndexSearch[portfolioIndex] = ( (this.currentSlideIndexSearch[portfolioIndex] || 0) + 1 ) % (maxIndex + 1);
     console.log(this.currentSlideIndexSearch);
   }
 
@@ -156,9 +154,10 @@ getPrev(portfolioIndex: number) {
     this.currentSlideIndex1[portfolioIndex] = (this.currentSlideIndex1[portfolioIndex] - 1 + (maxIndex + 1)) % (maxIndex + 1);
     console.log(this.currentSlideIndex1);
   }
-  if (this.dataSreach[portfolioIndex]?.image_urls?.length > 0) {
+ if (this.dataSreach[portfolioIndex]?.image_urls?.length > 0) {
     const maxIndex = this.dataSreach[portfolioIndex].image_urls.length - 1;
-    this.currentSlideIndexSearch[portfolioIndex] = (this.currentSlideIndexSearch[portfolioIndex] - 1 + (maxIndex + 1)) % (maxIndex + 1);
+    // -1 เพื่อกลับภาพก่อนหน้า (ถ้าน้อยกว่า 0 ให้วนกลับไปท้าย)
+    this.currentSlideIndexSearch[portfolioIndex] = ((this.currentSlideIndexSearch[portfolioIndex] || 0) - 1 + (maxIndex + 1)) % (maxIndex + 1);
     console.log(this.currentSlideIndexSearch);
   }
 }
@@ -250,49 +249,47 @@ getPrev(portfolioIndex: number) {
       this.router.navigate(['/profile'], { state: { data: this.datauser } });
     }
 
-    Liked(portfolioId: number | null) {
-      const validPortfolioId = portfolioId ?? 0;
-      if (validPortfolioId === 0) {
-        console.error("Invalid portfolio_id!");
-        return;
-      }
-    
-      const userId = this.datauser?.[0]?.user_id ?? 0;
-      if (userId === 0) {
-        console.error("Invalid user_id!");
-        return;
-      }
+// ตรวจสอบว่าโพสนี้ถูกใจหรือไม่
+isLiked(portfolioId: number | null): boolean {
+  return this.Like.some(like => like.portfolio_id === portfolioId);
+}
 
-        const url = `${this.Constants.API_ENDPOINT}/like/${validPortfolioId}/${userId}`;
-        this.http.post(url, {}).subscribe({
-          next: () => {
-            console.log("Unlike success");
-  
-          },
-          error: (error) => console.error("Unlike error:", error)
-        });
+// method สำหรับการกดถูกใจ (ปรับปรุงจาก method เดิมของคุณ)
+Liked(portfolioId: number | null) {
+  const validPortfolioId = portfolioId ?? 0;
+  if (validPortfolioId === 0) {
+    console.error("Invalid portfolio_id!");
+    return;
+  }
 
-      
-    }
-    
+  const userId = this.datauser?.[0]?.user_id ?? 0;
+  if (userId === 0) {
+    console.error("Invalid user_id!");
+    return;
+  }
 
-    getMyLike(portfolioId: number) {
-      const userId = this.datauser?.[0]?.user_id ?? 0;
-      if (userId === 0) {
-        console.error("Invalid user_id!");
-        return;
-      }
-    
-      const url = `${this.Constants.API_ENDPOINT}/get/like/${portfolioId}`;
-      this.http.get(url).subscribe((response: any) => {
-        this.Like = response;
-        
-        // ตรวจสอบว่าผู้ใช้เคยกดถูกใจ portfolio นี้หรือไม่
-        // this.likeStatus = this.Like.some((like: any) => like.user_id === userId);
-      
-       
-      });
-    }
+  const url = `${this.Constants.API_ENDPOINT}/like/${validPortfolioId}/${userId}`;
+  this.http.post(url, {}).subscribe({
+    next: () => {
+      console.log("Like/Unlike success");
+      // หลังจากเรียก API สำเร็จ ให้โหลดข้อมูล Like ใหม่
+      this.getMyLike(userId);
+    },
+    error: (error) => console.error("Like/Unlike error:", error)
+  });
+}
+
+// method ดึงข้อมูลที่ถูกใจ (ปรับปรุงจาก method เดิมของคุณ)
+getMyLike(id: number) {
+  const url = this.Constants.API_ENDPOINT + '/get/like/' + id;
+  this.http.get(url).subscribe((response: any) => {
+    this.Like = response.map((item: any) => ({
+      ...item,
+      isLiked: true  // เพิ่ม isLiked = true
+    }));
+    console.log("data Like :", this.Like);
+  });
+}
 
     toShutter(id_shutter: number) {
       console.log("📤 Sending id_shutter:", id_shutter);

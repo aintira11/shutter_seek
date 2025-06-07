@@ -52,14 +52,14 @@
   </nav>
 </header>
 
-<div class="dashboard-alert" *ngIf="isModelOpen_Success">
+<!-- <div class="dashboard-alert" *ngIf="isModelOpen_Success">
   <strong>ขอบคุณน้าาา!</strong> คุณติดตามช่างภาพ {{datauser[0]?.username}} เรียบร้อยแล้ว.
 </div>
 
 
 <div class="dashboard-alert1" *ngIf="isModelOpen_danger">
   <strong>Oh snap!</strong> ทำไมถึงเลิกติดตาม {{datauser[0]?.username}} ล่ะฮือออออ.
-</div>
+</div> -->
 
 <!-- ปุ่มรายงาน -->
 <div class="menu-wrapper">
@@ -77,10 +77,6 @@
 
  <section id="first">
     <div class="profile-container">
-        <!-- <div class="back-button">
-          <i class="fas fa-chevron-left" (click)="back()"></i>
-        </div> -->
-  
         <!-- Profile Section -->
         <div class="profile-header" >
           <img
@@ -95,10 +91,22 @@
             </button>
             <p>เป็นสมาชิกเมื่อ {{ datauser[0]?.date_of_member | date:'dd/MM/yyyy' }}</p>
           </div>
-          <div class="profile-actions">
-            <!-- <button class="edit-button" (click)="goToEditPro()">แก้ไข</button> -->
-            <button class="logout-button" (click)="forfollow(datauser[0].user_id)">ติดตาม</button>
+          <div class="profile-actions"> 
+            <!-- ปุ่มเลิกติดตาม: แสดงเมื่อ isFollowing เป็น true -->
+            <button class="btn btn-outline-primary bg-opacity-25"
+                    *ngIf="isFollowing"
+                    (click)="toggleFollow(datauser[0].user_id)">
+              เลิกติดตาม
+            </button>
+          
+            <!-- ปุ่มติดตาม: แสดงเมื่อ isFollowing เป็น false -->
+            <button class="logout-button" 
+                    *ngIf="!isFollowing"
+                    (click)="toggleFollow(datauser[0].user_id)">
+              ติดตาม
+            </button>
           </div>
+
         </div>
   
         <!-- Divider --> 
@@ -193,7 +201,7 @@
         <button class="scroll-btn right" (click)="scrollRight()">&#62;</button>
       </div>
       <br>
-      <h3 id="second">แพ็กเกจ ของงานนี้</h3>
+      <h3 id="second">แพ็กเกจ</h3>
       
        <!-- เช็คว่าแพ็กเกจมีอยู่หรือไม่ -->
     <div *ngIf="data.packages && data.packages.length > 0 && data.packages[0].package_id != null; else noPackages">

@@ -83,6 +83,7 @@ export class CreateAccountComponent implements OnInit{
         });
       } else {
         console.error('Form is invalid');
+        console.log(this.fromreister);
       }
     }
     

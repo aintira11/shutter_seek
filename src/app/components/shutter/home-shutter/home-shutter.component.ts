@@ -19,8 +19,8 @@ import {MatMenuModule} from '@angular/material/menu';
   styleUrl: './home-shutter.component.scss'
 })
 export class HomeShutterComponent implements OnInit{
-  data: DataMembers | null = null; // ✅ ถูกต้อง
-  datauser: DataMembers[] = [];
+  data: DataMembers | null = null; // ข้อมูลผู้ใช้
+  datauser: DataMembers[] = [];   //ข้อมูลช่างภาพ
   datapackages : Datapackages[] = [];
   datawork : DataShowWork[] = [];
   datafollower : DataFollower[] =[] ;
@@ -57,10 +57,10 @@ export class HomeShutterComponent implements OnInit{
         console.log('✅ Received idshutter:', this.idshutter);
   
         // if (!this.data || this.data === 0) {
-        //   console.error("❌ Error: datauser is undefined or missing");
+        //   console.error("Error: datauser is undefined or missing");
         // }
         if (!this.idshutter) {
-          console.error("❌ Error: idshutter is undefined or missing");
+          console.error("Error: idshutter is undefined or missing");
         }
   
         this.getdatauser((String(this.idshutter))); // เรียก API หลังจากแน่ใจว่าข้อมูลมาแล้ว
@@ -85,32 +85,17 @@ export class HomeShutterComponent implements OnInit{
   back(){
   
   }
-  forfollow(shutterId: number) {
-    const userId = (this.data as DataMembers).user_id; // ✅ บอกให้ TypeScript รู้ว่าเป็น Object
-    const url = this.Constants.API_ENDPOINT + '/Follow/' + userId + '/' + shutterId;
-    this.http.post<{ success: boolean, message: string }>(url, {}).subscribe({
-      next: async (response) => {
-        if (response.message === "Unfollowed successfully") {
-          
-          this.isModelOpen_danger = true;
-          await this.delay(2000);
-          this.isModelOpen_danger = false;
-          console.log("Unfollow success");
-          
-        } else {
-          
-          this.isModelOpen_Success = true;
-          await this.delay(2000);
-          this.isModelOpen_Success = false;
-          console.log("Follow success");
-          
-          
-        }
-        window.location.reload();
-      },
-      error: (error) => console.error("Follow/Unfollow error:", error)
-    });
-  }
+forfollow(shutterId: number) {
+  const userId = (this.data as DataMembers).user_id;
+  const url = this.Constants.API_ENDPOINT + '/Follow/' + userId + '/' + shutterId;
+
+  this.http.post<{ success: boolean, message: string }>(url, {}).subscribe({
+    next: (response) => {
+      console.log(response.message); 
+    },
+    error: (error) => console.error("Follow/Unfollow error:", error)
+  });
+}
 
   rate(star: number) {
     this.rating = star;
@@ -161,15 +146,26 @@ export class HomeShutterComponent implements OnInit{
     });
   }
 
+  isFollowing = false;
   getFollower(id : number){
     console.log('id',id);
     const url = this.Constants.API_ENDPOINT+'/get/Follower/'+id;
     this.http.get(url).subscribe((response: any) => {
       this.datafollower = response; 
       console.log("datafollower :",this.datafollower); 
-      
+      // ตรวจสอบว่าผู้ใช้ปัจจุบันติดตามช่างภาพคนนี้หรือไม่
+    this.isFollowing = this.datafollower.some(f => f.follower_id === this.data?.user_id); 
+
     });
   }
+
+toggleFollow(followedId: number) {
+  this.forfollow(followedId); // call API
+  setTimeout(() => {
+    this.getFollower(followedId); // รีโหลดข้อมูลผู้ติดตามหลังจาก Follow/Unfollow
+  }, 500); 
+}
+
 
   getreview(id : number){
     const url = this.Constants.API_ENDPOINT+'/get/review/'+id;
@@ -308,10 +304,4 @@ export class HomeShutterComponent implements OnInit{
     });
   }
 }
-//api -> /read/:User_Id
-//       /get/packages/:user_id
-//ผลงาน /get/work/:user_id
-//รีวิว   
-//ผู้ติดตาม /get/Follower/:followed_id
 
-//ถ้า user_id ตรงกับข้อมูลในหน้านี้ที่แสดง ปุ่่มแก้ไขค่อยจะโผล่ 

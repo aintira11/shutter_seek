@@ -61,6 +61,7 @@ export interface DataSreach {
 }
 
 export interface DataLike {
+[x: string]: any;
     user_id:       number;
     email:         string;
     image_profile: string;
