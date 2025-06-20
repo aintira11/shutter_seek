@@ -47,7 +47,7 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     position: sticky;
     top: 0;  /* ต้องใส่ top เพื่อให้มันติดขอบบน */
-    z-index: 1000;  /* ให้แน่ใจว่าอยู่เหนือ element อื่น */
+    z-index: 1;  /* ให้แน่ใจว่าอยู่เหนือ element อื่น */
     background: rgb(255, 255, 255); /* เฮดเดอร์มีพื้นหลัง */
     border-radius: 10px;
     padding: 1rem 2rem;
@@ -526,7 +526,9 @@ h3 i {
   
   //model
   .modal {
-  display: block;
+  display: flex;
+   justify-content: center; 
+  align-items: center; 
   position: fixed;
   z-index: 1;
   left: 0;
@@ -579,10 +581,10 @@ h3 i {
 }
 
 .profile-pic {
-  width: 32px;
-  height: 32px;
+  width: 50px;
+  height:50px;
   border-radius: 50%;
-  border: 3px solid black;
+  // border: 3px solid black;
   margin-right: 12px;
 }
 

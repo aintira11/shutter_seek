@@ -290,7 +290,7 @@
       <mat-card  style="background-color: #004AAD; color: white; margin-bottom: 15px;">
         <mat-card-header style="display: flex; justify-content: space-between;">
         </mat-card-header>
-        <mat-card-title>ยังไม่มีแพ็กเกจ</mat-card-title>
+        <mat-card-title style="text-align: center;">ยังไม่มีแพ็กเกจ</mat-card-title>
         </mat-card>
     </ng-template>
       
@@ -364,8 +364,8 @@
 
   <div class="follower-card" *ngFor="let follower of datafollower">
     <div class="profile-section">
-      <div class="profile-pic">
-        
+      <div >
+        <img src="{{follower.image_profile}}" alt="" class="profile-pic">
       </div>
       <span class="username">{{ follower.username }}</span>
     </div>
