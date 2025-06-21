@@ -20,7 +20,7 @@ import {MatMenuModule} from '@angular/material/menu';
 })
 export class HomeShutterComponent implements OnInit{
   data: DataMembers | null = null; // ข้อมูลผู้ใช้
-  datauser: DataMembers[] = [];   //ข้อมูลช่างภาพ
+  datauser: DataMembers[] = [];   //ข้อมูลช่างภาพที่getออกมา
   datapackages : Datapackages[] = [];
   datawork : DataShowWork[] = [];
   datafollower : DataFollower[] =[] ;
@@ -63,7 +63,7 @@ export class HomeShutterComponent implements OnInit{
           console.error("Error: idshutter is undefined or missing");
         }
   
-        this.getdatauser((String(this.idshutter))); // เรียก API หลังจากแน่ใจว่าข้อมูลมาแล้ว
+        this.getdatashutter((String(this.idshutter))); // เรียก API หลังจากแน่ใจว่าข้อมูลมาแล้ว
       }, 100);
     });
     
@@ -105,7 +105,7 @@ forfollow(shutterId: number) {
     this.hoverRating = star;
   }
 
-  getdatauser(id : string){
+  getdatashutter(id : string){
     console.log('id',id);
     const url = this.Constants.API_ENDPOINT+'/read/'+id;
     this.http.get(url).subscribe((response: any) => {
@@ -217,9 +217,9 @@ toggleFollow(followedId: number) {
 
   }
  
-
+//ยังไม่แก้
   profile(){
-    const type = Number(this.datauser[0].type_user);
+    const type = Number(this.data);
     console.log("ค่าของ type:", type, "| ประเภท:", typeof type); // ✅ ดูค่าที่แท้จริง
     if(type === 2 ){
       this.router.navigate(['/'], { state: { data: this.data } });
@@ -303,5 +303,26 @@ toggleFollow(followedId: number) {
       } 
     });
   }
+
+  chat(id_shutter: number){
+      console.log("📤 Sending id_shutter:", id_shutter);
+      console.log("📤 Sending datauser:", this.data);
+    
+      if (!id_shutter) {
+        console.error("❌ Error: id_shutter is undefined or invalid");
+        return;
+      }
+      if (!this.datauser || this.datauser.length === 0) {
+        console.error("❌ Error: this.datauser is empty or undefined");
+        return;
+      }
+    
+      this.router.navigate(['/roomchat'], { 
+        state: { 
+          datauser: this.data, 
+          idshutter: id_shutter 
+        } 
+      });
+     }
 }
 

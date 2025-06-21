@@ -295,8 +295,8 @@
       </div>
         
   </section>
-
-  <i class="bi bi-chat-dots-fill fixed-chat-icon" ></i>
+<!-- icon chat -->
+  <i class="bi bi-chat-dots-fill fixed-chat-icon" (click)="chat(datauser[0].user_id)" ></i>
 
    <button *ngIf="showButton" class="scroll-to-top" (click)="scrollToTop()">
     ⬆ เลื่อนขึ้น

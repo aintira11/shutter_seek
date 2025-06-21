@@ -230,4 +230,19 @@ closeList() {
   // ใส่ logic ปิด modal หรือ element
     this.isModelOpen = false;
 }
+
+  chat(id_shutter: number){
+      console.log("📤 Sending datauser:", this.data);
+    
+      if (!this.data || this.data.length === 0) {
+        console.error("❌ Error: this.datauser is empty or undefined");
+        return;
+      }
+    
+      this.router.navigate(['/roomchat'], { 
+        state: { 
+          datauser: this.data[0], 
+        } 
+      });
+     }
 }

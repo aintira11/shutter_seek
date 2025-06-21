@@ -49,10 +49,7 @@ export class HomeComponent implements OnInit{
       price: [''],
       search: ['']
     });
-    // กำหนดให้ทุก Portfolio เริ่มต้น index ของการแสดงที่ 0
-    // this.Portfolio.forEach(() => this.currentSlideIndex.push(0));
-    // this.PortfolioID.forEach(() => this.currentSlideIndex1.push(0));
-  }
+}
 
   async ngOnInit(): Promise<void> {
 
@@ -112,14 +109,7 @@ export class HomeComponent implements OnInit{
   delay(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
-  
-   
-  // ฟังก์ชันสำหรับการแสดงภาพปัจจุบัน
-//   getSlide(index: number, portfolioIndex: number) {
-//     const image = this.Portfolio[portfolioIndex]?.image_urls?.[index];
-//     console.log("Slide Image URL:", image);
-//     return image;
-//  }
+
  
  // ฟังก์ชันเพื่อไปยังภาพถัดไป (เลื่อนเฉพาะ portfolio ของตัวเอง)
 getNext(portfolioIndex: number) {

@@ -21,6 +21,23 @@ export interface DataTegs {
     name_tags: string;
 }
 
+export interface RoomChat {
+  roomchat_id: number;
+  user_id_1: number;
+  user_id_2: number;
+  date_last_message: string;
+}
+
+export interface Message {
+  message_id: number;
+  roomchat_id: number;
+  sender_id: number;
+  message_text: string;
+  time_chat: string;
+  is_read: boolean;
+}
+
+
 export interface DataPortfolio {
     user_id:       number;
     first_name:    null | string;

@@ -1,0 +1,149 @@
+<div class="chat-container">   
+  <div class="chat-sidebar">     
+    <div class="sidebar-header">       
+      <h3>💬 ข้อความ</h3>       
+      <div class="sidebar-subtitle">
+        <ng-container *ngIf="myUserType === '1'">ช่างภาพที่เคยคุยด้วย</ng-container>
+        <ng-container *ngIf="myUserType === '2'">ผู้ใช้งานที่ทักหาคุณ</ng-container>
+      </div>
+    </div>      
+
+    <div class="chat-list">       
+      <div         
+        class="chat-item"         
+        *ngFor="let room of chatRooms"         
+        [class.active]="selectedPartnerId === room.partnerId"         
+        (click)="setupChat(room.partnerId)"       
+      >         
+        <ng-container *ngIf="getChatPartnerInfo(room.partnerId) as partner">           
+          <div class="photographer-avatar">             
+            <img *ngIf="partner.image_profile; else noProfileImage" [src]="partner.image_profile" alt="Profile" class="profile-img">             
+            <ng-template #noProfileImage>               
+              {{ partner.username ? partner.username.charAt(0).toUpperCase() : '?' }}             
+            </ng-template>
+            <div class="online-indicator"></div>           
+          </div>           
+          <div class="chat-info">             
+            <div class="photographer-name">{{ partner.username }}</div>             
+            <div class="last-message">{{ room.lastMessage }}</div>           
+          </div>           
+          <div class="message-time">{{ room.lastMessageTime | date:'shortTime' }}</div>         
+        </ng-container>       
+      </div>     
+    </div>   
+  </div>    
+
+  <div class="chat-main" *ngIf="selectedPartnerId; else noChatSelected">     
+    <div class="chat-header">       
+      <div class="chat-header-avatar">         
+        <ng-container *ngIf="getChatPartnerInfo(selectedPartnerId) as currentPartner">           
+          <img *ngIf="currentPartner.image_profile; else noCurrentProfileImage" [src]="currentPartner.image_profile" alt="Profile" class="profile-img">           
+          <ng-template #noCurrentProfileImage>             
+            {{ currentPartner.username ? currentPartner.username.charAt(0).toUpperCase() : '?' }}           
+          </ng-template>         
+        </ng-container>       
+      </div>       
+      <div class="chat-header-info">         
+        <h3>{{ getChatPartnerInfo(selectedPartnerId)?.username }}</h3>         
+        <div class="chat-header-status">🟢 ออนไลน์</div>       
+      </div>     
+    </div>      
+
+    <div class="messages">       
+      <div *ngFor="let msg of messages" [ngClass]="{'my-message': msg.senderId === myId, 'other-message': msg.senderId !== myId}">         
+        <div class="message-bubble">           
+          {{ msg.messageText }}           
+          <div class="message-time">{{ msg.timestamp | date:'HH:mm' }}</div>         
+        </div>       
+      </div>     
+    </div>      
+
+    <div class="input-box">       
+      <input [(ngModel)]="newMessage" (keydown.enter)="sendMessage()" placeholder="พิมพ์ข้อความ..." class="message-input">       
+      <button (click)="sendMessage()" class="send-button">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>     
+    </div>   
+  </div>    
+
+  <ng-template #noChatSelected>     
+    <div class="no-chat-selected">       
+      <div class="icon">💬</div>       
+      <h3>เลือกช่างภาพที่ต้องการสนทนา</h3>       
+      <p>เลือกจากรายชื่อทางซ้ายเพื่อเริ่มต้นการสนทนา</p>     
+    </div>   
+  </ng-template> 
+</div>
+<!-- <div class="chat-container">
+  <div class="chat-sidebar">
+    <div class="sidebar-header">
+      <h3>💬 ข้อความ</h3>
+      <div class="sidebar-subtitle">ช่างภาพที่เคยคุยด้วย</div>
+    </div>
+
+    <div class="chat-list">
+      <div
+        class="chat-item"
+        *ngFor="let room of chatRooms"
+        [class.active]="selectedPartnerId === room.partnerId"
+        (click)="setupChat(room.partnerId)"
+      >
+        <ng-container *ngIf="getPartnerInfo(room.partnerId) as partner">
+          <div class="photographer-avatar">
+            <img *ngIf="partner.image_profile; else noProfileImage" [src]="partner.image_profile" alt="Profile" class="profile-img">
+            <ng-template #noProfileImage>
+              {{ partner.username ? partner.username.charAt(0).toUpperCase() : '?' }}
+            </ng-template>
+          </div>
+          <div class="chat-info">
+            <div class="photographer-name">{{ partner.username }}</div>
+            <div class="last-message">{{ room.lastMessage }}</div>
+          </div>
+          <div class="message-time">{{ room.lastMessageTime | date:'shortTime' }}</div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-main" *ngIf="selectedPartnerId; else noChatSelected">
+    <div class="chat-header">
+      <div class="chat-header-avatar">
+        <ng-container *ngIf="getPartnerInfo(selectedPartnerId) as currentPartner">
+          <img *ngIf="currentPartner.image_profile; else noCurrentProfileImage" [src]="currentPartner.image_profile" alt="Profile" class="profile-img">
+          <ng-template #noCurrentProfileImage>
+            {{ currentPartner.username ? currentPartner.username.charAt(0).toUpperCase() : '?' }}
+          </ng-template>
+        </ng-container>
+      </div>
+      <div class="chat-header-info">
+        <h3>{{ getPartnerInfo(selectedPartnerId)?.username }}</h3>
+        <div class="chat-header-status">🟢 ออนไลน์</div>
+      </div>
+    </div>
+
+    <div class="messages">
+      <div *ngFor="let msg of messages" [ngClass]="{'my-message': msg.senderId === myId, 'other-message': msg.senderId !== myId}">
+        <div class="message-bubble">
+          {{ msg.messageText }}
+          <div class="message-time">{{ msg.timestamp | date:'HH:mm' }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-box">
+      <input [(ngModel)]="newMessage" (keydown.enter)="sendMessage()" placeholder="พิมพ์ข้อความ...">
+      <button (click)="sendMessage()">➤</button>
+    </div>
+  </div>
+
+  <ng-template #noChatSelected>
+    <div class="no-chat-selected">
+      <div class="icon">💬</div>
+      <h3>เลือกช่างภาพที่ต้องการสนทนา</h3>
+      <p>เลือกจากรายชื่อทางซ้ายเพื่อเริ่มต้นการสนทนา</p>
+    </div>
+  </ng-template>
+</div> -->

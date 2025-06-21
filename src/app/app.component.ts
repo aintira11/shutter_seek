@@ -4,6 +4,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { ImageUploadService } from './services_image/image-upload.service';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { FormsModule } from '@angular/forms';
+
 
 @Component({
   selector: 'app-root',
@@ -13,7 +15,8 @@ import { MatSidenavModule } from '@angular/material/sidenav';
             ,HttpClientModule
             ,CommonModule
             ,MatSidenavModule
-  ],
+            ,FormsModule
+             ],
   providers: [ImageUploadService], // เพิ่ม ImageUploadService
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
