@@ -187,10 +187,24 @@
 }
 
 .message-time {
-  font-size: 12px;
-  color: #9ca3af;
-  margin-left: 8px;
-  transition: color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; /* จัดให้ข้อความเวลาอยู่ทางขวา */
+  gap: 4px; /* ระยะห่างระหว่างเวลาและสัญลักษณ์ */
+  font-size: 11px;
+  opacity: 0.7;
+  margin-top: 8px;
+  /* text-align: right; <-- อาจจะไม่จำเป็นแล้วถ้าใช้ flex */
+  font-weight: 500;
+}
+.read-status {
+  font-size: 14px; /* ขนาดของสัญลักษณ์ */
+  color: #9ca3af; /* สีเริ่มต้น (ยังไม่อ่าน) */
+  margin-left: 4px; /* อาจจะปรับให้เข้ากับ gap */
+}
+
+.read-status.read {
+  color: #3bf644; /* สีเมื่ออ่านแล้ว (เช่น สีฟ้า) */
 }
 
 .chat-item:hover .message-time,
@@ -259,6 +273,29 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  min-height: 0; /* สำคัญสำหรับ flex item ที่มี overflow-y */
+  flex-shrink: 1; /* อนุญาตให้หดได้หากพื้นที่ไม่พอ */
+}
+
+/* ตรวจสอบว่า .chat-main มี display: flex และ flex-direction: column */
+.chat-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column; /* ตรวจสอบให้แน่ใจว่ามี */
+  background: white;
+  position: relative;
+}
+
+/* ตรวจสอบ Input Box Styles ว่าไม่ได้ทับซ้อนข้อความ */
+.input-box {
+  padding: 20px 24px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+  /* ไม่ควรมี position: absolute ที่ด้านล่าง หรือ height คงที่ที่ใหญ่เกินไป */
 }
 
 .my-message {
@@ -272,7 +309,7 @@
 }
 
 .message-bubble {
-  padding: 14px 18px;
+  padding: 10px 14px;
   border-radius: 20px;
   position: relative;
   word-wrap: break-word;
@@ -293,6 +330,78 @@
   color: #1f2937;
   border-bottom-left-radius: 8px;
   animation: slideInLeft 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* สำหรับจุดสถานะใน Header */
+.status-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #ef4444; /* สีแดงสำหรับออฟไลน์ */
+  margin-right: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.status-dot.online {
+  background-color: #10b981; /* สีเขียวสำหรับออนไลน์ */
+}
+
+/* สำหรับจุดสถานะใน Photographer Avatar (ใน sidebar) */
+.photographer-avatar {
+  /* ต้องแน่ใจว่า position: relative; เพื่อให้ .status-indicator ทำงานได้ */
+  position: relative;
+  /* ... คุณสมบัติอื่นๆ ที่มีอยู่แล้ว ... */
+}
+
+.status-indicator {
+  position: absolute;
+  bottom: 0px; /* ปรับตำแหน่งตามต้องการ */
+  right: 0px; /* ปรับตำแหน่งตามต้องการ */
+  width: 15px; /* ขนาดของวงกลมสถานะ */
+  height: 15px;
+  border-radius: 50%;
+  background-color: #ef4444; /* สีแดงสำหรับออฟไลน์ */
+  border: 2px solid white; /* ขอบขาวเพื่อให้เห็นชัดเจน */
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1); /* เพิ่มเงาเล็กน้อย */
+  z-index: 2; /* ให้แสดงทับรูปโปรไฟล์ */
+  transition: background-color 0.3s ease;
+}
+
+.status-indicator.online {
+  background-color: #10b981; /* สีเขียวสำหรับออนไลน์ */
+}
+
+/* สำหรับปุ่มเลือกรูปภาพ */
+.image-upload-button {
+  cursor: pointer;
+  font-size: 24px; /* ขนาดของไอคอนกล้อง */
+  color: #6366f1; /* สีไอคอน */
+  background: none;
+  border: none;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+  display: flex; /* ทำให้จัดกลางง่าย */
+  align-items: center;
+  justify-content: center;
+  width: 50px; /* ทำให้ปุ่มกลม */
+  height: 50px;
+}
+
+.image-upload-button:hover {
+  background-color: rgba(99, 102, 241, 0.1);
+}
+
+/* สำหรับรูปภาพที่แสดงในข้อความ */
+.chat-image {
+  max-width: 100%;
+  max-height: 250px; /* กำหนดความสูงสูงสุดเพื่อไม่ให้รูปใหญ่เกินไป */
+  border-radius: 12px;
+  object-fit: cover; /* ทำให้รูปภาพไม่บิดเบี้ยว */
+  display: block; /* ลบช่องว่างด้านล่างรูปภาพ */
+  margin-top: 5px; /* ระยะห่างจากข้อความด้านบน (ถ้ามี) */
+  margin-bottom: 5px; /* ระยะห่างจากเวลาด้านล่าง */
 }
 
 @keyframes slideInRight {
@@ -459,6 +568,95 @@
 .messages::-webkit-scrollbar-thumb:hover {
   background: rgba(148, 163, 184, 0.9);
 }
+
+.chat-main .input-box {
+  padding: 10px;
+  background-color: #f0f0f0;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column; // ทำให้วางเรียงลงมา
+  gap: 10px; // ช่องว่างระหว่างพรีวิวกับ input
+}
+
+.image-preview-container {
+  display: flex;
+  flex-wrap: wrap; // ให้ขึ้นบรรทัดใหม่เมื่อเต็ม
+  gap: 10px; // ช่องว่างระหว่างรูปพรีวิว
+  padding: 5px;
+  max-height: 120px; // จำกัดความสูงถ้ามีหลายรูป
+  overflow-y: auto; // เปิด scrollbar ถ้าเกิน
+  border: 1px dashed #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  align-items: center; // จัดแนวตั้งตรงกลาง
+}
+
+.image-preview-item {
+  position: relative;
+  width: 80px; // ขนาดภาพพรีวิว
+  height: 80px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden; // ซ่อนส่วนเกิน
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f9f9f9;
+}
+
+.preview-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain; // ทำให้ภาพพอดีในกรอบโดยไม่ถูกตัด
+}
+
+.remove-image-button {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: #ff4d4f; // สีแดง
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  line-height: 1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #cc0000;
+  }
+}
+
+.message-input-area { // เพิ่มสไตล์ให้กับ div ใหม่นี้
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 10px; // ช่องว่างระหว่างปุ่มรูปภาพ, input และปุ่มส่ง
+}
+
+.message-input {
+  flex-grow: 1; // ทำให้ input ขยายเต็มพื้นที่ที่เหลือ
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  font-size: 16px;
+  &:focus {
+    outline: none;
+    border-color: #007bff;
+  }
+}
+
+
+
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
