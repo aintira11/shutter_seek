@@ -4,41 +4,110 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-</head>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+      
+    </head>
 <body>
-    <!-- <div class="back-button" style="padding: 10px;">
-        <span>&larr; กลับ</span>
-    </div> -->
+    
+    <div class="container-header">
+        <header >
+          
+            <div style=" display: flex; flex-direction: row; justify-content: space-between;">
+                <div class="back-button">
+                        <i class="fas fa-chevron-left" (click)="back()"></i> กลับ
+                     </div>
+                <div class="header">
+                    <button mat-button >เข้าสู่ระบบ</button>  
+                    <span class="material-symbols-outlined" style="font-size: 2.2em; padding: 5px;">
+                        account_circle
+                    </span>
+                </div>
+            </div>
+            </header>
+            <br>
+            <div>
+                <div class="logo">
+                    <a [routerLink]="['/shutter']">
+                     <img src="/assets/images/PIXEL (7).png" alt="Logo" class="logo-img" />
+                    </a>
+                    <h2 style="color: #003ebb; ">ขั้นตอนที่1 : สร้างบัญชีช่างภาพ</h2>
+                </div>
+            </div>
+            <hr style="border: 1px solid #ddd; width: 100%; margin: 20px auto; margin-top: 30px;" />
+            
+    </div>
     <div class="container">
+        
         <div class="column">
             <img [src]="imagePreview" alt="User Profile" class="imag" id="profileImage">
             <input type="file" id="fileInput" style="display: none;" (change)="onFileSelected($event)">
             <button class="btn-profile" style="margin-top: 10px;" (click)="triggerFileInput()">เปลี่ยนรูป Profile</button>
         </div>
-        <div *ngIf="datauser.length > 0" style="width:100%;">
-        <div *ngFor="let item  of datauser">
+        <div  style="width:100%;">
+        <div >
+
+    <div class="form-container">
         <form [formGroup]="fromreister" (ngSubmit)="base_for_shutt()" >
             <div class="form-group">
-                <label class="label">Username</label>
-                <input type="text" class="input-style" placeholder="ระบุ Username" formControlName="username">
-            </div>
+                <label class="label">อีเมล์  <span style="color: red;">*</span> </label>
+               <input type="email" class="input-style" 
+                           [class.error]="fromreister.get('email')?.invalid && fromreister.get('email')?.touched"
+                           placeholder="ระบุอีเมล" formControlName="email">
+                    <div *ngIf="fromreister.get('email')?.invalid && fromreister.get('email')?.touched" class="error-message">
+                        <span *ngIf="fromreister.get('email')?.errors?.['required']"style="color: red; font-size: smaller;">*กรุณากรอกอีเมล์</span>
+                        <span *ngIf="fromreister.get('email')?.errors?.['email']"style="color: red; font-size: smaller;">*รูปแบบอีเมล์ไม่ถูกต้อง</span>
+                        <span *ngIf="fromreister.get('email')?.errors?.['whitespace']"style="color: red; font-size: smaller;">*อีเมล์ไม่สามารถเป็นช่องว่างได้</span>
+                    </div>
+                 </div>
+
+               <div class="form-group">
+                    <label class="label">ชื่อผู้ใช้ (username) <span style="color: red;">*</span></label>
+                    <input type="text" class="input-style" 
+                           [class.error]="fromreister.get('UserName')?.invalid && fromreister.get('UserName')?.touched"
+                           placeholder="ระบุ ชื่อผู้ใช้" formControlName="UserName">
+                    <div *ngIf="fromreister.get('UserName')?.invalid && fromreister.get('UserName')?.touched" class="error-message">
+                        <span *ngIf="fromreister.get('UserName')?.errors?.['required']" style="color: red; font-size: smaller;">*กรุณากรอก ชื่อผู้ใช้</span>
+                        <span *ngIf="fromreister.get('UserName')?.errors?.['whitespace']" style="color: red; font-size: smaller;">*ชื่อผู้ใช้ ไม่สามารถเป็นช่องว่างได้</span>
+                    </div>
+                </div>
+
             <div class="form-group">
-                <label class="label">ชื่อ</label>
-                <input type="text" class="input-style" placeholder="ระบุชื่อ" formControlName="first_name">
-            </div>
+                    <label class="label">ชื่อ <span style="color: red;">*</span></label>
+                    <input type="text" class="input-style" 
+                           [class.error]="fromreister.get('Name')?.invalid && fromreister.get('Name')?.touched"
+                           placeholder="ระบุชื่อ" formControlName="Name">
+                    <div *ngIf="fromreister.get('Name')?.invalid && fromreister.get('Name')?.touched" class="error-message">
+                        <span *ngIf="fromreister.get('Name')?.errors?.['required']"style="color: red; font-size: smaller;">*กรุณากรอกชื่อ</span>
+                        <span *ngIf="fromreister.get('Name')?.errors?.['whitespace']"style="color: red; font-size: smaller;">*ชื่อไม่สามารถเป็นช่องว่างได้</span>
+                    </div>
+                </div>
+
             <div class="form-group">
-                <label class="label">นามสกุล</label>
-                <input type="text" class="input-style" placeholder="ระบุนามสกุล" formControlName="last_name">
-            </div>
+                    <label class="label">นามสกุล <span style="color: red;">*</span></label>
+                    <input type="text" class="input-style" 
+                           [class.error]="fromreister.get('LastName')?.invalid && fromreister.get('LastName')?.touched"
+                           placeholder="ระบุนามสกุล" formControlName="LastName">
+                    <div *ngIf="fromreister.get('LastName')?.invalid && fromreister.get('LastName')?.touched" class="error-message">
+                        <span *ngIf="fromreister.get('LastName')?.errors?.['required']"style="color: red; font-size: smaller;">*กรุณากรอกนามสกุล</span>
+                        <span *ngIf="fromreister.get('LastName')?.errors?.['whitespace']"style="color: red; font-size: smaller;">*นามสกุลไม่สามารถเป็นช่องว่างได้</span>
+                    </div>
+                </div>
+            
             <div class="form-group">
-                <label class="label">อีเมล</label>
-                <input type="email" class="input-style" formControlName="email">
-            </div>
-            <div class="form-group">
-                <label class="label">หมายเลขโทรศัพท์</label>
-                <input type="tel" class="input-style" formControlName="phone"> 
-            </div>
-            <div class="form-group">
+                <label class="label">หมายเลขโทรศัพท์ <span style="color: red;">*</span></label>
+                    <input type="tel" class="input-style" 
+                           [class.error]="fromreister.get('phone')?.invalid && fromreister.get('phone')?.touched"
+                           placeholder="ระบุหมายเลขโทรศัพท์ 10 หลัก" formControlName="phone">
+                    <div *ngIf="fromreister.get('phone')?.invalid && fromreister.get('phone')?.touched" class="error-message">
+                        <span *ngIf="fromreister.get('phone')?.errors?.['required']"style="color: red; font-size: smaller;">*กรุณากรอกหมายเลขโทรศัพท์</span>
+                        <span *ngIf="fromreister.get('phone')?.errors?.['pattern']"style="color: red; font-size: smaller;">*หมายเลขโทรศัพท์ต้องเป็นตัวเลข 10 หลัก</span>
+                        <span *ngIf="fromreister.get('phone')?.errors?.['whitespace']"style="color: red; font-size: smaller;">*หมายเลขโทรศัพท์ไม่สามารถเป็นช่องว่างได้</span>
+                    </div>
+                </div>
+            
+                <div class="form-group">
                 <label class="label">จังหวัดของคุณ</label>
                 <select class="input-style" formControlName="province">
                   <option value="">-- เลือกจังหวัด --</option>
@@ -47,16 +116,95 @@
                   </option>
                 </select>
               </div>
+
             <div class="form-group">
                 <label class="label">ที่อยู่</label>
                 <textarea class="input-style" rows="3" placeholder="ระบุที่อยู่" formControlName="address"></textarea>
             </div>
+
+            <div class="form-group" style="position: relative;">
+              <label class="label">รหัสผ่าน<span style="color: red;">*</span></label>
+              <div class="password-container">
+                <input
+                  [type]="hidePassword ? 'password' : 'text'"
+                  class="input-style"
+                  [class.error]="fromreister.get('Password')?.invalid && fromreister.get('Password')?.touched"
+                  placeholder="ระบุรหัสผ่าน" formControlName="Password">
+
+                <i
+                  class="bi toggle-icon"
+                  [ngClass]="hidePassword ? 'bi-eye-slash' : 'bi-eye'"
+                  (click)="togglePasswordVisibility('password')"
+                ></i>
+              </div>
+          
+              <!-- ข้อความแจ้ง error -->
+              <div *ngIf="fromreister.get('Password')?.invalid && fromreister.get('Password')?.touched"
+                   class="error-message-absolute">
+                <span *ngIf="fromreister.get('Password')?.errors?.['required']">*กรุณากรอกรหัสผ่าน</span>
+                <span *ngIf="fromreister.get('Password')?.errors?.['whitespace']">*รหัสผ่านไม่สามารถเป็นช่องว่างได้</span>
+              </div>
+            </div>
+
+            <div class="form-group" style="position: relative;">
+                <label class="label">ยืนยันรหัสผ่าน</label>
+                 <div class="password-container">
+                    <input
+                      [type]="hideConfirmPassword ? 'password' : 'text'"
+                      [class.error]="fromreister.get('confirmPassword')?.invalid && fromreister.get('confirmPassword')?.touched"
+                      placeholder="ระบุยืนยันรหัสผ่าน"
+                      class="input-style"
+                      formControlName="confirmPassword"
+                    />
+                    <i
+                      class="bi toggle-icon"
+                      [ngClass]="hideConfirmPassword ? 'bi-eye-slash' : 'bi-eye'"
+                      (click)="togglePasswordVisibility('confirmPassword')"
+                    ></i>
+                  </div>
+                  <!-- ข้อความแจ้ง error -->
+                   <div *ngIf="fromreister.get('confirmPassword')?.invalid && fromreister.get('confirmPassword')?.touched" class="error-message-absolute">
+                        <span *ngIf="fromreister.get('confirmPassword')?.errors?.['required']"style="color: red; font-size: smaller;">*กรุณายืนยันรหัสผ่าน</span>
+                        <span *ngIf="fromreister.get('confirmPassword')?.errors?.['whitespace']"style="color: red; font-size: smaller;">*การยืนยันรหัสผ่านไม่สามารถเป็นช่องว่างได้</span>
+                    </div>
+                  <div *ngIf="fromreister.get('confirmPassword')?.valid && fromreister.get('Password')?.valid && 
+                                fromreister.get('confirmPassword')?.touched && 
+                                fromreister.value.Password !== fromreister.value.confirmPassword" 
+                          class="error-message-absolute" >
+                        รหัสผ่านไม่ตรงกัน
+                    </div>
+            </div>
             <div class="column">
-            <button type="submit" class="btn-submit" >บันทึกและไปต่อ</button>
+                <button type="submit" class="btn-submit" >บันทึกและไปต่อ</button>
             </div>
         </form>
     </div>
+  </div>
 </div>
     </div>
+
+    <script>
+            // สำหรับการเปิด/ปิดรหัสผ่าน
+            const togglePassword = document.querySelector("#togglePassword");
+            const password = document.querySelector("#password");
+
+            togglePassword.addEventListener("click", function () {
+                const type = password.getAttribute("type") === "password" ? "text" : "password";
+                password.setAttribute("type", type);
+                this.classList.toggle("bi-eye");
+                this.classList.toggle("bi-eye-slash");
+            });
+
+            // สำหรับการเปิด/ปิดยืนยันรหัสผ่าน
+            const toggleConfirmPassword = document.querySelector("#toggleConfirmPassword");
+            const confirmPassword = document.querySelector("#confirm-password");
+
+            toggleConfirmPassword.addEventListener("click", function () {
+                const type = confirmPassword.getAttribute("type") === "password" ? "text" : "password";
+                confirmPassword.setAttribute("type", type);
+                this.classList.toggle("bi-eye");
+                this.classList.toggle("bi-eye-slash");
+            });
+        </script>
 </body>
 </html>

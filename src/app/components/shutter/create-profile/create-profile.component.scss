@@ -1,8 +1,24 @@
+body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            // background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background-attachment: fixed;
+            // color: #333;
+            min-height: 100vh;
+            position: relative;
+        }
+.container-header {
+    font-family: 'Arial', sans-serif;
+    padding: 20px;
+    max-width: 90%;
+    margin: 0 auto;
+    text-align: center;
+   }
 
 .container {
     font-family: 'Arial', sans-serif;
     padding: 20px;
-    max-width: 600px;
+    max-width: 700px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
@@ -10,53 +26,42 @@
     align-items: center; /* จัดกึ่งกลางแนวนอน */
     //height: 100vh; /* ครอบคลุมทั้งหน้าจอ */
 
-// }
-// .imag{
-//     // margin-right: 20px;
-//     width: 100px; /* ปรับขนาดรูปตามที่ต้องการ */
-//     height: 100px; /* ปรับขนาดรูปตามที่ต้องการ */
-//     border-radius: 50%; /* ทำให้รูปภาพเป็นวงกลม */
-//     object-fit: cover; /* ปรับขนาดรูปภาพให้เต็มพื้นที่ของขนาดที่กำหนด */
-// }
-
-// .column {
-//     display: flex;
-//     flex-direction: column;
-//     width: 70%;
-//     // margin: auto;
-//     // text-align: center;
-// }
-
-// .input-style {
-//     padding: 10px;
-//     border: 2px solid #ccc;
-//     border-radius: 5px;
-//     font-size: 16px;
-//     color: #555;
-//     outline: none;
-//     width: calc(100% - 30px);
-// }
-// .input-style:focus {
-//     border-color: #007bff;
-//     box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-// }
-// .label {
-//     text-align: left;
-//     margin-bottom: 10px;
-//     margin-top: 10px;
-//     font-size: 17px;
-//     font-weight: bold;
-// }
-
-// .container {
-//     max-width: 600px;
-//     margin: 50px auto;
-//     padding: 20px;
-//     background-color: #fff;
-//     border-radius: 10px;
-//     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-//     text-align: center;
+    .back-button {
+    position: fixed; /* ให้ลอยเหนือเนื้อหา */
+    top: 20px;
+    left: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    color: #000;
+    z-index: 1000; /* อยู่เหนือทุกอย่าง */
+    background-color: rgba(255, 255, 255, 0.87); /* ป้องกันซ้อนกับพื้นหลัง */
+    padding: 6px 10px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
+
+.back-button i {
+    font-size: 20px;
+    margin-right: 5px;
+}
+}
+.header {
+    display: flex;
+    justify-content: flex-end; 
+    // border-bottom: 1px solid #ddd;
+    position: sticky;
+    top: 0;
+}
+  .logo-img {
+    max-width: 400px; /* กำหนดขนาดสูงสุดของรูป */
+    max-height: 350px; /* กำหนดความสูงสูงสุด */
+    width: auto; /* ให้ปรับตามสัดส่วนความกว้าง */
+    height: auto; /* ให้ปรับตามสัดส่วนความสูง */
+    margin-right: 250px;
+    object-fit: contain; /* รักษาสัดส่วนของรูป */
+  }
 
 .back-button {
     display: flex;
@@ -78,6 +83,25 @@
     object-fit: cover;
     margin: 0 auto 10px;
 }
+
+.password-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.password-container input {
+    flex: 1;
+    padding: 10px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+}
+.password-container .toggle-visibility {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+    font-size: 20px;
+    color: #555;
+}
 // .btn-profile {
 //     display: inline-block;
 //     margin-bottom: 20px;
@@ -90,7 +114,7 @@
     padding: 8px 16px;
     width: 30%;
     border-radius: 5px;
-    margin-bottom: 20px;
+    // margin-bottom: px;
     cursor: pointer;
     text-align: center;
     border: none; /* ลบเส้นขอบของปุ่ม */
@@ -106,6 +130,39 @@ form {
     margin-bottom: 20px;
 }
 
+.form-container {
+            text-align: center;
+            margin-top: 40px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.1),
+                0 0 0 1px rgba(255, 255, 255, 0.8),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .form-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #004AAD, #0066CC, #004AAD);
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
 .label {
     font-size: 16px;
     font-weight: 500;
@@ -116,16 +173,19 @@ form {
 
 .input-style {
     width: 100%;
-    padding: 10px;
+    padding: 12px 16px;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 16px;
     outline: none;
 }
 
-.input-style:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+ .input-style:focus {
+     outline: none;
+     border-color: #004AAD;
+     background: rgba(255, 255, 255, 0.95);
+     box-shadow: 0 0 0 3px rgba(0, 74, 173, 0.1);
+     transform: translateY(-1px);
 }
 
 .btn-submit {
@@ -150,3 +210,75 @@ form {
     gap: 10px;  
     width: 100%;            /* เพิ่มระยะห่างระหว่างองค์ประกอบ */
 }
+  .toggle-icon {
+    position: absolute;
+    right: 10px; /* ระยะห่างจากขอบขวาของ input */
+    top: 50%; /* จัดให้อยู่ตรงกลางแนวตั้ง */
+    transform: translateY(-50%); /* เลื่อนตำแหน่งให้อยู่กึ่งกลางแนวตั้ง */
+    cursor: pointer; /* ทำให้ไอคอนดูเหมือนปุ่ม */
+    font-size: 16px; /* ขนาดของไอคอน */
+    color: #6c757d; /* สีของไอคอน */
+  }
+
+  .error-message-absolute {
+  color: red;
+  font-size: smaller;
+  position: absolute;
+  bottom: -1.2em; /* ปรับระยะห่างตามความเหมาะสม */
+  left: 0;
+}
+.error-message-absolute::before {
+    content: '⚠';
+    margin-right: 5px;
+    font-size: 14px;
+}
+
+ .error-message {
+            margin-top: 5px;
+            font-size: 12px;
+            color: #dc3545;
+            display: flex;
+            align-items: center;
+        }
+
+        .error-message::before {
+            content: '⚠';
+            margin-right: 5px;
+            font-size: 14px;
+        }
+
+        .input-style {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 14px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .input-style:focus {
+            outline: none;
+            border-color: #004AAD;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 0 0 3px rgba(0, 74, 173, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .input-style.error {
+            border-color: #dc3545;
+            background: rgba(255, 245, 245, 0.8);
+        }
+
+        .input-style.error:focus {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+        }
+
+        textarea.input-style {
+            resize: vertical;
+            min-height: 80px;
+        }
+        

@@ -1,120 +1,87 @@
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #ffffff;
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            // background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background-attachment: fixed;
+            // color: #333;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-top: 40px;
+            position: relative;
+        }
+
+.password-container {
+    position: relative;
+    /* ลบ display: flex และ align-items ออก */
+}
+
+.password-container input {
+    width: 100%;
+    padding: 10px 40px 10px 10px; /* เพิ่ม padding-right เพื่อให้มีที่ว่างสำหรับไอคอน */
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box; /* ให้ padding รวมอยู่ในความกว้าง */
+}
+
+.password-container .toggle-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%); /* จัดให้อยู่กึ่งกลางแนวตั้ง */
+    cursor: pointer;
+    font-size: 18px;
+    color: #555;
+    z-index: 1; /* ให้ไอคอนอยู่ด้านบน */
+}
+
+/* สำหรับ hover effect */
+.password-container .toggle-icon:hover {
     color: #333;
 }
 
-.container {
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 20px;
-    padding-top: 40px;
+/* ถ้าต้องการให้ไอคอนไม่ถูกเลือกได้ */
+.password-container .toggle-icon {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
+
+.error-message-absolute {
+  color: red;
+  font-size: smaller;
+  position: absolute;
+  bottom: -1.2em; /* ปรับระยะห่างตามความเหมาะสม */
+  left: 0;
+}
+.error-message-absolute::before {
+    content: '⚠';
+    margin-right: 5px;
+    font-size: 14px;
+}
+
 
 .back-button {
-    margin-bottom: 20px;
-}
-
-.back-button a {
-    text-decoration: none;
-    font-size: 16px;
-    color: #000;
-}
-
-.form-container {
-    text-align: center;
-    margin-top: 40px;
-}
-
-.profile-section {
-    margin-bottom: 20px;
-    display: grid;
-    place-items: center; /* จัดให้อยู่ตรงกลางทั้งแนวตั้งและแนวนอน */
-}
-
-.profile-image {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background-color: #ddd;
-    display: inline-block;
-}
-
-.change-profile-btn {
-    display: block;
-    margin: 10px auto 0;
-    padding: 8px 12px;
-    font-size: 14px;
-    background-color: rgba(0, 74, 173, 1);
-    color: #fff;
-    border: none;
-    border-radius: 5px;
+    position: fixed; /* ให้ลอยเหนือเนื้อหา */
+    top: 20px;
+    left: 20px;
     cursor: pointer;
-}
-
-.change-profile-btn:hover {
-    background-color: rgba(0, 74, 173, 1);
-}
-
-.register-form {
-    text-align: left;
-    margin-top: 20px;
-}
-
-.form-group {
-    margin-bottom: 15px;
-}
-
-label {
-    display: block;
-    font-size: 14px;
-    margin-bottom: 5px;
-}
-
-input,
-textarea {
-    width: 100%;
-    padding: 10px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-textarea {
-    resize: vertical;
-}
-
-.submit-btn {
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: rgba(0, 74, 173, 1);
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    width: 100%; /* Stretch to full width */
-    max-width: 300px; /* Set a maximum width */
-    margin: 20px auto; /* Center the button */
-    display: block;
-    text-align: center;
-}
-
-.submit-btn:hover {
-    background-color: #00338a;
-}
-
-.back-button {
-    position: absolute;
-    top: 30px;
-    left: 50px;
-}
-
-.back-button a {
-    text-decoration: none;
-    font-size: 16px;
-    color: #000;
     display: flex;
     align-items: center;
+    font-size: 16px;
+    color: #000;
+    z-index: 1000; /* อยู่เหนือทุกอย่าง */
+    
+     background: none;      
+    border: none;            
+    box-shadow: none;     
 }
 
 .back-button i {
@@ -122,62 +89,252 @@ textarea {
     margin-right: 5px;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .container {
-        padding: 15px;
-    }
 
-    .profile-image {
-        align-items: center;
-        width: 100px;
-        height: 100px;
-        object-fit: cover;
-    }
+  .form-container {
+            text-align: center;
+            margin-top: 40px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.1),
+                0 0 0 1px rgba(255, 255, 255, 0.8),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .form-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #004AAD, #0066CC, #004AAD);
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
 
-    .change-profile-btn {
-        font-size: 12px;
-        padding: 6px 10px;
-    }
+        .profile-section {
+            margin-bottom: 30px;
+            display: grid;
+            place-items: center;
+            position: relative;
+        }
+        
+        .profile-section::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #004AAD, transparent);
+        }
 
-    .form-group {
-        margin-bottom: 10px;
-    }
+        .profile-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
+            display: inline-block;
+            object-fit: cover;
+            border: 4px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 
+                0 8px 25px rgba(0, 0, 0, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+        }
+        
+        .profile-image:hover {
+            transform: scale(1.05);
+            box-shadow: 
+                0 12px 35px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
 
-    label {
-        font-size: 13px;
-    }
+        .change-profile-btn {
+            display: block;
+            margin: 15px auto 0;
+            padding: 10px 20px;
+            font-size: 14px;
+            background: linear-gradient(135deg, #004AAD, #0066CC);
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 74, 173, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .change-profile-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .change-profile-btn:hover::before {
+            left: 100%;
+        }
 
-    input,
-    textarea {
-        font-size: 13px;
-        padding: 8px;
-    }
+        .change-profile-btn:hover {
+            background: linear-gradient(135deg, #0066CC, #004AAD);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 74, 173, 0.4);
+        }
 
-    .submit-btn {
-        font-size: 14px;
-        padding: 8px 16px;
-    }
+        .register-form {
+            text-align: left;
+            margin-top: 20px;
+        }
 
-    .back-button {
-        top: 20px;
-        left: 20px;
-    }
+form {
+    width: 100%;
+    text-align: left;
 }
 
-@media (max-width: 480px) {
-    .profile-image {
-        width: 80px;
-        height: 80px;
-    }
-
-    .change-profile-btn {
-        font-size: 10px;
-        padding: 4px 8px;
-    }
-
-    .submit-btn {
-        font-size: 12px;
-        padding: 6px 12px;
-    }
+.form-group {
+    margin-bottom: 20px;
 }
+
+        .label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .input-style {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 16px;
+            border: 1px solid #e1e5e9;
+            border-radius: 5px;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(5px);
+            outline: none;
+        }
+
+        .input-style:focus {
+            outline: none;
+            border-color: #004AAD;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 0 0 3px rgba(0, 74, 173, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .input-style.error {
+            border-color: #dc3545;
+            background: rgba(255, 245, 245, 0.8);
+        }
+
+        .input-style.error:focus {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+        }
+
+        textarea.input-style {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .error-message {
+            margin-top: 5px;
+            font-size: 12px;
+            color: #dc3545;
+            display: flex;
+            align-items: center;
+        }
+
+        .error-message::before {
+            content: '⚠';
+            margin-right: 5px;
+            font-size: 14px;
+        }
+
+        .submit-btn {
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #004AAD, #0066CC);
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            width: 100%;
+            max-width: 300px;
+            margin: 30px auto;
+            display: block;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0, 74, 173, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(135deg, #0066CC, #004AAD);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(0, 74, 173, 0.4);
+        }
+
+        .submit-btn:disabled {
+            background: linear-gradient(135deg, #ccc, #bbb);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+                padding-top: 30px;
+            }
+            
+            .form-container {
+                padding: 20px;
+                margin-top: 30px;
+            }
+            
+            .back-button {
+                top: 15px;
+                left: 15px;
+                padding: 6px 10px;
+                font-size: 14px;
+            }
+        }

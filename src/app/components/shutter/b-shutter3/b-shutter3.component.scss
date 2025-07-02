@@ -302,6 +302,40 @@
   }
   
 
+  .skip-button {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 14px;
+        }
+        
+        .skip-button:hover {
+            background-color: #5a6268;
+        }
+        
+        .skip-button:disabled {
+            background-color: #d6d8db;
+            cursor: not-allowed;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .skip-text {
+            font-size: 15px;
+            color: #6c757d;
+            margin-left: 10px;
+        }
+
   /* Media Queries สำหรับทำให้ Responsive */
   @media screen and (max-width: 768px) {
     .logo-img {

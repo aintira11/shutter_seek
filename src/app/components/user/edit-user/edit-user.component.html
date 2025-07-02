@@ -13,7 +13,7 @@
 
   <div class="profile-card">
     <div class="profile-picture-section">
-      <img class="profile-picture" [src]="imagePreview || data[0].image_profile" alt="Profile Picture" />
+      <img class="profile-picture" [src]="imagePreview || data.image_profile" alt="Profile Picture" />
 
       <button class="edit-picture-button" (click)="triggerFileInput()">แก้ไขรูปภาพ</button>
       <input type="file" #fileInput hidden (change)="onFileSelected($event)" />
@@ -24,15 +24,15 @@
         <div class="form-section">
           <div class="form-group">
             <label>ชื่อ</label>
-            <input type="text" [(ngModel)]="data[0].first_name" formControlName="Name" />
+            <input type="text" [(ngModel)]="data.first_name" formControlName="Name" />
           </div>
           <div class="form-group">
             <label>นามสกุล</label>
-            <input type="text" [(ngModel)]="data[0].last_name" formControlName="LastName"/>
+            <input type="text" [(ngModel)]="data.last_name" formControlName="LastName"/>
           </div>
           <div class="form-group">
             <label>ชื่อผู้ใช้</label>
-            <input type="text" [(ngModel)]="data[0].username" formControlName="UserName"/>
+            <input type="text" [(ngModel)]="data.username" formControlName="UserName"/>
           </div>
         </div>
 
@@ -40,15 +40,15 @@
           <h2>ข้อมูลติดต่อ</h2>
           <div class="form-group">
             <label>อีเมล์</label>
-            <input type="email" [(ngModel)]="data[0].email" formControlName="Email"/>
+            <input type="email" [(ngModel)]="data.email" formControlName="Email"/>
           </div>
           <div class="form-group">
             <label>เบอร์โทร</label>
-            <input type="tel" [(ngModel)]="data[0].phone" formControlName="Phone"/>
+            <input type="tel" [(ngModel)]="data.phone" formControlName="Phone"/>
           </div>
           <div class="form-group">
             <label>ที่อยู่</label>
-            <input type="text" [(ngModel)]="data[0].address" formControlName="address"/>
+            <input type="text" [(ngModel)]="data.address" formControlName="address"/>
           </div>
         </div>
 

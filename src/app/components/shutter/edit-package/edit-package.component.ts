@@ -12,7 +12,8 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { Datapackages, DataTypeforPacke } from '../../../model/models';
+import { DataMembers, Datapackages, DataTypeforPacke } from '../../../model/models';
+import { AuthService } from '../../../service/auth.service';
 
 // Confirm delete dialog component
 @Component({
@@ -50,7 +51,7 @@ export class ConfirmDeleteDialogComponent {}
 })
 export class EditPackageComponent {
   opened = true;
-  data: any; 
+  data: DataMembers[]=[];
   fromreister!: FormGroup;
   TagsWork: DataTypeforPacke[] = [];
   
@@ -65,26 +66,32 @@ export class EditPackageComponent {
     private http: HttpClient,
     private cdRef: ChangeDetectorRef,
     private dialog: MatDialog,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(() => {
-      const receivedData = window.history.state.data;
+    // this.route.paramMap.subscribe(() => {
+    //   const receivedData = window.history.state.data;
   
-      // ตรวจสอบว่า receivedData เป็นอาร์เรย์ที่มีข้อมูลหรือไม่
-      if (Array.isArray(receivedData) && receivedData.length > 0) {
-        this.data = receivedData[0]; 
-      } else {
-        this.data = receivedData;
-      }
+    //   // ตรวจสอบว่า receivedData เป็นอาร์เรย์ที่มีข้อมูลหรือไม่
+    //   if (Array.isArray(receivedData) && receivedData.length > 0) {
+    //     this.data = receivedData[0]; 
+    //   } else {
+    //     this.data = receivedData;
+    //   }
   
-      console.log('Response form:', this.data);
-    });
-    
-    this.getdatauser(this.data.user_id);
+    //   console.log('Response form:', this.data);
+    // });
+    const user = this.authService.getUser();
+    if (!user) {
+      console.error("ไม่พบข้อมูลผู้ใช้ใน AuthService");
+      return;
+    }
+    this.data = [user];
+    this.getdatauser(this.data[0].user_id);
     // ดึงข้อมูลผลงานก่อน จากนั้นจึงโหลดแพ็กเกจ
-    this.getworkType(this.data.user_id);
+    this.getworkType(this.data[0].user_id);
   }
 
   // ดึงข้อมูลประเภทผลงานที่มี

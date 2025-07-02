@@ -27,7 +27,7 @@ import { ReportsComponent } from './components/user/reports/reports.component';
 import { MassageRoomComponent } from './components/massage-room/massage-room.component';
 
 export const routes: Routes = [
-    {path: '',component: HomeComponent}, 
+    {path: '',component: HomeComponent},
     {path: 'login',component: LoginComponent},
     {path: 'shutter',component: shutt_RegisterComponent},
     {path: 'createacc',component: CreateAccountComponent},

@@ -9,9 +9,11 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DataTegs, DataWorkforEdit } from '../../../model/models';
+import { DataMembers, DataTegs, DataWorkforEdit } from '../../../model/models';
 import { ImageUploadService } from '../../../services_image/image-upload.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { AuthService } from '../../../service/auth.service';
+
 
 @Component({
   selector: 'app-insert-portfolio',
@@ -32,7 +34,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 })
 export class InsertPortfolioComponent {
   opened = true;
-  data: any;
+  data: DataMembers[]=[];
   dataWork: DataWorkforEdit[] = [];
   portfolioForm!: FormGroup;
   files: { file: File; preview: string; newName?: string }[] = [];
@@ -41,6 +43,7 @@ export class InsertPortfolioComponent {
   isUploading = false;
   selectedCategoryIndex: number | null = null;
   isAddingNewCategory = false;
+  isEditCategory = false
   Tags: DataTegs[] = [];
 
   selectedTagId: number = 0;
@@ -53,24 +56,32 @@ export class InsertPortfolioComponent {
     private Constants: Constants,
     private http: HttpClient,
     private snackBar: MatSnackBar,
-    private imageUploadService: ImageUploadService
+    private imageUploadService: ImageUploadService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(() => {
-      const receivedData = window.history.state.data;
-      if (Array.isArray(receivedData) && receivedData.length > 0) {
-        this.data = receivedData[0];
-      } else {
-        this.data = receivedData;
-      }
-      console.log('Response form:', this.data);
-    });
+    // this.route.paramMap.subscribe(() => {
+    //   const receivedData = window.history.state.data;
+    //   if (Array.isArray(receivedData) && receivedData.length > 0) {
+    //     this.data = receivedData[0];
+    //   } else {
+    //     this.data = receivedData;
+    //   }
+    //   console.log('Response form:', this.data);
+    // });
+    const user = this.authService.getUser();
+    if (!user) {
+      console.error("ไม่พบข้อมูลผู้ใช้ใน AuthService");
+      return;
+    }
+    this.data = [user];
+
     this.portfolioForm = this.fb.group({
       categoryName: [''],
     });
-    this.getdatauser(this.data.user_id);
-    this.getdataWork(this.data.user_id);
+    this.getdatauser(this.data[0].user_id);
+    this.getdataWork(this.data[0].user_id);
     this.fetchTags();
   }
 
@@ -133,11 +144,20 @@ export class InsertPortfolioComponent {
   editCategory(index: number) {
     this.selectedCategoryIndex = index;
     this.isAddingNewCategory = false;
+    this.isEditCategory = true;
+    
+    // ตั้งค่า selectedTagId เป็นหมวดหมู่เดิมของผลงานที่จะแก้ไข
+    this.selectedTagId = this.dataWork[index].tags_id;
+    
+    console.log('Editing category:', this.dataWork[index]);
+    console.log('Current tag ID:', this.selectedTagId);
   }
 
   cancelEdit() {
     this.selectedCategoryIndex = null;
     this.isAddingNewCategory = false;
+    this.isEditCategory = false
+    this.selectedTagId = 0; // รีเซ็ตค่า
   }
 
   uploadImage(file: File, catIndex: number) {
@@ -175,7 +195,11 @@ export class InsertPortfolioComponent {
     }
     
     console.log('Current data:', this.data);
-    const userId = Array.isArray(this.data) ? this.data[0].user_id : this.data.user_id;
+    const userId = Array.isArray(this.data) && this.data.length > 0 ? this.data[0].user_id : null;
+    if (!userId) {
+       this.showSnackBar('ไม่พบรหัสผู้ใช้');
+     return;
+    }
     console.log('User ID:', userId);
     
     if (this.isAddingNewCategory) {
@@ -207,6 +231,7 @@ export class InsertPortfolioComponent {
           this.showSnackBar('เพิ่มผลงานสำเร็จ');
           this.selectedCategoryIndex = null;
           this.isAddingNewCategory = false;
+          this.selectedTagId = 0; // รีเซ็ตค่า
           this.getdataWork(userId);
         },
         error: (error) => {
@@ -214,7 +239,7 @@ export class InsertPortfolioComponent {
           this.showSnackBar('เกิดข้อผิดพลาดในการเพิ่มผลงาน');
         }
       });
-    } else {
+    } else if(this.isEditCategory){
       // Update existing category
       const categoryToUpdate = this.dataWork[this.selectedCategoryIndex!];
       console.log('Category to update:', categoryToUpdate);
@@ -228,7 +253,8 @@ export class InsertPortfolioComponent {
       const url = `${this.Constants.API_ENDPOINT}/update/portfolio`;
       const formData = {
         portfolio_id: categoryToUpdate.portfolio_id,
-        tags_id: categoryToUpdate.tags_id, // ใช้ค่าเดิม
+        // tags_id: categoryToUpdate.tags_id, // ใช้ค่าเดิม
+        tags_id: this.selectedTagId, // ใช้ค่าที่เลือกใหม่
         user_id: this.data[0].user_id,
         name_work: categoryToUpdate.name_work,
         image_urls: categoryToUpdate.image_urls
@@ -242,6 +268,8 @@ export class InsertPortfolioComponent {
           console.log('Portfolio updated - API response:', response);
           this.showSnackBar('อัปเดตผลงานสำเร็จ');
           this.selectedCategoryIndex = null;
+          this.isEditCategory = false;
+          this.selectedTagId = 0; // รีเซ็ตค่า
           this.getdataWork(userId);
         },
         error: (error) => {
@@ -268,19 +296,26 @@ export class InsertPortfolioComponent {
       this.uploadImage(file, catIndex);
     }
   }
-
+    
   addCategory() {
+     const user_id = Array.isArray(this.data) && this.data.length > 0 ? this.data[0].user_id : null;
+     if (!user_id) {
+       this.showSnackBar('ไม่พบรหัสผู้ใช้');
+     return;
+    }
     const newCategory: any = {
-      user_id: Array.isArray(this.data) ? this.data[0].user_id : this.data.user_id,
+      user_id:0,
       portfolio_id: 0,
-      tags_id:this.selectedTagId,
+      // tags_id:this.selectedTagId,
+      tags_id: 0, // เริ่มต้นด้วย 0 จะให้เลือกใหม่
       name_work: '',
       image_urls: []
     };
+    
     this.dataWork.push(newCategory);
     this.selectedCategoryIndex = this.dataWork.length - 1;
     this.isAddingNewCategory = true;
-    // this.selectedTagId = 0; // รีเซ็ตค่าเริ่มต้น
+    this.selectedTagId = 0; // รีเซ็ตค่าเริ่มต้น
   }
 
   deleteCategory(catIndex: number) {
@@ -337,18 +372,23 @@ export class InsertPortfolioComponent {
   }
 
   goToEditWork() {
-    this.router.navigate(['/insertport'], { state: { data: this.data } });
+    this.router.navigate(['/insertport']);
+    // this.router.navigate(['/insertport'], { state: { data: this.data } });
   }
 
   goToPackagePack(): void {
-    this.router.navigate(['/editpac'], { state: { data: this.data } });
+    this.router.navigate(['/editpac']);
+    // this.router.navigate(['/editpac'], { state: { data: this.data } });
   }
 
   goToEditProfile(): void {
-    this.router.navigate(['/editshutter'], { state: { data: this.data } });
+    this.router.navigate(['/editshutter']);
+    // this.router.navigate(['/editshutter'], { state: { data: this.data } });
   }
 
   goToHomeShutter() {
-    this.router.navigate(['/mainshutter'], { state: { data: this.data } });
+    this.router.navigate(['/mainshutter']);
+    // this.router.navigate(['/mainshutter'], { state: { data: this.data } });
   }
+  
 }

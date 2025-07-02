@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { Constants } from '../../../config/constants';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms'
+import { AuthService } from '../../../service/auth.service'; 
 
 @Component({
   selector: 'app-profile',
@@ -19,32 +20,30 @@ export class ProfileComponent implements OnInit{
   Like :DataLike[]=[];
   Follow:[]=[];
  
-  constructor(private router : Router, private route: ActivatedRoute,private Constants: Constants, private http: HttpClient){}
-  ngOnInit(): void {
-    this.route.paramMap.subscribe(() => {
-      this.data=window.history.state.data;
-      // const receivedData =window.history.state.data;
+    constructor(
+    private router: Router,
+    private Constants: Constants,
+    private http: HttpClient,
+    private authService: AuthService // inject AuthService
+  ) {}
+    ngOnInit(): void {
+    // ดึงข้อมูลจาก AuthService
+    const user = this.authService.getUser();
+    if (!user) {
+      console.error("ไม่พบข้อมูลผู้ใช้ใน AuthService");
+      return;
+    }
 
-       // ตรวจสอบว่า receivedData เป็นอาร์เรย์และมีข้อมูลหรือไม่
-      //  if (Array.isArray(receivedData) && receivedData.length > 0) {
-      //   this.data = receivedData[0]; // ดึงข้อมูลจากอาร์เรย์ตำแหน่งแรก
-      // } else {
-      //   this.data = receivedData; // ถ้าไม่ใช่อาร์เรย์ ใช้ค่าตามเดิม
-      // }
-      console.log('Response:', this.data);
-        // this.printdata();
-        if (this.data[0]) { // เช็กว่ามี user_id หรือไม่
-          //this.getdatauser(this.data.user_id);
-          console.log("datauser",this.data);
-        }
+    this.data = [user];
+    console.log("🔐 ผู้ใช้:", this.data);
 
-      });
-      this.Like.forEach((_, index) => {
-        this.currentSlideIndex[index] = 0;
-      });
-      this.getMyLike(this.data[0].user_id );
-      this.getfollow(this.data[0].user_id);
+    this.getMyLike(this.data[0].user_id);
+    this.getFollow(this.data[0].user_id);
+    this.Like.forEach((_, index) => {
+      this.currentSlideIndex[index] = 0;
+    });
   }
+
    // ฟังก์ชันเพื่อไปยังภาพถัดไป (เลื่อนเฉพาะ portfolio ของตัวเอง)
 getNext(portfolioIndex: number) {
   if (this.Like[portfolioIndex]?.image_urls?.length > 0) {
@@ -64,31 +63,35 @@ getPrev(portfolioIndex: number) {
 }
 
   goToEditPro(): void {
-    this.router.navigate(['/edituser'],{ state: { data: this.data } });
+    this.router.navigate(['/edituser']);
+    // this.router.navigate(['/edituser'],{ state: { data: this.data } });
   }
   goToShutter(): void {
     this.router.navigate(['']);
   }
 
   back(){
-    this.router.navigate([''],{ state: { data: this.data } });
+     this.router.navigate(['']);
+    // this.router.navigate([''],{ state: { data: this.data } });
   }
   tofollow(){
-    this.router.navigate(['/tofollow'],{ state: { data: this.data } });
+     this.router.navigate(['/tofollow']);
+    // this.router.navigate(['/tofollow'],{ state: { data: this.data } });
   }
 
   cancelEdit(){
-    this.router.navigate(['/profile'],{ state: { data: this.data } });
+    this.router.navigate(['/profile']);
+    // this.router.navigate(['/profile'],{ state: { data: this.data } });
   }
 
 getMyLike(id: number) {
-  const url = this.Constants.API_ENDPOINT + '/get/like/' + id;
+  const url = `${this.Constants.API_ENDPOINT}/get/like/${id}`;
   this.http.get(url).subscribe((response: any) => {
     this.Like = response.map((item: any) => ({
       ...item,
       isLiked: true  // เพิ่ม isLiked = true
     }));
-    console.log("data Tegs :", this.Like);
+    console.log("สิ่งที่ถูกใจ :", this.Like);
   });
 }
 
@@ -109,7 +112,7 @@ likeCancel(portfolioId: number | null) {
         this.http.post(url, {}).subscribe({
           next: () => {
             console.log("Unlike success");
-  
+            // this.getMyLike(this.data.user_id);
           },
           error: (error) => console.error("Unlike error:", error)
         });
@@ -117,11 +120,11 @@ likeCancel(portfolioId: number | null) {
     }
 
 
-  getfollow(id : number){
-    const url = this.Constants.API_ENDPOINT + '/get/follow/'+ id;
-    this.http.get(url).subscribe((response: any) => {
-      this.Follow = response;
-      console.log("data Tegs :", this.Follow);
+ getFollow(id: number) {
+    const url = `${this.Constants.API_ENDPOINT}/get/follow/${id}`;
+    this.http.get(url).subscribe((res: any) => {
+      this.Follow = res;
+      console.log("👥 รายการติดตาม:", this.Follow);
     });
   }
 }

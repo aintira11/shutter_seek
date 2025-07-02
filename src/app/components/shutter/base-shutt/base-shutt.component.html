@@ -34,9 +34,6 @@
                         <div class="form-group">
                             <label class="label">ข้อมูลติดต่อส่วนตัว</label>
                             <input type="text" class="input-style" placeholder="Line ID" formControlName="lineID">
-                            <div *ngIf="photographerForm.get('lineID')?.invalid && photographerForm.get('lineID')?.touched" class="error-message">
-                                กรุณากรอก Line ID
-                            </div>
                         </div>
                         <div class="form-group">
                             <label class="label">ใส่ลิ้งค์เว็บไซต์ส่วนตัวของคุณ (ถ้ามี)</label>
@@ -46,13 +43,17 @@
                         <div class="form-group">
                             <label class="label">แนะนำตัวคุณให้ลูกค้าได้รู้จักคุณมากขึ้น (รายละเอียดเพิ่มเติม)</label>
                             <textarea class="input-style" rows="4" placeholder="เช่น ประสบการณ์การถ่ายภาพ, สไตล์การถ่ายภาพที่ถนัด" formControlName="description"></textarea>
-                            <div *ngIf="photographerForm.get('description')?.invalid && photographerForm.get('description')?.touched" class="error-message">
-                                กรุณากรอกข้อมูลแนะนำตัว
-                            </div>
                         </div>
 
                         <div class="button-container">
-                            <button type="submit" class="save-button" [disabled]="!photographerForm.valid">บันทึกข้อมูลส่วนตัว</button>
+                            <button type="submit" class="save-button" [disabled]="isPersonalInfoSubmitting">
+                                <span *ngIf="!isPersonalInfoSubmitting">บันทึกข้อมูลส่วนตัว</span>
+                                <span *ngIf="isPersonalInfoSubmitting">กำลังบันทึก...</span>
+                            </button>
+                            <button type="button" class="skip-button" (click)="skipPersonalInfo()" [disabled]="isPersonalInfoSubmitting">
+                                ข้ามขั้นตอน
+                            </button>
+                            <span class="skip-text">*สามารถข้ามได้ จะเพิ่มข้อมูลทีหลัง</span>
                         </div>
                     </form>
                 </section>
@@ -61,18 +62,18 @@
 
                 <!-- ส่วนที่ 2: หมวดหมู่ผลงาน -->
                 <section class="form-section" id="portfolio-category">
-                    <h3>เลือกหมวดหมู่ผลงานของคุณ</h3>
+                    <h3>สร้างผลงานของคุณ <span class="skip-text">*จำเป็นต้องมีผลงานอย่างน้อย 1 ผลงาน</span></h3>
                     
                     <form [formGroup]="portfolioForm" (ngSubmit)="savePortfolioInfo()">
                         <div class="form-group">
-                            <label class="label">ชื่อผลงาน</label>
+                            <label class="label">ชื่อผลงาน <span style="color: red;">*</span></label>
                             <input type="text" class="input-style" placeholder="เช่น งานแต่งงาน, ถ่ายภาพบุคคล" formControlName="name_work">
                             <div *ngIf="portfolioForm.get('name_work')?.invalid && portfolioForm.get('name_work')?.touched" class="error-message">
                                 กรุณากรอกชื่อผลงาน
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="label">หมวดหมู่ผลงาน</label>
+                            <label class="label">หมวดหมู่ผลงาน  <span style="color: red;">*</span></label>
                             <select class="input-style" formControlName="tags_id">
                                 <option value="">-- เลือกหมวดหมู่ --</option>
                                 <option *ngFor="let tag of Tags" [value]="tag.tags_id">
@@ -83,20 +84,23 @@
                                 กรุณาเลือกหมวดหมู่
                             </div>
                         </div>
-                        <div class="button-container">
-                            <button type="submit" class="save-button" [disabled]="!portfolioForm.valid">บันทึกข้อมูลผลงาน</button>
-                        </div>
+                        
+                        <!-- <div class="button-container">
+                            <button type="submit" class="save-button" [disabled]="!portfolioForm.valid || isPortfolioInfoSubmitting">
+                                <span *ngIf="!isPortfolioInfoSubmitting">บันทึกข้อมูลผลงาน</span>
+                                <span *ngIf="isPortfolioInfoSubmitting">กำลังบันทึก...</span>
+                            </button>
+                            <span class="skip-text">*จำเป็นต้องกรอกข้อมูลผลงาน</span>
+                        </div> -->
                     </form>
                 </section>
 
-                <div class="section-divider"></div>
-
                 <!-- ส่วนที่ 3: อัปโหลดรูปผลงาน -->
                 <section class="form-section" id="portfolio-upload">
-                    <h3>อัปโหลดรูปผลงานของคุณ</h3>
+                    <h3>อัปโหลดรูปผลงานของคุณ <span class="skip-text">*จำเป็นต้องอัปโหลดรูปอย่างน้อย 1 รูป</span></h3>
                     
                     <div class="upload-info">
-                        <p class="upload-count">อัพโหลดรูปผลงาน {{ files.length }}/10 (jpg, png)</p>
+                        <p class="upload-count">อัพโหลดรูปผลงาน {{ files.length }}/10 (jpg, png)  <span style="color: red;">*</span></p>
                         <p class="upload-description">ลูกค้าอยากเห็นฝีมือของคุณ เลือกรูปเพื่อแสดงผลงานของคุณ</p>
                     </div>
             
@@ -127,7 +131,11 @@
                 
                         <div class="button-container final-step">
                             <button type="button" class="back-button" (click)="goBack()">ย้อนกลับ</button>
-                            <button type="button" class="save-button" (click)="uploadImages()" [disabled]="files.length === 0">บันทึกและไปต่อ</button>
+                            <button type="button" class="save-button" (click)="uploadImages()" [disabled]="files.length === 0 || isUploading">
+                                <span *ngIf="!isUploading">บันทึกและไปต่อ</span>
+                                <span *ngIf="isUploading">กำลังอัปโหลด...</span>
+                            </button>
+                            
                         </div>
                     </div>
                 </section>

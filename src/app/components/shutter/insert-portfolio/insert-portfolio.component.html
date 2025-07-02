@@ -133,17 +133,18 @@
                       placeholder="กรุณาระบุชื่อผลงาน">
                   </div>
 
-                  <!-- แสดงการเลือกหมวดหมู่เฉพาะเมื่อเพิ่มผลงานใหม่ -->
-                  <div class="form-group" *ngIf="isAddingNewCategory">
-                    <label class="label">หมวดหมู่งาน</label>
-                    <select class="input-style" [(ngModel)]="selectedTagId">
-                      <option value="" disabled selected>กรุณาเลือกหมวดหมู่</option>
-                      <!-- <option *ngFor="let tag of Tags" [value]="tag.tags_id" [disabled]="isTagDisabled(tag.tags_id)"> -->
-                      <option *ngFor="let tag of Tags" [value]="tag.tags_id">
-                        {{ tag.name_tags }}
-                      </option>
-                    </select>
-                  </div>
+                    <!-- ช่องเลือกหมวดหมู่สำหรับทั้งเพิ่มและแก้ไข -->
+                    <div class="form-group">
+                      <label class="label">หมวดหมู่งาน</label>
+                      <select class="input-style" [(ngModel)]="selectedTagId">
+                        <option value="" disabled>กรุณาเลือกหมวดหมู่</option>
+                        <option *ngFor="let tag of Tags" 
+                                [value]="tag.tags_id"
+                                [disabled]="isAddingNewCategory ? isTagDisabled(tag.tags_id) : false">
+                          {{ tag.name_tags }}
+                        </option>
+                      </select>
+                    </div>
                   
               
               <div class="image-section">

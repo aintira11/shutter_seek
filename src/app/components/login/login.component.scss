@@ -7,6 +7,76 @@ body {
   overflow: hidden; /* Prevent scrollbars if the card overflows */
 }
 
+.password-container {
+    position: relative;
+    /* ลบ display: flex และ align-items ออก */
+}
+
+.password-container input {
+    width: 100%;
+    padding: 10px 40px 10px 10px; /* เพิ่ม padding-right เพื่อให้มีที่ว่างสำหรับไอคอน */
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box; /* ให้ padding รวมอยู่ในความกว้าง */
+}
+
+.password-container .toggle-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%); /* จัดให้อยู่กึ่งกลางแนวตั้ง */
+    cursor: pointer;
+    font-size: 18px;
+    color: #555;
+    z-index: 1; /* ให้ไอคอนอยู่ด้านบน */
+}
+
+/* สำหรับ hover effect */
+.password-container .toggle-icon:hover {
+    color: #333;
+}
+
+/* ถ้าต้องการให้ไอคอนไม่ถูกเลือกได้ */
+.password-container .toggle-icon {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.error-message-absolute {
+  color: red;
+  font-size: smaller;
+  position: absolute;
+  bottom: -1.2em; /* ปรับระยะห่างตามความเหมาะสม */
+  left: 0;
+}
+// .error-message-absolute::before {
+//     content: '⚠';
+//     margin-right: 5px;
+//     font-size: 14px;
+// }
+.back-button {
+    position: fixed; /* ให้ลอยเหนือเนื้อหา */
+    top: 20px;
+    left: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    color: #000;
+    z-index: 1000; /* อยู่เหนือทุกอย่าง */
+    background-color: rgba(255, 255, 255, 0.349); /* ป้องกันซ้อนกับพื้นหลัง */
+    padding: 6px 10px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.back-button i {
+    font-size: 20px;
+    margin-right: 5px;
+}
+
 body::before {
   content: "";
   font-family: Arial, sans-serif;

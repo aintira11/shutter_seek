@@ -97,7 +97,7 @@
                     <!-- Profile Section -->
                     <div class="profile-section">
                         <div class="profile-image-container">
-                          <img [src]="imagePreview || data[0].image_profile || data.image_profile" alt="Profile" class="profile-image">
+                          <img [src]="imagePreview || data[0].image_profile" alt="Profile" class="profile-image">
                           <div class="profile-overlay">
                             <input type="file" #fileInput hidden (change)="onFileSelected($event)" />
                           </div>

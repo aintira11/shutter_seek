@@ -8,6 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { lastValueFrom } from 'rxjs';
 import { ReactiveFormsModule } from '@angular/forms';
+import { AuthService } from '../../service/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -21,11 +22,16 @@ export class LoginComponent {
   dataLogin: DataMembers[] = [];
   // สร้างตัวแปรสถานะเริ่มต้นโมเดลเป็นปิด
   isModelOpen: boolean = false;
+
+  hidePassword = true;
+  hideConfirmPassword = true;
+
   constructor(
     private constants: Constants,
     private router: Router,
     private http: HttpClient,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private authService: AuthService,
   ) {
     // สร้างฟอร์มจาก FormBuilder
     this.loginForm = this.formBuilder.group({
@@ -38,59 +44,95 @@ export class LoginComponent {
     this.router.navigate(['/register']);
   }
 
-  async login(): Promise<void> {
-    const url = this.constants.API_ENDPOINT+'/login'; 
+  togglePasswordVisibility(field: string) {
+    if (field === 'password') {
+      this.hidePassword = !this.hidePassword;
+    } 
+  }
 
-    if (this.loginForm.invalid) {
-      alert('กรุณากรอกusernameและรหัสผ่านให้ครบถ้วน');
-      return;
+async login(): Promise<void> {
+  const url = this.constants.API_ENDPOINT + '/login';
+
+  if (this.loginForm.invalid) {
+    alert('กรุณากรอก username และรหัสผ่านให้ครบถ้วน');
+    return;
+  }
+
+  try {
+    const formData = this.loginForm.value;
+    const data = await lastValueFrom(
+      this.http.post<DataMembers[]>(url, formData)
+    );
+
+    this.dataLogin = data as DataMembers[];
+
+    if (this.dataLogin.length === 1) {
+      const user = this.dataLogin[0];
+      const userType = Number(user.type_user);
+
+      // ไปดึงข้อมูลผู้ใช้เต็มจาก /read/:id
+      this.getFullUserData(user.user_id, userType);
+    } else {
+      this.isModelOpen = true;
     }
 
-    try {
-      // ดึงค่าจากฟอร์ม
-      const formData = this.loginForm.value;
+  } catch (error) {
+    console.error('Login Failed:', error);
+    alert('เกิดข้อผิดพลาดในการเข้าสู่ระบบ');
+  }
+}
 
-      // เรียก API และรอผลลัพธ์
-      const data = await lastValueFrom(
-        this.http.post<DataMembers[]>(url, formData)
-      );
 
-      this.dataLogin = data as DataMembers[];
-      
-      // แสดงข้อมูลใน Console
-      console.log('API Response:', this.dataLogin);
-      
-      if (this.dataLogin.length == 1) {
-        console.log('Login Successful:', this.dataLogin);
-        const user = this.dataLogin[0]; 
-        const userShutter = this.dataLogin[1]; 
-        const userType = Number(user.type_user); // แปลงจาก string เป็น number
-        if (userType=== 3) {
-          this.router.navigate(['/admin'], { state: { data: user } });
-        } else if (userType === 2 ) {
-          // this.router.navigate(['/mainshutter']);
-          this.router.navigate(['/mainshutter'], { state: { data: user } });
+choose(type_user: string) {
+  if (type_user === '2') {
+    const shutter = this.dataLogin[1];
+    sessionStorage.setItem('user', JSON.stringify(shutter));
+    this.router.navigate(['/mainshutter']);
+    this.isModelOpen = false;
+  } else if (type_user === '1') {
+    const member = this.dataLogin[0];
+    sessionStorage.setItem('user', JSON.stringify(member));
+    this.router.navigate(['/']);
+    this.isModelOpen = false;
+  }
+}
+
+getFullUserData(id: number, userType: number): void {
+  const url = this.constants.API_ENDPOINT + '/read/' + id;
+
+  this.http.get<DataMembers[]>(url).subscribe({
+    next: (fullUserData) => {
+      if (fullUserData.length > 0) {
+        const user = fullUserData[0];
+
+        //  เก็บข้อมูลไว้ใน AuthService
+        this.authService.setUser(user);
+
+        //  (ถ้าต้องการ) เก็บไว้ใน sessionStorage ด้วย
+        sessionStorage.setItem('user', JSON.stringify(user));
+
+        //  นำทางตาม user type
+        if (userType === 3) {
+          this.router.navigate(['/admin']);
+        } else if (userType === 2) {
+          this.router.navigate(['/mainshutter']);
+          //  this.isModelOpen = false;
         } else if (userType === 1) {
-          this.router.navigate(['/'], { state: { data: user} });
+          this.router.navigate(['/']);
+          // this.isModelOpen = false;
         }
       } else {
-        this.isModelOpen = true;
+        alert('ไม่พบข้อมูลผู้ใช้');
       }
-    } catch (error) {
-      console.error('Login Failed:', error);
-      alert('เกิดข้อผิดพลาดในการเข้าสู่ระบบ');
+    },
+    error: (err) => {
+      console.error("เกิดข้อผิดพลาดในการโหลดข้อมูลผู้ใช้:", err);
     }
-  }
-  choose(type_user : string){
+  });
+}
 
-    if (type_user === '2' ) {
-      // this.router.navigate(['/shutter'], { state: { data: user} });
-      this.router.navigate(['/mainshutter'], { state: { data: this.dataLogin[1]} });
-      this.isModelOpen = false;
-    } else if (type_user === '1') {
-      this.router.navigate(['/'], { state: { data: this.dataLogin[0]} });
-      this.isModelOpen = false;
-    }
+back(){
+    this.router.navigate(['']);
   }
-    
+
 }

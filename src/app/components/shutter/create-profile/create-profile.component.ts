@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
-import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, Validators} from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import jsonData from '../../../../assets/thai_provinces.json'
 import { CommonModule } from '@angular/common';
@@ -11,6 +11,7 @@ import { HttpClient } from '@angular/common/http';
 import { Constants } from '../../../config/constants';
 import { DataMembers } from '../../../model/models';
 import { ImageUploadService } from '../../../services_image/image-upload.service';
+import { AuthService } from '../../../service/auth.service';
 
 @Component({
   selector: 'app-create-profile',
@@ -29,7 +30,7 @@ import { ImageUploadService } from '../../../services_image/image-upload.service
 export class CreateProfileComponent implements OnInit {
   thaijson = jsonData
   thai : any;
-  imagePreview: string = '/assets/images/user.png'; // รูปภาพเริ่มต้น
+  imagePreview: string = 'https://cdn-icons-png.flaticon.com/512/954/954560.png'; // รูปภาพเริ่มต้น
   selectedFile?: File; // เก็บไฟล์รูปภาพที่เลือก
 
   data: any = {};
@@ -37,64 +38,86 @@ export class CreateProfileComponent implements OnInit {
   datauser: DataMembers[] = [];
   fromreister!: FormGroup;
   files: { file: File; preview: string; newName?: string }[] = [];
+  hidePassword = true;
+  hideConfirmPassword = true;
 
-  constructor(private fb: FormBuilder,private router : Router,private Constants: Constants, private route: ActivatedRoute, private http: HttpClient,private readonly imageUploadService: ImageUploadService){ 
+  constructor(private fb: FormBuilder,
+    private router : Router,
+    private Constants: Constants, 
+    private route: ActivatedRoute, 
+    private http: HttpClient,
+    private readonly imageUploadService: ImageUploadService
+    ,private authService: AuthService,
+  ){ 
     console.log(this.thaijson);
 
      this.fromreister = this.fb.group({
-            email: ['', [Validators.required, Validators.email]],
+            email: ['', [Validators.required, Validators.email, this.noWhitespaceValidator]],
             phone: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]], // เบอร์โทร 10 หลัก
-            username: ['', Validators.required],
-            first_name: ['', Validators.required],
-            last_name: ['', Validators.required],
-            address: ['', Validators.required],
-            province: ['', Validators.required],
-
+            UserName: ['', [Validators.required, this.noWhitespaceValidator]],
+            Name: ['', [Validators.required, this.noWhitespaceValidator]],
+            LastName: ['', [Validators.required, this.noWhitespaceValidator]],
+            address: [''],
+            province: ['',],
+            Password: ['', [Validators.required, this.noWhitespaceValidator]],
+            confirmPassword: ['', [Validators.required, this.noWhitespaceValidator]],
           });
   }
   
-  async ngOnInit(): Promise<void> {
-    // รับข้อมูลจากหน้าที่ส่งมา
-    this.route.paramMap.subscribe(() => {
-        // ตรวจสอบว่า state มีข้อมูลหรือไม่
-        if (window.history.state && window.history.state.data) {
-            this.data = window.history.state.data;
+  ngOnInit(){
+    // // รับข้อมูลจากหน้าที่ส่งมา
+    // this.route.paramMap.subscribe(() => {
+    //     // ตรวจสอบว่า state มีข้อมูลหรือไม่
+    //     if (window.history.state && window.history.state.data) {
+    //         this.data = window.history.state.data;
 
-            console.log('Response:', this.data);
+    //         console.log('Response:', this.data);
 
-            // ตรวจสอบว่ามี last_idx หรือไม่ก่อนใช้งาน
-            if (this.data.last_idx) {
-                this.getdatauser(this.data.last_idx); // ส่ง last_idx ไปยังฟังก์ชัน
-            } else {
-                console.error('last_idx is missing in data:', this.data);
-            }
-        } else {
-            console.error('No data found in history state');
-        }
-    });
+    //         // ตรวจสอบว่ามี last_idx หรือไม่ก่อนใช้งาน
+    //         if (this.data.last_idx) {
+    //             this.getdatauser(this.data.last_idx); // ส่ง last_idx ไปยังฟังก์ชัน
+    //         } else {
+    //             console.error('last_idx is missing in data:', this.data);
+    //         }
+    //     } else {
+    //         console.error('No data found in history state');
+    //     }
+    // });
 }
 
 getdatauser(id: number) {
   console.log('id', id);
   const url = this.Constants.API_ENDPOINT + '/read/' + id;
-  this.http.get(url).subscribe((response: any) => {
-    this.datauser = response;
-    console.log("data user :", this.datauser);
+  this.http.get<DataMembers[]>(url).subscribe({
+    next: (fullUserData) => {
+      if (fullUserData.length > 0) {
+        const user = fullUserData[0];
 
-    // Populate the form controls with the fetched data
-    if (this.datauser.length > 0) {
-      this.fromreister.patchValue({
-        email: this.datauser[0].email,
-        phone: this.datauser[0].phone,
-        username: this.datauser[0].username,
-        first_name: this.datauser[0].first_name,
-        last_name: this.datauser[0].last_name,
-        address: this.datauser[0].address,
-        province: this.datauser[0].province,
-      });
+        //  เก็บข้อมูลไว้ใน AuthService
+        this.authService.setUser(user);
+
+        //  (ถ้าต้องการ) เก็บไว้ใน sessionStorage ด้วย
+        sessionStorage.setItem('user', JSON.stringify(user));
+        console.log("บันทึก sessionStorage สำเร็จ")
+      } else {
+        alert('ไม่พบข้อมูลผู้ใช้');
+      }
+    },
+    error: (err) => {
+      console.error("เกิดข้อผิดพลาดในการโหลดข้อมูลผู้ใช้:", err);
     }
   });
 }
+
+   noWhitespaceValidator(control: AbstractControl): ValidationErrors | null {
+    if (!control.value) {
+      return null; // ให้ required validator จัดการกรณีที่ไม่มีค่า
+    }
+    
+    const isWhitespace = (control.value || '').trim().length === 0;
+    const isValid = !isWhitespace;
+    return isValid ? null : { 'whitespace': true };
+  }
 
 private generateRandomFileName(originalName: string): string {
   const extension = originalName.split('.').pop();
@@ -102,28 +125,63 @@ private generateRandomFileName(originalName: string): string {
 }
 
 async base_for_shutt() {
-  if (this.selectedFile) {
-    const randomName = this.generateRandomFileName(this.selectedFile.name);
 
-    // อัปโหลดรูปภาพ
-    const response: any = await this.imageUploadService.uploadImage(this.selectedFile).toPromise();
-    const image = response.data.url;
+  this.fromreister.markAllAsTouched();
 
-    const url = this.Constants.API_ENDPOINT + '/update/' + this.datauser[0].user_id;
+  // ตรวจสอบความถูกต้องของฟอร์ม
+  if (this.fromreister.invalid) {
+    const firstErrorField = Object.keys(this.fromreister.controls).find(key =>
+      this.fromreister.get(key)?.invalid
+    );
+    if (firstErrorField) {
+      const element = document.querySelector(`[formControlName="${firstErrorField}"]`) as HTMLElement;
+      element?.focus();
+    }
+    alert('กรุณากรอกข้อมูลให้ครบถ้วนและถูกต้อง');
+    return;
+  }
+
+    // ตรวจสอบรหัสผ่าน
+  if (this.fromreister.value.Password !== this.fromreister.value.confirmPassword) {
+    alert('ยืนยันรหัสผ่านไม่ถูกต้อง');
+    return;
+  }
+
+    const url = this.Constants.API_ENDPOINT + '/register/shutt';
+    let image: string;
+  try {
+
+     if (this.selectedFile) {
+      const randomName = this.generateRandomFileName(this.selectedFile.name); // ถ้าคุณใช้ชื่อใหม่
+      const response: any = await this.imageUploadService.uploadImage(this.selectedFile).toPromise();
+      image = response.data.url;
+    } else {
+      // ถ้าไม่ได้อัปโหลด ใช้รูป default
+      image = 'https://cdn-icons-png.flaticon.com/512/954/954560.png';
+    }
+    
     const formData = {
       email: this.fromreister.value.email,
+      username: this.fromreister.value.UserName,
+      first_name: this.fromreister.value.Name,
+      last_name: this.fromreister.value.LastName,
       phone: this.fromreister.value.phone,
-      username: this.fromreister.value.username,
-      first_name: this.fromreister.value.first_name,
-      last_name: this.fromreister.value.last_name,
       address: this.fromreister.value.address,
       province: this.fromreister.value.province,
+      password:this.fromreister.value.Password,
       image_profile: image,
     };
 
     this.http.post(url, formData).subscribe({
       next: (res) => {
         console.log('data :', res);
+         const result = res as { last_idx: number };
+         if (result.last_idx) {
+            this.getdatauser(result.last_idx);
+        } else {
+           console.error('last_idx is missing in response:', res);
+      }
+
         const responseData = { ...res };
         this.router.navigate(['/base'], { state: { data: responseData } });
       },
@@ -136,8 +194,9 @@ async base_for_shutt() {
         }
       },
     });
-  } else {
-    alert('กรุณาอัปโหลดรูปภาพก่อนดำเนินการ');
+  } catch(error) {
+    console.error('การอัปโหลดรูปผิดพลาด:', error);
+    alert('เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ');
   }
 }
 
@@ -157,4 +216,16 @@ onFileSelected(event: any) {
     reader.readAsDataURL(file);
   }
 }
+
+  togglePasswordVisibility(field: string) {
+    if (field === 'password') {
+      this.hidePassword = !this.hidePassword;
+    } else if (field === 'confirmPassword') {
+      this.hideConfirmPassword = !this.hideConfirmPassword;
+    }
+  }
+
+  back(){
+    this.router.navigate(['/shutter']);
+  }
 }

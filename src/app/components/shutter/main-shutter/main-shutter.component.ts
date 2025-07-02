@@ -10,6 +10,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
+import { AuthService } from '../../../service/auth.service';
 
 
 @Component({
@@ -28,8 +29,8 @@ import {MatIconModule} from '@angular/material/icon';
   styleUrl: './main-shutter.component.scss'
 })
 export class MainShutterComponent implements OnInit{
-  dataLogin:any
-  data: any = {}; 
+  // dataLogin:any
+ data: DataMembers[]=[];
   datawork:DataShowWork[]=[]
   datareview:any[]=[]
   datafollower : DataFollow[] =[] ;
@@ -43,33 +44,39 @@ export class MainShutterComponent implements OnInit{
   isLoading: boolean = false;
   opened = true;
   isModelOpen: boolean = false;
-  constructor(private fb: FormBuilder,private router : Router,private route: ActivatedRoute,private Constants: Constants , private http: HttpClient){
+
+  constructor(private fb: FormBuilder,
+    private router : Router,
+    private route: ActivatedRoute,
+    private Constants: Constants , 
+    private http: HttpClient
+  ,private authService: AuthService){
     
    
   }
-  async ngOnInit(): Promise<void> {
 
-    // this.isLoading = true;
-    // // ไม่ต้องรอให้เสร็จ ทำงานอื่นไปเลย
-    // new Promise(resolve => setTimeout(resolve, 3500)).then(() => {
-    // this.isLoading = false;
-    // });
-    // รับข้อมูลจากหน้าที่ส่งมา
-    this.route.paramMap.subscribe(() => {
-      const receivedData = window.history.state.data;
+ngOnInit(): void {
   
-      // ตรวจสอบว่า receivedData เป็นอาร์เรย์และมีข้อมูลหรือไม่
-      if (Array.isArray(receivedData) && receivedData.length > 0) {
-        this.dataLogin = receivedData[0]; // ดึงข้อมูลจากอาร์เรย์ตำแหน่งแรก
-      } else {
-        this.dataLogin = receivedData; // ถ้าไม่ใช่อาร์เรย์ ใช้ค่าตามเดิม
-      }
-  
-      console.log('Response form login :', this.dataLogin);
-      this.getdatauser(this.dataLogin.user_id);
-      
-    });
+    // ดึงข้อมูลจาก AuthService
+   const user = this.authService.getUser();
+
+     if (user) {
+    this.data = [user];
+    console.log("Loaded user from AuthService:", this.data);
+        this.getpackages(user.user_id);
+        this.getwork(user.user_id);
+        this.getFollower(user.user_id);
+        this.getreview(user.user_id);
+  } else {
+    console.warn(" No user found in AuthService. Redirecting to login...");
+    this.router.navigate(['/login']);
+    return;
   }
+
+
+    
+ 
+}
 
   toggleSidenav() {
     this.opened = !this.opened;
@@ -131,18 +138,18 @@ export class MainShutterComponent implements OnInit{
     });
   }
 
-  getdatauser(id : number){
-    console.log('id',id);
-    const url = this.Constants.API_ENDPOINT+'/read/'+id;
-    this.http.get(url).subscribe((response: any) => {
-      this.data = response; 
-      console.log("data User :",this.data); 
-      this.getpackages(this.data[0].user_id);
-      this.getwork(this.data[0].user_id);
-      this.getFollower(this.data[0].user_id);
-      this.getreview(this.data[0].user_id);
-    });
-  }
+  // getdatauser(id : number){
+  //   console.log('id',id);
+  //   const url = this.Constants.API_ENDPOINT+'/read/'+id;
+  //   this.http.get(url).subscribe((response: any) => {
+  //     this.data = response; 
+  //     console.log("data User :",this.data); 
+  //     this.getpackages(this.data[0].user_id);
+  //     this.getwork(this.data[0].user_id);
+  //     this.getFollower(this.data[0].user_id);
+  //     this.getreview(this.data[0].user_id);
+  //   });
+  // }
   delay(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
@@ -192,33 +199,24 @@ scrollTopack() {
         }
        
         goToPackagePack(): void {
-          this.router.navigate(['/editpac'], { state: { data: this.data[0]} });
+          this.router.navigate(['/editpac']);
+          // this.router.navigate(['/editpac'], { state: { data: this.data} });
         }
        
         goToEditProfile(): void {
-          console.log('ข้อมูลที่ส่งไปหน้า แก้ไข :',this.data);
-          this.router.navigate(['/editshutter'], { state: { data: this.data[0]} });
+          this.router.navigate(['/editshutter']);
+          // console.log('ข้อมูลที่ส่งไปหน้า แก้ไข :',this.data);
+          // this.router.navigate(['/editshutter'], { state: { data: this.data} });
         }
         goToHomeShutter(){
-         this.router.navigate(['/mainshutter'], { state: { data: this.data[0]} });
+          this.router.navigate(['/mainshutter']);
+        //  this.router.navigate(['/mainshutter'], { state: { data: this.data} });
         }
         goToEditWork(){
-          this.router.navigate(['/insertport'], { state: { data: this.data[0]} });
+          this.router.navigate(['/insertport']);
+          // this.router.navigate(['/insertport'], { state: { data: this.data} });
         }
 
-        logout(){
-          // 1. เคลียร์ข้อมูลใน LocalStorage หรือ SessionStorage
-          localStorage.clear(); // หรือใช้ sessionStorage.clear();
-
-          // 2. รีเซ็ตค่าตัวแปรที่เก็บข้อมูลของผู้ใช้
-          this.data = []; // หรือให้เป็น null ตามโครงสร้างข้อมูล
-
-          // 3. นำทางกลับไปที่หน้า Login
-          this.router.navigate(['/login']).then(() => {
-            window.location.reload(); // รีเฟรชหน้า เพื่อให้ UI โหลดใหม่
-              
-        });
-      }
 
   viewProfile(follower: any) {
     console.log('View', follower.username);
@@ -232,17 +230,22 @@ closeList() {
 }
 
   chat(id_shutter: number){
-      console.log("📤 Sending datauser:", this.data);
+      // console.log("📤 Sending datauser:", this.data);
     
-      if (!this.data || this.data.length === 0) {
-        console.error("❌ Error: this.datauser is empty or undefined");
-        return;
-      }
+      // if (!this.data ) {
+      //   console.error("Error: this.datauser is empty or undefined");
+      //   return;
+      // }
     
       this.router.navigate(['/roomchat'], { 
-        state: { 
-          datauser: this.data[0], 
-        } 
+        // state: { 
+        //   datauser: this.data, 
+        // } 
       });
      }
+
+     logout(): void {
+      this.authService.logout();
+      this.router.navigate(['/login']); // กลับไปหน้า login
+}
 }

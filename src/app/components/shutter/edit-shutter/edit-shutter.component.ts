@@ -11,6 +11,7 @@ import jsonData from '../../../../assets/thai_provinces.json'
 import { Constants } from '../../../config/constants';
 import { HttpClient } from '@angular/common/http';
 import { DataMembers } from '../../../model/models';
+import { AuthService } from '../../../service/auth.service';
 
 @Component({
   selector: 'app-edit-shutter',
@@ -31,7 +32,7 @@ export class EditShutterComponent{
   thaijson = jsonData
   opened = true;
   photographerForm!: FormGroup;
-  data: any; 
+  data: DataMembers[]=[];
   files: { file: File; preview: string; newName?: string }[] = [];
   selectedFile?: File;
   imagePreview: string | null = null;
@@ -44,7 +45,8 @@ constructor(
   private route: ActivatedRoute
   ,private Constants: Constants
   , private http: HttpClient,
-  private cdRef: ChangeDetectorRef
+  private cdRef: ChangeDetectorRef,
+  private authService: AuthService
   ){
  // Initialize forms
   this.initForms();
@@ -54,37 +56,31 @@ constructor(
 
 
 ngOnInit(): void {
-  this.route.paramMap.subscribe(() => {
-    const receivedData = window.history.state.data;
-
-    // ตรวจสอบว่า receivedData เป็นอาร์เรย์และมีข้อมูลหรือไม่
-    if (Array.isArray(receivedData) && receivedData.length > 0) {
-      this.data = receivedData[0]; // ดึงข้อมูลจากอาร์เรย์ตำแหน่งแรก
-    } else {
-      this.data = receivedData; // ถ้าไม่ใช่อาร์เรย์ ใช้ค่าตามเดิม
+  const user = this.authService.getUser();
+  if (!user) {
+      console.error("ไม่พบข้อมูลผู้ใช้ใน AuthService");
+      return;
     }
+    this.data = [user];
 
-    console.log('Response form mainShutter :', this.data);
-  
-  });
-  this.photographerForm = this.fb.group({
-    first_name: [this.data.first_name, Validators.required],
-    last_name: [this.data.last_name, Validators.required],
-    username: [this.data.username, Validators.required],
-    phone: [this.data.phone, Validators.required],
-    email: [this.data.email, [Validators.required, Validators.email]],
-    address: [this.data.address],
-    province: [this.data.province, Validators.required],
-    lineID: [this.data.lineID],
-    facebook: [this.data.facebook],
-    description: [this.data.description]
+    this.photographerForm = this.fb.group({
+    first_name: [this.data[0].first_name, Validators.required],
+    last_name: [this.data[0].last_name, Validators.required],
+    username: [this.data[0].username, Validators.required],
+    phone: [this.data[0].phone, Validators.required],
+    email: [this.data[0].email, [Validators.required, Validators.email]],
+    address: [this.data[0].address],
+    province: [this.data[0].province, Validators.required],
+    lineID: [this.data[0].lineID],
+    facebook: [this.data[0].facebook],
+    description: [this.data[0].description]
   });
 
   // setTimeout(() => {
   //   this.marginLeft = '250px';  // ตั้งค่าใหม่
   //   this.cdRef.detectChanges(); // บังคับให้ Angular อัปเดต
   // }, 0);
-  this.getdatauser(this.data.user_id);
+  this.getdatauser(this.data[0].user_id);
  
 }
 
@@ -135,14 +131,14 @@ ngOnInit(): void {
   
   async savePersonalInfo() {
     // const userId = (this.data as DataMembers).user_id; // ✅ บอกให้ TypeScript รู้ว่าเป็น Object
-    const userId = this.data?.user_id || this.data[0]?.user_id;
+    const userId = this.data[0].user_id || this.data[0]?.user_id;
       if (!userId) {
       console.error("User ID is missing!");
       alert("ไม่พบข้อมูลผู้ใช้");
       return;
     }
   
-    let image = this.data[0]?.image_profile || this.data?.image_profile || ""; // ใช้ค่าเริ่มต้น
+    let image = this.data[0]?.image_profile || this.data[0].image_profile || ""; // ใช้ค่าเริ่มต้น
   
     // ถ้ามีไฟล์ใหม่ อัปโหลดก่อน
     if (this.selectedFile) {

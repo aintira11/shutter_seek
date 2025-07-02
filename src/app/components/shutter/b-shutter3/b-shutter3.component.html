@@ -19,7 +19,8 @@
     <div class="container">
         <img src="/assets/images/PIXEL (7).png" alt="Logo" class="logo-img" />
         <h2 style="color: #003ebb;">ขั้นตอนที่ 3 </h2>
-        <p class="text">กำหนดราคาและส่งผลการสมัคร</p>
+        <p class="text">กำหนดราคาและส่งผลการสมัคร <span style="color: red;">*</span> <span class="skip-text">จำเป็นต้องมีแพ็กเกจอย่างน้อย 1 แพ็กเกจ</span></p>
+        
         <br>
     
         <!-- Card Container -->
@@ -28,7 +29,7 @@
             <form>
             <label class="hcard">แพ็กเกจที่ {{ i + 1 }}</label>
               <div class="form-group">
-                <label class="label">ชื่อ แพ็กเกจ</label>
+                <label class="label">ชื่อ แพ็กเกจ <span style="color: red;">*</span></label>
                 <input type="text" [(ngModel)]="package.name" name="packageName{{ i }}" class="input-style" placeholder="ชื่อแพ็กเกจ">
               </div>
               <!-- <div class="form-group">
@@ -43,11 +44,11 @@
               </div> -->
               
               <div class="form-group">
-                <label class="price-label">รายละเอียดแพ็กเกจ</label>
+                <label class="price-label">รายละเอียดแพ็กเกจ <span style="color: red;">*</span></label>
                 <textarea [(ngModel)]="package.description" name="packageDescription{{ i }}" class="input-style" rows="3" placeholder="รายละเอียดแพ็กเกจ"></textarea>
               </div>
               <div class="price-input-container">
-                <label for="packagePrice" class="price-label">ราคาแพ็กเกจ</label>
+                <label for="packagePrice" class="price-label">ราคาแพ็กเกจ <span style="color: red;">*</span></label>
                 <div class="input-wrapper">
                   <input type="text" [(ngModel)]="package.price" name="packagePrice{{ i }}" class="price-input" placeholder="5,999" />
                   <span class="currency-label">บาท</span>

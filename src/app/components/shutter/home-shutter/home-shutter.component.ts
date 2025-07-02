@@ -10,6 +10,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 // import { lastValueFrom } from 'rxjs';
 import {MatIconModule} from '@angular/material/icon';
 import {MatMenuModule} from '@angular/material/menu';
+import { AuthService } from '../../../service/auth.service';
 
 @Component({
   selector: 'app-home-shutter',
@@ -38,7 +39,13 @@ export class HomeShutterComponent implements OnInit{
   isModelOpen_danger : boolean = false;
 
   reviewform: FormGroup;
-  constructor(private formBuilder: FormBuilder,private route: ActivatedRoute,private router : Router,private Constants: Constants , private http: HttpClient){
+  constructor(private formBuilder: FormBuilder,
+    private route: ActivatedRoute,
+    private router : Router,
+    private Constants: Constants, 
+    private http: HttpClient,
+    private authService: AuthService){
+
     // สร้างฟอร์มจาก FormBuilder
     this.reviewform = this.formBuilder.group({
       // reviewed_id: ['', [Validators.required]],
@@ -50,15 +57,15 @@ export class HomeShutterComponent implements OnInit{
   ngOnInit() { 
     this.route.paramMap.subscribe(() => {                
       setTimeout(() => { // เพิ่ม setTimeout() เพื่อให้ state โหลดเสร็จก่อน
-        this.data = window.history.state.datauser || [];
+        // this.data = window.history.state.datauser || [];
         this.idshutter = window.history.state.idshutter || null;
   
-        console.log('✅ Received data:', this.data);
-        console.log('✅ Received idshutter:', this.idshutter);
+        // ดึงข้อมูล user จาก AuthService (sessionStorage)
+        this.data = this.authService.getUser();
+        console.log('Received data:', this.data);
+        console.log('Received idshutter:', this.idshutter);
   
-        // if (!this.data || this.data === 0) {
-        //   console.error("Error: datauser is undefined or missing");
-        // }
+        
         if (!this.idshutter) {
           console.error("Error: idshutter is undefined or missing");
         }
@@ -177,7 +184,7 @@ toggleFollow(followedId: number) {
   }
 
   postreview() { 
-    const userId = (this.data as DataMembers).user_id; // ✅ บอกให้ TypeScript รู้ว่าเป็น Object
+    const userId = (this.data as DataMembers).user_id; //  บอกให้ TypeScript รู้ว่าเป็น Object
     const url = this.Constants.API_ENDPOINT + '/post/review/' + userId; 
     console.log(this.reviewform.value);  // แสดงค่าทั้งหมดในฟอร์ม
     console.log('Rating:', this.rating); // แสดงค่า rating ที่เลือก
@@ -220,7 +227,7 @@ toggleFollow(followedId: number) {
 //ยังไม่แก้
   profile(){
     const type = Number(this.data);
-    console.log("ค่าของ type:", type, "| ประเภท:", typeof type); // ✅ ดูค่าที่แท้จริง
+    console.log("ค่าของ type:", type, "| ประเภท:", typeof type); //  ดูค่าที่แท้จริง
     if(type === 2 ){
       this.router.navigate(['/'], { state: { data: this.data } });
     }
@@ -284,15 +291,15 @@ toggleFollow(followedId: number) {
       });
   }
   report(){
-    console.log("📤 Sending data shutter:", this.datauser[0]);
-    console.log("📤 Sending datauser:", this.data);
+    console.log(" Sending data shutter:", this.datauser[0]);
+    console.log(" Sending datauser:", this.data);
   
     if (!this.datauser[0]) {
-      console.error("❌ Error: data shutter is undefined or invalid");
+      console.error(" Error: data shutter is undefined or invalid");
       return;
     }
     if (!this.datauser || this.datauser.length === 0) {
-      console.error("❌ Error: this.datauser is empty or undefined");
+      console.error(" Error: this.datauser is empty or undefined");
       return;
     }
   
@@ -305,21 +312,21 @@ toggleFollow(followedId: number) {
   }
 
   chat(id_shutter: number){
-      console.log("📤 Sending id_shutter:", id_shutter);
-      console.log("📤 Sending datauser:", this.data);
-    
+      console.log("Sending id_shutter:", id_shutter);
+      // console.log(" Sending datauser:", this.data);
+  
       if (!id_shutter) {
-        console.error("❌ Error: id_shutter is undefined or invalid");
+        console.error(" Error: id_shutter is undefined or invalid");
         return;
       }
       if (!this.datauser || this.datauser.length === 0) {
-        console.error("❌ Error: this.datauser is empty or undefined");
+        console.error(" Error: this.datauser is empty or undefined");
         return;
       }
     
       this.router.navigate(['/roomchat'], { 
         state: { 
-          datauser: this.data, 
+          // datauser: this.data, 
           idshutter: id_shutter 
         } 
       });

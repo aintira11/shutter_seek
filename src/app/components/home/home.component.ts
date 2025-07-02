@@ -7,7 +7,9 @@ import { Constants } from '../../config/constants';
 import { ActivatedRoute,Params  } from '@angular/router';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import jsonData from '../../../assets/thai_provinces.json'
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { AuthService } from '../../service/auth.service';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-home',
@@ -16,7 +18,7 @@ import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angul
     HttpClientModule,
     CommonModule,
     ReactiveFormsModule,
-    
+    MatSnackBarModule,
     ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
@@ -42,7 +44,13 @@ export class HomeComponent implements OnInit{
   isLoading: boolean = false;
   // lastVoteTime: Date | null = null; // เวลาล่าสุดที่โหวต
 
-  constructor(private fb: FormBuilder,private Constants: Constants, private route: ActivatedRoute, private http: HttpClient,private router : Router){
+  constructor(private fb: FormBuilder,
+    private Constants: Constants, 
+    private route: ActivatedRoute, 
+    private http: HttpClient,
+    private router : Router,
+    private authService: AuthService,
+    private snackBar: MatSnackBar,){
     this.form = this.fb.group({
       tags_id: [''],
       province: [''],
@@ -51,35 +59,29 @@ export class HomeComponent implements OnInit{
     });
 }
 
-  async ngOnInit(): Promise<void> {
-
-    this.isLoading = true;
-    // ไม่ต้องรอให้เสร็จ ทำงานอื่นไปเลย
-    new Promise(resolve => setTimeout(resolve, 2500)).then(() => {
+ngOnInit(): void {
+  this.isLoading = true;
+  setTimeout(() => {
     this.isLoading = false;
-    });
-    // รับข้อมูลจากหน้าที่ส่งมา
-    this.route.paramMap.subscribe(() => {
-      const receivedData = window.history.state.data;
-  
-      // ตรวจสอบว่า receivedData เป็นอาร์เรย์และมีข้อมูลหรือไม่
-      if (Array.isArray(receivedData) && receivedData.length > 0) {
-        this.data = receivedData[0]; // ดึงข้อมูลจากอาร์เรย์ตำแหน่งแรก
-      } else {
-        this.data = receivedData; // ถ้าไม่ใช่อาร์เรย์ ใช้ค่าตามเดิม
-      }
-  
-      console.log('Response1:', this.data);
-  
-      if (this.data?.user_id) {
-        this.getdatauser(this.data.user_id);
-      }
-  
-      console.log("Calling gettegs()");
-      this.gettegs();
-      this.getPortfolio();
-      
-    });
+  }, 2500);
+
+  // ดึงข้อมูลจาก AuthService
+  const user = this.authService.getUser();
+  if (user) {
+    this.datauser = [user];
+    console.log("Loaded user from AuthService:", this.datauser);
+    this.getMyLike(user.user_id);
+  } else {
+    console.warn(" No user found in AuthService. Redirecting to login...");
+    this.router.navigate(['/']);
+    this.gettegs();
+    this.getPortfolio();
+    return;
+  }
+
+  // โหลดข้อมูลหน้าแรก
+  this.gettegs();
+  this.getPortfolio();
   
     // ตรวจสอบว่ามี Portfolio หรือไม่ ก่อนวนลูป
     if (this.Portfolio) {
@@ -152,15 +154,15 @@ getPrev(portfolioIndex: number) {
   }
 }
 
-  getdatauser(id : number){
-    console.log('id',id);
-    const url = this.Constants.API_ENDPOINT+'/read/'+id;
-    this.http.get(url).subscribe((response: any) => {
-      this.datauser = response; 
-      console.log("data User :",this.datauser); 
-      this.getMyLike(this.datauser[0].user_id);
-    });
-  }
+  // getdatauser(id : number){
+  //   console.log('id',id);
+  //   const url = this.Constants.API_ENDPOINT+'/read/'+id;
+  //   this.http.get(url).subscribe((response: any) => {
+  //     this.datauser = response; 
+  //     console.log("data User :",this.datauser); 
+  //     this.getMyLike(this.datauser[0].user_id);
+  //   });
+  // }
 
   gettegs() {
     const url = this.Constants.API_ENDPOINT + '/tegs' ;
@@ -228,6 +230,9 @@ getPrev(portfolioIndex: number) {
       this.http.get(url).subscribe((response: any) => {
         this.dataSreach = response;
         console.log("ผลลัพธ์ที่ค้นหา:", response);
+        if (this.dataSreach.length === 0) {
+          this.showSnackBar('ไม่พบข้อมูลที่ค้นหา');
+        }
       });
     }
     profile(){
@@ -255,6 +260,7 @@ Liked(portfolioId: number | null) {
   const userId = this.datauser?.[0]?.user_id ?? 0;
   if (userId === 0) {
     console.error("Invalid user_id!");
+    this.showSnackBar('กรุณาเข้าสู่ระบบก่อนใช้งาน');
     return;
   }
 
@@ -283,31 +289,42 @@ getMyLike(id: number) {
 
     toShutter(id_shutter: number) {
       console.log("📤 Sending id_shutter:", id_shutter);
-      console.log("📤 Sending datauser:", this.datauser[0]);
+      // console.log("📤 Sending datauser:", this.datauser[0]);
     
       if (!id_shutter) {
-        console.error("❌ Error: id_shutter is undefined or invalid");
+        console.error(" Error: id_shutter is undefined or invalid");
         return;
       }
       if (!this.datauser || this.datauser.length === 0) {
-        console.error("❌ Error: this.datauser is empty or undefined");
+        console.error(" Error: this.datauser is empty or undefined");
+        this.showSnackBar('กรุณาเข้าสู่ระบบก่อนใช้งาน');
         return;
       }
     
       this.router.navigate(['/homeshutter'], { 
         state: { 
-          datauser: this.datauser[0], 
+          // datauser: this.datauser[0], 
           idshutter: id_shutter 
         } 
       });
     }
+
+    showSnackBar(message: string) {
+    this.snackBar.open(message, 'ปิด', {
+      duration: 3000,
+      horizontalPosition: 'center',
+      verticalPosition: 'bottom',
+    });
+  }
     
     testShutter(id: number) {
-      console.log("✅ Clicked photographer ID:", id);
+      console.log(" Clicked photographer ID:", id);
       this.toShutter(id);
     }
-
-      
-    
+  
+logout(): void {
+  this.authService.logout();
+  this.router.navigate(['/login']); // กลับไปหน้า login
+}
     
 }

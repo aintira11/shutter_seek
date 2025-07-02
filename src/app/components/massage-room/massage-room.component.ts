@@ -8,6 +8,7 @@ import { Constants } from '../../config/constants';
 
 import { Database, ref, set, push, onValue, update, get ,onDisconnect } from '@angular/fire/database';
 import { ImageUploadService } from '../../services_image/image-upload.service'; // นำเข้า ImageUploadService
+import { AuthService } from '../../service/auth.service';
 
 @Component({
     selector: 'app-massage-room',
@@ -45,14 +46,16 @@ export class MassageRoomComponent implements OnInit, AfterViewChecked, OnDestroy
     private route: ActivatedRoute,
     private constants: Constants, 
     private http: HttpClient,
-    private imageUploadService: ImageUploadService
+    private imageUploadService: ImageUploadService,
+    private authService: AuthService
     ) {}
 
   ngOnInit(): void {
     // รับข้อมูลที่ส่งมาจาก route ก่อนหน้าโดยใช้ history.state
     this.route.paramMap.subscribe(() => {
       setTimeout(() => {
-        this.data = window.history.state.datauser || null;
+        // this.data = window.history.state.datauser || null;
+         this.data = this.authService.getUser();
         this.initialPartnerId = window.history.state.idshutter || null;
 
         if (!this.data || !this.data.user_id || !this.data.type_user) { // ตรวจสอบ type_user ด้วย
@@ -63,10 +66,10 @@ export class MassageRoomComponent implements OnInit, AfterViewChecked, OnDestroy
 
         this.myId = this.data.user_id;
         this.myUserType = this.data.type_user; // กำหนดประเภทผู้ใช้
-        console.log('✅ ID ผู้ใช้ของฉัน (myId):', this.myId);
-        console.log('✅ ประเภทผู้ใช้ของฉัน (myUserType):', this.myUserType);
-        console.log('✅ ได้รับข้อมูลผู้ใช้ที่ล็อกอินแล้ว:', this.data);
-        console.log('✅ ได้รับ ID คู่สนทนาเริ่มต้น (initialPartnerId):', this.initialPartnerId);
+        console.log('ID ผู้ใช้ของฉัน (myId):', this.myId);
+        console.log('ประเภทผู้ใช้ของฉัน (myUserType):', this.myUserType);
+        console.log('ได้รับข้อมูลผู้ใช้ที่ล็อกอินแล้ว:', this.data);
+        console.log('ได้รับ ID คู่สนทนาเริ่มต้น (initialPartnerId):', this.initialPartnerId);
 
         // --- ส่วนของการจัดการสถานะออนไลน์ของผู้ใช้ที่ล็อกอิน ---
         if (this.myId) {
@@ -470,7 +473,7 @@ sendMessage(): void {
   
     //ตรวจสอบว่าเป็น URL ของรูปภาพหรือไม่
     return (text.match(/\.(jpeg|jpg|gif|png|webp|bmp)$/) != null) || 
-           (text.startsWith('http') && text.includes('ibb.co')); // เปลี่ยน imgbb.com เป็น ibb.co เพื่อความครอบคลุม
+           (text.startsWith('http') && text.includes('ibb.co')); 
   }
 
   private showAlert(message: string, isModal: boolean = true): void {
