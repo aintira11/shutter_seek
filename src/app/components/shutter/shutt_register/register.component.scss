@@ -34,21 +34,65 @@
   padding: 0px 0;
 }
 
-.back-button {
+.box {
+  width: 45px;
+  height: 45px;
+  background: #0c63ef;
+  border-radius: 25px;
   display: flex;
+  justify-content: center;
   align-items: center;
-  font-size: 16px;
-  color: #000;
+  transition: 0.3s;
   cursor: pointer;
-  background: none;      
-  border: none;            
-  box-shadow: none;        
-  padding: 0;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 999; /* ให้ลอยเหนือเนื้อหาอื่น */
 }
 
-.back-button i {
-  font-size: 20px;
-  margin-right: 5px;
+/* ลูกศร */
+.arrow {
+  border: solid #fff;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+  transform: rotate(-220deg);
+}
+
+/* Hover effect */
+.box:hover {
+  width: 160px;
+  background: linear-gradient(to right, #0c63ef, yellow);
+}
+
+.box:hover .arrow {
+  display: none;
+}
+
+.box .text {
+  display: none;
+}
+
+.box:hover .text {
+  display: flex;
+  font-size: 16px;
+  font-weight: 550;
+  color: black;
+  letter-spacing: 0.6px;
+  animation: anima 0.6s ease;
+}
+
+@keyframes anima {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.box:active {
+  background: linear-gradient(to right, rgba(38, 213, 38, 0.8), rgba(255, 255, 0, 0.8));
 }
 
 .header {
@@ -211,6 +255,21 @@
       width: 60px;
       height: 60px;
     }
+
+      .box {
+    width: 40px;
+    height: 40px;
+    top: 10px;
+    left: 10px;
+  }
+
+  .box:hover {
+    width: 120px;
+  }
+
+  .box:hover .text {
+    font-size: 14px;
+  }
   }
 
   

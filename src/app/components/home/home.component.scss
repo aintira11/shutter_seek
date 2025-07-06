@@ -1,32 +1,10 @@
 
-#first {
-  // height: 100vh;
-  // background: #4280c3;
-  position: relative;
-  width: 100%;
-  min-height: 400px; /* ความสูงเริ่มต้น */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  overflow: hidden; /* ป้องกันรูปเลยขอบ */
-}
-
-#second {
-  // background: #699bcf;
-}
-
-#third {
-  border-radius: 10px;
-  padding: 2%;
-  // border: 2px solid #7b9bbe; /* เส้นขอบสีฟ้า */
-  background: transparent; /* ทำให้พื้นหลังโปร่งใส */
-  background: linear-gradient(45deg,rgba(211, 214, 9, 0.413),rgba(3, 41, 212, 0.922));
-}
-
-#four {
- 
-  // background: #7b9bbe;
+body {
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 
@@ -56,15 +34,17 @@
   // text-shadow: 0px 0px 5px #007bff; /* ทำให้มีเงาสีฟ้า */
 }
 
-/* ส่วนของรูปที่ซ้อนอยู่ข้างหลัง */
-.image-overlay {
-  position: absolute;
-  top: -50px; /* ดันรูปขึ้นไปให้เหมือนในภาพ */
-  left: 0;
+#first {
+  // height: 100vh;
+  // background: #4280c3;
+  position: relative;
   width: 100%;
-  z-index: 1; /* ให้ต่ำกว่า header */
-  backdrop-filter: blur(5px);
-  background-color: rgba(0, 0, 0, 0.3); /* เพิ่มสีดำโปร่งใสให้ดูสวย */
+  min-height: 400px; /* ความสูงเริ่มต้น */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  overflow: hidden; /* ป้องกันรูปเลยขอบ */
 }
 
 .background-image {
@@ -84,6 +64,134 @@
   transition: height 0.3s ease-in-out; /* ให้ลดขนาดแบบ Smooth */
   filter: blur(3px) brightness(0.6); /* เบลอ + ลดแสงให้ข้อความชัดขึ้น */
 }
+
+.content h1 {
+    font-size: 2.8rem;
+    margin-bottom: 15px;
+}
+
+.content p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+#second {
+    padding: 20px 0; /* Add some vertical padding */
+}
+#second h4 {
+    margin-bottom: 20px;
+    color: #333;
+    text-align: start;
+}
+#third {
+    border-radius: 15px; /* Slightly more rounded */
+    padding: 3% 2%; /* Increased padding for more breathing room */
+    background: linear-gradient(45deg, rgba(211, 214, 9, 0.2), rgba(3, 41, 212, 0.7)); /* Softer gradient */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); /* More prominent shadow */
+    margin-top: 30px;
+    color: #fff; /* Text color for this section */
+}
+
+#third h4 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2rem;
+    color: #fff;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+#third .card {
+    border-radius: 15px; /* Match section border-radius */
+    overflow: hidden; /* Ensure content stays within rounded corners */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background-color: #fff; /* Ensure card background is white */
+}
+
+#third .card:hover {
+    transform: translateY(-8px); /* Lift card on hover */
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+}
+
+#third .carousel-inner {
+    border-radius: 12px; /* Slightly less rounded than card for visual interest */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+#third .carousel-item img {
+    height: 250px; /* Increased height for better visibility */
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+#third .carousel-control-prev,
+#third .carousel-control-next {
+    width: 15%; /* Make controls a bit wider */
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+#third .carousel-control-prev:hover,
+#third .carousel-control-next:hover {
+    opacity: 1;
+}
+
+#third .carousel-control-prev-icon,
+#third .carousel-control-next-icon {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    padding: 12px; /* Make icons slightly larger */
+}
+
+#third .card .d-flex.align-items-center.justify-content-between {
+    padding: 15px; /* Add padding around photographer info */
+}
+
+#third .card img.rounded-circle {
+    width: 60px; /* Larger profile picture */
+    height: 60px;
+    border: 3px solid #007bff; /* More prominent border */
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+#third .card img.rounded-circle:hover {
+    transform: scale(1.05);
+}
+
+#third .card .text-center.flex-grow-1 {
+    margin-left: 10px; /* Space between profile pic and text */
+    text-align: left; /* Align text to the left */
+}
+
+#third .card p.mb-0 {
+    font-size: 13px; /* Slightly larger text */
+    margin-bottom: 3px !important;
+    color: #555;
+}
+
+#third .card p.fw-bold {
+    font-size: 16px; /* Emphasize work name */
+    color: #333;
+}
+#four {
+  padding: 20px 0;
+  // background: #7b9bbe;
+}
+
+
+/* ส่วนของรูปที่ซ้อนอยู่ข้างหลัง */
+.image-overlay {
+  position: absolute;
+  top: -50px; /* ดันรูปขึ้นไปให้เหมือนในภาพ */
+  left: 0;
+  width: 100%;
+  z-index: 1; /* ให้ต่ำกว่า header */
+  backdrop-filter: blur(5px);
+  background-color: rgba(0, 0, 0, 0.3); /* เพิ่มสีดำโปร่งใสให้ดูสวย */
+}
+
+
 
 /* ข้อความอยู่บนพื้นหลัง */
 .content {
@@ -151,20 +259,25 @@ li a {
 //CSS สำหรับเลื่อนแนวนอน
 .tags-container {
   display: flex;
-  align-items: center;
-  position: relative;
-  width: 100%;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    margin-bottom: 30px;
+    padding: 10px 0;
   overflow: hidden; /* ซ่อนส่วนที่เกิน */
 }
 
 .tags-wrapper {
-  display: flex;
-  overflow-x: auto;
-  scroll-behavior: smooth; /* ทำให้เลื่อนนุ่มนวล */
-  white-space: nowrap;
-  width: 90%; /* ปรับให้เว้นที่สำหรับลูกศร */
-  scrollbar-width: none; /* ซ่อน scrollbar */
-  
+  -webkit-overflow-scrolling: touch; /* เพิ่มความลื่น */
+  padding: 10px 10px;
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    white-space: nowrap;
+    width: calc(100% - 100px); /* Adjust for scroll buttons */
+    scrollbar-width: none;
+    padding: 10px 0;
+     
 }
 
 .tags-wrapper::-webkit-scrollbar {
@@ -172,28 +285,45 @@ li a {
 }
 
 .tag-button {
-  margin-right: 10px;
-  flex-shrink: 0;
+    margin-right: 15px;
+    flex-shrink: 0;
+    border-radius: 20px;
+    padding: 8px 20px;
+    font-weight: 500;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.tag-button:hover {
+    background-color: #007bff;
+    color: white;
 }
 
 .scroll-btn {
-  background: white;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid #ddd;
+    font-size: 20px;
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .scroll-btn.left {
-  left: 0;
+    left: 0;
 }
 
 .scroll-btn.right {
-  right: 0;
+    right: 0;
 }
+
 // icon like
 .container input {
 position: absolute;
@@ -210,60 +340,48 @@ cursor: pointer;
 user-select: none;
 }
 
-.container svg {
-position: relative;
-top: 0;
-left: 0;
-height: 30px;
-width: 30px;
-transition: all 0.3s;
-fill: #666; /* สีเทาปกติ */
+// .container svg {
+// position: relative;
+// top: 0;
+// left: 0;
+// height: 30px;
+// width: 30px;
+// transition: all 0.3s;
+// fill: #666; /* สีเทาปกติ */
+// }
+
+// .container svg:hover {
+// transform: scale(1.1);
+// }
+
+// .container input:checked ~ svg {
+// fill: #E3474F; /* สีแดงเมื่อถูกใจ */
+// }
+.container.heart-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px; /* Adjust size */
+    height: 40px;
+    // user-select: none;
 }
 
-.container svg:hover {
-transform: scale(1.1);
+.container.heart-container svg {
+    height: 28px; /* Slightly smaller icon to fit better */
+    width: 28px;
+    fill: #ccc; /* Lighter grey for unliked state */
+    transition: all 0.3s ease;
 }
 
-.container input:checked ~ svg {
-fill: #E3474F; /* สีแดงเมื่อถูกใจ */
+.container.heart-container input:checked ~ svg {
+    fill: #E3474F;
+    transform: scale(1.2); /* More pronounced pop on like */
 }
-// .like-container input {
-//   position: absolute;
-//   opacity: 0;
-//   cursor: pointer;
-//   height: 0;
-//   width: 0;
-// }
 
-// .like-container {
-//   display: block;
-//   position: relative;
-//   cursor: pointer;
-//   user-select: none;
-// }
-
-// .like-container svg {
-//   position: relative;
-//   top: 0;
-//   left: 0;
-//   height: 30px;
-//   width: 30px;
-//   transition: all 0.3s;
-//   fill: #666; /* สีเทาปกติ */
-// }
-
-// .like-container svg:hover {
-//   transform: scale(1.1);
-// }
-
-// .like-container input:checked ~ svg {
-//   fill: #E3474F; /* สีแดงเมื่อกด */
-// }
-
-// /* คลาสสำหรับสีแดงเมื่อเคยถูกใจ */
-// .liked {
-//   fill: #E3474F; /* สีแดงเมื่อไลค์ */
-// }
+.container.heart-container svg:hover {
+    transform: scale(1.2);
+    fill: #E3474F; /* Show hover effect even if not checked */
+}
 
 
 .button-container {
@@ -293,19 +411,250 @@ fill: #E3474F; /* สีแดงเมื่อถูกใจ */
   object-fit: cover;
 }
 
+/* Search Results Section (aaaa template) - Enhanced */
+.container.mt-4 {
+    margin-top: 40px !important;
+}
+
+.container.mt-4 h4 {
+    font-size: 2.2rem;
+    margin-bottom: 30px;
+    text-align: center;
+    color: #0d6efd; /* Bootstrap primary blue */
+}
+
+.container.mt-4 .card {
+    background: linear-gradient(45deg, rgba(211, 214, 9, 0.1), rgba(3, 41, 212, 0.8)); /* Softer, slightly transparent */
+    color: #fff;
+    border-radius: 20px; /* More rounded for a softer look */
+    padding: 25px; /* Increased padding */
+    margin-bottom: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); /* Stronger shadow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.container.mt-4 .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+}
+
+.container.mt-4 .card img.rounded-circle {
+    width: 120px; /* Larger profile pic for search results */
+    height: 120px;
+    border: 4px solid #fff; /* White border for contrast */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.container.mt-4 .card img.rounded-circle:hover {
+    transform: scale(1.03);
+}
+
+.container.mt-4 .card h5 {
+    font-size: 1.8rem; /* Larger name */
+    margin-top: 10px;
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+.container.mt-4 .card small {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.container.mt-4 .card p {
+    font-size: 1rem;
+    margin-bottom: 5px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.container.mt-4 .card .carousel-inner {
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.container.mt-4 .card .carousel-item img {
+    height: 220px; /* Slightly larger image in search result carousel */
+    object-fit: cover;
+    border-radius: 15px;
+}
+
+.container.mt-4 .card .carousel-control-prev,
+.container.mt-4 .card .carousel-control-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.6); /* Darker background for controls */
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.8;
+    transition: opacity 0.3s ease, background-color 0.3s ease;
+}
+
+.container.mt-4 .card .carousel-control-prev:hover,
+.container.mt-4 .card .carousel-control-next:hover {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.container.mt-4 .card .carousel-control-prev-icon,
+.container.mt-4 .card .carousel-control-next-icon {
+    font-size: 1rem; /* Smaller icons */
+}
+
+.arrow-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  font-size: 2rem;
+  color: white;
+  z-index: 2;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+.arrow-btn.left {
+  left: 10px;
+}
+
+.arrow-btn.right {
+  right: 10px;
+}
+
+.arrow-btn:hover {
+  color: #ccc;
+}
+
+nav .nav-link {
+  white-space: nowrap;
+}
+
+nav {
+  overflow-x: auto;
+  max-width: 100%;
+  display: flex;
+  gap: 1rem;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE/Edge */
+}
+
+nav::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+
+
 /* Responsive สำหรับมือถือ */
 @media (max-width: 768px) {
-  #first {
-    min-height: 300px;
+    #first {
+        min-height: 250px; /* Reduced height for small screens */
+        padding: 15px;
+    }
+    .background-image {
+        height: 250px;
+    }
+    .content h1 {
+        font-size: 2rem;
+    }
+    .content p {
+        font-size: 0.9rem;
+    }
+    .content a.btn {
+        font-size: 0.9rem;
+        padding: 8px 15px;
+    }
+
+    /* Adjust search form layout */
+    #second .col-lg-2, #second .col-lg-3, #second .col-lg-5 {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    #second .d-flex button {
+        border-radius: 0 10px 10px 0 !important; /* Ensure buttons align */
+    }
+    #second input[type="text"] {
+        border-radius: 10px 0 0 10px !important;
+    }
+
+    /* Adjust cards for mobile */
+    #third .col-lg-3, #third .col-md-4, #third .col-sm-6 {
+        max-width: 90%; /* Allow cards to take more width */
+        margin: 0 auto 20px auto;
+    }
+    #third .carousel-item img {
+        height: 180px; /* Smaller image height on mobile */
+    }
+
+    .container.mt-4 .card {
+        padding: 20px;
+    }
+    .container.mt-4 .card .row {
+        flex-direction: column; /* Stack columns */
+        align-items: center;
+    }
+    .container.mt-4 .card img.rounded-circle {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 15px;
+    }
+    .container.mt-4 .card .col-md-8,
+    .container.mt-4 .card .col-md-4 {
+        width: 100%;
+        text-align: center;
+    }
+    .container.mt-4 .card h5 {
+        font-size: 1.5rem;
+    }
+    .container.mt-4 .card p {
+        font-size: 0.9rem;
+    }
+    .container.mt-4 .card .carousel-item img {
+        height: 180px;
+    }
+    .container.mt-4 .card .carousel-control-prev,
+    .container.mt-4 .card .carousel-control-next {
+        left: 5px !important; /* Adjust control positions */
+        right: 5px !important;
+        transform: translateY(-50%);
+    }
+    .container.mt-4 .card .carousel-control-next {
+        right: 5px !important;
+        left: auto !important;
+    }
+    nav ul {
+    display: none;
+    flex-direction: column;
+    background-color: white;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 100%;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   }
-  .background-image {
-    height: 300px;
+
+  .menu-toggle {
+    display: block;
+    font-size: 28px;
+    cursor: pointer;
   }
-  .form-container {
-    width: 90%;
+  .nav-link {
+    display: block;
+    padding: 0.5rem 0;
   }
-  .content {
-    font-size: 14px;
-    padding: 10px;
+
+  .header-container {
+    text-align: center;
   }
+}
+
+/* Ensure consistent font for all text as per body */
+h1, h2, h3, h4, h5, h6, p, a, button, select, input, label, li {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }

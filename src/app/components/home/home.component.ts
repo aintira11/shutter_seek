@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { RouterModule,Router } from '@angular/router';
 import { DataLike, DataMembers, DataPortfolio, DataSreach, DataTegs, DataTopten } from '../../model/models';
 import { Constants } from '../../config/constants';
@@ -11,6 +11,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../service/auth.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
+declare var bootstrap: any;
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -23,8 +24,10 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
-export class HomeComponent implements OnInit{
-  
+export class HomeComponent implements OnInit , AfterViewInit{
+   @ViewChild('imageModalElement') imageModalElement!: ElementRef;
+  private imageBootstrapModal: any; 
+
   thaijson = jsonData
   data: any;
   datauser: DataMembers[] = [];
@@ -40,6 +43,9 @@ export class HomeComponent implements OnInit{
   currentSlideIndex: number[] = [];
   currentSlideIndex1: number[] = [];
   currentSlideIndexSearch: number[]=[];
+
+ modalImageUrls: string[] = [];
+ modalSlideIndex: number = 0;
 
   isLoading: boolean = false;
   // lastVoteTime: Date | null = null; // เวลาล่าสุดที่โหวต
@@ -112,7 +118,66 @@ ngOnInit(): void {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
- 
+  
+    // Lifecycle Hook ที่ถูกเรียกหลังจาก View ถูก Initialized แล้ว
+ngAfterViewInit(): void {
+  const element = this.imageModalElement?.nativeElement;
+if (element) {
+  this.imageBootstrapModal = bootstrap.Modal.getOrCreateInstance(element);
+}
+}
+
+startAutoSlide(id: number): void {
+    const carouselElement = document.getElementById('carousel' + id);
+    const carousel = bootstrap.Carousel.getOrCreateInstance(carouselElement);
+    carousel.cycle(); // Start auto sliding
+  }
+
+  stopAutoSlide(id: number): void {
+    const carouselElement = document.getElementById('carousel' + id);
+    const carousel = bootstrap.Carousel.getOrCreateInstance(carouselElement);
+    carousel.pause(); // Stop auto sliding
+  }
+
+  // ฟังก์ชันสำหรับเปิด Modal แสดงรูปภาพเต็ม
+openImageModal(images: string[], index: number): void {
+  this.modalImageUrls = images;
+  this.modalSlideIndex = index;
+
+  const modalImageElement = this.imageModalElement.nativeElement.querySelector('#modalImage');
+  if (modalImageElement) {
+    modalImageElement.src = images[index];
+  }
+
+  if (this.imageBootstrapModal) {
+    this.imageBootstrapModal.show(); 
+  } else {
+    console.warn("Modal not initialized yet!");
+  }
+}
+
+
+nextModalImage() {
+  if (this.modalImageUrls.length === 0) return;
+
+  this.modalSlideIndex = (this.modalSlideIndex + 1) % this.modalImageUrls.length;
+  const modalImageElement = this.imageModalElement.nativeElement.querySelector('#modalImage');
+  if (modalImageElement) {
+    modalImageElement.src = this.modalImageUrls[this.modalSlideIndex];
+  }
+}
+
+prevModalImage() {
+  if (this.modalImageUrls.length === 0) return;
+
+  this.modalSlideIndex = (this.modalSlideIndex - 1 + this.modalImageUrls.length) % this.modalImageUrls.length;
+  const modalImageElement = this.imageModalElement.nativeElement.querySelector('#modalImage');
+  if (modalImageElement) {
+    modalImageElement.src = this.modalImageUrls[this.modalSlideIndex];
+  }
+}
+
+
  // ฟังก์ชันเพื่อไปยังภาพถัดไป (เลื่อนเฉพาะ portfolio ของตัวเอง)
 getNext(portfolioIndex: number) {
   // if (this.Portfolio[portfolioIndex] && this.Portfolio[portfolioIndex].image_urls) {
@@ -284,7 +349,7 @@ getMyLike(id: number) {
       isLiked: true  // เพิ่ม isLiked = true
     }));
     console.log("data Like :", this.Like);
-  });
+  }); 
 }
 
     toShutter(id_shutter: number) {
@@ -313,7 +378,7 @@ getMyLike(id: number) {
     this.snackBar.open(message, 'ปิด', {
       duration: 3000,
       horizontalPosition: 'center',
-      verticalPosition: 'bottom',
+      verticalPosition: 'top',
     });
   }
     
@@ -321,10 +386,13 @@ getMyLike(id: number) {
       console.log(" Clicked photographer ID:", id);
       this.toShutter(id);
     }
+
+ 
   
 logout(): void {
   this.authService.logout();
   this.router.navigate(['/login']); // กลับไปหน้า login
 }
     
+
 }
