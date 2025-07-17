@@ -9,27 +9,41 @@
 
 <body>
     <div class="admin-container">
-        <header>
-        <div class="logo">
-            <img src="/assets/images/PIXEL (8).png" alt="Shutter Seek Logo" />
-            <button class="add-btn" (click)="goToadd()">+</button>
-        </div>
-        <button class="logout-btn" (click)="goToLogin()">ออกจากระบบ</button>
-        </header>
-    
+        <header class="admin-header">
+            <div class="admin-profile">
+              <img class="profile-avatar" [src]="currentUser.avatar || 'assets/default-avatar.png'" alt="Admin Profile" />
+              <span class="profile-name">{{ currentUser.name || 'ผู้ดูแลระบบ1' }}</span>
+              <button class="add-btn" (click)="goToadd()">+</button>
+            </div>
+          
+            <div class="logo-center">
+              <img src="/assets/images/PIXEL (8).png" alt="Shutter Seek Logo" class="center-logo" />
+            </div>
+          
+            <button class="logout-btn" (click)="goToLogin()">ออกจากระบบ</button>
+          </header>          
+          
         <h1>ผู้ดูแลระบบ</h1>
-        <p class="user-info">ชื่อผู้ใช้: ผู้ดูแลระบบ1</p>
     
         <div class="search-container">
         <input type="text" placeholder="ชื่อ | อีเมลล์ | เบอร์โทร" [(ngModel)]="searchQuery" />
         <button class="button">
             <i class="fa fa-search"></i>
         </button>
-        <button class="pushable"(click)="openCategoryModal()">
-            <span class="shadow"></span>
-            <span class="edge"></span>
-            <span class="front"> ประเภทที่เลือก </span>
-        </button>
+        <div class="button-group">
+            <button class="pushable" (click)="openCategoryModal()">
+                <span class="shadow"></span>
+                <span class="edge"></span>
+                <span class="front">ประเภทที่เลือก</span>
+            </button>
+            <button class="pushable pushable-approve" (click)="goToConfirmShutter()">
+                <span class="shadow"></span>
+                <span class="edge"></span>
+                <span class="front"> อนุมัติช่างภาพ </span>
+              </button>                  
+                           
+        </div>
+                
         </div>
     
         <div class="tabs">

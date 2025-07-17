@@ -1,198 +1,304 @@
-
 h1 {
-    background-color: white; 
-    padding: 15px;
-    display: inline-block;
-    border-radius: 10px;
+  background-color: white;
+  padding: 15px 25px;
+  display: inline-block;
+  border-radius: 10px;
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 .admin-add-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    background-color: #0052cc;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #0052cc;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .form-wrapper {
-    display: flex;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
-    width: 850px; 
-    max-width: 90%;
-    height: 350px; 
-    border: 5px solid rgba(255, 187, 55, 1);
-    padding-bottom: 20px; 
+  display: flex;
+  flex-wrap: wrap;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  width: 1000px;
+  max-width: 100%;
+  border: 5px solid rgba(255, 187, 55, 1);
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .logo-section {
-    background: #ffffff;
-    padding: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-right: 1px solid ;
-    height: 100%;
+  background: #ffffff;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-right: 1px solid #ccc;
+  flex: 1 1 250px;
+  min-width: 250px;
 }
 
 .logo-section img {
-    max-width: 260px;
-    max-height: 260px;
+  max-width: 100%;
+  height: auto;
 }
 
 .form-section {
-    padding: 30px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 100%;
-    margin-left: -40px;
-}
-
-.form-section form {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  width: 100%;
+  padding: 20px 30px;
+  flex: 2 1 500px;
+  box-sizing: border-box;
 }
 
 .form-section label {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-    font-size: 1rem;
-    color: #333;
-    width: 100%;
-}
-
-.form-section label span {
-    width: 150px;
-    text-align: right;
-    padding-right: 10px;
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 1rem;
+  color: #333;
+  gap: 10px;
 }
 
 .form-section input {
-    flex: 1;
-    padding: 10px;
-    border: 1px ;
-    border-radius: 5px;
-    background: rgba(255, 187, 55, 0.6);
-    font-size: 1rem;
+  width: 100%;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 5px;
+  background: rgba(255, 187, 55, 0.6);
+  font-size: 1rem;
 }
 
 .action-buttons {
-    display: flex;
-    justify-content: flex-end; 
-    width: 850px; 
-    max-width: 90%;
-    margin-top: 15px;
-    padding-right: 10px; 
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  margin-top: 20px;
+  padding-right: 10px;
+  box-sizing: border-box;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .action-buttons button {
-    margin-left: 10px;
-    border: 2px solid white;
+  border: 2px solid white;
 }
 
 .cancel-btn {
-    background-color: rgba(255, 15, 15, 1);
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
+  background-color: rgba(255, 15, 15, 1);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  border: none;
 }
 
 .confirm-btn {
-    background-color: rgba(255, 187, 55, 1);
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
+  background-color: rgba(255, 187, 55, 1);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  border: none;
 }
 
-/* Add media queries for responsiveness */
+.profile-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 10px;
+  margin: 20px auto;
+  align-self: center;
+  width: 100%;
+}
+
+.profile-pic {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 187, 55, 1);
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.upload-btn {
+  background-color: rgba(0, 82, 204, 1);
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.upload-btn:hover {
+  opacity: 0.85;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.profile-section {
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  position: relative;
+}
+
+.profile-section::after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #004AAD, transparent);
+}
+
+.profile-image {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
+  display: inline-block;
+  object-fit: cover;
+  border: 4px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  transition: all 0.3s ease;
+}
+
+.profile-image:hover {
+  transform: scale(1.05);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.change-profile-btn {
+  display: block;
+  margin: 15px auto 0;
+  padding: 10px 20px;
+  font-size: 14px;
+  background: linear-gradient(135deg, #004AAD, #0066CC);
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 74, 173, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.change-profile-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.change-profile-btn:hover::before {
+  left: 100%;
+}
+
+.change-profile-btn:hover {
+  background: linear-gradient(135deg, #0066CC, #004AAD);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 74, 173, 0.4);
+}
+
 @media (max-width: 1024px) {
-    .form-wrapper {
-        width: 100%;
-        height: auto;
-        flex-direction: column;
-    }
+  .form-wrapper {
+    flex-direction: column;
+    width: 100%;
+  }
 
-    .logo-section {
-        width: 100%;
-        height: 200px;
-    }
+  .logo-section {
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid #ccc;
+    padding: 15px;
+  }
 
-    .form-section {
-        padding: 15px;
-        margin-left: 0;
-    }
+  .form-section {
+    margin-left: 0;
+    padding: 20px;
+  }
 
-    .action-buttons {
-        width: 100%;
-        justify-content: space-between;
-        padding-right: 20px;
-    }
+  .action-buttons {
+    width: 100%;
+    justify-content: space-between;
+    padding-right: 20px;
+  }
 
-    .cancel-btn, .confirm-btn {
-        padding: 8px 12px;
-        font-size: 0.9rem;
-    }
+  .cancel-btn, .confirm-btn {
+    padding: 8px 16px;
+    font-size: 0.95rem;
+  }
 }
 
 @media (max-width: 768px) {
-    .form-wrapper {
-        width: 100%;
-        padding: 10px;
-    }
+  .form-section label {
+    grid-template-columns: 1fr;
+  }
 
-    .logo-section {
-        padding: 15px;
-    }
+  .action-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
 
-    .form-section {
-        margin-left: 0;
-    }
-
-    .action-buttons {
-        width: 100%;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .cancel-btn, .confirm-btn {
-        width: 100%;
-        margin-bottom: 10px;
-    }
+  .cancel-btn, .confirm-btn {
+    width: 100%;
+    margin-bottom: 10px;
+  }
 }
 
 @media (max-width: 480px) {
-    h1 {
-        font-size: 1.5rem;
-        padding: 10px;
-    }
+  h1 {
+    font-size: 1.5rem;
+    padding: 10px;
+  }
 
-    .form-wrapper {
-        width: 100%;
-        padding: 5px;
-    }
+  .form-wrapper {
+    padding: 5px;
+  }
 
-    .logo-section img {
-        max-width: 200px;
-        max-height: 200px;
-    }
+  .logo-section img {
+    max-width: 180px;
+    max-height: 180px;
+  }
 
-    .form-section input {
-        font-size: 0.9rem;
-        padding: 8px;
-    }
+  .form-section input {
+    font-size: 0.9rem;
+    padding: 8px;
+  }
 
-    .cancel-btn, .confirm-btn {
-        padding: 8px 10px;
-    }
+  .cancel-btn, .confirm-btn {
+    padding: 8px 12px;
+  }
 }
