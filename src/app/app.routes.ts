@@ -17,14 +17,15 @@ import { EditPackageComponent } from './components/shutter/edit-package/edit-pac
 import { EditShutterComponent } from './components/shutter/edit-shutter/edit-shutter.component';
 import { EditUserComponent } from './components/user/edit-user/edit-user.component';
 import { InsertPortfolioComponent } from './components/shutter/insert-portfolio/insert-portfolio.component';
-import { AdminHomeComponent } from './components/admin/admin-home/admin-home.component';
-import { AddminComponent } from './components/admin/addmin/addmin.component';
 import { UserFollowComponent } from './components/user/user-follow/user-follow.component';
 import { HomeShutterComponent } from './components/shutter/home-shutter/home-shutter.component';
 import { RegisterComponent } from './components/user/register/register.component';
 import { MainShutterComponent } from './components/shutter/main-shutter/main-shutter.component';
 import { ReportsComponent } from './components/user/reports/reports.component';
 import { MassageRoomComponent } from './components/massage-room/massage-room.component';
+import { AddminComponent } from './components/admin/addmin/addmin.component';
+import { ComfirmShutterComponent } from './components/admin/comfirm-shutter/comfirm-shutter.component';
+import { HomeadComponent } from './components/admin/homead/homead.component';
 
 export const routes: Routes = [
     {path: '',component: HomeComponent},
@@ -54,8 +55,9 @@ export const routes: Routes = [
     {path: 'mainshutter',component: MainShutterComponent},
     {path: 'reports',component: ReportsComponent},
 
-    {path: 'admin',component: AdminHomeComponent},
+    {path: 'admin',component:HomeadComponent},
     {path: 'addmin',component: AddminComponent},
+    {path: 'comfirm',component: ComfirmShutterComponent},
     
 
     // { 

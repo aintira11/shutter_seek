@@ -13,13 +13,13 @@ interface User {
 }
 
 @Component({
-  selector: 'app-admin-home',
+  selector: 'app-homead',
   standalone: true,
   imports: [FormsModule,CommonModule],
-  templateUrl: './admin-home.component.html',
-  styleUrls: ['./admin-home.component.scss'],
+  templateUrl: './homead.component.html',
+  styleUrl: './homead.component.scss'
 })
-export class AdminHomeComponent implements OnInit {
+export class HomeadComponent implements OnInit {
   constructor(private router : Router){}
 
   public users: User[] = [
@@ -77,6 +77,12 @@ export class AdminHomeComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
+  goToConfirmShutter(): void {
+    this.router.navigate(['/comfirm']);
+  }
+  
+
+  
   //รายงาน
   isModal: boolean = false;
   selectedUserForReport: User | null = null;
@@ -118,7 +124,7 @@ export class AdminHomeComponent implements OnInit {
       this.isCategoryModal = true;
       this.isEditing = new Array(this.jobCategories.length).fill(false);
   }
- 
+
   closeCategoryModal() {
       this.isCategoryModal = false;
   }
@@ -133,6 +139,12 @@ export class AdminHomeComponent implements OnInit {
       this.isEditing[index] = false;
   }
 
+  currentUser = {
+    name: 'ผู้ดูแลระบบ1',
+    avatar: 'assets/admin-avatar.png'
+  };
+  
+
   // เพิ่มประเภทงานใหม่
   addCategory() {
       if (this.newCategory.trim()) {
@@ -142,5 +154,5 @@ export class AdminHomeComponent implements OnInit {
       }
   }
 
-
 }
+

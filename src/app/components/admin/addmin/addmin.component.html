@@ -10,37 +10,65 @@
 <body>
     <div class="admin-add-container">
         <h1>เพิ่มผู้ดูแลระบบ</h1>
-        <div class="form-wrapper">
-            <div class="logo-section">
+        <form #adminForm="ngForm" (ngSubmit)="submitForm(adminForm)" novalidate>
+            <div class="form-wrapper">
+              <div class="logo-section">
                 <img src="assets/images/PIXEL (7).png" alt="Shutter Seek Logo" />
-            </div>
-            <div class="form-section">
-                <form (ngSubmit)="submitForm()">
-                    <label>
-                        <span>ชื่อ-นามสกุล:</span>
-                        <input type="text" [(ngModel)]="adminData.fullName" name="fullName" required />
-                    </label>
-                    <label>
-                        <span>อีเมล:</span>
-                        <input type="email" [(ngModel)]="adminData.email" name="email" required />
-                    </label>
-                    <label>
-                        <span>ชื่อผู้ใช้งาน:</span>
-                        <input type="text" [(ngModel)]="adminData.username" name="username" required />
-                    </label>
-                    <label>
-                        <span>รหัสผ่าน:</span>
-                        <input type="password" [(ngModel)]="adminData.password" name="password" required />
-                    </label>
-                </form>
-            </div>
-        </div>
+              </div>
+              <div class="form-section">
+                  <div class="profile-section">
+                    <img [src]="imagePreview" alt="Profile" id="profileImage" class="profile-image">
+                    <input type="file" id="fileInput" style="display: none;" (change)="onFileSelected($event)">
+                    <button class="change-profile-btn" (click)="triggerFileInput()">
+                        เลือกรูป Profile
+                    </button>
+                  </div> 
 
-        <div class="action-buttons">
-            <button type="button" class="cancel-btn" (click)=" goToadmin()">ยกเลิก</button>
-            <button type="submit" class="confirm-btn" (click)=" goToadmin()">ยืนยัน</button>
+                  <label>
+                    <span>ชื่อ: <span style="color: red">*</span></span>
+                    <input type="text" [(ngModel)]="adminData.name" name="name" required #name="ngModel" placeholder="ระบุชื่อ"/>
+                  </label>
+                    
+                  <label>
+                    <span>นามสกุล: <span style="color: red">*</span></span>
+                    <input type="text" [(ngModel)]="adminData.lastName" name="lastName" required #lastName="ngModel" placeholder="ระบุนามสกุล" />
+                  </label>
+                  
+                  <label>
+                    <span>อีเมล: <span style="color: red">*</span></span>
+                    <input type="email" [(ngModel)]="adminData.email" name="email" required #email="ngModel" placeholder="ระบุอีเมล" />
+                  </label>
+                  
+                  <label>
+                    <span>ชื่อผู้ใช้งาน: <span style="color: red">*</span></span>
+                    <input type="text" [(ngModel)]="adminData.username" name="username" required #username="ngModel" placeholder="ระบุชื่อผู้ใช้งาน" />
+                  </label>
+                  
+                  <label>
+                    <span>เบอร์โทร: <span style="color: red">*</span></span>
+                    <input type="tel" [(ngModel)]="adminData.phone" name="phone" required pattern="^[0-9]{10}$" #phone="ngModel" placeholder="ระบุหมายเลขโทรศัพท์ 10 หลัก" />
+                  </label>
+                  
+                  <label>
+                    <span>รหัสผ่าน: <span style="color: red">*</span></span>
+                    <input type="password" [(ngModel)]="adminData.password" name="password" required #password="ngModel" placeholder="ระบุรหัสผ่าน" />
+                  </label>
+                  
+                  <label>
+                    <span>ยืนยันรหัสผ่าน: <span style="color: red">*</span></span>
+                    <input type="password" [(ngModel)]="adminData.confirmPassword" name="confirmPassword" required #confirmPassword="ngModel" placeholder="ระบุยืนยันรหัสผ่าน" />
+                  </label>
+                  
+              </div>
+            </div>
+          
+            <div class="action-buttons">
+              <button type="button" class="cancel-btn" (click)="goToadmin()">ยกเลิก</button>
+              <button type="submit" class="confirm-btn">ยืนยัน</button>
+            </div>
+          </form>
+          
         </div>
-    </div>
     
 </body>
 </html>
