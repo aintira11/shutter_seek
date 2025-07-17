@@ -9,12 +9,13 @@
 </head>
 <body>
     <div class="container">
-        <button class="btn me-2" (click)="back()">
-        <div class="header">
-            <span class="back-button">&#8592;</span>
-            ติดตาม
-        </div>
-     </button>
+        
+        <div class="left">
+      <div class="box" (click)="back()">
+        <i class="arrow right"></i>
+        <span class="text">กลับ</span>
+      </div>
+    </div>
         <div *ngIf="Follow.length > 0 ; else aaaa ">
 
         <p>กำลังติดตาม {{Follow.length}} คน</p>

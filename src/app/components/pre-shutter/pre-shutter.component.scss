@@ -1,0 +1,753 @@
+body {
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+.header-container {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  position: sticky;
+  top: 0;  /* ต้องใส่ top เพื่อให้มันติดขอบบน */
+  z-index: 1000;  /* ให้แน่ใจว่าอยู่เหนือ element อื่น */
+  background: rgb(255, 255, 255); /* เฮดเดอร์มีพื้นหลัง */
+  border-radius: 10px;
+  padding: 1rem 2rem;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1); /* ให้ดูแยกออกจากพื้นหลัง */
+  flex-wrap: nowrap; /* ไม่ให้ขึ้นบรรทัดใหม่ */
+  overflow-x: auto;  /* ถ้าเนื้อหาล้นให้เลื่อน */
+  white-space: nowrap; /* ป้องกันข้อความขึ้นบรรทัดใหม่ */
+  -webkit-overflow-scrolling: touch; /* smooth scroll on mobile */
+}
+.header-container::-webkit-scrollbar {
+  height: 6px;
+}
+
+.header-container::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 10px;
+}
+
+/* ปรับแต่งโลโก้ */
+.logo {
+  height: 50px;
+}
+nav {
+//   width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ปรับแต่งเมนู */
+.nav-link {
+  text-decoration: none;
+  color: black;
+  margin-right: 15px;
+  padding: 0 10px;
+  white-space: nowrap;
+}
+.nav-link:hover {
+  color: #007bff; /* เปลี่ยนสีเมื่อเมาส์ชี้ */
+  // text-shadow: 0px 0px 5px #007bff; /* ทำให้มีเงาสีฟ้า */
+}
+  .button-container {
+    display: flex;  /* Use flexbox for layout */
+    align-items: center;  /* Align items vertically at the center */
+    gap: 10px;  /* Optional: Adjust the gap between buttons */
+    position: absolute;  /* Fix the buttons at a specific position */
+    right: 0;  /* Align the container to the right edge of the screen */
+    margin-right: 2%;
+     flex-shrink: 0; 
+  }
+
+/* ปุ่มโปรไฟล์ */
+.circle-button {
+  width: 50px;
+  height: 50px;
+  border-radius: 100%;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden; /* ป้องกันภาพล้นออกจากปุ่ม */
+    
+}
+
+.circle-button img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fixed-chat-icon {
+  position: fixed;
+  bottom: 20px; /* ระยะห่างจากด้านล่าง */
+  right: 20px;  /* ระยะห่างจากด้านขวา */
+  font-size: 40px;
+  color:#004AAD;
+  cursor: pointer; /* เพิ่ม cursor แบบ pointer */
+  z-index: 1000; /* ทำให้ไอคอนอยู่เหนือส่วนอื่น */
+  transform: scale(1.5);
+}
+
+.portfolio-layout {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap; /* ถ้าจอเล็กให้ขึ้นบรรทัดใหม่ */
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+//-----------------------
+/* Portfolio Header */
+        .portfolio-header {
+          margin-top: 20px;
+  width: 27%;
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(15px);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 15px;
+        }
+
+        .portfolio-info {
+            flex: 1;
+        }
+
+        .portfolio-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .portfolio-price {
+            color: #004AAD;
+            font-weight: 600;
+            font-size: 1.3rem;
+            margin-bottom: 0;
+        }
+
+        //-icon like
+.like-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-direction: column; /* เพิ่มเพื่อให้ debug text อยู่ด้านบน */
+}
+
+.like-checkbox {
+    display: none;
+}
+
+.like-label {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.like-label svg {
+    width: 40px;
+    height: 40px;
+    /* ลบ fill และ transition ออกจาก CSS เพราะใช้ style binding แทน */
+}
+
+.like-label:hover svg {
+    fill: #ff4757 !important;
+}
+
+.favorite-count {
+    font-size: 14px;
+    color: #666;
+}
+
+        /* Image Gallery */
+        .image-gallery {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 40px;
+            margin-bottom: 40px;
+            width: 70%;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+             flex-shrink: 0;
+        }
+
+        .main-image-container {
+            position: relative;
+            margin-bottom: 30px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            cursor: grab;
+        }
+
+        .main-image-container:active {
+            cursor: grabbing;
+        }
+
+        .main-image {
+            width: 100%;
+            height: 440px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s ease;
+            user-select: none;
+        }
+
+        .main-image:hover {
+            transform: scale(1.02);
+        }
+
+        .gallery-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+
+        .gallery-nav:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .gallery-nav:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .gallery-nav.prev {
+            left: 25px;
+        }
+
+        .gallery-nav.next {
+            right: 25px;
+        }
+
+        .gallery-nav i {
+            font-size: 22px;
+            color: #333;
+        }
+
+        .image-counter {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            user-select: none;
+        }
+
+        .thumbnail-row {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 15px 0;
+            scroll-behavior: smooth;
+        }
+
+        .thumbnail-row::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .thumbnail-row::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .thumbnail-row::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        .thumbnail {
+            width: 90px;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 12px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .thumbnail:hover {
+            border-color: #007bff;
+            transform: scale(1.05);
+        }
+
+        .thumbnail.active {
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+        }
+
+        /* Packages Section */
+        .packages-section {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #007bff;
+            display: inline-block;
+        }
+
+        .package-item {
+            margin-bottom: 25px;
+        }
+
+        .package-card {
+            border: 2px solid rgba(233, 236, 239, 0.8);
+            border-radius: 20px;
+            padding: 30px;
+            background: rgba(248, 249, 250, 0.8);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .package-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            border-color: #007bff;
+        }
+
+        .package-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .package-title {
+            font-weight: 700;
+            color: #333;
+            margin: 0;
+            font-size: 1.3rem;
+        }
+
+        .package-price {
+            color: #004AAD;
+            font-weight: 700;
+            font-size: 1.4rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .package-detail {
+            color: #666;
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        /* Photographer Section */
+        .photographer-section {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .photographer-info {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .photographer-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            background-color: #e9ecef;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .photographer-avatar:hover {
+            transform: scale(1.05);
+        }
+
+        .photographer-name {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .photographer-desc {
+            color: #666;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        .contact-btn {
+            
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-left: auto;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+             white-space: nowrap;
+        }
+
+        .contact-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Chat Icon */
+.fixed-chat-icon {
+  position: fixed;
+  bottom: 20px; /* ระยะห่างจากด้านล่าง */
+  right: 20px;  /* ระยะห่างจากด้านขวา */
+  font-size: 40px;
+  color:#004AAD;
+  cursor: pointer; /* เพิ่ม cursor แบบ pointer */
+  z-index: 1000; /* ทำให้ไอคอนอยู่เหนือส่วนอื่น */
+  transform: scale(1.5);
+}
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 80px 0;
+            color: #666;
+            font-size: 1.3rem;
+        }
+
+        .loading-text {
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            display: inline-block;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Modal Styles */
+        // .modal-content {
+        //     background: rgba(255, 255, 255, 0.95);
+        //     backdrop-filter: blur(15px);
+        //     border-radius: 20px;
+        //     border: none;
+        // }
+
+.arrow-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  font-size: 2rem;
+  color: white;
+  z-index: 2;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+.arrow-btn.left {
+  left: 10px;
+}
+
+.arrow-btn.right {
+  right: 10px;
+}
+
+.arrow-btn:hover {
+  color: #ccc;
+}
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 0 15px;
+            }
+
+            .portfolio-header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+                padding: 25px;
+            }
+
+            .portfolio-title {
+                font-size: 1.8rem;
+            }
+
+            .image-gallery {
+                padding: 25px;
+            }
+
+            .main-image {
+                height: 300px;
+            }
+
+            .gallery-nav {
+                width: 45px;
+                height: 45px;
+            }
+
+            .thumbnail {
+                width: 70px;
+                height: 70px;
+            }
+
+            .packages-section,
+            .photographer-section {
+                padding: 25px;
+            }
+
+            .photographer-info {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .contact-btn {
+                margin-left: 0;
+                margin-top: 20px;
+            }
+            .portfolio-layout {
+    flex-direction: column;
+  }
+
+  .image-gallery, .portfolio-header {
+    width: 100%;
+  }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .portfolio-header,
+        .image-gallery,
+        .packages-section,
+        .photographer-section {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .portfolio-header {
+            animation-delay: 0.1s;
+        }
+
+        .image-gallery {
+            animation-delay: 0.2s;
+        }
+
+        .packages-section {
+            animation-delay: 0.3s;
+        }
+
+        .photographer-section {
+            animation-delay: 0.4s;
+        }
+        nav ul {
+    display: none;
+    flex-direction: column;
+    background-color: white;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 100%;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+
+  .menu-toggle {
+    display: block;
+    font-size: 28px;
+    cursor: pointer;
+  }
+//   .header-container {
+//     flex-direction: row;
+//     overflow-x: auto;
+//   }
+
+  .nav-link {
+    font-size: 14px;
+    padding: 0 8px;
+  }
+  nav .nav-link {
+  white-space: nowrap;
+}
+
+  .btn-sm {
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+  .button-container {
+        position: static; /* Reset position for mobile */
+        margin: 10px 0; /* Add margin for spacing */
+        justify-content: center; /* Center buttons */
+    }
+
+
+/* Ensure consistent font for all text as per body */
+h1, h2, h3, h4, h5, h6, p, a, button, select, input, label, li {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+//model fullimage
+.image-modal .modal-dialog {
+    // max-width: 50vw;
+    // max-height: 50vh;
+    max-width:fit-content;
+    max-height: fit-content;
+    margin: 5vh auto;
+}
+
+.image-modal .modal-content {
+    background: transparent;
+    border: none;
+    height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.image-modal .modal-body {
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    height: 100%;
+}
+
+/* รูปภาพใน modal */
+.modal-image {
+    max-width: 100%;
+    max-height: 90vh;
+    width: auto;
+    height: auto;
+    object-fit: contain; /* รักษาสัดส่วนและไม่ตัดรูป */
+    border-radius: 8px;
+}
+
+/* ปุ่มลูกศร */
+.arrow-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 1060;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.arrow-btn:hover {
+    background: rgba(0, 0, 0, 0.8);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.arrow-btn.left {
+    left: 20px;
+}
+
+.arrow-btn.right {
+    right: 20px;
+}
+
+/* สำหรับมือถือ */
+@media (max-width: 768px) {
+    // .button-container{
+    //     display: flex;
+    //     position: absolute;
+    // }
+    .image-modal .modal-dialog {
+        max-width: 90vw;
+        max-height: 50vh;
+        margin: 2.5vh auto;
+    }
+    
+    .image-modal .modal-content {
+        height: 50vh;
+    }
+    
+    .modal-image {
+        max-height: 95vh;
+    }
+    
+    .arrow-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+    
+    .arrow-btn.left {
+        left: 10px;
+    }
+    
+    .arrow-btn.right {
+        right: 10px;
+    }
+}

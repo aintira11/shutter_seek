@@ -9,6 +9,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { lastValueFrom } from 'rxjs';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../service/auth.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { user } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-login',
@@ -32,6 +34,7 @@ export class LoginComponent {
     private http: HttpClient,
     private formBuilder: FormBuilder,
     private authService: AuthService,
+    private snackBar: MatSnackBar,
   ) {
     // สร้างฟอร์มจาก FormBuilder
     this.loginForm = this.formBuilder.group({
@@ -50,11 +53,12 @@ export class LoginComponent {
     } 
   }
 
+// TypeScript Component Code
 async login(): Promise<void> {
   const url = this.constants.API_ENDPOINT + '/login';
-
+  
   if (this.loginForm.invalid) {
-    alert('กรุณากรอก username และรหัสผ่านให้ครบถ้วน');
+    this.showSnackBar('กรุณากรอก username และรหัสผ่านให้ครบถ้วน');
     return;
   }
 
@@ -69,68 +73,131 @@ async login(): Promise<void> {
     if (this.dataLogin.length === 1) {
       const user = this.dataLogin[0];
       const userType = Number(user.type_user);
-
-      // ไปดึงข้อมูลผู้ใช้เต็มจาก /read/:id
-      this.getFullUserData(user.user_id, userType);
+      
+      if (userType === 4) {
+        // ผู้ใช้ที่เป็นทั้งสมาชิกทั่วไปและช่างภาพ - แสดงโมเดลให้เลือก
+        this.getFullUserDataAsync(user.user_id, userType);
+        this.isModelOpen = true;
+      } else {
+        // ผู้ใช้ธรรมดา - เข้าสู่ระบบตามประเภทที่กำหนด
+        this.getFullUserDataAsync(user.user_id, userType);
+      }
     } else {
-      this.isModelOpen = true;
+      this.showSnackBar('ไม่พบข้อมูลผู้ใช้');
     }
-
-  } catch (error) {
+  } catch (error: any) {
     console.error('Login Failed:', error);
-    alert('เกิดข้อผิดพลาดในการเข้าสู่ระบบ');
+    if (error.status === 401) {
+      this.showSnackBar('ชื่อผู้ใช้และรหัสผ่านไม่ตรงกัน');
+    } else if (error.status === 404) {
+      console.error("เกิดข้อผิดพลาดในการโหลดข้อมูลผู้ใช้:", error);
+      this.showSnackBar('เกิดข้อผิดพลาดในการส่งรายงาน กรุณาลองใหม่อีกครั้ง');
+    }
+  }
+}
+
+async choose(selectedType: string, user_id: number) {
+  const user = this.dataLogin[0];
+  const userType = Number(selectedType);
+  
+  if (selectedType === '2' || selectedType === 'Shutter') {
+    // เลือกใช้งานในโหมดช่างภาพ
+    await this.getFullUserDataAsync(user_id, userType, 'shutter');
+  } else if (selectedType === '1' || selectedType === 'Member') {
+    // เลือกใช้งานในโหมดสมาชิกทั่วไป  
+    await this.getFullUserDataAsync(user_id, userType, 'member');
   }
 }
 
 
-choose(type_user: string) {
-  if (type_user === '2') {
-    const shutter = this.dataLogin[1];
-    sessionStorage.setItem('user', JSON.stringify(shutter));
-    this.router.navigate(['/mainshutter']);
-    this.isModelOpen = false;
-  } else if (type_user === '1') {
-    const member = this.dataLogin[0];
-    sessionStorage.setItem('user', JSON.stringify(member));
-    this.router.navigate(['/']);
+closeModal(event: Event) {
+  // ปิดโมเดลเฉพาะเมื่อคลิกนอกเนื้อหาโมเดล
+  if (event.target === event.currentTarget) {
     this.isModelOpen = false;
   }
 }
 
-getFullUserData(id: number, userType: number): void {
+async getFullUserDataAsync(id: number, userType: number, mode?: string): Promise<void> {
   const url = this.constants.API_ENDPOINT + '/read/' + id;
+  
+  try {
+    const fullUserData = await lastValueFrom(this.http.get<DataMembers[]>(url));
+    
+    if (fullUserData.length > 0) {
+      const user = fullUserData[0];
+      
+      // สำหรับ Type 4 ให้เพิ่ม current_mode
+      const finalUser = userType === 4 && mode ? { ...user, current_mode: mode } : user;
 
-  this.http.get<DataMembers[]>(url).subscribe({
-    next: (fullUserData) => {
-      if (fullUserData.length > 0) {
-        const user = fullUserData[0];
+      // เก็บข้อมูลไว้ใน AuthService
+      this.authService.setUser(finalUser);
 
-        //  เก็บข้อมูลไว้ใน AuthService
-        this.authService.setUser(user);
+      // เก็บไว้ใน sessionStorage ด้วย
+      sessionStorage.setItem('user', JSON.stringify(finalUser));
 
-        //  (ถ้าต้องการ) เก็บไว้ใน sessionStorage ด้วย
-        sessionStorage.setItem('user', JSON.stringify(user));
-
-        //  นำทางตาม user type
+      // นำทางตาม user type หรือ mode
+      if (userType === 4 && mode) {
+        if (mode === 'shutter') {
+          this.router.navigate(['/mainshutter']);
+        } else if (mode === 'member') {
+          this.router.navigate(['/']);
+        }
+        this.isModelOpen = false;
+      } else {
         if (userType === 3) {
           this.router.navigate(['/admin']);
         } else if (userType === 2) {
           this.router.navigate(['/mainshutter']);
-          //  this.isModelOpen = false;
         } else if (userType === 1) {
           this.router.navigate(['/']);
-          // this.isModelOpen = false;
         }
-      } else {
-        alert('ไม่พบข้อมูลผู้ใช้');
       }
-    },
-    error: (err) => {
-      console.error("เกิดข้อผิดพลาดในการโหลดข้อมูลผู้ใช้:", err);
+    } else {
+      this.showSnackBar('ไม่พบข้อมูลผู้ใช้');
     }
-  });
+  } catch (error: any) {
+    console.error("เกิดข้อผิดพลาดในการโหลดข้อมูลผู้ใช้:", error);
+    if (error.status === 401) {
+      this.showSnackBar('คุณได้รายงานช่างภาพนี้ไปแล้ว ไม่สามารถรายงานซ้ำได้');
+    } else {
+      this.showSnackBar('เกิดข้อผิดพลาดในการส่งรายงาน กรุณาลองใหม่อีกครั้ง');
+    }
+  }
 }
 
+// เพิ่มฟังก์ชันสำหรับสร้างตัวเลือกสำหรับผู้ใช้ที่มี userType=4
+getUserOptions(): any[] {
+  if (this.dataLogin.length === 1 && Number(this.dataLogin[0].type_user) === 4) {
+    const user = this.dataLogin[0];
+    return [
+      {
+        ...user,
+        display_type: 'Member',
+        display_name: 'สมาชิกทั่วไป',
+        type_value: '1',
+        icon: 'person'
+
+      },
+      {
+        ...user,
+        display_type: 'Shutter', 
+        display_name: 'ช่างภาพ',
+        type_value: '2',
+        icon: 'camera'
+      }
+    ];
+  }
+  return [];
+}
+
+   showSnackBar(message: string) {
+    this.snackBar.open(message, 'ปิด', {
+      duration: 3000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+    });
+  }
+ 
 back(){
     this.router.navigate(['']);
   }

@@ -73,41 +73,44 @@
             </form>
         </div>
     </div>
-    <!-- Modal -->
-    <div *ngIf="isModelOpen" class="modal" >
-        <!-- From Uiverse.io by Alaner-xs --> 
-        
-        <div *ngIf="dataLogin.length > 1" class="card">
-            <div class="card-border-top"></div>
-           
-                <img class="img" src="{{dataLogin[0].image_profile}}" alt="">
-          
-            <span>{{dataLogin[0].username}}</span>
-            <div *ngIf="dataLogin[0].sht_status != null ; else kkkk">
-                <p class="job">Shutter</p>
-            </div>
-            <ng-template #kkkk>
-                <p class="job">Member</p>
-            </ng-template>
-            <button (click)="choose(dataLogin[0].type_user)">Click</button>
-        </div>
-    
-        <div class="card">
-            <div class="card-border-top"></div>
 
-                <img class="img" src="{{dataLogin[1].image_profile}}" alt="">
-         
-            <span>{{dataLogin[1].username}}</span>
-            <div *ngIf="dataLogin[1].sht_status != null ; else kkkk">
-                <p class="job">Shutter</p>
-            </div>
-            <ng-template #kkkk>
-                <p class="job">Member</p>
-            </ng-template>
-            <button (click)="choose(dataLogin[1].type_user)">Click</button>
-        </div>
+<!-- Modal Template -->
+<div *ngIf="isModelOpen" class="modal" (click)="closeModal($event)">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">เลือกโหมดการใช้งาน</h2>
+      <p class="modal-subtitle">กรุณาเลือกโหมดที่ต้องการเข้าสู่ระบบ</p>
+    </div>
     
-    </div> 
+    <!-- User Options for userType=4 -->
+    <div class="cards-container">
+      <div *ngFor="let option of getUserOptions(); let i = index" class="card">
+        <div class="profile-container">
+          <img class="img" [src]="option.image_profile" [alt]="option.username">
+          <div class="status-badge" [class.member]="option.display_type === 'Member'" [class.shutter]="option.display_type === 'Shutter'">
+            {{ option.display_type }}
+          </div>
+        </div>
+        <div class="username">{{ option.username }}</div>
+        <p class="job">{{ option.display_name }}</p>
+        <div class="user-details">
+          <span class="detail-item">
+            <i class="icon-{{ option.icon }}"></i>
+            {{ option.display_type === 'Member' ? 'ใช้งานแบบสมาชิกทั่วไป' : 'ใช้งานแบบช่างภาพ' }}
+          </span>
+        </div>
+        <button class="select-btn" (click)="choose(option.type_value, option.user_id)">
+          เลือกโหมดนี้
+        </button>
+      </div>
+    </div>
+    
+    <!-- ปุ่มยกเลิก -->
+    <div class="modal-footer">
+      <button class="cancel-btn" (click)="isModelOpen = false">ยกเลิก</button>
+    </div>
+  </div>
+</div>
     
     <script>
             // สำหรับการเปิด/ปิดรหัสผ่าน

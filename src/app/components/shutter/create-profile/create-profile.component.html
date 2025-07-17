@@ -12,32 +12,30 @@
 <body>
     
     <div class="container-header">
-        <header >
-          
-            <div style=" display: flex; flex-direction: row; justify-content: space-between;">
-                <div class="back-button">
-                        <i class="fas fa-chevron-left" (click)="back()"></i> กลับ
-                     </div>
-                <div class="header">
-                    <button mat-button >เข้าสู่ระบบ</button>  
-                    <span class="material-symbols-outlined" style="font-size: 2.2em; padding: 5px;">
-                        account_circle
-                    </span>
-                </div>
-            </div>
-            </header>
-            <br>
-            <div>
-                <div class="logo">
-                    <a [routerLink]="['/shutter']">
-                     <img src="/assets/images/PIXEL (7).png" alt="Logo" class="logo-img" />
-                    </a>
-                    <h2 style="color: #003ebb; ">ขั้นตอนที่1 : สร้างบัญชีช่างภาพ</h2>
-                </div>
-            </div>
-            <hr style="border: 1px solid #ddd; width: 100%; margin: 20px auto; margin-top: 30px;" />
-            
+  <div class="top-bar">
+    <!-- ซ้าย -->
+    <div class="left">
+      <div class="box" (click)="back()">
+        <i class="arrow right"></i>
+        <span class="text">กลับ</span>
+      </div>
     </div>
+
+    <!-- ขวา -->
+    <div class="header">
+      <button mat-button color="primary">เข้าสู่ระบบ</button>
+      <!-- <mat-icon fontIcon="person" fontSet="material-icons-outlined"></mat-icon> -->
+    </div>
+  </div>
+
+  <div class="logo">
+    <img src="/assets/images/PIXEL (7).png" alt="Logo" class="logo-img" />
+  </div>
+   <h2 style="color: #003ebb; ">ขั้นตอนที่1 : สร้างบัญชีช่างภาพ</h2>
+</div>
+ <hr style="border: 1px solid #ddd; width: 90%; margin: 20px auto; margin-top:30px;" />
+
+
     <div class="container">
         
         <div class="column">
@@ -143,6 +141,7 @@
                    class="error-message-absolute">
                 <span *ngIf="fromreister.get('Password')?.errors?.['required']">*กรุณากรอกรหัสผ่าน</span>
                 <span *ngIf="fromreister.get('Password')?.errors?.['whitespace']">*รหัสผ่านไม่สามารถเป็นช่องว่างได้</span>
+                <span *ngIf="fromreister.get('Password')?.errors?.['pattern']"> *  รหัสผ่านต้องมีอย่างน้อย 8 ตัว และมีตัวพิมพ์ใหญ่ ตัวพิมพ์เล็ก ตัวเลข และอักขระพิเศษ</span>
               </div>
             </div>
 
@@ -174,9 +173,14 @@
                         รหัสผ่านไม่ตรงกัน
                     </div>
             </div>
-            <div class="column">
-                <button type="submit" class="btn-submit" >บันทึกและไปต่อ</button>
-            </div>
+           <div class="column">
+        <button type="submit" 
+                class="btn-submit" 
+                #submitBtn
+                [disabled]="fromreister.invalid">
+            บันทึกและไปต่อ
+        </button>
+    </div>
         </form>
     </div>
   </div>

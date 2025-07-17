@@ -10,7 +10,6 @@ import { BShutter22Component } from './components/shutter/b-shutter2-2/b-shutter
 import { BShutter23Component } from './components/shutter/b-shutter2-3/b-shutter2-3.component';
 import { BShutter3Component } from './components/shutter/b-shutter3/b-shutter3.component';
 import { ProfileComponent } from './components/user/profile/profile.component';
-import { EditProfileComponent } from './components/shutter/edit-profile/edit-profile.component';
 import { CreateUseraccComponent } from './components/user/create-useracc/create-useracc.component';
 import { EditPortfolioComponent } from './components/shutter/edit-portfolio/edit-portfolio.component';
 import { EditPackageComponent } from './components/shutter/edit-package/edit-package.component';
@@ -25,6 +24,8 @@ import { RegisterComponent } from './components/user/register/register.component
 import { MainShutterComponent } from './components/shutter/main-shutter/main-shutter.component';
 import { ReportsComponent } from './components/user/reports/reports.component';
 import { MassageRoomComponent } from './components/massage-room/massage-room.component';
+import { PreShutterComponent } from './components/pre-shutter/pre-shutter.component';
+import { EditSelectWorkComponent } from './components/shutter/edit-select-work/edit-select-work.component';
 
 export const routes: Routes = [
     {path: '',component: HomeComponent},
@@ -41,7 +42,6 @@ export const routes: Routes = [
     {path: 'createuser',component: CreateUseraccComponent},
     {path: 'profile',component: ProfileComponent}, 
     {path: 'edituser',component: EditUserComponent}, 
-    {path: 'editprofile',component: EditProfileComponent},
     {path: 'editshutter',component: EditShutterComponent},
     {path: 'editportfol',component: EditPortfolioComponent},
     {path: 'editpac',component: EditPackageComponent},
@@ -49,10 +49,12 @@ export const routes: Routes = [
     {path: 'tofollow',component: UserFollowComponent},
     {path: 'register',component: RegisterComponent},
     {path: 'homeshutter',component: HomeShutterComponent},
+    {path: 'preshutter',component: PreShutterComponent},
     {path: 'roomchat',component:MassageRoomComponent},
     
     {path: 'mainshutter',component: MainShutterComponent},
     {path: 'reports',component: ReportsComponent},
+    {path: 'editwork',component: EditSelectWorkComponent },
 
     {path: 'admin',component: AdminHomeComponent},
     {path: 'addmin',component: AddminComponent},

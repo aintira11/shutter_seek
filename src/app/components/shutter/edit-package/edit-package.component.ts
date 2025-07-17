@@ -224,7 +224,7 @@ this.http.request('delete', url, { body: { package_id: packageToDelete.package_i
   showNotification(message: string, isError: boolean = false) {
     this.snackBar.open(message, 'ปิด', {
       duration: 3000,
-      panelClass: isError ? ['error-snackbar'] : ['success-snackbar']
+      panelClass: isError ? ['error-snackbar'] : ['success-snackbar'],verticalPosition: 'top',
     });
   }
 

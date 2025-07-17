@@ -139,77 +139,194 @@ body::before {
   filter: blur(3px) brightness(0.6); 
 }
 
-.card {
-  width: 190px;
-  height: 254px;
-  background-image: linear-gradient(144deg, #8608b4, #492fed 60%, #bd6fda);
-  border: none;
-  border-radius: 10px;
-  padding-top: 10px;
-  position: relative;
-  margin: 0; /* Remove margin */
-  
-}
-
+// Modal Styles (สำหรับใส่ในไฟล์ .scss ของ component)
 .modal {
   position: fixed;
-  display: flex;
-  justify-content: center; /* จัดให้อยู่กึ่งกลาง */
-  align-items: center;
-  z-index: 1;
-  left: 0;
   top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  overflow: auto;
   background-color: rgba(0, 0, 0, 0.5);
-  gap: 5%; /* ปรับระยะห่างระหว่างการ์ด */
-}
-
-.card span {
-  font-weight: 600;
-  color: white;
-  text-align: center;
-  display: block;
-  padding-top: 10px;
-  font-size: 1.3em;
-}
-
-.card .job {
-  font-weight: 400;
-  color: white;
-  display: block;
-  text-align: center;
-  padding-top: 5px;
-  font-size: 1em;
-}
-
-.card .img {
-  width: 70px;
-  height: 70px;
-  background: #e8e8e8;
-  border-radius: 100%;
-  margin: auto;
-  margin-top: 20px;
   display: flex;
   justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
 
-.card button {
-  padding: 8px 25px;
-  display: block;
-  margin: auto;
-  border-radius: 8px;
-  border: none;
-  margin-top: 30px;
-  background: #e8e8e8;
-  color: #111111;
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.modal-title {
+  font-size: 1.5rem;
   font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
 }
 
-.card button:hover {
-  background: #212121;
-  color: #ffffff;
+.modal-subtitle {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.cards-container {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+
+.card {
+  background: #f8f9fa;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  transition: all 0.3s ease;
+  flex: 1;
+  min-width: 200px;
+  max-width: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card:hover {
+  border-color: #007bff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
+}
+
+.profile-container {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 16px;
+}
+
+.img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #dee2e6;
+}
+
+.status-badge {
+  position: absolute;
+  bottom: -5px;
+  right: -5px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: white;
+  text-transform: uppercase;
+}
+
+.status-badge.member {
+  background: #28a745;
+}
+
+.status-badge.shutter {
+  background: #dc3545;
+}
+
+.username {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.job {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 12px;
+}
+
+.user-details {
+  margin-bottom: 16px;
+}
+
+.detail-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: #555;
+  background: #e9ecef;
+  padding: 4px 8px;
+  border-radius: 16px;
+}
+
+.select-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  width: 100%;
+  margin-top: auto;
+}
+
+.select-btn:hover {
+  background: #0056b3;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .cards-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .card {
+    max-width: 100%;
+    width: 100%;
+  }
+  
+  .modal-content {
+    max-width: 90%;
+    margin: 20px;
+  }
+}
+
+.modal-footer {
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e9ecef;
+}
+
+.cancel-btn {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.cancel-btn:hover {
+  background: #5a6268;
 }
 
 .login-box {

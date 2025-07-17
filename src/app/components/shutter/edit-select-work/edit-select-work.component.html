@@ -1,0 +1,273 @@
+<div class="edit-work-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <mat-icon class="header-icon">edit</mat-icon>
+      <h1 class="page-title">แก้ไขผลงาน</h1>
+    </div>
+    <button mat-stroked-button class="back-btn" (click)="router.navigate(['/mainshutter'])">
+      <mat-icon>arrow_back</mat-icon>
+      กลับ
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="!portfolioData" class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>กำลังโหลดข้อมูล...</p>
+  </div>
+
+  <!-- Edit Form -->
+  <div *ngIf="portfolioData && dataWork.length > 0" class="edit-form-container">
+    <!-- ส่วนข้อมูลผลงาน -->
+    <mat-card class="edit-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>work</mat-icon>
+          ข้อมูลผลงาน
+        </mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="form-section">
+          <!-- Work Name -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>ชื่อผลงาน</mat-label>
+            <input 
+              matInput 
+              [(ngModel)]="dataWork[selectedCategoryIndex || 0].name_work"
+              placeholder="กรุณาระบุชื่อผลงาน"
+              required>
+            <mat-icon matSuffix>title</mat-icon>
+          </mat-form-field>
+
+          <!-- Category Selection -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>หมวดหมู่</mat-label>
+            <mat-select 
+              [(ngModel)]="selectedTagId"
+              required>
+              <mat-option *ngFor="let tag of Tags" [value]="tag.tags_id">
+                {{ tag.name_tags }}
+              </mat-option>
+            </mat-select>
+            <mat-icon matSuffix>category</mat-icon>
+          </mat-form-field>
+
+          <!-- Image Upload Section -->
+          <div class="image-section">
+            <div class="section-header">
+              <mat-icon>image</mat-icon>
+              <h3>รูปภาพผลงาน</h3>
+            </div>
+
+            <!-- Current Images -->
+            <div class="current-images" *ngIf="dataWork[selectedCategoryIndex || 0].image_urls.length > 0">
+              <h4>รูปภาพปัจจุบัน</h4>
+              <div class="image-grid">
+                <div 
+                  *ngFor="let imageUrl of dataWork[selectedCategoryIndex || 0].image_urls; let i = index" 
+                  class="image-item">
+                  <img [src]="imageUrl" [alt]="'รูปภาพ ' + (i + 1)" class="work-image">
+                  <button 
+                    mat-icon-button 
+                    class="delete-image-btn"
+                    (click)="removeImage(i)"
+                    matTooltip="ลบรูปภาพ">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Upload New Image -->
+            <div class="upload-section">
+              <input 
+                type="file" 
+                #fileInput 
+                (change)="onCategoryImageSelected($event, selectedCategoryIndex || 0)"
+                accept="image/*" 
+                style="display: none;">
+              
+              <button 
+                mat-raised-button 
+                color="primary" 
+                (click)="triggerFileInput()"
+                [disabled]="isUploading"
+                class="upload-btn">
+                <mat-icon>cloud_upload</mat-icon>
+                <span *ngIf="!isUploading">เพิ่มรูปภาพ</span>
+                <span *ngIf="isUploading">กำลังอัปโหลด...</span>
+              </button>
+              
+              <div *ngIf="isUploading" class="upload-progress">
+                <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+              </div>
+            </div>
+
+            <!-- Image Preview -->
+            <div *ngIf="imagePreview" class="image-preview">
+              <h4>ตัวอย่างรูปภาพ</h4>
+              <img [src]="imagePreview" alt="ตัวอย่าง" class="preview-image">
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- ส่วนจัดการแพ็กเกจ -->
+    <mat-card class="package-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>local_offer</mat-icon>
+          จัดการแพ็กเกจ
+        </mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <!-- Loading Packages -->
+        <div *ngIf="isLoadingPackages" class="loading-packages">
+          <mat-spinner diameter="30"></mat-spinner>
+          <p>กำลังโหลดข้อมูลแพ็กเกจ...</p>
+        </div>
+
+        <!-- Package List -->
+        <div *ngIf="!isLoadingPackages" class="packages-container">
+          <mat-expansion-panel 
+            *ngFor="let package of packages; let i = index" 
+            class="package-panel">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <mat-icon>inventory</mat-icon>
+                {{ package.name_package || 'แพ็กเกจใหม่' }}
+              </mat-panel-title>
+              <mat-panel-description>
+                {{ package.price | currency:'THB':'symbol':'1.0-0' }}
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+
+            <div class="package-form">
+              <!-- Package Name -->
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>ชื่อแพ็กเกจ</mat-label>
+                <input 
+                  matInput 
+                  [(ngModel)]="package.name_package"
+                  placeholder="กรุณาระบุชื่อแพ็กเกจ"
+                  required>
+                <mat-icon matSuffix>label</mat-icon>
+              </mat-form-field>
+
+              <!-- Package Detail -->
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>รายละเอียดแพ็กเกจ</mat-label>
+                <textarea 
+                  matInput 
+                  [(ngModel)]="package.detail"
+                  placeholder="กรุณาระบุรายละเอียดแพ็กเกจ"
+                  rows="3"
+                  required></textarea>
+                <mat-icon matSuffix>description</mat-icon>
+              </mat-form-field>
+
+              <!-- Package Price -->
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>ราคา</mat-label>
+                <input 
+                  matInput 
+                  type="number"
+                  [(ngModel)]="package.price"
+                  placeholder="0"
+                  min="0"
+                  required>
+                <span matPrefix>฿&nbsp;</span>
+                <mat-icon matSuffix>attach_money</mat-icon>
+              </mat-form-field>
+
+              <!-- Package Actions -->
+              <div class="package-actions">
+                <button 
+                  mat-icon-button 
+                  color="warn"
+                  (click)="removePackage(i)"
+                  matTooltip="ลบแพ็กเกจ">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </div>
+          </mat-expansion-panel>
+
+          <!-- Add Package Button -->
+          <div class="add-package-section">
+            <button 
+              mat-raised-button 
+              color="accent"
+              (click)="addNewPackage()"
+              class="add-package-btn">
+              <mat-icon>add</mat-icon>
+              เพิ่มแพ็กเกจใหม่
+            </button>
+          </div>
+
+          <!-- Save Packages Button -->
+          <!-- <div class="save-packages-section" *ngIf="packages.length > 0">
+            <button 
+              mat-raised-button 
+              color="primary"
+              (click)="savePackages()"
+              [disabled]="isSavingPackages"
+              class="save-packages-btn">
+              <mat-icon>save</mat-icon>
+              <span *ngIf="!isSavingPackages">บันทึกแพ็กเกจ</span>
+              <span *ngIf="isSavingPackages">กำลังบันทึก...</span>
+            </button>
+            
+            <div *ngIf="isSavingPackages" class="saving-progress">
+              <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+            </div>
+          </div> -->
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Action Buttons -->
+    <div class="main-actions">
+      <mat-card class="action-card">
+        <mat-card-actions class="action-buttons">
+        <button 
+  mat-raised-button 
+  color="primary" 
+  (click)="saveAuto()"
+  [disabled]="isUploading || !dataWork[selectedCategoryIndex || 0].name_work">
+  <mat-icon>save</mat-icon>
+  บันทึกการแก้ไข
+</button>
+          
+          <button 
+            mat-stroked-button 
+            (click)="cancelEdit()">
+            <mat-icon>cancel</mat-icon>
+            ยกเลิก
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- No Data State -->
+  <div *ngIf="portfolioData && dataWork.length === 0" class="no-data-container">
+    <mat-card class="no-data-card">
+      <mat-card-content>
+        <div class="no-data-content">
+          <mat-icon class="no-data-icon">work_off</mat-icon>
+          <h3>ไม่พบข้อมูลผลงาน</h3>
+          <p>ไม่สามารถดึงข้อมูลผลงานที่ต้องการแก้ไขได้</p>
+          <button mat-raised-button color="primary" (click)="router.navigate(['/mainshutter'])">
+            <mat-icon>arrow_back</mat-icon>
+            กลับไปหน้าก่อนหน้า
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

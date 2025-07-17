@@ -16,6 +16,12 @@
     .menu-button:hover {
       background: #ffaa00;
     }
+    .error-message {
+  color: red;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
     .sidebar {
         width: 250px;
         background: linear-gradient(to bottom, #004da0, #003f91);
@@ -72,7 +78,7 @@
         flex-direction: row; /* เรียง icon และ text แนวตั้ง */
         align-items: center;
         text-decoration: none;
-        color: black;
+        color: rgb(255, 255, 255);
         padding: 10px;
         border-radius: 8px;
         transition: background 0.3s;

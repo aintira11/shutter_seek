@@ -57,18 +57,26 @@ body {
     -ms-user-select: none;
 }
 
+.error-message,
 .error-message-absolute {
-  color: red;
-  font-size: smaller;
-  position: absolute;
-  bottom: -1.2em; /* ปรับระยะห่างตามความเหมาะสม */
-  left: 0;
+  font-size: 14px;
+  color: #dc3545;
+  display: flex;
+  align-items: start;
+  gap: 5px;
+  flex-wrap: wrap;           /* ให้ตัดบรรทัดเมื่อข้อความยาว */
+  word-wrap: break-word;
+  max-width: 100%;           /* ไม่เกินพื้นที่ของ container */
+  line-height: 1.4;
+  position: relative;        /* เปลี่ยนจาก absolute ถ้าไม่อยากให้ทับ */
+  margin-top: 5px;
 }
+
+.error-message::before,
 .error-message-absolute::before {
-    content: '⚠';
-    margin-right: 5px;
-    font-size: 14px;
-}
+  content: '⚠';
+  font-size: 14px;
+}  
 
 
 //ปุ่มกลับ
@@ -302,19 +310,6 @@ form {
             min-height: 80px;
         }
 
-        .error-message {
-            margin-top: 5px;
-            font-size: 12px;
-            color: #dc3545;
-            display: flex;
-            align-items: center;
-        }
-
-        .error-message::before {
-            content: '⚠';
-            margin-right: 5px;
-            font-size: 14px;
-        }
 
         .submit-btn {
             padding: 15px 30px;

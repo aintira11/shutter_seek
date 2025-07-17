@@ -4,9 +4,10 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Constants } from '../../../config/constants';
 import { DataMembers } from '../../../model/models';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { ImageUploadService } from '../../../services_image/image-upload.service';
 import { AuthService } from '../../../service/auth.service'; 
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-edit-user',
@@ -23,12 +24,21 @@ export class EditUserComponent implements OnInit{
    imagePreview: string ="";
    isLoading: boolean = false;
 
+   showModal = false;
+   formChangePassword!: FormGroup;
+
+  hidePassword = true;
+  hideConfirmPassword = true;
+  hidePasswordnew = true;
+   
+
   constructor(
      private fb: FormBuilder,
      private router : Router,
-     private route: ActivatedRoute,
+    //  private route: ActivatedRoute,
      private Constants: Constants, 
      private http: HttpClient,
+     private snackBar: MatSnackBar,
      private readonly imageUploadService: ImageUploadService,
      private authService: AuthService){
 
@@ -60,9 +70,19 @@ export class EditUserComponent implements OnInit{
       UserName: [user.username, Validators.required],
       Name: [user.first_name, Validators.required],
       LastName: [user.last_name, Validators.required],
-      address: [user.address, Validators.required],
+      address: [user.address],
       Phone: [user.phone, [Validators.required, Validators.pattern(/^[0-9]{10}$/)]]
     });
+
+    this.formChangePassword = this.fb.group({
+    old_password: ['', [Validators.required, this.noWhitespaceValidator]],
+    new_password: ['',[
+    Validators.required,
+    this.noWhitespaceValidator,
+    Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
+  ]],
+    confirm_password: ['', [Validators.required, this.noWhitespaceValidator]],
+  });
   }
   
   delay(ms: number) {
@@ -123,7 +143,7 @@ async save() {
 
   const url = `${this.Constants.API_ENDPOINT}/edit/${this.data.user_id}`;
   const formData = {
-      email: this.fromreister.value.Email,
+      // email: this.fromreister.value.Email,
       username: this.fromreister.value.UserName,
       first_name: this.fromreister.value.Name,
       last_name: this.fromreister.value.LastName,
@@ -131,6 +151,13 @@ async save() {
       image_profile: image,
       address: this.fromreister.value.address,
   };
+  // ตรวจสอบค่าว่างหรือ whitespace
+for (const [key, value] of Object.entries(formData)) {
+  if (key !== 'address' && typeof value === 'string' && value.trim() === '') {
+    this.showSnackBar(`กรุณากรอกข้อมูล ${key}`);
+    return;
+  }
+}
 
   this.isLoading = true;
 
@@ -154,6 +181,82 @@ async save() {
   });
 }
 
+
+change_password(){
+    if (this.formChangePassword.invalid) return;
+
+  const { new_password, confirm_password } = this.formChangePassword.value;
+
+  if (new_password !== confirm_password) {
+    alert('รหัสผ่านใหม่และยืนยันไม่ตรงกัน');
+    return;
+  }
+
+  // เรียก API 
+    const url = `${this.Constants.API_ENDPOINT}/change_password/`+ this.data.user_id;
+    const formData = {
+      old_password: this.formChangePassword.value.old_password,
+      new_password: this.formChangePassword.value.new_password,
+  };
+
+    this.http.post(url, formData).subscribe({
+    next: (response) => {
+      // const updatedUser = { ...this.data, ...formData };  // 🔁 รวมข้อมูลเดิมกับใหม่
+      // this.authService.setUser(updatedUser);              // ✅ อัปเดตใน AuthService
+      // this.data = updatedUser;                            // ✅ อัปเดตในตัวแปร local ด้วย
+
+      console.log("Update success:", response);
+      alert("บันทึกข้อมูลเรียบร้อย!");
+      this.showModal = false;
+      this.logout();
+    },
+    error: (error) => {
+      console.error("Update error:", error);
+      alert("เกิดข้อผิดพลาดในการอัปเดตข้อมูล");
+    },
+    complete: () => {
+      this.isLoading = false;
+    }
+  });
+
+  
+
+}
+
+ noWhitespaceValidator(control: AbstractControl): ValidationErrors | null {
+    if (!control.value) {
+      return null; // ให้ required validator จัดการกรณีที่ไม่มีค่า
+    }
+    
+    const isWhitespace = (control.value || '').trim().length === 0;
+    const isValid = !isWhitespace;
+    return isValid ? null : { 'whitespace': true };
+  }
+
+
+togglePasswordVisibility(field: string) {
+    if (field === 'old_password') {
+      this.hidePassword = !this.hidePassword;
+    } else if (field === 'new_password') {
+      this.hidePasswordnew = !this.hidePasswordnew;
+    }
+    else if (field === 'confirm_password') {
+      this.hideConfirmPassword = !this.hideConfirmPassword;
+    }
+  }
+
+  showSnackBar(message: string) {
+    this.snackBar.open(message, 'ปิด', {
+      duration: 3000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+    });
+  }
+
+  logout(): void {
+  this.authService.logout();
+  this.router.navigate(['/login']); // กลับไปหน้า login
+}
 
     back() {
     this.router.navigate(['/profile']);

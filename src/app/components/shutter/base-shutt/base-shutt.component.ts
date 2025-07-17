@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -10,7 +10,6 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { DataMembers, DataTegs } from '../../../model/models';
 import { ImageUploadService } from '../../../services_image/image-upload.service';
 import { CommonModule } from '@angular/common';
-import { finalize } from 'rxjs';
 import { AuthService } from '../../../service/auth.service';
 
 @Component({
@@ -28,8 +27,7 @@ import { AuthService } from '../../../service/auth.service';
   styleUrl: './base-shutt.component.scss'
 })
 export class BaseShuttComponent {
-  userData: any;
-  dataUser: DataMembers[] = [];
+  currentUser: DataMembers | null = null;
   photographerForm!: FormGroup;
   portfolioForm!: FormGroup;
   Tags: DataTegs[] = [];
@@ -40,12 +38,7 @@ export class BaseShuttComponent {
   isPortfolioInfoSubmitting = false;
   isUploading = false;
   
-   portfolioSaved = false;
-
-  // Skip tracking
-  skippedSteps = {
-    personalInfo: false
-  };
+  portfolioSaved = false;
   
   constructor(
     private fb: FormBuilder,
@@ -61,57 +54,89 @@ export class BaseShuttComponent {
   }
   
   ngOnInit(): void {
-     // ดึงข้อมูลจาก AuthService
-  const user = this.authService.getUser();
-  if (user) {
-    this.dataUser = [user];
-    console.log("Loaded user from AuthService:", this.dataUser);
-    
-  } else {
-    console.warn(" No user found in AuthService. Redirecting to login...");
-    return;
+    this.initializeUser();
   }
-    // Get route parameters and fetch tags
-    this.getUserData();
-    this.fetchTags();
+
+  private initializeUser(): void {
+    // ถ้า AuthService มี currentUser$ Observable
+    // this.authService.currentUser$.subscribe(user => {
+    //   if (user) {
+    //     this.currentUser = user;
+    //     console.log("Loaded user from AuthService:", this.currentUser);
+    //     this.prefillPersonalInfoForm();
+    //     this.fetchTags();
+    //   } else {
+    //     console.warn("No user found in AuthService. Redirecting to login...");
+    //     this.router.navigate(['/login']);
+    //   }
+    // });
+
+    // หรือใช้วิธีเช็คข้อมูลแบบ retry
+    this.checkUserWithRetry();
+  }
+
+  private checkUserWithRetry(maxRetries: number = 3, delay: number = 100): void {
+    let retryCount = 0;
+    
+    const checkUser = () => {
+      const user = this.authService.getUser();
+      
+      if (user) {
+        this.currentUser = user;
+        console.log("Loaded user from AuthService:", this.currentUser);
+        this.prefillPersonalInfoForm();
+        this.fetchTags();
+      } else if (retryCount < maxRetries) {
+        retryCount++;
+        console.log(`Retry ${retryCount}/${maxRetries} - User not found, retrying...`);
+        setTimeout(checkUser, delay);
+      } else {
+        console.warn("No user found in AuthService after retries. Redirecting to login...");
+        this.router.navigate(['/login']);
+      }
+    };
+    
+    checkUser();
   }
   
   private initForms(): void {
     // Personal information form
     this.photographerForm = this.fb.group({
-      lineID: [''],
-      facebook: [''],
-      description: ['']
+      lineID: ['',[Validators.required, this.noWhitespaceValidator]],
+      facebook: ['',[Validators.required, this.noWhitespaceValidator]],
+      description: ['' ,[Validators.required, this.noWhitespaceValidator]]
     });
     
     // Portfolio information form
     this.portfolioForm = this.fb.group({
-      name_work: ['', Validators.required],
+      name_work: ['',[Validators.required, this.noWhitespaceValidator]],
       tags_id: ['', Validators.required]
     });
 
-    //  listener เพื่อ reset portfolioSaved เมื่อมีการเปลี่ยนแปลงฟอร์ม
+    // Listener เพื่อ reset portfolioSaved เมื่อมีการเปลี่ยนแปลงฟอร์ม
     this.portfolioForm.valueChanges.subscribe(() => {
       this.portfolioSaved = false;
     });
   }
+
+  noWhitespaceValidator(control: AbstractControl): ValidationErrors | null {
+    if (!control.value) {
+      return null; // ให้ required validator จัดการกรณีที่ไม่มีค่า
+    }
+    
+    const isWhitespace = (control.value || '').trim().length === 0;
+    const isValid = !isWhitespace;
+    return isValid ? null : { 'whitespace': true };
+  }
   
-  private getUserData(): void {
-    this.route.queryParams.subscribe(() => {
-      this.userData = window.history.state.data;
-      console.log('User data:', this.userData);
-      
-      // Prefill form if data exists
-      if (this.userData) {
-        if (this.userData.lineID) {
-          this.photographerForm.patchValue({
-            lineID: this.userData.lineID,
-            facebook: this.userData.facebook,
-            description: this.userData.description
-          });
-        }
-      }
-    });
+  private prefillPersonalInfoForm(): void {
+    if (this.currentUser) {
+      this.photographerForm.patchValue({
+        lineID: this.currentUser.lineID || '',
+        facebook: this.currentUser.facebook || '',
+        description: this.currentUser.description || ''
+      });
+    }
   }
   
   private fetchTags(): void {
@@ -123,109 +148,10 @@ export class BaseShuttComponent {
       },
       error: (error) => {
         console.error('Error fetching tags:', error);
-        // Show user-friendly error message
         this.showAlert('ไม่สามารถดึงข้อมูลหมวดหมู่ได้ กรุณาลองใหม่อีกครั้ง');
       }
     });
   }
-  
-  // Save personal information
-  savePersonalInfo(): void {
-    if (this.photographerForm.invalid) {
-      this.photographerForm.markAllAsTouched();
-      return;
-    }
-    
-    this.isPersonalInfoSubmitting = true;
-    const url = this.constants.API_ENDPOINT + '/updateline/' + this.userData.user_id;
-    const formData = this.photographerForm.value;
-    
-    this.http.post(url, formData)
-      .pipe(finalize(() => this.isPersonalInfoSubmitting = false))
-      .subscribe({
-        next: (response) => {
-          console.log('Personal info saved:', response);
-          
-          // Update user data with response
-          this.userData = { ...this.userData, ...response };
-          
-          // Show success message
-          this.showAlert('บันทึกข้อมูลส่วนตัวสำเร็จ');
-          
-          // Scroll to next section
-          document.getElementById('portfolio-category')?.scrollIntoView({ behavior: 'smooth' });
-        },
-        error: (error) => {
-          console.error('Error saving personal info:', error);
-          this.handleApiError(error);
-        }
-      });
-  }
-
-  // Skip personal information
-  skipPersonalInfo(): void {
-    if (confirm('คุณต้องการข้ามขั้นตอนนี้หรือไม่? คุณสามารถกรอกข้อมูลเพิ่มเติมได้ในภายหลัง')) {
-      this.skippedSteps.personalInfo = true;
-      console.log('Personal info step skipped');
-      
-      // Show info message
-      this.showAlert('ข้ามขั้นตอนข้อมูลส่วนตัวแล้ว คุณสามารถเพิ่มข้อมูลได้ภายหลัง');
-      
-      // Scroll to next section
-      document.getElementById('portfolio-category')?.scrollIntoView({ behavior: 'smooth' });
-    }
-  }
-  
-  // Save portfolio information
- savePortfolioInfo(): Promise<any> {
-  return new Promise((resolve, reject) => {
-    if (this.portfolioForm.invalid) {
-      this.portfolioForm.markAllAsTouched();
-      reject('Form invalid');
-      return;
-    }
-
-    this.isPortfolioInfoSubmitting = true;
-
-    // ใช้ user_id จาก dataUser ที่ได้จาก AuthService
-    const user = this.dataUser[0];
-    if (!user || !user.user_id) {
-      this.isPortfolioInfoSubmitting = false;
-      this.showAlert('ไม่พบข้อมูลผู้ใช้งาน กรุณาเข้าสู่ระบบใหม่');
-      reject('User not found');
-      return;
-    }
-
-    const url = this.constants.API_ENDPOINT + '/add/Portfolio';
-    const formData = {
-      user_id: user.user_id,
-      tags_id: this.portfolioForm.value.tags_id,
-      name_work: this.portfolioForm.value.name_work
-    };
-
-    this.http.post(url, formData)
-      .pipe(finalize(() => this.isPortfolioInfoSubmitting = false))
-      .subscribe({
-        next: (response) => {
-          console.log('Portfolio info saved:', response);
-
-          // อัปเดต userData หรือเก็บข้อมูลเพิ่มเติมตามต้องการ
-          this.userData = { ...this.userData, ...response };
-          this.portfolioSaved = true;
-
-          resolve(response);
-        },
-        error: (error) => {
-          console.log("REQ BODY:",formData);
-
-          console.error('Error saving portfolio info:', error);
-          this.handleApiError(error);
-          reject(error);
-        }
-      });
-  });
-}
-
   
   // File handling methods
   onFileSelect(event: Event): void {
@@ -238,7 +164,7 @@ export class BaseShuttComponent {
     // Check if adding these files would exceed the limit
     const totalFiles = this.files.length + input.files.length;
     if (totalFiles > 10) {
-      this.showAlert('คุณสามารถอัปโหลดได้สูงสุด 10 รูปเท่านั้น');
+      this.showAlert('คุณสามารถอัปโหลดได้สูงสุด 10 รูป');
       input.value = '';
       return;
     }
@@ -274,60 +200,81 @@ export class BaseShuttComponent {
   removeFile(index: number): void {
     this.files.splice(index, 1);
   }
-
-  // ตรวจสอบและบันทึกข้อมูลผลงานก่อนอัปโหลด
-  private async ensurePortfolioSaved(): Promise<void> {
-    // ตรวจสอบว่าฟอร์มถูกต้องหรือไม่
-    if (this.portfolioForm.invalid) {
-      this.portfolioForm.markAllAsTouched();
-      throw new Error('กรุณากรอกข้อมูลผลงานให้ครบถ้วน');
-    }
-
-    // ตรวจสอบว่าบันทึกแล้วหรือไม่
-    if (!this.portfolioSaved) {
-      console.log('Portfolio not saved yet, saving now...');
-      await this.savePortfolioInfo();
-      console.log('Portfolio saved successfully');
-    } else {
-      console.log('Portfolio already saved');
-    }
-  }
   
   // Upload images
-   async uploadImages(): Promise<void> {
-    if (this.files.length === 0) {
-      this.showAlert('กรุณาเลือกรูปภาพอย่างน้อย 1 รูป');
+  async uploadImages(): Promise<void> {
+    // ตรวจสอบว่ามีข้อมูลผู้ใช้หรือไม่
+    if (!this.currentUser || !this.currentUser.user_id) {
+      this.showAlert('ไม่พบข้อมูลผู้ใช้งาน กรุณาเข้าสู่ระบบใหม่');
       return;
     }
-    
+
+    // ตรวจสอบไฟล์
+    if (this.files.length < 5) {
+      this.showAlert('กรุณาเลือกรูปภาพอย่างน้อย 5 รูป');
+      return;
+    }
+
+    // ตรวจสอบฟอร์มทั้งหมด
+    if (this.photographerForm.invalid) {
+      this.photographerForm.markAllAsTouched();
+      this.showAlert('กรุณากรอกข้อมูลส่วนตัวให้ครบถ้วน');
+      return;
+    }
+
+    if (this.portfolioForm.invalid) {
+      this.portfolioForm.markAllAsTouched();
+      this.showAlert('กรุณากรอกข้อมูลผลงานให้ครบถ้วน');
+      return;
+    }
+
     this.isUploading = true;
-    
+
     try {
-      // ตรวจสอบและบันทึกข้อมูลผลงานก่อน (ถ้ายังไม่ได้บันทึก)
-      await this.ensurePortfolioSaved();
+      // ขั้นตอนที่ 1: บันทึกข้อมูลส่วนตัว
+      this.showAlert('กำลังบันทึกข้อมูลส่วนตัว...', false);
       
+      const personalInfoUrl = this.constants.API_ENDPOINT + '/updateline/' + this.currentUser.user_id;
+      const personalInfoData = this.photographerForm.value;
+      
+      await this.http.post(personalInfoUrl, personalInfoData).toPromise();
+      console.log('Personal info saved successfully');
+
+      // ขั้นตอนที่ 2: บันทึกข้อมูลผลงาน
+      this.showAlert('กำลังบันทึกข้อมูลผลงาน...', false);
+      
+      const portfolioUrl = this.constants.API_ENDPOINT + '/add/Portfolio';
+      const portfolioData = {
+        user_id: this.currentUser.user_id,
+        tags_id: this.portfolioForm.value.tags_id,
+        name_work: this.portfolioForm.value.name_work
+      };
+
+      const portfolioResponse: any = await this.http.post(portfolioUrl, portfolioData).toPromise();
+      console.log('Portfolio info saved successfully:', portfolioResponse);
+
       // ตรวจสอบว่ามี portfolio_id หรือไม่
-      if (!this.userData || !this.userData.last_idx) {
-        throw new Error('ไม่พบข้อมูลผลงาน กรุณาลองใหม่อีกครั้ง');
+      if (!portfolioResponse || !portfolioResponse.last_idx) {
+        throw new Error('ไม่ได้รับ portfolio_id จากการบันทึกข้อมูลผลงาน');
       }
-      
+
+      // ขั้นตอนที่ 3: อัปโหลดรูปภาพ
       let successCount = 0;
       
       for (const [index, fileObj] of this.files.entries()) {
-        // Show progress
         this.showAlert(`กำลังอัปโหลดรูปที่ ${index + 1} จาก ${this.files.length}`, false);
        
         try {
-          // Upload image
+          // อัปโหลดรูป
           const response: any = await this.imageUploadService.uploadImage(fileObj.file).toPromise();
           
           if (response && response.data && response.data.url) {
             const imageUrl = response.data.url;
             
-            // Save image URL to database
+            // บันทึก URL ของรูปลงฐานข้อมูล
             const apiUrl = this.constants.API_ENDPOINT + '/update/Portfolio/image';
             const payload = {
-              portfolio_id: this.userData.last_idx,
+              portfolio_id: portfolioResponse.last_idx,
               Image_url: imageUrl,
             };
             
@@ -339,38 +286,43 @@ export class BaseShuttComponent {
           }
         } catch (error) {
           console.error(`Error uploading image ${index + 1}:`, error);
-          // Continue with other images
+          // ยังคงอัปโหลดรูปอื่นต่อไป
         }
       }
-      
+
+      // ตรวจสอบผลลัพธ์
       if (successCount === this.files.length) {
-        this.showAlert('อัปโหลดรูปทั้งหมดสำเร็จ');
-        this.navigateToNextStep();
+        this.showAlert('บันทึกข้อมูลและอัปโหลดรูปทั้งหมดสำเร็จ');
+        this.navigateToNextStep(portfolioResponse.last_idx);
       } else if (successCount > 0) {
-        this.showAlert(`อัปโหลดสำเร็จ ${successCount} จาก ${this.files.length} รูป`);
-        this.navigateToNextStep();
+        this.showAlert(`บันทึกข้อมูลสำเร็จ อัปโหลดรูปสำเร็จ ${successCount} จาก ${this.files.length} รูป`);
+        this.navigateToNextStep(portfolioResponse.last_idx);
       } else {
-        this.showAlert('ไม่สามารถอัปโหลดรูปได้ กรุณาลองใหม่อีกครั้ง');
+        this.showAlert('บันทึกข้อมูลสำเร็จ แต่ไม่สามารถอัปโหลดรูปได้ กรุณาลองใหม่อีกครั้ง');
       }
     } catch (error: any) {
-      console.error('Error during upload process:', error);
-      this.showAlert(error.message || 'เกิดข้อผิดพลาดระหว่างการอัปโหลด กรุณาลองใหม่อีกครั้ง');
+      console.error('Error during complete save process:', error);
+      this.showAlert(error.message || 'เกิดข้อผิดพลาดระหว่างการบันทึกข้อมูล กรุณาลองใหม่อีกครั้ง');
     } finally {
       this.isUploading = false;
     }
   }
 
-  // Navigation - ส่ง user_id, tags_id, portfolio_id และข้อมูล skip ไปหน้าถัดไป
-  navigateToNextStep(): void {
-  const navigationData = {
-    user_id: this.userData.user_id,
-    tags_id: this.portfolioForm.value.tags_id,
-    portfolio_id: this.userData.last_idx, // ใช้ค่า portfolio_id ล่าสุดที่บันทึกไป
-    // skippedSteps: this.skippedSteps, // ส่งข้อมูลว่าข้ามส่วนข้อมูลส่วนตัวหรือไม่
-  };
+  // Navigation - ส่ง user_id, tags_id, portfolio_id ไปหน้าถัดไป
+  navigateToNextStep(portfolioId: number): void {
+    if (!this.currentUser) {
+      this.showAlert('ไม่พบข้อมูลผู้ใช้งาน');
+      return;
+    }
 
-  this.router.navigate(['/base3'], { state: { data: navigationData } });
-}
+    const navigationData = {
+      user_id: this.currentUser.user_id,
+      tags_id: this.portfolioForm.value.tags_id,
+      portfolio_id: portfolioId
+    };
+
+    this.router.navigate(['/base3'], { state: { data: navigationData } });
+  }
   
   goBack(): void {
     window.history.back();
@@ -393,25 +345,16 @@ export class BaseShuttComponent {
     }
   }
 
-  // ฟังก์ชันเพิ่มเติมสำหรับการจัดการขั้นตอนที่ข้าม
-  getSkippedStepsCount(): number {
-    return this.skippedSteps.personalInfo ? 1 : 0;
-  }
-
-  getSkippedStepsText(): string {
-    return this.skippedSteps.personalInfo ? 'ข้ามขั้นตอน: ข้อมูลส่วนตัว' : 'ดำเนินการครบทุกขั้นตอน';
-  }
-
   // ตรวจสอบสถานะการบันทึกผลงาน
   isPortfolioFormValid(): boolean {
     return this.portfolioForm.valid;
   }
 
-  //ด้ปุ่มอัปโหลดพร้อมใช้งานหรือไม่
+  // ตรวจสอบปุ่มอัปโหลดพร้อมใช้งานหรือไม่
   isUploadButtonEnabled(): boolean {
     return this.files.length > 0 && 
+           this.photographerForm.valid && 
            this.portfolioForm.valid && 
-           !this.isUploading && 
-           !this.isPortfolioInfoSubmitting;
+           !this.isUploading;
   }
 }

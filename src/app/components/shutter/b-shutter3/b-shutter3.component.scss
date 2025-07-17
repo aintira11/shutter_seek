@@ -6,6 +6,59 @@
     text-align: center;
 }
 
+/* เพิ่ม CSS สำหรับแสดงภาพ */
+       .portfolio-images {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        
+        .portfolio-images h3 {
+            color: #003ebb;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .images-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+        }
+        
+        .image-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .image-item img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .loading-spinner {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        
+        .no-images {
+            text-align: center;
+            color: #666;
+            padding: 20px;
+        }
+
+.error {
+  color: red;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
 .logo-img {
     max-width: 400px; /* กำหนดขนาดสูงสุดของรูป */
     max-height: 350px; /* กำหนดความสูงสูงสุด */
@@ -266,9 +319,9 @@
   }
 
   .checkbox-list {
-    text-align: left;
-    margin: 20px 0;
-    margin-left: 25%;
+    text-align: center;
+    margin: 0px 0;
+    // margin-left: 25%;
     
   }
   
@@ -302,40 +355,6 @@
   }
   
 
-  .skip-button {
-            background-color: #6c757d;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-left: 10px;
-            font-size: 14px;
-        }
-        
-        .skip-button:hover {
-            background-color: #5a6268;
-        }
-        
-        .skip-button:disabled {
-            background-color: #d6d8db;
-            cursor: not-allowed;
-        }
-        
-        .button-container {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        
-        .skip-text {
-            font-size: 15px;
-            color: #6c757d;
-            margin-left: 10px;
-        }
-
   /* Media Queries สำหรับทำให้ Responsive */
   @media screen and (max-width: 768px) {
     .logo-img {
@@ -353,6 +372,28 @@
         margin-left: 10%;
         font-size: 15px;
       }
+
+       .modal-content {
+    width: 90%;
+    margin-top: 30%;
+  }
+
+  .card {
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .input-style, .price-input {
+    font-size: 14px;
+  }
+
+  .button-container {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 10px;
+  }
     }
 
     @media screen and (max-width: 480px) {

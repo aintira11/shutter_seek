@@ -6,3 +6,13 @@ html, body {
 * {
   font-family: 'Mali', cursive !important;
 }
+
+.material-icons, .material-symbols-outlined, .fa, .fas {
+  font-family: 'Material Icons', 'Font Awesome 6 Free' !important;
+}
+
+/* สำหรับ Font Awesome ต้องใช้ฟอนต์ของ Font Awesome */
+.fa, .fas, .far, .fal, .fab {
+  font-family: 'Font Awesome 6 Free' !important;
+  font-weight: 900; /* 900 สำหรับ fas (solid) */
+}

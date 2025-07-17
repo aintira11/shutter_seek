@@ -69,7 +69,7 @@ ngOnInit(): void {
   this.isLoading = true;
   setTimeout(() => {
     this.isLoading = false;
-  }, 2500);
+  }, 200);
 
   // ดึงข้อมูลจาก AuthService
   const user = this.authService.getUser();
@@ -155,6 +155,7 @@ openImageModal(images: string[], index: number): void {
     console.warn("Modal not initialized yet!");
   }
 }
+
 
 
 nextModalImage() {
@@ -352,7 +353,7 @@ getMyLike(id: number) {
   }); 
 }
 
-    toShutter(id_shutter: number) {
+    toShutter(id_shutter: number | null) {
       console.log("📤 Sending id_shutter:", id_shutter);
       // console.log("📤 Sending datauser:", this.datauser[0]);
     
@@ -366,11 +367,11 @@ getMyLike(id: number) {
         return;
       }
     
-      this.router.navigate(['/homeshutter'], { 
+      this.router.navigate(['/preshutter'], { 
         state: { 
           // datauser: this.datauser[0], 
           idshutter: id_shutter 
-        } 
+        }  
       });
     }
 
@@ -387,6 +388,10 @@ getMyLike(id: number) {
       this.toShutter(id);
     }
 
+    interresShutter() {
+       this.authService.logout();
+        this.router.navigate(['/shutter']); 
+    }
  
   
 logout(): void {

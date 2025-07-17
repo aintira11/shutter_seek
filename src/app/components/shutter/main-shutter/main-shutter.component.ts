@@ -11,6 +11,24 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import { AuthService } from '../../../service/auth.service';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
+// Confirm delete dialog component
+@Component({
+  selector: 'app-confirm-delete-dialog',
+  standalone: true,
+  imports: [MatButtonModule, CommonModule, MatDialogModule],
+  template: `
+    <h2 mat-dialog-title>ยืนยันการลบ</h2>
+    <div mat-dialog-content>คุณต้องการลบแพ็กเกจนี้ใช่หรือไม่?</div>
+    <div mat-dialog-actions>
+      <button mat-button mat-dialog-close>ยกเลิก</button>
+      <button mat-button [mat-dialog-close]="true" color="warn">ลบ</button>
+    </div>
+  `
+})
+export class ConfirmDeleteDialogComponent {}
 
 
 @Component({
@@ -40,17 +58,26 @@ export class MainShutterComponent implements OnInit{
   hoverRating = 0;
   stars = new Array(5).fill(0);
 
+  
+  averageRating: number = 0; // ค่าเริ่มต้นของคะแนนเฉลี่ย
+  Ratingstars: any[] = [];
+
   showButton = false; // ซ่อนปุ่มก่อน
   isLoading: boolean = false;
   opened = true;
   isModelOpen: boolean = false;
+ datalike: any[] = [];  // ข้อมูลการถูกใจ (likes) ของ portfolio
 
+showLikeModal: boolean = false; // ใช้สำหรับควบคุมการแสดง modal ของ likes
+selectedPortfolioId: string = '';
   constructor(private fb: FormBuilder,
     private router : Router,
     private route: ActivatedRoute,
     private Constants: Constants , 
     private http: HttpClient
-  ,private authService: AuthService){
+  ,private authService: AuthService,
+private dialog: MatDialog,
+private snackBar: MatSnackBar,){
     
    
   }
@@ -72,10 +99,6 @@ ngOnInit(): void {
     this.router.navigate(['/login']);
     return;
   }
-
-
-    
- 
 }
 
   toggleSidenav() {
@@ -91,13 +114,37 @@ ngOnInit(): void {
   }
   getwork(id : number){ //เพิ่มเอาคนที่ถูกใจออกมาด้วย
     console.log('id',id);
-    const url = this.Constants.API_ENDPOINT+'/get/workAndPack/'+id;
+    const url = this.Constants.API_ENDPOINT+'/get/workAndPack_for1/'+id;
     this.http.get(url).subscribe((response: any) => {
       this.datawork = response; 
       console.log("datawork :",this.datawork); 
       
     });
   }
+
+  //ข้อมูลการถูกใจ (likes) ของ portfolio
+getLike(portfolio_id: string | number) {
+  console.log('id', portfolio_id);
+  const url = `${this.Constants.API_ENDPOINT}/get/likes/` + portfolio_id;
+  this.http.get(url).subscribe((response: any) => {
+    this.datalike = response;
+    this.selectedPortfolioId = portfolio_id.toString(); // เก็บ ID ของ portfolio ที่ถูกเลือก
+    this.showLikeModal = true;
+    console.log("data datalike :", this.datalike); 
+  });
+}
+
+
+get likerNames(): string {
+  if (!this.datalike || this.datalike.length === 0) {
+    return 'ยังไม่มีใครถูกใจ';
+  }
+
+  // สมมุติว่า datalike เป็น array ของ object ที่มีชื่อว่า name หรือ username
+  const names = this.datalike.map((liker: any) => liker.name || liker.username);
+  return names.join(', ');
+}
+
 
   //ไว้ดูว่าใครไลค์บ้าง //ทำmodel
   getLikework(portfolio_id:number){
@@ -109,13 +156,41 @@ ngOnInit(): void {
     });
   }
 
+    closeLikeModal() {
+    this.showLikeModal = false;
+    this.datalike = [];
+  }
+
   getreview(id : number){
     const url = this.Constants.API_ENDPOINT+'/get/review/'+id;
     this.http.get(url).subscribe((response: any) => {
       this.datareview = response; 
       console.log("datareview :",this.datareview); 
+       // คำนวณคะแนนเฉลี่ย ทั้งหมด/จำนวนรีวิว
+      const total = this.datareview.reduce((sum, r) => sum + r.rating, 0);
+      this.averageRating = parseFloat((total / this.datareview.length).toFixed(1));
+      
+      // สร้าง array ของดาว
+      this.generateStars();
       
     });
+  }
+
+    generateStars() {
+    this.stars = [];
+    
+    for (let i = 1; i <= 5; i++) {
+      if (this.averageRating >= i) {
+        // ดาวเต็ม
+        this.stars.push({ type: 'full', class: 'fas fa-star', color: 'full' });
+      } else if (this.averageRating >= i - 0.5) {
+        // ดาวครึ่ง
+        this.stars.push({ type: 'half', class: 'fas fa-star-half-alt', color: 'half' });
+      } else {
+        // ดาวว่าง
+        this.stars.push({ type: 'empty', class: 'far fa-star', color: 'empty' });
+      }
+    }
   }
 
   getpackages(id : number){
@@ -134,7 +209,7 @@ ngOnInit(): void {
     this.http.get(url).subscribe((response: any) => {
       this.datafollower = response; 
       console.log("datafollower :",this.datafollower); 
-      
+   
     });
   }
 
@@ -243,6 +318,61 @@ closeList() {
         // } 
       });
      }
+
+     editWork(id: number) {
+      this.router.navigate(['/editwork'], { 
+        state: { 
+          idshutter: id // ส่ง ID ของงานที่ต้องการแก้ไข
+        } 
+      });
+     }
+
+     //ลบผลงาน
+    deleteWork(portfolio_id: number): void {
+  const categoryToDelete = portfolio_id; // <-- ต้องมี dataWork ที่เก็บข้อมูลผลงาน
+  const userId = this.data?.[0]?.user_id; // <-- เช็คให้แน่ใจว่า user_id มีอยู่
+
+  const dialogRef = this.dialog.open(ConfirmDeleteDialogComponent);
+  dialogRef.afterClosed().subscribe(result => {
+    if (result) {
+      const confirmed = confirm('คุณต้องการลบผลงานนี้ใช่หรือไม่?');
+      if (!confirmed) return;
+
+      const url = `${this.Constants.API_ENDPOINT}/delete/portfolio`;
+      const requestBody = {
+        portfolio_id: categoryToDelete,
+        user_id: userId
+      };
+
+      console.log('Delete request body:', requestBody);
+
+      this.http.delete(url, { body: requestBody }).subscribe({
+        next: (response) => {
+          console.log('Portfolio deleted successfully:', response);
+          this.showSnackBar('ลบผลงานสำเร็จ');
+          // รีเฟรชข้อมูลหลังจากลบสำเร็จ
+          this.getwork(userId);
+        },
+        error: (error) => {
+          console.error('Delete portfolio error:', error);
+          this.showSnackBar('เกิดข้อผิดพลาดในการลบผลงาน');
+        }
+      });
+    }
+  });
+}
+
+  showSnackBar(message: string) {
+    this.snackBar.open(message, 'ปิด', {
+      duration: 3000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+    });
+  }
+
+   goToMember(): void {
+    this.router.navigate(['/profile']);
+  }
 
      logout(): void {
       this.authService.logout();

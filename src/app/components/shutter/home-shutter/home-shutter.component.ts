@@ -11,16 +11,23 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import {MatIconModule} from '@angular/material/icon';
 import {MatMenuModule} from '@angular/material/menu';
 import { AuthService } from '../../../service/auth.service';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
+declare var bootstrap: any;
 @Component({
   selector: 'app-home-shutter',
   standalone: true,
-  imports: [CommonModule,MatCardModule, MatButtonModule,ReactiveFormsModule, MatMenuModule, MatIconModule],
+  imports: [CommonModule,MatCardModule, 
+    MatButtonModule,
+    ReactiveFormsModule, 
+    MatMenuModule, 
+    MatIconModule,
+  MatSnackBarModule],
   templateUrl: './home-shutter.component.html',
   styleUrl: './home-shutter.component.scss'
 })
 export class HomeShutterComponent implements OnInit{
-  data: DataMembers | null = null; // ข้อมูลผู้ใช้
+  data: DataMembers[]=[]; // ข้อมูลผู้ใช้
   datauser: DataMembers[] = [];   //ข้อมูลช่างภาพที่getออกมา
   datapackages : Datapackages[] = [];
   datawork : DataShowWork[] = [];
@@ -32,11 +39,16 @@ export class HomeShutterComponent implements OnInit{
   rating: number = 0; // ค่าเริ่มต้นของการให้คะแนน
   hoverRating = 0;
   stars = new Array(5).fill(0);
+
+  averageRating: number = 0; // ค่าเริ่มต้นของคะแนนเฉลี่ย
+  Ratingstars: any[] = [];
   
   showButton = false; // ซ่อนปุ่มก่อน
   isModelOpen: boolean = false;  // สร้างตัวแปรสถานะเริ่มต้นโมเดลเป็นปิด
   isModelOpen_Success : boolean = false;
   isModelOpen_danger : boolean = false;
+
+    currentSlideIndex: number[] = [];
 
   reviewform: FormGroup;
   constructor(private formBuilder: FormBuilder,
@@ -44,7 +56,8 @@ export class HomeShutterComponent implements OnInit{
     private router : Router,
     private Constants: Constants, 
     private http: HttpClient,
-    private authService: AuthService){
+    private authService: AuthService,
+  private snackBar: MatSnackBar,){
 
     // สร้างฟอร์มจาก FormBuilder
     this.reviewform = this.formBuilder.group({
@@ -61,10 +74,15 @@ export class HomeShutterComponent implements OnInit{
         this.idshutter = window.history.state.idshutter || null;
   
         // ดึงข้อมูล user จาก AuthService (sessionStorage)
-        this.data = this.authService.getUser();
+        const user = this.authService.getUser();
+        if (user) {
+        this.data = [user];
         console.log('Received data:', this.data);
         console.log('Received idshutter:', this.idshutter);
-  
+        this.getMyLike(user.user_id);
+           } else {
+          console.error("Error: User data not found in AuthService");
+        }
         
         if (!this.idshutter) {
           console.error("Error: idshutter is undefined or missing");
@@ -74,6 +92,13 @@ export class HomeShutterComponent implements OnInit{
       }, 100);
     });
     
+    // ตรวจสอบว่ามี Portfolio หรือไม่ ก่อนวนลูป
+    if (this.datawork.length > 0) {
+      this.datawork.forEach((_, index) => {
+        this.currentSlideIndex[index] = 0;
+      });
+    }
+
   }
 
   delay(ms: number) {
@@ -93,7 +118,7 @@ export class HomeShutterComponent implements OnInit{
   
   }
 forfollow(shutterId: number) {
-  const userId = (this.data as DataMembers).user_id;
+  const userId = this.data[0].user_id;
   const url = this.Constants.API_ENDPOINT + '/Follow/' + userId + '/' + shutterId;
 
   this.http.post<{ success: boolean, message: string }>(url, {}).subscribe({
@@ -101,7 +126,7 @@ forfollow(shutterId: number) {
       console.log(response.message); 
     },
     error: (error) => console.error("Follow/Unfollow error:", error)
-  });
+  }); 
 }
 
   rate(star: number) {
@@ -161,7 +186,7 @@ forfollow(shutterId: number) {
       this.datafollower = response; 
       console.log("datafollower :",this.datafollower); 
       // ตรวจสอบว่าผู้ใช้ปัจจุบันติดตามช่างภาพคนนี้หรือไม่
-    this.isFollowing = this.datafollower.some(f => f.follower_id === this.data?.user_id); 
+    this.isFollowing = this.datafollower.some(f => f.follower_id === this.data[0].user_id); 
 
     });
   }
@@ -170,7 +195,7 @@ toggleFollow(followedId: number) {
   this.forfollow(followedId); // call API
   setTimeout(() => {
     this.getFollower(followedId); // รีโหลดข้อมูลผู้ติดตามหลังจาก Follow/Unfollow
-  }, 500); 
+  }, 200); 
 }
 
 
@@ -179,12 +204,34 @@ toggleFollow(followedId: number) {
     this.http.get(url).subscribe((response: any) => {
       this.datareview = response; 
       console.log("datareview :",this.datareview); 
+     // คำนวณคะแนนเฉลี่ย ทั้งหมด/จำนวนรีวิว
+      const total = this.datareview.reduce((sum, r) => sum + r.rating, 0);
+      this.averageRating = parseFloat((total / this.datareview.length).toFixed(1));
       
+      // สร้าง array ของดาว
+      this.generateStars();
     });
   }
 
+  generateStars() {
+    this.stars = [];
+    
+    for (let i = 1; i <= 5; i++) {
+      if (this.averageRating >= i) {
+        // ดาวเต็ม
+        this.stars.push({ type: 'full', class: 'fas fa-star', color: 'full' });
+      } else if (this.averageRating >= i - 0.5) {
+        // ดาวครึ่ง
+        this.stars.push({ type: 'half', class: 'fas fa-star-half-alt', color: 'half' });
+      } else {
+        // ดาวว่าง
+        this.stars.push({ type: 'empty', class: 'far fa-star', color: 'empty' });
+      }
+    }
+  }
+
   postreview() { 
-    const userId = (this.data as DataMembers).user_id; //  บอกให้ TypeScript รู้ว่าเป็น Object
+    const userId = this.data[0].user_id; //  บอกให้ TypeScript รู้ว่าเป็น Object
     const url = this.Constants.API_ENDPOINT + '/post/review/' + userId; 
     console.log(this.reviewform.value);  // แสดงค่าทั้งหมดในฟอร์ม
     console.log('Rating:', this.rating); // แสดงค่า rating ที่เลือก
@@ -218,6 +265,27 @@ toggleFollow(followedId: number) {
       alert('เกิดข้อผิดพลาดในการรีวิว');
     }
   }
+  toShutter(id_shutter: number | null) {
+      console.log("📤 Sending id_shutter:", id_shutter);
+      // console.log("📤 Sending datauser:", this.datauser[0]);
+    
+      if (!id_shutter) {
+        console.error(" Error: id_shutter is undefined or invalid");
+        return;
+      }
+      if (!this.datauser || this.datauser.length === 0) {
+        console.error(" Error: this.datauser is empty or undefined");
+        
+        return;
+      }
+    
+      this.router.navigate(['/preshutter'], { 
+        state: { 
+          // datauser: this.datauser[0], 
+          idshutter: id_shutter 
+        }  
+      });
+    }
   
 
   postreport(){
@@ -234,12 +302,6 @@ toggleFollow(followedId: number) {
     this.router.navigate(['/profile'], { state: { data: this.data } });
   }
 
-  scrollTopack() {
-    const rankElement = document.getElementById('second');
-    if (rankElement) {
-        rankElement.scrollIntoView({ behavior: 'smooth' });
-    }
-    }
 
     scrollToport() {
       const rankElement = document.getElementById('third');
@@ -292,7 +354,6 @@ toggleFollow(followedId: number) {
   }
   report(){
     console.log(" Sending data shutter:", this.datauser[0]);
-    console.log(" Sending datauser:", this.data);
   
     if (!this.datauser[0]) {
       console.error(" Error: data shutter is undefined or invalid");
@@ -305,8 +366,8 @@ toggleFollow(followedId: number) {
   
     this.router.navigate(['/reports'], { 
       state: { 
-        datauser: this.data, 
-        datashutter: this.datauser[0] 
+        username_shutter:this.datauser[0].username,
+        idshutter: this.datauser[0].user_id, 
       } 
     });
   }
@@ -331,5 +392,95 @@ toggleFollow(followedId: number) {
         } 
       });
      }
+
+     //new
+
+     startAutoSlide(id: number): void {
+    const carouselElement = document.getElementById('carousel' + id);
+    const carousel = bootstrap.Carousel.getOrCreateInstance(carouselElement);
+    carousel.cycle(); // Start auto sliding
+  }
+
+  stopAutoSlide(id: number): void {
+    const carouselElement = document.getElementById('carousel' + id);
+    const carousel = bootstrap.Carousel.getOrCreateInstance(carouselElement);
+    carousel.pause(); // Stop auto sliding
+  }
+
+  getNext(portfolioIndex: number) {
+  // if (this.Portfolio[portfolioIndex] && this.Portfolio[portfolioIndex].image_urls) {
+    if (this.datawork[portfolioIndex]?.image_urls?.length > 0) {
+    const maxIndex = this.datawork[portfolioIndex].image_urls.length - 1;
+    this.currentSlideIndex[portfolioIndex] = (this.currentSlideIndex[portfolioIndex] + 1) % (maxIndex + 1);
+  }
+    
+}
+
+getPrev(portfolioIndex: number) {
+  // if (this.Portfolio[portfolioIndex] && this.Portfolio[portfolioIndex].image_urls) {
+    if (this.datawork[portfolioIndex]?.image_urls?.length > 0) {
+    const maxIndex = this.datawork[portfolioIndex].image_urls.length - 1;
+    this.currentSlideIndex[portfolioIndex] = (this.currentSlideIndex[portfolioIndex] - 1 + (maxIndex + 1)) % (maxIndex + 1);
+  }
+}
+
+// ตรวจสอบว่าโพสนี้ถูกใจหรือไม่
+isLiked(portfolioId: number | null): boolean {
+  return this.Like.some(like => like.portfolio_id === portfolioId);
+}
+
+// method สำหรับการกดถูกใจ (ปรับปรุงจาก method เดิมของคุณ)
+Liked(portfolioId: number | null) {
+  const validPortfolioId = portfolioId ?? 0;
+  if (validPortfolioId === 0) {
+    console.error("Invalid portfolio_id!");
+    return;
+  }
+
+  const userId = this.data?.[0]?.user_id ?? 0;
+  if (userId === 0) {
+    console.error("Invalid user_id!");
+    return;
+  }
+
+  const url = `${this.Constants.API_ENDPOINT}/like/${validPortfolioId}/${userId}`;
+  this.http.post(url, {}).subscribe({
+    next: () => {
+      console.log("Like/Unlike success");
+      this.getMyLike(userId); // โหลดข้อมูลว่า user ไลค์อะไรบ้าง
+
+      // 🔁 อัปเดตจำนวน like ใน datawork โดยตรง
+      const targetWork = this.datawork.find(w => w.portfolio_id === validPortfolioId);
+      if (targetWork) {
+        // toggle like count (+1 หรือ -1)
+        const isCurrentlyLiked = this.isLiked(validPortfolioId);
+        targetWork.like_count = (targetWork.like_count ?? 0) + (isCurrentlyLiked ? -1 : 1);
+      }
+    },
+    error: (error) => console.error("Like/Unlike error:", error)
+  });
+}
+
+
+// method ดึงข้อมูลที่ถูกใจ (ปรับปรุงจาก method เดิมของคุณ)
+getMyLike(id: number) {
+  const url = this.Constants.API_ENDPOINT + '/get/like/' + id;
+  this.http.get(url).subscribe((response: any) => {
+    this.Like = response.map((item: any) => ({
+      ...item,
+      isLiked: true  // เพิ่ม isLiked = true
+    }));
+    console.log("data Like :", this.Like);
+  }); 
+}
+
+ interresShutter() {
+       this.authService.logout();
+        this.router.navigate(['/shutter']); 
+    }
+      logout(): void {
+  this.authService.logout();
+  this.router.navigate(['/login']); // กลับไปหน้า login
+}
 }
 

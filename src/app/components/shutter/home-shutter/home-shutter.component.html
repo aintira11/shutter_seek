@@ -5,63 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>สำหรับผู้ใช้ทั่วไปเห็น</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@40,400,0,0&icon_names=search" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@40,400,0,0&icon_names=search" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
   <!-- เพิ่ม CDN ของ Bootstrap Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
    <!-- icon category --->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@40,400,0,0&icon_names=category" />
-  
+  <!-- star rating -->
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body style="margin-left: 5%;margin-right: 5%; background-color: #ffffff;">
   <header class="header-container d-flex justify-content-between align-items-center p-3 ">
-    <nav>
-      <div *ngIf="data; else kkkk" >
+        <nav>
+      <div *ngIf="data.length > 0;" >
+        <div *ngFor="let data of data " >
           <div class="d-flex align-items-center">
             <img src="/assets/images/PIXEL (8).png" alt="SHUTTER seek" class="logo">
             <nav class="ms-3">
-                <a href="javascript:void(0)" class="nav-link" (click)="navigateHome()">หน้าแรก</a>
+                <a href="/" class="nav-link">หน้าแรก</a>
                 <a href="/contact" class="nav-link">ติดต่อเรา</a>
-                <a href="/shutter" class="nav-link" >สนใจเป็นช่างภาพ</a>
+                <a (click)="interresShutter()" class="nav-link" >สนใจเป็นช่างภาพ</a>
             </nav>
-            <div class="button-container">
-              <button class="btn btn-outline-primary me-2" routerLink="/login">ลงทะเบียน</button>
-              <button class="btn btn-primary" (click)="out()">ออกจากระบบ</button>
+        
+            <div class="button-container" >
+              <!-- <button class="btn btn-outline-primary me-2" routerLink="/register">ลงทะเบียน</button> -->
+              <button class="btn btn-primary btn-sm" (click)="logout()">ออกจากระบบ</button>
               <button mat-button class="circle-button" >
-                <img [src]="data.image_profile" alt="" class="circle-button" (click)="profile()">
+                <img src="{{ data.image_profile }}" alt="" class="rounded-circle" title="{{ data.username }}"(click)="profile()" style="border-radius: 100%; object-fit: cover;">
               </button>
               </div>
-       
+          </div>
+        
+            <!-- <button class="btn me-2" routerLink="/login">ออกจากระบบ</button>
+            <button mat-button class="circle-button" >
+              <img src="{{ data.image_profile }}" alt="" class="rounded-circle" (click)="profile()">
+            </button>             -->
      </div>
     </div>
-    <ng-template #kkkk>
-      <div class="d-flex align-items-center">
-        <img src="/assets/images/PIXEL (8).png" alt="SHUTTER seek" class="logo">
-        <nav class="ms-3">
-            <a href="/" class="nav-link">หน้าแรก</a>
-            <a href="/contact" class="nav-link">ติดต่อเรา</a>
-            <a href="/shutter" class="nav-link" >สนใจเป็นช่างภาพ</a>
-        </nav>
-    </div>
-    <div>
-      <button class="btn btn-outline-primary me-2" routerLink="/login">ลงทะเบียน</button>
-      <button class="btn btn-primary" routerLink="/login">เข้าสู่ระบบ</button>
-      
-    </div>
-    </ng-template>
-
+  
   </nav>
 </header>
 
-<!-- <div class="dashboard-alert" *ngIf="isModelOpen_Success">
-  <strong>ขอบคุณน้าาา!</strong> คุณติดตามช่างภาพ {{datauser[0]?.username}} เรียบร้อยแล้ว.
-</div>
-
-
-<div class="dashboard-alert1" *ngIf="isModelOpen_danger">
-  <strong>Oh snap!</strong> ทำไมถึงเลิกติดตาม {{datauser[0]?.username}} ล่ะฮือออออ.
-</div> -->
 
 <!-- ปุ่มรายงาน -->
 <div class="menu-wrapper">
@@ -82,16 +67,16 @@
         <!-- Profile Section -->
         <div class="profile-header" >
           <img
-          *ngIf="datauser[0]?.image_profile" [src]="datauser[0]?.image_profile"
+          *ngIf="datauser[0].image_profile" [src]="datauser[0].image_profile"
             alt="Profile"
             class="profile-image"
           />
           <div class="profile-info">
-            <h2>{{datauser[0]?.username}}</h2>
+            <h2>{{datauser[0].username}}</h2>
             <button class="btn me-2" >
               <p>มีผู้ติดตาม {{datafollower.length}} คน</p>
             </button>
-            <p>เป็นสมาชิกเมื่อ {{ datauser[0]?.date_of_member | date:'dd/MM/yyyy' }}</p>
+            <p>เป็นสมาชิกเมื่อ {{ datauser[0].date_of_member | date:'dd/MM/yyyy' }}</p>
           </div>
           <div class="profile-actions"> 
             <!-- ปุ่มเลิกติดตาม: แสดงเมื่อ isFollowing เป็น true -->
@@ -112,37 +97,29 @@
         </div>
   
         <!-- Divider --> 
-        <hr class="divider" />
-        <div style="display: flex; flex-direction: row;justify-content: space-between; padding-left: 5%;padding-right: 5%;">
-            <button class="btn me-2" (click)="scrollTo()">
-              <p>ภาพรวม</p>
-            </button>
-            <button class="btn me-2" (click)="scrollTopack()">
-              <p>แพ็กเกจ</p>
-            </button>
-            <button class="btn me-2" (click)="scrollToport()">
-              <p>ผลงาน</p>
-            </button>
-            <button class="btn me-2" (click)="scrollToreview()">
-              <p>รีวิว</p>
-            </button>
-        </div>
+        <div class="divider"></div>
 
-        <div class="row1" id="description">
-          <div class="card1" >
+            <div class="nav-tabs-container">
+                <button class="nav-tab active" >ภาพรวม</button>
+                <button class="nav-tab" (click)="scrollToport()">ผลงาน</button>
+                <button class="nav-tab" (click)="scrollToreview()">รีวิว</button>
+            </div>
+
+        <div div id="overview" class="info-cards" id="description">
+          <div class="info-card" >
             <p  style="text-align: center;padding: 2%;font-size: 23px;"> ข้อมูลส่วนตัว</p>
-            <p style="margin-left: 10%;margin-bottom: 5%;"> ชื่อจริง : {{datauser[0]?.first_name}}    {{datauser[0]?.last_name}}</p>
-            <p style="margin-left: 10%;margin-bottom: 5%;"> เบอร์โทร : {{datauser[0]?.phone}} </p>
-            <p style="margin-left: 10%;margin-bottom: 5%;"> Line ID : {{datauser[0]?.lineID}} </p>
-            <p style="margin-left: 10%;margin-bottom: 5%;"> Email : {{datauser[0]?.email}} </p>
-            <p style="margin-left: 10%;margin-bottom: 5%;"> เว็บไซต์ : {{datauser[0]?.facebook}} </p>
+            <p style="margin-left: 10%;margin-bottom: 5%;"> ชื่อจริง : {{datauser[0].first_name}}    {{datauser[0].last_name}}</p>
+            <p style="margin-left: 10%;margin-bottom: 5%;"> เบอร์โทร : {{datauser[0].phone}} </p>
+            <p style="margin-left: 10%;margin-bottom: 5%;"> Line ID : {{datauser[0].lineID}} </p>
+            <p style="margin-left: 10%;margin-bottom: 5%;"> Email : {{datauser[0].email}} </p>
+            <p style="margin-left: 10%;margin-bottom: 5%;"> เว็บไซต์ : {{datauser[0].facebook}} </p>
             <!-- <p style="margin-left: 10%;"> พื้นที่ที่รับงาน : {{datauser[0].first_name}} </p> -->
           </div>
           <!-- aboub me --> 
-            <div class="card1" style="background-color: rgb(255, 187, 55);">
+            <div  class="info-card highlight" style="background-color: rgb(255, 187, 55);">
               <p style="text-align: center;padding: 2%;font-size: 23px;color: white;">เพิ่มเติมเกี่ยวกับฉัน</p>
               <p style="margin-left: 10%;margin-bottom: 5%;color: white;">
-               {{datauser[0]?.description}}
+               {{datauser[0].description}}
               </p>
           </div>
         </div>
@@ -173,83 +150,86 @@
   
   <!-- </section> -->
   
-
-  <section id="third">
-    <div style="display: flex; align-items: center; justify-content :flex-start; width: 100%;">
-          <span class="material-symbols-outlined" style="color: #004AAD; font-size: xx-large;">
+<section id="third">
+    <div class="section-title">
+        <span class="material-symbols-outlined">
             category
-          </span>
-          &nbsp;
-          <h2> ผลงาน</h2>
-        </div>
+        </span>
+        <h2>ผลงาน</h2>
+    </div>
 
-    <br>
-    <div *ngFor="let data of datawork">
-      <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-        <!-- <button class="logout-button">
-          {{ data.name_tags }}
-        </button> -->
-         <p class="work-name" style="font-size: 20px;">{{ data.name_work }}</p>
-      
-  
-        <!-- ไอคอนหัวใจกับจำนวนไลค์ด้านขวา -->
-        <div style="display: flex; align-items: center; gap: 5px;">
-          <img src="https://cdn-icons-png.flaticon.com/128/2589/2589175.png" alt="Like" width="24">
-          <p style="margin: 0;">{{ data.like_count }}</p>
-        </div>
-      </div>
-      
-      <!-- แสดงรูปภาพ -->
-      <div class="image-container">
-        <button class="scroll-btn left" (click)="scrollLeft()">&#60;</button>
-        <div class="image-wrapper" #wrapper>
-          <div class="image-row" style="display: flex; flex-direction: row;">
-            <div *ngFor="let imgUrl of data.image_urls">
-              <img [src]="imgUrl" alt="image1" style="border: 2px solid #004AAD;">
+    <div class="portfolio-container">
+        <section class="container mt-5">
+            <div class="portfolio-grid" *ngIf="datawork.length > 0">
+                <div class="portfolio-item" *ngFor="let photographer of datawork; let portfolioIndex = index">
+                    <div class="portfolio-card">
+                        <div class="carousel-container">
+                            <div class="carousel slide"
+                                 [attr.id]="'carousel' + photographer.portfolio_id"
+                                 [attr.data-bs-interval]="false"
+                                 [attr.data-bs-ride]="null"
+                                 (mouseenter)="startAutoSlide(photographer.portfolio_id)"
+                                 (mouseleave)="stopAutoSlide(photographer.portfolio_id)">
+                                         
+                                <div class="carousel-inner">
+                                    <div *ngFor="let image of photographer.image_urls; let i = index">
+                                        <div class="carousel-item" 
+                                             [class.active]="i === (currentSlideIndex[portfolioIndex] || 0)">
+                                            <img [src]="image"
+                                                 class="d-block w-100"
+                                                 alt="portfolio image" (click)="toShutter(photographer.portfolio_id)">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button class="carousel-control-prev" 
+                                        type="button"
+                                        [attr.data-bs-target]="'#carousel' + photographer.portfolio_id" 
+                                        (click)="getPrev(portfolioIndex)">
+                                    <span class="carousel-control-prev-icon"></span>
+                                </button>
+                                <button class="carousel-control-next" 
+                                        type="button"
+                                        [attr.data-bs-target]="'#carousel' + photographer.portfolio_id" 
+                                        (click)="getNext(portfolioIndex)">
+                                    <span class="carousel-control-next-icon"></span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="portfolio-info">
+                            <div class="portfolio-content">
+                                <p class="portfolio-tags">{{ photographer.name_tags }}</p>
+                                <p class="portfolio-name">{{ photographer.name_work }}</p>
+                            </div>
+
+                            <div class="container heart-container" >
+                                <label >
+                                    <input type="checkbox"
+                                           [checked]="isLiked(photographer.portfolio_id)"
+                                           (change)="Liked(photographer.portfolio_id)">
+                                    <svg id="Layer_1" version="1.0" viewBox="0 0 24 24" xml:space="preserve"
+                                                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                                <path d="M16.4,4C14.6,4,13,4.9,12,6.3C11,4.9,9.4,4,7.6,4C4.5,4,2,6.5,2,9.6C2,14,12,22,12,22s10-8,10-12.4C22,6.5,19.5,4,16.4,4z"></path>
+                                            </svg>
+                                </label>
+                            </div>
+                            
+                                <span class="favorite-count" style="margin-top: 7px;">
+                                    ถูกใจ {{ photographer.like_count || 0 }} คน
+                                </span>
+                            
+                          
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-        <button class="scroll-btn right" (click)="scrollRight()">&#62;</button>
-      </div>
-      <br>
-       <div style="display: flex; align-items: center; justify-content :flex-start; width: 100%;">
-          <h3 id="second">แพ็กเกจ</h3>
-      </div>
-       <!-- เช็คว่าแพ็กเกจมีอยู่หรือไม่ -->
-    <div *ngIf="data.packages && data.packages.length > 0 && data.packages[0].package_id != null; else noPackages">
-      <!-- วนลูปแพ็กเกจภายใน datawork -->
-      <mat-card *ngFor="let package of data.packages" style="background-color: #004AAD; color: white; margin-bottom: 15px;">
-        <mat-card-header style="display: flex; justify-content: space-between;">
-          <div class="package-header">
-            <mat-card-title>{{ package.name_package }}</mat-card-title>
-            <mat-card-title>ราคา {{ package.price }} บาท</mat-card-title>
-          </div>
-        </mat-card-header>
-        <mat-card-subtitle style="color: rgb(255, 187, 55); margin-left: 1.5%;">
-          หมวดหมู่ของแพ็กเกจ: {{ data.name_tags }}
-        </mat-card-subtitle>
-        <hr>
-        <div mat-card-image></div>
-        <mat-card-content>
-          <p>{{ package.detail }}</p>
-        </mat-card-content>
-      </mat-card>
-    </div>
-    <ng-template #noPackages>
-      <!-- <h3 id="second" >แพ็กเกจ ของงานนี้</h3> -->
-      <mat-card  style="background-color: #004AAD; color: white; margin-bottom: 15px;">
-        <mat-card-header style="display: flex; justify-content: space-between;">
-        </mat-card-header>
-        <mat-card-title style="text-align: center;">ยังไม่มีแพ็กเกจ</mat-card-title>
-        </mat-card>
-    </ng-template>
+        </section>
+    </div>  <br>
+    <div class="divider"></div>
+</section>
   
-      <hr>
-      <br>
-    </div>
-  </section>
-  
-   <br>
+ 
 
   <section id="four">
       <div style="display: flex ;flex-direction: row;justify-content: space-between;">
@@ -261,16 +241,14 @@
         <div class="star-container">
           <p>How was your experience?</p>
           <div class="stars">
-            <button *ngFor="let star of stars; let i = index" 
-                    class="star" 
-                    [ngClass]="{'active': i < rating, 'hover': i < hoverRating}" 
-                    (click)="rate(i + 1)" 
-                    (mouseover)="hover(i + 1)" 
-                    (mouseleave)="hover(0)">
-              &#9733;
-            </button>
+            <div class="star-rating">
+        <ng-container *ngFor="let star of stars">
+            <i [class]="star.class" [ngClass]="star.color"></i>
+        </ng-container>
+        <!-- <span class="rating-text">{{ averageRating }}/5</span> -->
+    </div>
           </div>
-          <p class="rating-text">{{ rating }} of 5</p>
+          <p class="rating-text">{{ averageRating || 0}} of 5</p>
         </div>
         
         <br>

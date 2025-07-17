@@ -55,7 +55,7 @@ export class UserFollowComponent implements OnInit{
   }
 
   back(){
-    this.router.navigate([''],{ state: { data: this.data } });
+    this.router.navigate(['/profile'],{ state: { data: this.data } });
   }
 
   unfollow(id : number){

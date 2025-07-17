@@ -22,6 +22,41 @@
         <p class="text">กำหนดราคาและส่งผลการสมัคร <span style="color: red;">*</span> <span class="skip-text">จำเป็นต้องมีแพ็กเกจอย่างน้อย 1 แพ็กเกจ</span></p>
         
         <br>
+
+        <!-- แสดงภาพของ Portfolio -->
+        <div class="portfolio-images">
+            <h3>ภาพตัวอย่างผลงาน: {{ portfolioData?.name_work || 'ไม่ระบุ' }}</h3>
+            <p style="color: #666; font-size: 14px; margin-bottom: 15px;">
+                หมวดหมู่: {{ portfolioData?.name_tags || 'ไม่ระบุ' }}
+            </p>
+            
+            <!-- Loading state -->
+            <div *ngIf="isLoadingImages" class="loading-spinner">
+                <span class="material-symbols-outlined">
+                    hourglass_empty
+                </span>
+                <p>กำลังโหลดภาพ...</p>
+            </div>
+            
+            <!-- Images grid -->
+            <div *ngIf="!isLoadingImages && portfolioImages.length > 0" class="images-grid">
+                <div *ngFor="let imageUrl of portfolioImages; let i = index" class="image-item">
+                    <img [src]="imageUrl" 
+                         [alt]="'Portfolio Image ' + (i + 1)" 
+                         onerror="this.src='/assets/images/placeholder.png'">
+                </div>
+            </div>
+            
+            <!-- No images message -->
+            <div *ngIf="!isLoadingImages && portfolioImages.length === 0" class="no-images">
+                <span class="material-symbols-outlined">
+                    image_not_supported
+                </span>
+                <p>ไม่พบภาพในผลงานนี้</p>
+            </div>
+        </div>
+        
+        <br>
     
         <!-- Card Container -->
         <div class="card" *ngFor="let package of packages; let i = index">
@@ -30,7 +65,21 @@
             <label class="hcard">แพ็กเกจที่ {{ i + 1 }}</label>
               <div class="form-group">
                 <label class="label">ชื่อ แพ็กเกจ <span style="color: red;">*</span></label>
-                <input type="text" [(ngModel)]="package.name" name="packageName{{ i }}" class="input-style" placeholder="ชื่อแพ็กเกจ">
+                <!-- ชื่อแพ็กเกจ -->
+<input type="text" 
+       [(ngModel)]="package.name" 
+       name="packageName{{ i }}" 
+       required 
+       minlength="3"
+       class="input-style"
+       #packageName="ngModel"
+       placeholder="ชื่อแพ็กเกจ">
+
+<!-- แสดงข้อความเมื่อไม่ถูกต้อง -->
+<div *ngIf="packageName.invalid && packageName.touched" class="error">
+  <small *ngIf="packageName.errors?.['required']">กรุณากรอกชื่อแพ็กเกจ</small>
+  <small *ngIf="packageName.errors?.['minlength']">ชื่อแพ็กเกจต้องมีอย่างน้อย 3 ตัวอักษร</small>
+</div>
               </div>
               <!-- <div class="form-group">
                 <label class="label">กำหนดหมวดหมู่แพ็กเกจ</label>
@@ -45,12 +94,38 @@
               
               <div class="form-group">
                 <label class="price-label">รายละเอียดแพ็กเกจ <span style="color: red;">*</span></label>
-                <textarea [(ngModel)]="package.description" name="packageDescription{{ i }}" class="input-style" rows="3" placeholder="รายละเอียดแพ็กเกจ"></textarea>
+                <!-- รายละเอียด -->
+<textarea [(ngModel)]="package.description" 
+          name="packageDescription{{ i }}" 
+          required
+          #packageDesc="ngModel"
+          class="input-style" rows="3" 
+          placeholder="รายละเอียดแพ็กเกจ">
+</textarea>
+
+<div *ngIf="packageDesc.invalid && packageDesc.touched" class="error">
+  <small>กรุณากรอกรายละเอียดแพ็กเกจ</small>
+</div>
+
               </div>
               <div class="price-input-container">
                 <label for="packagePrice" class="price-label">ราคาแพ็กเกจ <span style="color: red;">*</span></label>
                 <div class="input-wrapper">
-                  <input type="text" [(ngModel)]="package.price" name="packagePrice{{ i }}" class="price-input" placeholder="5,999" />
+                  <!-- ราคา -->
+<input type="text" 
+       [(ngModel)]="package.price" 
+       name="packagePrice{{ i }}" 
+       required 
+       pattern="^[0-9]+$"
+       #packagePrice="ngModel"
+       class="price-input" 
+       placeholder="5,999" />
+
+<div *ngIf="packagePrice.invalid && packagePrice.touched" class="error">
+  <small *ngIf="packagePrice.errors?.['required']">กรุณากรอกราคาแพ็กเกจ</small>
+  <small *ngIf="packagePrice.errors?.['pattern']">ราคาต้องเป็นตัวเลขเท่านั้น</small>
+</div>
+
                   <span class="currency-label">บาท</span>
                 </div>
               </div>
@@ -89,15 +164,14 @@
               </p>
               <div class="checkbox-list">
                 <label>
-                  ✔️ คุณยืนยันการเป็นเจ้าของผลงานจริง
+                  ✔️ ข้าพเจ้าขอยืนยันว่าผลงานที่อัปโหลดเป็นผลงานของข้าพเจ้าเอง หากมีการละเมิดลิขสิทธิ์ ข้าพเจ้ายินดีรับผิดชอบแต่เพียงผู้เดียว
                 </label>
-                <label>
-                  ✔️ ยืนยันความถูกต้องของข้อมูล
-                </label>
+                <br>
                 <label>
                   <input type="checkbox" [(ngModel)]="checkboxesStatus[0]" /> ยินยอมให้ปฏิบัติตามกฎและเงื่อนไข
                 </label>
               </div>
+              
               <button class="confirm-button" (click)="savePackages()">ยืนยันและส่งให้ทีมงานตรวจสอบ</button>
             </div>
           </div>

@@ -9,8 +9,8 @@ import { CommonModule } from '@angular/common';
 import { DataTegs } from '../../../model/models';
 import { Constants } from '../../../config/constants';
 import { HttpClient } from '@angular/common/http';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
- 
 @Component({
   selector: 'app-b-shutter3',
   standalone: true,
@@ -21,7 +21,7 @@ import { HttpClient } from '@angular/common/http';
     ,RouterModule
     ,MatCardModule
     ,CommonModule 
-
+    ,MatSnackBarModule
   ],
   templateUrl: './b-shutter3.component.html',
   styleUrl: './b-shutter3.component.scss'
@@ -36,67 +36,77 @@ export class BShutter3Component {
   tags_id:number=0;
   portfolio_id:number=0;
 
-  // ประกาศตัวแปรสำหรับเก็บสถานะของ checkbox แต่ละตัว
-checkboxesStatus = [false]; // ตัวอย่าง: false หมายถึงไม่ได้ติ๊ก
+  // เพิ่มตัวแปรสำหรับเก็บข้อมูลภาพ
+  portfolioImages: string[] = [];
+  portfolioData: any = null;
+  isLoadingImages: boolean = false;
 
-  
+  // ประกาศตัวแปรสำหรับเก็บสถานะของ checkbox แต่ละตัว
+  checkboxesStatus = [false]; // ตัวอย่าง: false หมายถึงไม่ได้ติ๊ก
+
   constructor(private router: Router,
         private Constants: Constants, 
         private route: ActivatedRoute, 
-        private http: HttpClient,
-        
+        private http: HttpClient, private snackBar: MatSnackBar,
   ) {}
-  // async ngOnInit(): Promise<void> {
-  //   this.route.queryParams.subscribe(params => {
-  //     this.data = window.history.state.data;
-  //     console.log('ข้อมูลที่ได้รับ:', this.data);
-      
-  //     if (!this.data || !this.data.user_id) {
-  //       console.error('ไม่พบ user_id ในข้อมูล:', this.data);
-  //       // อาจแสดงแจ้งเตือนหรือเปลี่ยนเส้นทาง
-  //     }
-  //   });
-  
-  //   await this.gettegs();
-  // }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     const stateData = history.state.data;
     if (stateData) {
       console.log("Data received:", stateData);
       this.user_id = stateData.user_id;
       this.tags_id = stateData.tags_id;
       this.portfolio_id = stateData.portfolio_id;
+      
+      // ดึงข้อมูลภาพหลังจากได้ portfolio_id
+      await this.getPortfolioImages();
     } else {
       console.warn("No data received");
     }
   }
 
-    // ดึงข้อมูลจากหน้าก่อนหน้า
-    // ngOnInit(): void {
-    //   this.data = history.state.data;
+  // ฟังก์ชันดึงข้อมูลภาพของ portfolio
+  async getPortfolioImages() {
+    if (!this.portfolio_id) {
+      console.error('ไม่พบ portfolio_id');
+      return;
+    }
+
+    this.isLoadingImages = true;
     
-    //   console.log('ข้อมูลที่ได้รับจากหน้าก่อนหน้า:', this.data);
-    
-    //   if (!this.data || !this.data.user_id || !this.data.tags_id || !this.data.portfolio_id) {
-    //     console.error('ข้อมูลไม่ครบ:', this.data);
-    //     alert('ข้อมูลไม่ครบถ้วน กรุณากรอกข้อมูลใหม่');
-    //     this.router.navigate(['/previous-page']); // เปลี่ยนเส้นทางกลับ
-    //     return;
-    //   }
-    // }
-  
-  // async gettegs() {
-  //   try {
-  //     const url = this.Constants.API_ENDPOINT + '/tegs';
-  //     const response: any = await this.http.get(url).toPromise();
-  //     this.Tags = response;
-  //     console.log("ข้อมูลแท็ก:", this.Tags);
-  //   } catch (error) {
-  //     console.error("เกิดข้อผิดพลาดในการโหลดแท็ก:", error);
-  //     this.Tags = [];
-  //   }
-  // }
+    try {
+      const apiUrl = `${this.Constants.API_ENDPOINT}/get/portfolio_images/${this.portfolio_id}`;
+      console.log('กำลังดึงภาพจาก API:', apiUrl);
+      
+      const response: any = await this.http.get(apiUrl).toPromise();
+      
+      // ตรวจสอบโครงสร้างข้อมูลที่ได้รับ
+      let item = null;
+if (Array.isArray(response) && response.length > 0) {
+  item = response[0];
+} else if (response && response.image_urls) {
+  item = response;
+}
+
+if (item && item.image_urls && Array.isArray(item.image_urls)) {
+  this.portfolioImages = item.image_urls;
+  this.portfolioData = item;
+} else {
+  console.error('ข้อมูลไม่ตรงโครงสร้างที่คาดหวัง:', response);
+  this.portfolioImages = [];
+}
+      
+      console.log('ข้อมูลภาพที่ได้รับ:', this.portfolioImages);
+      console.log('ข้อมูลทั้งหมด:', this.portfolioData);
+      
+    } catch (error) {
+      console.error('เกิดข้อผิดพลาดในการดึงภาพ:', error);
+      this.portfolioImages = [];
+    } finally {
+      this.isLoadingImages = false;
+    }
+  }
+
   //----------------------------------------------------------------------------------------------
   packages: { name: string; description: string; price: string }[] = [
     { name: '', description: '', price: '' },
@@ -107,8 +117,6 @@ checkboxesStatus = [false]; // ตัวอย่าง: false หมายถ�
     this.packages.push({ name: '', description: '', price: '' });
   }
   
-
-  
   // ฟังก์ชันตรวจสอบว่า checkbox ทั้งหมดถูกติ๊กหรือไม่
   checkAllChecked() {
     return this.checkboxesStatus.every(status => status);
@@ -116,17 +124,21 @@ checkboxesStatus = [false]; // ตัวอย่าง: false หมายถ�
   
   async savePackages() {
     if (!this.checkAllChecked()) {
-      alert("กรุณาติ๊กทุกช่องก่อนกดยืนยัน");
+      this.showSnackBar('กรุณาติ๊กทุกช่องก่อนกดยืนยัน');
+      // alert("กรุณาติ๊กทุกช่องก่อนกดยืนยัน");
       return;
     }
   
     // ตรวจสอบว่าข้อมูลแพ็กเกจครบถ้วน
-    const hasEmptyPackages = this.packages.some(pkg => !pkg.name || !pkg.description || !pkg.price);
-    
-    if (hasEmptyPackages) {
-      alert("กรุณากรอกข้อมูลแพ็กเกจให้ครบทุกช่อง");
-      return;
-    }
+  const hasEmptyPackages = this.packages.some(pkg =>
+    !pkg.name || !pkg.description || !pkg.price || isNaN(Number(pkg.price))
+  );
+
+  if (hasEmptyPackages) {
+    this.showSnackBar('กรุณากรอกข้อมูลแพ็กเกจให้ครบ และราคาต้องเป็นตัวเลข');
+    // alert("กรุณากรอกข้อมูลแพ็กเกจให้ครบ และราคาต้องเป็นตัวเลข");
+    return;
+  }
   
     const apiUrl = `${this.Constants.API_ENDPOINT}/add/package`;
     let hasErrors = false;
@@ -160,8 +172,7 @@ checkboxesStatus = [false]; // ตัวอย่าง: false หมายถ�
     }
   }
   
-  
-    // สร้างตัวแปรสถานะเริ่มต้นโมเดลเป็นปิด
+  // สร้างตัวแปรสถานะเริ่มต้นโมเดลเป็นปิด
   isModelOpen: boolean = false;
 
   // ฟังก์ชันเมื่อกดปุ่มไปหน้าถัดไป
@@ -169,13 +180,20 @@ checkboxesStatus = [false]; // ตัวอย่าง: false หมายถ�
     this.isModelOpen = true;
   }
   
-    async closeModel() {
+  async closeModel() {
     this.isModelOpen = false;
-   
   }
 
   // ฟังก์ชันเมื่อกดปุ่มย้อนกลับ
   back() {
     this.router.navigate(['/base2_3']);
+  }
+
+   showSnackBar(message: string) {
+    this.snackBar.open(message, 'ปิด', {
+      duration: 3000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+    });
   }
 }

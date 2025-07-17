@@ -3,17 +3,32 @@ import { Component, ElementRef, Renderer2, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Constants } from '../../../config/constants';
 import { HttpClient } from '@angular/common/http';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { DataMembers, DataTegs, DataWorkforEdit } from '../../../model/models';
 import { ImageUploadService } from '../../../services_image/image-upload.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../../../service/auth.service';
 
+// Confirm delete dialog component
+@Component({
+  selector: 'app-confirm-delete-dialog',
+  standalone: true,
+  imports: [MatButtonModule, CommonModule, MatDialogModule],
+  template: `
+    <h2 mat-dialog-title>ยืนยันการลบ</h2>
+    <div mat-dialog-content>คุณต้องการลบแพ็กเกจนี้ใช่หรือไม่?</div>
+    <div mat-dialog-actions>
+      <button mat-button mat-dialog-close>ยกเลิก</button>
+      <button mat-button [mat-dialog-close]="true" color="warn">ลบ</button>
+    </div>
+  `
+})
+export class ConfirmDeleteDialogComponent {}
 
 @Component({
   selector: 'app-insert-portfolio',
@@ -43,7 +58,7 @@ export class InsertPortfolioComponent {
   isUploading = false;
   selectedCategoryIndex: number | null = null;
   isAddingNewCategory = false;
-  isEditCategory = false
+  isEditCategory = false;
   Tags: DataTegs[] = [];
 
   selectedTagId: number = 0;
@@ -57,7 +72,8 @@ export class InsertPortfolioComponent {
     private http: HttpClient,
     private snackBar: MatSnackBar,
     private imageUploadService: ImageUploadService,
-    private authService: AuthService
+    private authService: AuthService,
+    private dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
@@ -78,12 +94,23 @@ export class InsertPortfolioComponent {
     this.data = [user];
 
     this.portfolioForm = this.fb.group({
-      categoryName: [''],
+      categoryName: ['',[Validators.required, this.noWhitespaceValidator]],
     });
     this.getdatauser(this.data[0].user_id);
     this.getdataWork(this.data[0].user_id);
     this.fetchTags();
   }
+
+   noWhitespaceValidator(control: AbstractControl): ValidationErrors | null {
+        if (!control.value) {
+          return null; // ให้ required validator จัดการกรณีที่ไม่มีค่า
+        }
+        
+        const isWhitespace = (control.value || '').trim().length === 0;
+        const isValid = !isWhitespace;
+        return isValid ? null : { 'whitespace': true };
+      }
+    
 
   getdatauser(id: number) {
     const url = `${this.Constants.API_ENDPOINT}/read/${id}`;
@@ -207,11 +234,15 @@ export class InsertPortfolioComponent {
       const newCategory = this.dataWork[this.dataWork.length - 1];
       console.log('New category to add:', newCategory);
       
-      if (!newCategory.name_work) {
+      if (!newCategory.name_work || newCategory.name_work.trim() === '') {
         this.showSnackBar('กรุณาระบุชื่อผลงาน');
         return;
       }
-      const Tag:number=2;
+      if (!newCategory.image_urls || newCategory.image_urls.length < 5) {
+        this.showSnackBar('กรุณาเลือกรูปภาพ อย่างน้อย 5 รูป');
+        return;
+      }
+      // const Tag:number=2;
       
       const url = `${this.Constants.API_ENDPOINT}/add/portfolioForShutt`;
      // ในส่วนของการเพิ่มผลงานใหม่
@@ -245,7 +276,7 @@ export class InsertPortfolioComponent {
       console.log('Category to update:', categoryToUpdate);
       console.log('Selected category index:', this.selectedCategoryIndex);
       
-      if (!categoryToUpdate.name_work) {
+      if (!categoryToUpdate.name_work || categoryToUpdate.name_work.trim() === '') {
         this.showSnackBar('กรุณาระบุชื่อผลงาน');
         return;
       }
@@ -319,6 +350,10 @@ export class InsertPortfolioComponent {
   }
 
   deleteCategory(catIndex: number) {
+    const dialogRef = this.dialog.open(ConfirmDeleteDialogComponent);
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+
     const categoryToDelete = this.dataWork[catIndex];
     if (!categoryToDelete || !categoryToDelete.portfolio_id) {
       this.showSnackBar('ไม่พบข้อมูลที่จะลบ');
@@ -353,6 +388,8 @@ export class InsertPortfolioComponent {
         }
       });
     }
+    }
+   });
   }
 
   cancel() {
@@ -363,7 +400,7 @@ export class InsertPortfolioComponent {
     this.snackBar.open(message, 'ปิด', {
       duration: 3000,
       horizontalPosition: 'center',
-      verticalPosition: 'bottom',
+      verticalPosition: 'top',
     });
   }
 

@@ -60,7 +60,20 @@
           </mat-sidenav>
 
          <mat-sidenav-content>
-            <button mat-button class="menu-button me-3" (click)="toggleSidenav()">☰</button>
+             <!-- ปุ่มเมนู (อยู่นอก Header) -->
+   <button 
+  mat-button 
+  class="menu-button me-3" 
+  (click)="toggleSidenav()" 
+  style="
+    position: fixed; 
+    top: 60px; 
+    left: 20px; 
+    z-index: 1000;
+  "
+>
+  ☰
+</button>
             
             <main class="content">
               <!-- Card Container -->
@@ -75,12 +88,13 @@
                   </div>
                   
                   <div class="form-group">
-                    <label class="label">ชื่อ แพ็กเกจ</label>
+                    <label class="label">ชื่อ แพ็กเกจ <span style="color: red;">*</span></label>
                     <input type="text" [(ngModel)]="package.name_package" name="packageName{{ i }}" class="input-style" placeholder="ชื่อแพ็กเกจ">
                   </div>
                   
+                  
                   <div class="form-group" *ngIf="TagsWork && TagsWork.length > 0">
-                    <label class="label">เลือกผลงานสำหรับแพ็กเกจ</label>
+                    <label class="label">เลือกผลงานของคุณสำหรับแพ็กเกจนี้ <span style="color: red;">*</span></label>
                     <select [(ngModel)]="package.portfolio_id" name="portfolioId{{ i }}" class="input-style">
                       <option value="" disabled>-- เลือกผลงาน --</option>
                       <option *ngFor="let data of TagsWork" [value]="data.portfolio_id"
@@ -92,15 +106,27 @@
                    
                   
                   <div class="form-group">
-                    <label class="price-label">รายละเอียดแพ็กเกจ</label>
+                    <label class="price-label">รายละเอียดแพ็กเกจ <span style="color: red;">*</span></label>
                     <textarea [(ngModel)]="package.detail" name="packageDescription{{ i }}" class="input-style" rows="3" placeholder="รายละเอียดแพ็กเกจ"></textarea>
                   </div>
                   
                   <div class="price-input-container">
-                    <label for="packagePrice" class="price-label">ราคาแพ็กเกจ</label>
+                    <label for="packagePrice" class="price-label">ราคาแพ็กเกจ <span style="color: red;">*</span></label>
                     <div class="input-wrapper">
-                      <input type="text" [(ngModel)]="package.price" name="packagePrice{{ i }}" class="price-input" placeholder="5999" />
+                      <input
+  type="text"
+  [(ngModel)]="package.price"
+  name="packagePrice{{ i }}"
+  class="price-input"
+  placeholder="5999"
+  pattern="^[0-9]+$"
+  required
+  #priceInput="ngModel"
+/>
                       <span class="currency-label">บาท</span>
+                    </div>
+                    <div *ngIf="priceInput.invalid && priceInput.touched" class="error-message">
+                      ต้องเป็นตัวเลขเท่านั้น ห้ามมีลูกน้ำ (,)
                     </div>
                   </div>
                 </form>

@@ -689,6 +689,7 @@ input[type="file"] {
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
   }
   
+  
   .menu-button:hover {
     background: #ffaa00;
   }
@@ -709,6 +710,11 @@ input[type="file"] {
       padding: 0; /* ป้องกันการเว้นขอบ */
   }
   
+   .error-message {
+  color: red;
+  font-size: 12px;
+  margin-top: 4px;
+}
     
     .sidebar-header {
       display: flex;
@@ -718,6 +724,7 @@ input[type="file"] {
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       left: 0;
     }
+    
 
     .menu-toggle {
       color: white;
@@ -748,7 +755,7 @@ input[type="file"] {
       flex-direction: row; /* เรียง icon และ text แนวตั้ง */
       align-items: center;
       text-decoration: none;
-      color: black;
+      color: rgb(255, 255, 255);
       padding: 10px;
       border-radius: 8px;
       transition: background 0.3s;

@@ -12,6 +12,7 @@ import { Constants } from '../../../config/constants';
 import { DataMembers } from '../../../model/models';
 import { ImageUploadService } from '../../../services_image/image-upload.service';
 import { AuthService } from '../../../service/auth.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-create-profile',
@@ -48,6 +49,7 @@ export class CreateProfileComponent implements OnInit {
     private http: HttpClient,
     private readonly imageUploadService: ImageUploadService
     ,private authService: AuthService,
+    private snackBar: MatSnackBar,
   ){ 
     console.log(this.thaijson);
 
@@ -59,7 +61,14 @@ export class CreateProfileComponent implements OnInit {
             LastName: ['', [Validators.required, this.noWhitespaceValidator]],
             address: [''],
             province: ['',],
-            Password: ['', [Validators.required, this.noWhitespaceValidator]],
+            Password: [
+  '',
+  [
+    Validators.required,
+    this.noWhitespaceValidator,
+    Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
+  ]
+],
             confirmPassword: ['', [Validators.required, this.noWhitespaceValidator]],
           });
   }
@@ -147,7 +156,7 @@ async base_for_shutt() {
     return;
   }
 
-    const url = this.Constants.API_ENDPOINT + '/register/shutt';
+    const url = this.Constants.API_ENDPOINT + '/register';
     let image: string;
   try {
 
@@ -170,27 +179,27 @@ async base_for_shutt() {
       province: this.fromreister.value.province,
       password:this.fromreister.value.Password,
       image_profile: image,
+      type_user:"2"
     };
 
-    this.http.post(url, formData).subscribe({
+    this.http.post<any>(url, formData).subscribe({
       next: (res) => {
-        console.log('data :', res);
-         const result = res as { last_idx: number };
-         if (result.last_idx) {
-            this.getdatauser(result.last_idx);
-        } else {
-           console.error('last_idx is missing in response:', res);
-      }
 
-        const responseData = { ...res };
-        this.router.navigate(['/base'], { state: { data: responseData } });
+        console.log('data:', res);
+        const user = res.user;
+        this.getdatauser(user.user_id);
+        this.router.navigate(['/base']);
       },
       error: (err) => {
-        console.error('Error :', err);
-        if (err.status === 409) {
-          alert('มีอีเมลนี้อยู่ในระบบแล้ว');
+        console.error('เกิดข้อผิดพลาด:', err);
+        if (err.status === 400) {
+          this.showSnackBar('มีอีเมลนี้อยู่ในระบบแล้ว');
+        } else if (err.status === 401) {
+          this.showSnackBar('ชื่อผู้ใช้นี้ถูกใช้ไปแล้ว');
+        }else if (err.status === 402) {
+          this.showSnackBar('เบอร์โทรนี้ถูกใช้ไปแล้ว');
         } else {
-          alert('ไม่สามารถสมัครสมาชิกได้ กรุณาลองอีกครั้ง');
+          this.showSnackBar('ไม่สามารถสมัครสมาชิกได้ กรุณาลองอีกครั้ง');
         }
       },
     });
@@ -223,6 +232,14 @@ onFileSelected(event: any) {
     } else if (field === 'confirmPassword') {
       this.hideConfirmPassword = !this.hideConfirmPassword;
     }
+  }
+
+     showSnackBar(message: string) {
+    this.snackBar.open(message, 'ปิด', {
+      duration: 3000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+    });
   }
 
   back(){

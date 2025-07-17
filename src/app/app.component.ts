@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { ImageUploadService } from './services_image/image-upload.service';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { FormsModule } from '@angular/forms';
-
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-root',
@@ -16,6 +16,7 @@ import { FormsModule } from '@angular/forms';
             ,CommonModule
             ,MatSidenavModule
             ,FormsModule
+            ,MatIconModule
              ],
   providers: [ImageUploadService], // เพิ่ม ImageUploadService
   templateUrl: './app.component.html',

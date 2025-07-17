@@ -13,10 +13,67 @@ body {
     font-weight: bold;
     margin-bottom: 10px;
 }
-.back-button {
-    font-size: 24px;
-    margin-right: 10px;
-    cursor: pointer;
+//ปุ่มกลับ
+/* From Uiverse.io by AmIt-DasIT */ 
+.box {
+   width: 45px;
+  height: 45px;
+  background: #0c63ef;
+  border-radius: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.3s;
+  cursor: pointer;
+  margin-bottom: 10px;
+
+}
+
+.arrow {
+  border: solid rgb(255, 255, 255);
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+}
+
+.right {
+  transform: rotate(-220deg);
+}
+
+.box:hover {
+  width: 160px;
+  background: linear-gradient(to right,#0c63ef, yellow);
+}
+
+.box:hover .arrow {
+  display: none;
+}
+
+.box .text {
+  display: none;
+}
+
+.box:hover .text {
+  display: flex;
+  font-size: 16px;
+  font-weight: 550;
+  color: black;
+  letter-spacing: 0.6px;
+  animation: anima 0.6s ease;
+}
+
+@keyframes anima {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.box:active {
+  background: linear-gradient(to right, rgb(38, 213, 38, 0.8), rgba(255, 255, 0, 0.8));
 }
 .user-list {
     list-style: none;

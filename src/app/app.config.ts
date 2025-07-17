@@ -10,6 +10,7 @@ import { getDatabase, provideDatabase } from '@angular/fire/database';
 import { getStorage, provideStorage } from '@angular/fire/storage';
 
 import { environment } from './config/environment';
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),

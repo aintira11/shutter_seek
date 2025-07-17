@@ -76,7 +76,7 @@ body {
     margin-bottom: 10px;
 }
 
-#second {
+#second { 
     padding: 20px 0; /* Add some vertical padding */
 }
 #second h4 {
@@ -87,14 +87,14 @@ body {
 #third {
     border-radius: 15px; /* Slightly more rounded */
     padding: 3% 2%; /* Increased padding for more breathing room */
-    background: linear-gradient(45deg, rgba(211, 214, 9, 0.2), rgba(3, 41, 212, 0.7)); /* Softer gradient */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Softer gradient */
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); /* More prominent shadow */
     margin-top: 30px;
     color: #fff; /* Text color for this section */
 }
 
 #third h4 {
-    text-align: center;
+    text-align: center; 
     margin-bottom: 30px;
     font-size: 2rem;
     color: #fff;
@@ -106,6 +106,7 @@ body {
     overflow: hidden; /* Ensure content stays within rounded corners */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     background-color: #fff; /* Ensure card background is white */
+    height: 100%; /* ให้เต็ม column เท่ากัน */
 }
 
 #third .card:hover {
@@ -178,6 +179,87 @@ body {
   padding: 20px 0;
   // background: #7b9bbe;
 }
+#four h4 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2rem;
+    color: #fff;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+#four .card {
+    border-radius: 15px; /* Match section border-radius */
+    overflow: hidden; /* Ensure content stays within rounded corners */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background-color: #fff; /* Ensure card background is white */
+}
+
+#four .card:hover {
+    transform: translateY(-8px); /* Lift card on hover */
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+}
+
+#four .carousel-inner {
+    border-radius: 12px; /* Slightly less rounded than card for visual interest */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+#four .carousel-item img {
+    height: 250px; /* Increased height for better visibility */
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+#four .carousel-control-prev,
+#four .carousel-control-next {
+    width: 15%; /* Make controls a bit wider */
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+#four .carousel-control-prev:hover,
+#four .carousel-control-next:hover {
+    opacity: 1;
+}
+
+#four .carousel-control-prev-icon,
+#four .carousel-control-next-icon {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    padding: 12px; /* Make icons slightly larger */
+}
+
+#four .card .d-flex.align-items-center.justify-content-between {
+    padding: 15px; /* Add padding around photographer info */
+}
+
+#four .card img.rounded-circle {
+    width: 60px; /* Larger profile picture */
+    height: 60px;
+    border: 3px solid #007bff; /* More prominent border */
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+#four .card img.rounded-circle:hover {
+    transform: scale(1.05);
+}
+
+#four .card .text-center.flex-grow-1 {
+    margin-left: 10px; /* Space between profile pic and text */
+    text-align: left; /* Align text to the left */
+}
+
+#four .card p.mb-0 {
+    font-size: 13px; /* Slightly larger text */
+    margin-bottom: 3px !important;
+    color: #555;
+}
+
+#four .card p.fw-bold {
+    font-size: 16px; /* Emphasize work name */
+    color: #333;
+}
 
 
 /* ส่วนของรูปที่ซ้อนอยู่ข้างหลัง */
@@ -200,14 +282,6 @@ body {
   color: #fff;
   max-width: 800px;
   padding: 20px;
-}
-//////////
-body {
-  min-height: 100vh;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
 }
 
 // header {
@@ -241,7 +315,7 @@ li {
   list-style: none;
   margin-right: 20px;
   font-size: 25px;
-  font-weight: bold;
+//   font-weight: bold;
 }
 li a {
   text-decoration: none;
@@ -340,23 +414,8 @@ cursor: pointer;
 user-select: none;
 }
 
-// .container svg {
-// position: relative;
-// top: 0;
-// left: 0;
-// height: 30px;
-// width: 30px;
-// transition: all 0.3s;
-// fill: #666; /* สีเทาปกติ */
-// }
+ 
 
-// .container svg:hover {
-// transform: scale(1.1);
-// }
-
-// .container input:checked ~ svg {
-// fill: #E3474F; /* สีแดงเมื่อถูกใจ */
-// }
 .container.heart-container {
     display: flex;
     align-items: center;
@@ -391,6 +450,7 @@ user-select: none;
     position: absolute;  /* Fix the buttons at a specific position */
     right: 0;  /* Align the container to the right edge of the screen */
     margin-right: 2%;
+    flex-shrink: 0; 
 }
 
 /* ปุ่มโปรไฟล์ */
@@ -652,9 +712,117 @@ nav::-webkit-scrollbar {
   .header-container {
     text-align: center;
   }
+
+    .button-container {
+        position: static; /* Reset position for mobile */
+        margin: 10px 0; /* Add margin for spacing */
+        justify-content: center; /* Center buttons */
+    }
 }
 
 /* Ensure consistent font for all text as per body */
 h1, h2, h3, h4, h5, h6, p, a, button, select, input, label, li {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+//model fullimage
+.image-modal .modal-dialog {
+    max-width: fit-content;
+    max-height: fit-content;
+    margin: 5vh auto;
+    //  cursor: pointer;
+}
+
+.image-modal .modal-content {
+    background: transparent;
+    border: none;
+    height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    //  cursor: pointer;
+}
+
+.image-modal .modal-body {
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    height: 100%;
+    cursor: pointer;
+}
+
+/* รูปภาพใน modal */
+.modal-image {
+    max-width: 100%;
+    max-height: 90vh;
+    width: auto;
+    height: auto;
+    object-fit: contain; /* รักษาสัดส่วนและไม่ตัดรูป */
+    border-radius: 8px;
+}
+
+/* ปุ่มลูกศร */
+.arrow-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 1060;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.arrow-btn:hover {
+    background: rgba(0, 0, 0, 0.8);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.arrow-btn.left {
+    left: 20px;
+}
+
+.arrow-btn.right {
+    right: 20px;
+}
+
+/* สำหรับมือถือ */
+@media (max-width: 768px) {
+    .image-modal .modal-dialog {
+        max-width: 90vw;
+        max-height: 50vh;
+        margin: 2.5vh auto;
+    }
+    
+    .image-modal .modal-content {
+        height: 50vh;
+    }
+    
+    .modal-image {
+        max-height: 95vh;
+    }
+    
+    .arrow-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+    
+    .arrow-btn.left {
+        left: 10px;
+    }
+    
+    .arrow-btn.right {
+        right: 10px;
+    }
 }

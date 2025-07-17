@@ -1,152 +1,295 @@
-body {
-    min-height: 100vh;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  .header-container {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    position: sticky;
-    top: 0;  /* ต้องใส่ top เพื่อให้มันติดขอบบน */
-    z-index: 1000;  /* ให้แน่ใจว่าอยู่เหนือ element อื่น */
-    background: rgb(255, 255, 255); /* เฮดเดอร์มีพื้นหลัง */
-    border-radius: 10px;
-    padding: 1rem 2rem;
-    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1); /* ให้ดูแยกออกจากพื้นหลัง */
+// report-photographer.component.scss
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-//   .button-container {
-//     display: flex;  /* Use flexbox for layout */
-//     align-items: center;  /* Align items vertically at the center */
-//     gap: 10px;  /* Optional: Adjust the gap between buttons */
-//     position: absolute;  /* Fix the buttons at a specific position */
-//     right: 0;  /* Align the container to the right edge of the screen */
-//     margin-right: 2%;
-//   }
-  
-  /* ปรับแต่งโลโก้ */
-  .logo {
-    height: 50px;
-  }
-  ul {
-    display: flex;  
-    box-sizing: border-box;
-  
-  }
-  
-li {
-    list-style: none;
-    margin-right: 20px;
-    font-size: 25px;
-    font-weight: bold;
-  }
-  li a {
-    text-decoration: none;
-    color: black;
-  }
-  nav {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    
-  }
-  
-  /* ปรับแต่งเมนู */
-  .nav-link {
-    text-decoration: none;
-    color: black;
-    margin-right: 15px;
-  }
-  .nav-link:hover {
-    color: #007bff; /* เปลี่ยนสีเมื่อเมาส์ชี้ */
-    // text-shadow: 0px 0px 5px #007bff; /* ทำให้มีเงาสีฟ้า */
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+
+  h1 {
+    color: #333;
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
-  ////
-  .container {
-    max-width: 800px;
-    margin: 0 auto;
-    background: white;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  p {
+    color: #666;
+    font-size: 1.1rem;
   }
-  h1 {
-    text-align: center;
-    color: #333;
-    margin-bottom: 30px;
+}
+
+.photographer-info {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+  padding: 20px;
+  border-radius: 15px;
+  margin-bottom: 30px;
+  text-align: center;
+
+  h3 {
+    font-size: 1.3rem;
+    margin-bottom: 5px;
   }
+
+  p {
+    opacity: 0.9;
+  }
+}
+
+.alert {
+  padding: 15px 40px 15px 15px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  position: relative;
+  font-weight: 500;
+
+  &.alert-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+  }
+
+  &.alert-error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+
+  .alert-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: inherit;
+    opacity: 0.7;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+.report-form {
   .form-group {
+    margin-bottom: 25px;
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #333;
+      font-size: 1.1rem;
+    }
+
+    .select-wrapper {
+      position: relative;
+
+      &::after {
+        content: '▼';
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none;
+        color: #667eea;
+      }
+    }
+
+    select, .input, textarea {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 16px;
+      font-family: inherit;
+      transition: all 0.3s ease;
+      background: white;
+
+      &:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        transform: translateY(-2px);
+      }
+
+      &.error {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+      }
+
+      &::placeholder {
+        color: #999;
+      }
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    .field-info {
+      color: #666;
+      font-size: 0.9rem;
+      margin-top: 5px;
+      display: block;
+    }
+
+    .error-message {
+      color: #dc3545;
+      font-size: 0.9rem;
+      margin-top: 5px;
+      font-weight: 500;
+    }
+  }
+}
+
+.buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 30px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+}
+
+.btn {
+  padding: 15px 30px;
+  border: none;
+  border-radius: 25px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &.btn-primary {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    }
+  }
+
+  &.btn-secondary {
+    background: #f8f9fa;
+    color: #6c757d;
+    border: 2px solid #e0e0e0;
+
+    &:hover:not(:disabled) {
+      background: #e9ecef;
+      transform: translateY(-2px);
+    }
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+//เช็คบ๊อก
+.checkbox-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px; /* ลดระยะห่างจาก 10px เป็น 8px */
+  margin: 10px 0;
+}
+
+.checkbox-group input[type="checkbox"] {
+  margin-top: 2px;
+  transform: scale(1.2);
+  cursor: pointer;
+  flex-shrink: 0; /* ไม่ให้ checkbox หดตัว */
+   font-size: 0.9rem;
+}
+
+.checkbox-label {
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+  margin: 0; /* เอา margin ออก */
+}
+
+.checkbox-label:hover {
+  color: #007bff;
+}
+
+.warning-box {
+  display: flex;
+  align-items: flex-start;
+  background-color: #fff9e6;
+  border: 1px solid #ffc107;
+  border-radius: 8px;
+  padding: 15px;
+  margin: 20px 0;
+}
+
+.warning-icon {
+  font-size: 20px;
+  margin-right: 10px;
+}
+
+.warning-content {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #856404;
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+    margin: 10px;
+  }
+
+  .header h1 {
+    font-size: 2rem;
+  }
+
+  .photographer-info {
+    padding: 15px;
+  }
+
+  .report-form .form-group {
     margin-bottom: 20px;
   }
-  label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-  }
-  input[type="text"],
-  input[type="email"],
-  input[type="tel"],
-  input[type="date"],
-  textarea,
-  select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box;
-    font-size: 16px;
-  }
-  .radio-group {
-    display: flex;
-    gap: 15px;
-  }
-  .radio-item {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-  textarea {
-    min-height: 120px;
-  }
-  .button-container {
-    display: flex;
-    flex-direction: row;
-    gap: 15px;
-    margin-top: 20px;
-  
-    button {
-      background-color: #004AAD;
-      color: white;
-      border: none;
-      padding: 12px 20px;
-      font-size: 16px;
-      border-radius: 4px;
-      cursor: pointer;
-      flex: 1;
-      transition: background-color 0.3s;
-  
-      &:disabled {
-        background-color: #cccccc;
-        cursor: not-allowed;
-      }
-    }
-  
-    .cancel-btn {
-      background-color: #6c757d;
-      
-      &:hover:not(:disabled) {
-        background-color: #5a6268;
-      }
-    }
-  
-    .submit-btn:hover:not(:disabled) {
-      background-color: #0040AA;
-    }
 }
-  .required:after {
-    content: " *";
-    color: red;
-  }

@@ -14,9 +14,13 @@
   </head>
   <body>
     <div class="profile-container">
-      <div class="back-button">
-        <i class="fas fa-chevron-left" (click)="back()"></i>
+      
+      <div class="left">
+      <div class="box" (click)="back()">
+        <i class="arrow right"></i>
+        <span class="text">กลับ</span>
       </div>
+    </div>
 
       <!-- Profile Section -->
       <div class="profile-header" >
@@ -34,16 +38,17 @@
         </div>
         <div class="profile-actions">
           <button class="edit-button" (click)="goToEditPro()">แก้ไข</button>
-          <button class="logout-button" (click)="goToShutter()">สลับบัญชี</button>
+          <div *ngIf="data[0].type_user === '4'">
+            <button class="logout-button" (click)="goToShutter()">สลับบัญชี</button>
+          </div>
         </div>
       </div>
 
       <!-- Divider -->
       <hr class="divider" />
-
-      <h3><i class='fas fa-heart' style='color:red'></i>งานที่ถูกใจ</h3>
       
       <div *ngIf="Like.length > 0 ; else aaaa " >
+        <h3> ❤️ งานที่ถูกใจ ({{Like.length }} )</h3>
         <section class="container mt-5">
           <div class="row justify-content-start" >
               <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3 px-2" *ngFor="let photographer of Like; let portfolioIndex = index">
@@ -74,7 +79,7 @@
                       <div class="d-flex align-items-center justify-content-between mt-2 px-2">
                           <!-- รูปโปรไฟล์ -->
                           <img [src]="photographer.image_profile" class="rounded-circle border border-primary"
-                              width="40" height="40" alt="profile">
+                              width="40" height="40" alt="profile" (click)="toShutter(photographer.portfolio_id)">
       
                           <!-- ข้อมูลช่างภาพ -->
                           <div class="text-center flex-grow-1">
@@ -106,8 +111,8 @@
       </section>
       </div>
       <ng-template #aaaa>
-        <h3 style="text-align: center;">ยังไม่มีผลงานที่คุณถูกใจ ❤️ </h3>
-      </ng-template>
+        <h3 style="display: flex;justify-content: center;align-items: center;">ยังไม่มีผลงานที่คุณถูกใจ ❤️ </h3>
+    </ng-template>
     </div>
     
   </body>

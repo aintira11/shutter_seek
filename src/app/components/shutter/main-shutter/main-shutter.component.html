@@ -19,7 +19,7 @@
     <mat-sidenav-container class="sidenav-container">
         <!-- Sidebar -->
         <mat-sidenav #sidenav mode="side" [(opened)]="opened" class="sidebar">
-            <div class="sidebar-header">
+            <div class="sidebar-header" style="margin-bottom: 15px;">
               
               <button mat-icon-button (click)="toggleSidenav()" class="menu-toggle">
                 <mat-icon>menu</mat-icon>
@@ -29,7 +29,7 @@
               </div> -->
             </div>
             
-            <div class="sidebar-content">
+            <div class="sidebar-content" >
                 <ul class="nav-links">
                   <li class="nav-item" >
                     <div (click)="goToHomeShutter()" class="nav-link">
@@ -104,7 +104,7 @@
   
       <!-- ด้านขวา: ปุ่มเข้าสู่ระบบ / ออกจากระบบ -->
       <div class="d-flex align-items-center">
-        <button class="btn btn-outline-primary me-2" (click)="logout()">ลงทะเบียน</button>
+        <button class="btn btn-outline-primary btn-sm me-2" (click)="logout()">ลงทะเบียน</button>
         <button class="btn btn-primary me-2" (click)="logout()">ออกจากระบบ</button>
       </div>
     </header>
@@ -135,69 +135,60 @@
       </div> -->
     
       <section id="first">
-        <div class="profile-container">
-            <!-- <div class="back-button">
-              <i class="fas fa-chevron-left" (click)="back()"></i>
-            </div> -->
-      
-            <!-- Profile Section -->
-            <div class="profile-header" >
-              <img
-              *ngIf="data[0].image_profile" [src]="data[0].image_profile"
-                alt="Profile"
-                class="profile-image"
-              />
-              <div class="profile-info">
-                <h2>{{data[0].username}}</h2>
-                <button class="btn me-2" (click)="openModel()">
-                  <p>มีผู้ติดตาม {{datafollower.length}} คน</p>
-                </button>
-                <p>เป็นสมาชิกเมื่อ {{ data[0].date_of_member | date:'dd/MM/yyyy' }}</p>
-              </div>
-              <div class="profile-actions">
+    <div class="profile-container">
+        <!-- Profile Section -->
+        <div class="profile-header" >
+          <img
+          *ngIf="data[0]?.image_profile" [src]="data[0].image_profile"
+            alt="Profile"
+            class="profile-image"
+          />
+          <div class="profile-info" >
+            <h2>{{data[0].username}}</h2>
+            <button class="btn me-2" (click)="openModel()">
+              <p>มีผู้ติดตาม {{datafollower.length}} คน</p>
+            </button>
+            <p>เป็นสมาชิกเมื่อ {{ data[0].date_of_member | date:'dd/MM/yyyy' }}</p>
+          </div>
+          
+            <div class="profile-actions" *ngIf="data[0].type_user==='4'">
                 <!-- <button class="edit-button" (click)="goToEditPro()">แก้ไข</button> -->
-                <button class="logout-button" >สลับบัญชี</button>
+                <button class="logout-button" (click)="goToMember()" >สลับบัญชี</button>
               </div>
-            </div>
-      
-            <!-- Divider --> 
-            <hr class="divider" />
-            <div style="display: flex; flex-direction: row;justify-content: space-between; padding-left: 5%;padding-right: 5%;">
-                <button class="btn me-2" (click)="scrollTo()">
-                  <p>ภาพรวม</p>
-                </button>
-                <button class="btn me-2" (click)="scrollTopack()">
-                  <p>แพ็กเกจ</p>
-                </button>
-                <button class="btn me-2" (click)="scrollToport()">
-                  <p>ผลงาน</p>
-                </button>
-                <button class="btn me-2" (click)="scrollToreview()">
-                  <p>รีวิว</p>
-                </button>
-            </div>
-    
-            <div class="row1" id="description">
-              <div class="card1" *ngIf="data">
-                <p  style="text-align: center;padding: 2%;font-size: 23px;"> ข้อมูลส่วนตัว</p>
-                <p style="margin-left: 10%;margin-bottom: 5%;"> ชื่อจริง : {{ data[0].first_name }}   {{data[0].last_name}}</p>
-                <p style="margin-left: 10%;margin-bottom: 5%;"> เบอร์โทร : {{data[0].phone}} </p>
-                <p style="margin-left: 10%;margin-bottom: 5%;"> Line ID : {{data[0].lineID}} </p>
-                <p style="margin-left: 10%;margin-bottom: 5%;"> Email : {{data[0].email}} </p>
-                <p style="margin-left: 10%;margin-bottom: 5%;"> เว็บไซต์ : {{data[0].facebook}} </p>
-                <!-- <p style="margin-left: 10%;"> พื้นที่ที่รับงาน : {{datauser[0].first_name}} </p> -->
-              </div>
-              <!-- aboub me --> 
-                <div class="card1" style="background-color: rgb(255, 187, 55);">
-                  <p style="text-align: center;padding: 2%;font-size: 23px;color: white;">เพิ่มเติมเกี่ยวกับฉัน</p>
-                  <p style="margin-left: 10%;margin-bottom: 5%;color: white;">
-                   {{data[0].description}}
-                  </p>
-              </div>
-            </div>
-    
+         
+
         </div>
-      </section>
+  
+        <!-- Divider --> 
+         <hr class="divider" />
+
+            <div class="nav-tabs-container">
+                <button class="nav-tab active" >ภาพรวม</button>
+                <button class="nav-tab" (click)="scrollToport()">ผลงาน</button>
+                <button class="nav-tab" (click)="scrollToreview()">รีวิว</button>
+            </div>
+
+        <div div id="overview" class="info-cards" id="description">
+          <div class="info-card" >
+            <p  style="text-align: center;padding: 2%;font-size: 23px;"> ข้อมูลส่วนตัว</p>
+            <p style="margin-left: 10%;margin-bottom: 5%;"> ชื่อจริง : {{data[0].first_name}}    {{data[0].last_name}}</p>
+            <p style="margin-left: 10%;margin-bottom: 5%;"> เบอร์โทร : {{data[0].phone}} </p>
+            <p style="margin-left: 10%;margin-bottom: 5%;"> Line ID : {{data[0].lineID}} </p>
+            <p style="margin-left: 10%;margin-bottom: 5%;"> Email : {{data[0].email}} </p>
+            <p style="margin-left: 10%;margin-bottom: 5%;"> เว็บไซต์ : {{data[0].facebook}} </p>
+            <!-- <p style="margin-left: 10%;"> พื้นที่ที่รับงาน : {{datauser[0].first_name}} </p> -->
+          </div>
+          <!-- aboub me --> 
+            <div  class="info-card highlight" style="background-color: rgb(255, 187, 55);">
+              <p style="text-align: center;padding: 2%;font-size: 23px;color: white;">เพิ่มเติมเกี่ยวกับฉัน</p>
+              <p style="margin-left: 10%;margin-bottom: 5%;color: white;">
+               {{data[0].description}}
+              </p>
+          </div>
+        </div>
+
+    </div>
+  </section>
       <!-- <section id="second">
         <h2>แพ็กเกจ</h2>
         <br>
@@ -222,82 +213,141 @@
       </section> -->
       
     
-      <section id="third">
-        <div style="display: flex; align-items: center; justify-content :flex-start; width: 100%;">
-          <span class="material-symbols-outlined" style="color: #004AAD; font-size: xx-large;">
-            category
-          </span>
-          &nbsp;
-          <h2> ผลงาน</h2>
+     
+<!-- ส่วนแสดงผลงาน -->
+<section id="third">
+  <div style="display: flex; align-items: center; justify-content: flex-start; width: 100%; margin-bottom: 24px;">
+    <span class="material-symbols-outlined" style="color: #004AAD; font-size: xx-large; margin-right: 8px;">
+      category
+    </span>
+    <h2 style="margin: 0; color: #004AAD; font-weight: 600;">ผลงาน</h2>
+  </div>
+  
+  <div *ngFor="let data of datawork" class="work-item">
+        <!-- หัวข้อผลงานและไลค์ -->
+    <div class="work-header">
+      <h3 class="work-title">{{ data.name_work }}</h3>
+      <div class="work-actions">
+        <!-- ปุ่มแก้ไขและลบ -->
+        <div class="edit-delete-section">
+          <button mat-icon-button class="edit-btn" (click)="editWork(data.portfolio_id)" matTooltip="แก้ไขผลงาน">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button class="delete-btn" (click)="deleteWork(data.portfolio_id)" matTooltip="ลบผลงาน">
+            <mat-icon>delete</mat-icon>
+          </button>
         </div>
-        
-        <br>
-        <div *ngFor="let data of datawork">
-          <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-            <p class="work-name" style="font-size: 20px;">{{ data.name_work }}</p>
+        <!-- ส่วนไลค์ -->
+        <div class="like-section" (click)="getLike(data.portfolio_id)">
+          <mat-icon class="like-icon">favorite</mat-icon>
+          <span class="like-count" [title]="likerNames">{{ data.like_count }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal รายชื่อผู้ถูกใจ -->
+<div class="modal-overlay" *ngIf="showLikeModal">
+  <div class="modal-content">
+    <h3>รายชื่อผู้ที่ถูกใจ</h3>
+    <hr>
+    <div class="like-list">
+      <div *ngFor="let person of datalike" class="like-item">
+        {{ person.liker_name }}
+      </div>
+    </div>
+
+    <button type="button" class="modelbt"(click)="closeLikeModal()">ปิด</button>
+  </div>
+</div>
+    
+    <!-- แสดงรูปภาพ -->
+    <div class="image-gallery">
+      <button mat-icon-button class="nav-btn nav-left" (click)="scrollLeft()" >
+        <mat-icon>chevron_left</mat-icon>
+      </button>
       
-            <!-- ไอคอนหัวใจกับจำนวนไลค์ด้านขวา -->
-            <div style="display: flex; align-items: center; gap: 5px;">
-              <img src="https://cdn-icons-png.flaticon.com/128/2589/2589175.png" alt="Like" width="24">
-              <p style="margin: 0;">{{ data.like_count }}</p>
-            </div>
+      <div class="image-container" #wrapper>
+        <div class="image-track">
+          <div *ngFor="let imgUrl of data.image_urls" class="image-item">
+            <img [src]="imgUrl" alt="งานตัวอย่าง" class="work-image">
           </div>
-          
-          <!-- แสดงรูปภาพ -->
-          <div class="image-container">
-            <button class="scroll-btn left" (click)="scrollLeft()">&#60;</button>
-            <div class="image-wrapper" #wrapper>
-              <div class="image-row" style="display: flex; flex-direction: row;">
-                <div *ngFor="let imgUrl of data.image_urls">
-                  <img [src]="imgUrl" alt="image1" style="border: 2px solid #004AAD;">
+        </div>
+      </div>
+      
+      <button mat-icon-button class="nav-btn nav-right" (click)="scrollRight()" >
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
+
+    <!-- ส่วนแพ็กเกจ -->
+    <div class="packages-section">
+      <div class="section-header">
+        <mat-icon class="section-icon">local_offer</mat-icon>
+        <h3 class="section-title">แพ็กเกจบริการ</h3>
+      </div>
+
+      <!-- แสดงแพ็กเกจ -->
+      <div *ngIf="data.packages && data.packages.length > 0 && data.packages[0].package_id != null; else noPackages">
+        <div class="packages-grid">
+          <mat-card *ngFor="let package of data.packages" class="package-card" elevation="2">
+            <mat-card-header class="package-header">
+              <div class="package-title-section">
+                <mat-card-title class="package-name">{{ package.name_package }}</mat-card-title>
+                <mat-card-subtitle class="package-category">
+                  <mat-icon class="category-icon">category</mat-icon>
+                  {{ data.name_tags }}
+                </mat-card-subtitle>
+              </div>
+              <div class="package-price-section">
+                <div class="price-container">
+                  <span class="price-value">{{ package.price | number:'1.0-0' }}</span>
+                  <span class="price-currency">฿</span>
                 </div>
               </div>
-            </div>
-            <button class="scroll-btn right" (click)="scrollRight()">&#62;</button>
-          </div>
-          <br>
-          <div style="display: flex; align-items: center; justify-content :flex-start; width: 100%;">
-            <!-- <span class="material-symbols-outlined"style="color: #004AAD; font-size: xx-large;">
-              shoppingmode
-            </span> 
-            &nbsp; -->
-            <h3 id="second">แพ็กเกจ </h3>
-          </div>
-         
-          
-          <!-- เช็คว่าแพ็กเกจมีอยู่หรือไม่ -->
-    <div *ngIf="data.packages && data.packages.length > 0 && data.packages[0].package_id != null; else noPackages">
-      <!-- วนลูปแพ็กเกจภายใน datawork -->
-      <mat-card *ngFor="let package of data.packages" style="background-color: #004AAD; color: white; margin-bottom: 15px;">
-        <mat-card-header style="display: flex; justify-content: space-between;">
-          <div class="package-header">
-            <mat-card-title>{{ package.name_package }}</mat-card-title>
-            <mat-card-title>ราคา {{ package.price }} บาท</mat-card-title>
-          </div>
-        </mat-card-header>
-        <mat-card-subtitle style="color: rgb(255, 187, 55); margin-left: 1.5%;">
-          หมวดหมู่ของแพ็กเกจ: {{ data.name_tags }}
-        </mat-card-subtitle>
-        <hr>
-        <div mat-card-image></div>
-        <mat-card-content>
-          <p>{{ package.detail }}</p>
-        </mat-card-content>
-      </mat-card>
-    </div>
-    <ng-template #noPackages>
-      <!-- <h3 id="second" >แพ็กเกจ ของงานนี้</h3> -->
-      <mat-card  style="background-color: #004AAD; color: white; margin-bottom: 15px;">
-        <mat-card-header style="display: flex; justify-content: space-between;">
-        </mat-card-header>
-        <mat-card-title style="text-align: center;">ยังไม่มีแพ็กเกจ</mat-card-title>
-        </mat-card>
-    </ng-template>
-      
-          <hr>
-          <br>
+            </mat-card-header>
+            
+            <mat-card-content class="package-content">
+              <div class="package-description">
+                <h4 class="description-title">รายละเอียดแพ็กเกจ</h4>
+                <div class="description-container">
+                  <textarea 
+                    readonly 
+                    [value]="package.detail" 
+                    class="package-detail-textarea"
+                    rows="4"
+                    placeholder="รายละเอียดแพ็กเกจ...">
+                  </textarea>
+                </div>
+              </div>
+            </mat-card-content>
+            
+            <!-- <mat-card-actions class="package-actions">
+              <button mat-raised-button color="primary" class="select-package-btn">
+                <mat-icon>shopping_cart</mat-icon>
+                <span>เลือกแพ็กเกจนี้</span>
+              </button>
+            </mat-card-actions> -->
+          </mat-card>
         </div>
-      </section>
+      </div>
+
+      <!-- Template สำหรับกรณีไม่มีแพ็กเกจ -->
+      <ng-template #noPackages>
+        <div class="no-packages-container">
+          <mat-card class="no-packages-card" elevation="1">
+            <mat-card-content class="no-packages-content">
+              <div class="no-packages-icon">
+                <mat-icon>inbox</mat-icon>
+              </div>
+              <h3 class="no-packages-title">ยังไม่มีแพ็กเกจ</h3>
+              <p class="no-packages-description">ขณะนี้ยังไม่มีแพ็กเกจสำหรับงานนี้</p>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</section>
       
        <br>
     
@@ -307,19 +357,17 @@
     
             </div>
             <div class="star-container">
-              <p>How was your experience?</p>
-              <div class="stars">
-                <button *ngFor="let star of stars; let i = index" 
-                        class="star" 
-                        [ngClass]="{'active': i < rating, 'hover': i < hoverRating}" 
-                        (click)="rate(i + 1)" 
-                        (mouseover)="hover(i + 1)" 
-                        (mouseleave)="hover(0)">
-                  &#9733;
-                </button>
-              </div>
-              <p class="rating-text">{{ rating }} of 5</p>
-            </div>
+          <p>How was your experience?</p>
+          <div class="stars">
+            <div class="star-rating">
+        <ng-container *ngFor="let star of stars">
+            <i [class]="star.class" [ngClass]="star.color"></i>
+        </ng-container>
+        <!-- <span class="rating-text">{{ averageRating }}/5</span> -->
+    </div>
+          </div>
+          <p class="rating-text">{{ averageRating || 0}} of 5</p>
+        </div>
             
             <br>
             <div *ngFor="let review of datareview">
@@ -355,7 +403,7 @@
     </div>
 
 <!-- model แสดงรายชื่อผู้ติดตาม -->
-<div *ngIf="isModelOpen" class="modal"> 
+<div  class="modal" style="z-index: 9999;" *ngIf="isModelOpen"> 
   <div class="follower-container">
   <div class="header">
     <h3>ผู้ติดตามทั้งหมด</h3>

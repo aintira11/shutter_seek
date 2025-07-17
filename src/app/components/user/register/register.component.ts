@@ -6,6 +6,7 @@ import { Constants } from '../../../config/constants';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ImageUploadService } from '../../../services_image/image-upload.service';
 import { CommonModule } from '@angular/common';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 @Component({
@@ -22,11 +23,23 @@ export class RegisterComponent {
   hidePassword = true;
   hideConfirmPassword = true;
 
-  constructor(private Constants :Constants ,private http:HttpClient ,private fromBuilder : FormBuilder ,private router : Router,private readonly imageUploadService: ImageUploadService)
+  constructor(private Constants :Constants ,
+    private http:HttpClient ,
+    private fromBuilder : FormBuilder ,
+    private router : Router,
+    private readonly imageUploadService: ImageUploadService,
+  private snackBar: MatSnackBar,)
   {
     this.fromreister = this.fromBuilder.group({
       Email: ['', [Validators.required, Validators.email, this.noWhitespaceValidator]],
-      Password: ['', [Validators.required, this.noWhitespaceValidator]],
+      Password: [
+  '',
+  [
+    Validators.required,
+    this.noWhitespaceValidator,
+    Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
+  ]
+],
       confirmPassword: ['', [Validators.required, this.noWhitespaceValidator]],
       UserName: ['', [Validators.required, this.noWhitespaceValidator]],
       Name: ['', [Validators.required, this.noWhitespaceValidator]],
@@ -105,7 +118,7 @@ export class RegisterComponent {
   }
 
   // เตรียม URL สำหรับเรียก API
-  const url = this.Constants.API_ENDPOINT + '/register/member';
+  const url = this.Constants.API_ENDPOINT + '/register';
 
   // ประกาศตัวแปร image นอก if/else เพื่อใช้ต่อได้
   let image: string;
@@ -131,6 +144,7 @@ export class RegisterComponent {
       phone: this.fromreister.value.Phone,
       image_profile: image,
       address: this.fromreister.value.address,
+      type_user:"1"
     };
 
     // ส่งข้อมูลไป API
@@ -141,10 +155,14 @@ export class RegisterComponent {
       },
       error: (err) => {
         console.error('เกิดข้อผิดพลาด:', err);
-        if (err.status === 409) {
-          alert('มีอีเมลนี้อยู่ในระบบแล้ว');
+        if (err.status === 400) {
+          this.showSnackBar('มีอีเมลนี้อยู่ในระบบแล้ว');
+        } else if (err.status === 401) {
+          this.showSnackBar('ชื่อผู้ใช้นี้ถูกใช้ไปแล้ว');
+        }else if (err.status === 402) {
+          this.showSnackBar('เบอร์โทรนี้ถูกใช้ไปแล้ว');
         } else {
-          alert('ไม่สามารถสมัครสมาชิกได้ กรุณาลองอีกครั้ง');
+          this.showSnackBar('ไม่สามารถสมัครสมาชิกได้ กรุณาลองอีกครั้ง');
         }
       }
     });
@@ -161,6 +179,14 @@ togglePasswordVisibility(field: string) {
     } else if (field === 'confirmPassword') {
       this.hideConfirmPassword = !this.hideConfirmPassword;
     }
+  }
+
+     showSnackBar(message: string) {
+    this.snackBar.open(message, 'ปิด', {
+      duration: 3000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+    });
   }
 }
 

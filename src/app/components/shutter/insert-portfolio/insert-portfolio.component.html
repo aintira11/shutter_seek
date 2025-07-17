@@ -74,7 +74,20 @@
         </mat-sidenav>
 
       <mat-sidenav-content>
-          <button mat-button class="menu-button me-3" (click)="toggleSidenav()">☰</button>
+           <!-- ปุ่มเมนู (อยู่นอก Header) -->
+   <button 
+  mat-button 
+  class="menu-button me-3" 
+  (click)="toggleSidenav()" 
+  style="
+    position: fixed; 
+    top: 60px; 
+    left: 20px; 
+    z-index: 1000;
+  "
+>
+  ☰
+</button>
       <!-- ส่วนแสดงผล -->
       <main class="content">
         <div class="portfolio-container">
@@ -124,31 +137,38 @@
               <div *ngIf="selectedCategoryIndex !== null">
                 <div class="category-edit-section">
                   <div class="form-group">
-                    <label class="label">ชื่อผลงาน</label>
+                    <label class="label">ชื่อผลงาน<span style="color: red;">*</span></label>
                     <input 
                       type="text" 
                       [value]="dataWork[selectedCategoryIndex].name_work"
                       (input)="updateWorkName(selectedCategoryIndex, $event)" 
                       class="input-style" 
                       placeholder="กรุณาระบุชื่อผลงาน">
-                  </div>
+                    <div *ngIf="portfolioForm.get('categoryName')?.invalid && portfolioForm.get('categoryName')?.touched" class="error-message">
+                         <span *ngIf="portfolioForm.get('categoryName')?.errors?.['required']" style="color: red; font-size: smaller;">*กรุณากรอก ชื่อผู้ใช้</span>
+                        <span *ngIf="portfolioForm.get('categoryName')?.errors?.['whitespace']" style="color: red; font-size: smaller;">*ชื่อผู้ใช้ ไม่สามารถเป็นช่องว่างได้</span>
+                   </div>
+
+                    </div>
+                  
 
                     <!-- ช่องเลือกหมวดหมู่สำหรับทั้งเพิ่มและแก้ไข -->
                     <div class="form-group">
-                      <label class="label">หมวดหมู่งาน</label>
+                      <label class="label">หมวดหมู่งาน <span style="color: red;">*</span></label>
                       <select class="input-style" [(ngModel)]="selectedTagId">
                         <option value="" disabled>กรุณาเลือกหมวดหมู่</option>
                         <option *ngFor="let tag of Tags" 
-                                [value]="tag.tags_id"
-                                [disabled]="isAddingNewCategory ? isTagDisabled(tag.tags_id) : false">
+                                [value]="tag.tags_id" >
+                                <!-- [disabled]="isAddingNewCategory ? isTagDisabled(tag.tags_id) : false"> -->
                           {{ tag.name_tags }}
                         </option>
                       </select>
+                      
                     </div>
                   
               
               <div class="image-section">
-                <h3>รูปภาพผลงาน</h3>
+                <h3>รูปภาพผลงาน<span style="color: red;">*</span></h3>
                 
                 <div class="image-list">
                   <div *ngIf="dataWork[selectedCategoryIndex].image_urls.length === 0" class="no-images">

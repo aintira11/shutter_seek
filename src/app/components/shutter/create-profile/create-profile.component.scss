@@ -1,19 +1,13 @@
 body {
-            margin: 0;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            // background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            background-attachment: fixed;
-            // color: #333;
-            min-height: 100vh;
-            position: relative;
-        }
-.container-header {
-    font-family: 'Arial', sans-serif;
-    padding: 20px;
-    max-width: 90%;
-    margin: 0 auto;
-    text-align: center;
-   }
+     margin: 0;
+     font-family: 'Segoe UI', Arial, sans-serif;
+     // background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+     background-attachment: fixed;
+     // color: #333;
+     min-height: 100vh;
+     position: relative;
+}
+
 
 .container {
     font-family: 'Arial', sans-serif;
@@ -25,56 +19,84 @@ body {
     justify-content: center; /* จัดกึ่งกลางแนวตั้ง */
     align-items: center; /* จัดกึ่งกลางแนวนอน */
     //height: 100vh; /* ครอบคลุมทั้งหน้าจอ */
-
-    .back-button {
-    position: fixed; /* ให้ลอยเหนือเนื้อหา */
-    top: 20px;
-    left: 20px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    font-size: 16px;
-    color: #000;
-    z-index: 1000; /* อยู่เหนือทุกอย่าง */
-    background-color: rgba(255, 255, 255, 0.87); /* ป้องกันซ้อนกับพื้นหลัง */
-    padding: 6px 10px;
-    border-radius: 6px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+.container-header {
+  font-family: 'Arial', sans-serif;
+  max-width: 90%;
+  margin: 0 auto;
+  text-align: center;
 }
 
-.back-button i {
-    font-size: 20px;
-    margin-right: 5px;
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
 }
+
+/* box ปรับเป็น relative ธรรมดา จะไม่ลอย */
+.box {
+  width: 45px;
+  height: 45px;
+  background: #0c63ef;
+  border-radius: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.3s;
+  cursor: pointer;
 }
+
+/* หากยังต้องลอยจริง ให้แยกออกจาก top-bar */
+.box.fixed {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 999;
+}
+
+/* arrow and hover animation ตามเดิม */
+.arrow {
+  border: solid #fff;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+  transform: rotate(-220deg);
+}
+
+.box:hover {
+  width: 160px;
+  background: linear-gradient(to right, #0c63ef, yellow);
+}
+
+.box:hover .arrow {
+  display: none;
+}
+
+.box .text {
+  display: none;
+}
+
+.box:hover .text {
+  display: flex;
+  font-size: 16px;
+  font-weight: 550;
+  color: black;
+  letter-spacing: 0.6px;
+  animation: anima 0.6s ease;
+}
+
+@keyframes anima {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
 .header {
-    display: flex;
-    justify-content: flex-end; 
-    // border-bottom: 1px solid #ddd;
-    position: sticky;
-    top: 0;
-}
-  .logo-img {
-    max-width: 400px; /* กำหนดขนาดสูงสุดของรูป */
-    max-height: 350px; /* กำหนดความสูงสูงสุด */
-    width: auto; /* ให้ปรับตามสัดส่วนความกว้าง */
-    height: auto; /* ให้ปรับตามสัดส่วนความสูง */
-    margin-right: 250px;
-    object-fit: contain; /* รักษาสัดส่วนของรูป */
-  }
-
-.back-button {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.back-button span {
-    font-size: 18px;
-    margin-left: 5px;
-    color: #003ebb;
-    cursor: pointer;
-}
 
 .imag {
     width: 100px;
@@ -127,6 +149,7 @@ form {
 }
 
 .form-group {
+    position: relative;
     margin-bottom: 20px;
 }
 
@@ -197,10 +220,42 @@ form {
     font-size: 16px;
     cursor: pointer;
     width: 30%;
+
+    position: relative;
+    transition: all 0.3s ease;
 }
 
 .btn-submit:hover {
     background-color: #002fa1;
+}
+
+.btn-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-submit.loading {
+    pointer-events: none;
+}
+
+.button-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.spin {
+    animation: spin 1s linear infinite;
 }
 
 .column {
@@ -220,34 +275,27 @@ form {
     color: #6c757d; /* สีของไอคอน */
   }
 
-  .error-message-absolute {
-  color: red;
-  font-size: smaller;
-  position: absolute;
-  bottom: -1.2em; /* ปรับระยะห่างตามความเหมาะสม */
-  left: 0;
+.error-message,
+.error-message-absolute {
+  font-size: 14px;
+  color: #dc3545;
+  display: flex;
+  align-items: start;
+  gap: 5px;
+  flex-wrap: wrap;           /* ให้ตัดบรรทัดเมื่อข้อความยาว */
+  word-wrap: break-word;
+  max-width: 100%;           /* ไม่เกินพื้นที่ของ container */
+  line-height: 1.4;
+  position: relative;        /* เปลี่ยนจาก absolute ถ้าไม่อยากให้ทับ */
+  margin-top: 5px;
 }
+
+.error-message::before,
 .error-message-absolute::before {
-    content: '⚠';
-    margin-right: 5px;
-    font-size: 14px;
-}
-
- .error-message {
-            margin-top: 5px;
-            font-size: 12px;
-            color: #dc3545;
-            display: flex;
-            align-items: center;
-        }
-
-        .error-message::before {
-            content: '⚠';
-            margin-right: 5px;
-            font-size: 14px;
-        }
-
-        .input-style {
+  content: '⚠';
+  font-size: 14px;
+}  
+   .input-style {
             width: 100%;
             padding: 12px 16px;
             font-size: 14px;
@@ -270,6 +318,7 @@ form {
         .input-style.error {
             border-color: #dc3545;
             background: rgba(255, 245, 245, 0.8);
+            font-size: 14px;
         }
 
         .input-style.error:focus {

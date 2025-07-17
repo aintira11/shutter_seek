@@ -111,6 +111,7 @@
                    class="error-message-absolute">
                 <span *ngIf="fromreister.get('Password')?.errors?.['required']">*กรุณากรอกรหัสผ่าน</span>
                 <span *ngIf="fromreister.get('Password')?.errors?.['whitespace']">*รหัสผ่านไม่สามารถเป็นช่องว่างได้</span>
+                <span *ngIf="fromreister.get('Password')?.errors?.['pattern']"> *รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร และมีทั้งตัวอักษรพิมพ์ใหญ่,พิมพ์เล็ก,ตัวเลข และ อักขระพิเศษ อย่างน้อย 1 ตัว</span>
               </div>
             </div>
 

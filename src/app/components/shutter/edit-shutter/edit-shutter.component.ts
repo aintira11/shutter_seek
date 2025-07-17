@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ImageUploadService } from '../../../services_image/image-upload.service';
 import jsonData from '../../../../assets/thai_provinces.json'
@@ -37,6 +37,13 @@ export class EditShutterComponent{
   selectedFile?: File;
   imagePreview: string | null = null;
   isLoading: boolean = false;
+
+  showModal = false;
+   formChangePassword!: FormGroup;
+
+  hidePassword = true;
+  hideConfirmPassword = true;
+  hidePasswordnew = true;
 
 constructor(
   private router : Router,
@@ -71,15 +78,26 @@ ngOnInit(): void {
     email: [this.data[0].email, [Validators.required, Validators.email]],
     address: [this.data[0].address],
     province: [this.data[0].province, Validators.required],
-    lineID: [this.data[0].lineID],
-    facebook: [this.data[0].facebook],
-    description: [this.data[0].description]
+    lineID: [this.data[0].lineID, Validators.required],
+    facebook: [this.data[0].facebook, Validators.required],
+    description: [this.data[0].description, Validators.required]
   });
 
   // setTimeout(() => {
   //   this.marginLeft = '250px';  // ตั้งค่าใหม่
   //   this.cdRef.detectChanges(); // บังคับให้ Angular อัปเดต
   // }, 0);
+
+  this.formChangePassword = this.fb.group({
+    old_password: ['', [Validators.required, this.noWhitespaceValidator]],
+    new_password: ['',[
+    Validators.required,
+    this.noWhitespaceValidator,
+    Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
+  ]],
+    confirm_password: ['', [Validators.required, this.noWhitespaceValidator]],
+  });
+
   this.getdatauser(this.data[0].user_id);
  
 }
@@ -130,102 +148,148 @@ ngOnInit(): void {
 
   
   async savePersonalInfo() {
-    // const userId = (this.data as DataMembers).user_id; // ✅ บอกให้ TypeScript รู้ว่าเป็น Object
-    const userId = this.data[0].user_id || this.data[0]?.user_id;
-      if (!userId) {
-      console.error("User ID is missing!");
-      alert("ไม่พบข้อมูลผู้ใช้");
-      return;
-    }
-  
-    let image = this.data[0]?.image_profile || this.data[0].image_profile || ""; // ใช้ค่าเริ่มต้น
-  
-    // ถ้ามีไฟล์ใหม่ อัปโหลดก่อน
-    if (this.selectedFile) {
-      try {
-        const response: any = await this.imageUploadService.uploadImage(this.selectedFile).toPromise();
-        if (response && response.data && response.data.url) {
-          image = response.data.url; // ✅ อัปเดตรูปใหม่
-        } else {
-          console.error("Upload failed: No URL returned");
-          alert("อัปโหลดรูปภาพไม่สำเร็จ!");
-          return;
-        }
-      } catch (error) {
-        console.error("Upload error:", error);
-        alert("เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ");
+  const userId = this.data[0].user_id || this.data[0]?.user_id;
+  if (!userId) {
+    console.error("User ID is missing!");
+    alert("ไม่พบข้อมูลผู้ใช้");
+    return;
+  }
+
+  let image = this.data[0]?.image_profile || this.data[0].image_profile || "";
+  let hasImageChanged = false;
+
+  // ถ้ามีไฟล์ใหม่ อัปโหลดก่อน
+  if (this.selectedFile) {
+    try {
+      const response: any = await this.imageUploadService.uploadImage(this.selectedFile).toPromise();
+      if (response && response.data && response.data.url) {
+        image = response.data.url;
+        hasImageChanged = true;
+      } else {
+        console.error("Upload failed: No URL returned");
+        alert("อัปโหลดรูปภาพไม่สำเร็จ!");
         return;
       }
+    } catch (error) {
+      console.error("Upload error:", error);
+      alert("เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ");
+      return;
     }
-    
-  
-    // ดึงค่า formData
-    const personalData = {
-      email: this.photographerForm.value.email || "",
-      username: this.photographerForm.value.username || "",
-      first_name: this.photographerForm.value.first_name || "",
-      last_name: this.photographerForm.value.last_name || "",
-      phone: this.photographerForm.value.phone || "",
-      province: this.photographerForm.value.province || "",
-      image_profile: image,
-      address: this.photographerForm.value.address || "",
-    };
-  
-    const additionalData = {
-      lineID: this.photographerForm.value.lineID,
-      facebook: this.photographerForm.value.facebook,
-      description: this.photographerForm.value.description,
-    };
-
-    // this.isLoading = true;
-    // // ไม่ต้องรอให้เสร็จ ทำงานอื่นไปเลย
-    // new Promise(resolve => setTimeout(resolve, 3500)).then(() => {
-    // this.isLoading = false;
-    // });
-
-  
-    // ตรวจสอบว่ามีข้อมูลใน personalData หรือไม่ เพิ่ม เงื่อนไขเช็ค .some()
-    // const isPersonalDataValid = Object.values(personalData).some(value => value && value !== "");
-    // if (isPersonalDataValid) {
-      const url = `${this.Constants.API_ENDPOINT}/update/${userId}`;
-      this.http.post(url, personalData).subscribe({
-        next: (response) => {
-          console.log("Update success (Personal Data):", response);
-          alert("บันทึกข้อมูลส่วนตัวเรียบร้อย!");
-          this.getdatauser(userId);
-
-        },
-        error: (error) => {
-          console.error("Personal Data ไม่มีการเปลี่ยนแปลง");
-          console.error("Update error (Personal Data):", error);
-          // alert("เกิดข้อผิดพลาดในการอัปเดตข้อมูลส่วนตัว");
-        }
-      });
-    // } 
-  
-    // ตรวจสอบว่ามีข้อมูลใน additionalData หรือไม่
-    // const isAdditionalDataValid = Object.values(additionalData).some(value => value && value !== "");
-    // if (isAdditionalDataValid) {
-      const urls = this.Constants.API_ENDPOINT + '/updateline/' + userId;
-      this.http.post(urls, additionalData).subscribe({
-        next: (response) => {
-          console.log("Update success (Additional Data):", response);
-          alert("บันทึกข้อมูลเพิ่มเติมเรียบร้อย!");
-          this.getdatauser(userId);
-
-        },
-        error: (error) => {
-          console.error("Additional Data ไม่มีการเปลี่ยนแปลง");
-          console.error("Update error (Additional Data):", error);
-          // alert("เกิดข้อผิดพลาดในการอัปเดตข้อมูลเพิ่มเติม");
-        }
-      });
-    // }
-  
-    // เมื่อบันทึกเสร็จแล้ว ให้กลับไปหน้า editshutter
-    // this.router.navigate(['/editshutter'], { state: { data: this.data } });
-    
   }
+
+  // ดึงค่า formData
+  const personalData = {
+    // email: this.photographerForm.value.email || "",
+    username: this.photographerForm.value.username || "",
+    first_name: this.photographerForm.value.first_name || "",
+    last_name: this.photographerForm.value.last_name || "",
+    phone: this.photographerForm.value.phone || "",
+    province: this.photographerForm.value.province || "",
+    image_profile: image,
+    address: this.photographerForm.value.address || "",
+  };
+
+  const additionalData = {
+    lineID: this.photographerForm.value.lineID,
+    facebook: this.photographerForm.value.facebook,
+    description: this.photographerForm.value.description,
+  };
+
+  // ตรวจสอบการเปลี่ยนแปลงข้อมูลส่วนตัว
+  const hasPersonalDataChanged = this.hasDataChanged(personalData, this.data[0]) || hasImageChanged;
+  
+  // ตรวจสอบการเปลี่ยนแปลงข้อมูลเพิ่มเติม
+  const hasAdditionalDataChanged = this.hasDataChanged(additionalData, this.data[0]);
+
+  let updateCount = 0;
+  const totalUpdates = (hasPersonalDataChanged ? 1 : 0) + (hasAdditionalDataChanged ? 1 : 0);
+
+  if (totalUpdates === 0) {
+    alert("ไม่มีการเปลี่ยนแปลงข้อมูล");
+    return;
+  }
+
+  // อัปเดตข้อมูลส่วนตัวถ้ามีการเปลี่ยนแปลง
+  if (hasPersonalDataChanged) {
+    const url = `${this.Constants.API_ENDPOINT}/edit/${userId}`;
+    this.http.post(url, personalData).subscribe({
+      next: (response) => {
+        console.log("Update success (Personal Data):", response);
+        updateCount++;
+        this.updateAuthData(personalData);
+        
+        if (updateCount === totalUpdates) {
+          this.onAllUpdatesComplete();
+        }
+      },
+      error: (error) => {
+        console.error("Update error (Personal Data):", error);
+        alert("เกิดข้อผิดพลาดในการอัปเดตข้อมูลส่วนตัว");
+      }
+    });
+  }
+
+  // อัปเดตข้อมูลเพิ่มเติมถ้ามีการเปลี่ยนแปลง
+  if (hasAdditionalDataChanged) {
+    const urls = this.Constants.API_ENDPOINT + '/updateline/' + userId;
+    this.http.post(urls, additionalData).subscribe({
+      next: (response) => {
+        console.log("Update success (Additional Data):", response);
+        updateCount++;
+        this.updateAuthData(additionalData);
+        
+        if (updateCount === totalUpdates) {
+          this.onAllUpdatesComplete();
+        }
+      },
+      error: (error) => {
+        console.error("Update error (Additional Data):", error);
+        alert("เกิดข้อผิดพลาดในการอัปเดตข้อมูลเพิ่มเติม");
+      }
+    });
+  }
+}
+
+// ฟังก์ชันตรวจสอบการเปลี่ยนแปลงข้อมูล
+private hasDataChanged(newData: any, originalData: any): boolean {
+  for (const key in newData) {
+    if (newData.hasOwnProperty(key)) {
+      // แปลงค่าเป็น string เพื่อเปรียบเทียบ และจัดการกรณี null/undefined
+      const newValue = (newData[key] || '').toString().trim();
+      const originalValue = (originalData[key] || '').toString().trim();
+      
+      if (newValue !== originalValue) {
+        console.log(`Data changed - ${key}: "${originalValue}" -> "${newValue}"`);
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+// ฟังก์ชันที่จะเรียกเมื่ออัปเดตทั้งหมดเสร็จสิ้น
+private onAllUpdatesComplete(): void {
+  const userId = this.data[0].user_id;
+  alert("บันทึกข้อมูลเรียบร้อย!");
+  this.getdatauser(userId);
+  
+  // รีเซ็ตไฟล์ที่เลือก
+  this.selectedFile = undefined;
+  this.imagePreview = null;
+  
+  // รีเซ็ต file input
+  if (this.fileInput && this.fileInput.nativeElement) {
+    this.fileInput.nativeElement.value = '';
+  }
+}
+
+// 🔁 อัปเดต AuthService และ local data หลังบันทึก
+private updateAuthData(newFields: Partial<DataMembers>) {
+  const updatedUser = { ...this.data[0], ...newFields };
+  this.authService.setUser(updatedUser);
+  this.data = [updatedUser];
+}
+
 
   getdatauser(id: number) {
     console.log('Fetching user data for ID:', id);
@@ -279,5 +343,71 @@ toggleSidenav() {
   this.router.navigate(['/mainshutter'], { state: { data: this.data[0]} });
  }
 
+
+ change_password(){
+     if (this.formChangePassword.invalid) return;
+ 
+   const { new_password, confirm_password } = this.formChangePassword.value;
+ 
+   if (new_password !== confirm_password) {
+     alert('รหัสผ่านใหม่และยืนยันไม่ตรงกัน');
+     return;
+   }
+ 
+   // เรียก API 
+     const url = `${this.Constants.API_ENDPOINT}/change_password/`+ this.data[0].user_id;
+     const formData = {
+       old_password: this.formChangePassword.value.old_password,
+       new_password: this.formChangePassword.value.new_password,
+   };
+ 
+     this.http.post(url, formData).subscribe({
+     next: (response) => {
+       // const updatedUser = { ...this.data, ...formData };  // 🔁 รวมข้อมูลเดิมกับใหม่
+       // this.authService.setUser(updatedUser);              // ✅ อัปเดตใน AuthService
+       // this.data = updatedUser;                            // ✅ อัปเดตในตัวแปร local ด้วย
+ 
+       console.log("Update success:", response);
+       alert("บันทึกข้อมูลเรียบร้อย!");
+       this.showModal = false;
+       this.logout();
+     },
+     error: (error) => {
+       console.error("Update error:", error);
+       alert("เกิดข้อผิดพลาดในการอัปเดตข้อมูล");
+     },
+     complete: () => {
+       this.isLoading = false;
+     }
+   });
+ 
+ }
+ 
+  noWhitespaceValidator(control: AbstractControl): ValidationErrors | null {
+     if (!control.value) {
+       return null; // ให้ required validator จัดการกรณีที่ไม่มีค่า
+     }
+     
+     const isWhitespace = (control.value || '').trim().length === 0;
+     const isValid = !isWhitespace;
+     return isValid ? null : { 'whitespace': true };
+   }
+ 
+ 
+ togglePasswordVisibility(field: string) {
+     if (field === 'old_password') {
+       this.hidePassword = !this.hidePassword;
+     } else if (field === 'new_password') {
+       this.hidePasswordnew = !this.hidePasswordnew;
+     }
+     else if (field === 'confirm_password') {
+       this.hideConfirmPassword = !this.hideConfirmPassword;
+     }
+   }
+
+     logout(): void {
+  this.authService.logout();
+  this.router.navigate(['/login']); // กลับไปหน้า login
+}
 
 }

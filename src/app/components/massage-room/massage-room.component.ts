@@ -1,7 +1,7 @@
 import { inject, Component, OnInit ,ViewChild, ElementRef, AfterViewChecked ,OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DataMembers } from '../../model/models'; 
 import { HttpClient } from '@angular/common/http';
 import { Constants } from '../../config/constants';
@@ -9,7 +9,9 @@ import { Constants } from '../../config/constants';
 import { Database, ref, set, push, onValue, update, get ,onDisconnect } from '@angular/fire/database';
 import { ImageUploadService } from '../../services_image/image-upload.service'; // นำเข้า ImageUploadService
 import { AuthService } from '../../service/auth.service';
+import { HostListener } from '@angular/core';
 
+declare var bootstrap: any;
 @Component({
     selector: 'app-massage-room',
     standalone: true,
@@ -20,6 +22,8 @@ import { AuthService } from '../../service/auth.service';
 
 export class MassageRoomComponent implements OnInit, AfterViewChecked, OnDestroy{
    @ViewChild('messagesContainer') private messagesContainer!: ElementRef; // ประกาศ ViewChild
+  @ViewChild('imageModalElement') imageModalElement!: ElementRef;
+  private imageBootstrapModal: any; 
 
   private db: Database = inject(Database);
   myId: number = 0; 
@@ -34,7 +38,7 @@ export class MassageRoomComponent implements OnInit, AfterViewChecked, OnDestroy
   isUploading = false;
 
   data: DataMembers | null = null; // ข้อมูลผู้ใช้ที่กำลังล็อกอิน
-  partnersData: DataMembers[] = []; // คู่สนทนา (ช่างภาพสำหรับ user, ผู้ใช้สำหรับ photographer)
+  partnersData: DataMembers[] = []; // คู่สนทนา (ช่างภาพสำหรับ user, ผู้ใช้สำหรับ photographer), '4' = both user and photographer
   initialPartnerId: number = 0; 
 
   private shouldScroll: boolean = false; // Flag เพื่อป้องกันการ Scroll ซ้ำซ้อน
@@ -42,12 +46,21 @@ export class MassageRoomComponent implements OnInit, AfterViewChecked, OnDestroy
   private partnerOnlineStatus: { [key: number]: string } = {};
   private partnerStatusUnsubscribe: { [key: number]: () => void } = {};
 
+  isSidebarOpen = true;
+
+  startX: number = 0;
+currentX: number = 0;
+swiping: boolean = false;
+
+  showImageModal: boolean = false;
+  modalImageUrls: string = '';
+
   constructor(
     private route: ActivatedRoute,
     private constants: Constants, 
     private http: HttpClient,
     private imageUploadService: ImageUploadService,
-    private authService: AuthService
+    private authService: AuthService,private router : Router,
     ) {}
 
   ngOnInit(): void {
@@ -94,14 +107,169 @@ export class MassageRoomComponent implements OnInit, AfterViewChecked, OnDestroy
         // โหลดห้องแชทสำหรับผู้ใช้ที่ล็อกอิน
         this.loadChatRooms();
 
-        // ถ้ามี initialPartnerId (กรณี user คลิกช่างภาพ) และเป็นบทบาท 'user' (type_user === '1')
-        if (this.initialPartnerId && this.myUserType === '1') {
-          console.log('กำลังเริ่มต้นแชทกับคู่สนทนา ID:', this.initialPartnerId);
-          this.getPhotographerData(String(this.initialPartnerId)); // ดึงข้อมูลสำหรับคู่สนทนาคนนั้น
-        }
-      }, 100);
+        //ตรวจสอบและเริ่มต้นแชทกับ initialPartnerId
+            if (this.initialPartnerId && this.initialPartnerId !== 0) { // ถ้ามีค่า idshutter และไม่ใช่ 0
+            
+                if (this.initialPartnerId === this.myId) {
+                    // 2.1 กรณี: พยายามแชทกับตัวเอง
+                    console.warn('พยายามแชทกับตัวเองจาก initialPartnerId. การกระทำนี้ถูกบล็อก.');
+                    this.showAlert('คุณไม่สามารถแชทกับตัวเองได้', false);
+                    // ล้างข้อมูลห้องแชทที่เลือก เพื่อให้หน้าจอแสดง "เลือกช่างภาพที่ต้องการสนทนา"
+                    this.selectedPartnerId = null; 
+                    this.selectedRoomId = null; 
+                    this.messages = []; 
+                    
+                } else {
+                    // 2.2 กรณี: แชทกับคู่สนทนาคนอื่น (ถูกต้อง)
+                    console.log('กำลังเริ่มต้นแชทกับคู่สนทนา ID (จาก initialPartnerId):', this.initialPartnerId);
+                     this.isSidebarOpen = false;
+                    this.getPhotographerData(String(this.initialPartnerId)); // ดึงข้อมูลคู่สนทนาและเปิดแชท
+                }
+            }
+        }, 100);
+    });
+}
+
+  isSidebarCollapsed: boolean = false;
+
+toggleSidebar() {
+  this.isSidebarOpen = !this.isSidebarOpen;
+  console.log('Sidebar open:', this.isSidebarOpen);
+  if (this.isSidebarOpen) {
+    document.body.classList.add('sidebar-open');
+  } else {
+    document.body.classList.remove('sidebar-open');
+  }
+}
+
+// Lifecycle Hook ที่ถูกเรียกหลังจาก View ถูก Initialized แล้ว
+ngAfterViewInit(): void {
+  // เพิ่ม setTimeout เพื่อให้แน่ใจว่า DOM โหลดเสร็จแล้ว
+  setTimeout(() => {
+    const element = this.imageModalElement?.nativeElement;
+    if (element) {
+      this.imageBootstrapModal = bootstrap.Modal.getOrCreateInstance(element);
+      
+      // เพิ่ม event listener สำหรับการปิด modal
+      element.addEventListener('hidden.bs.modal', () => {
+        this.modalImageUrls = '';
+      });
+    }
+  }, 100);
+}
+
+// ฟังก์ชันสำหรับเปิด Modal แสดงรูปภาพเต็ม
+openImageModal(imageUrl: string): void {
+  console.log('Opening image modal with URL:', imageUrl);
+  
+  // ตั้งค่า URL ของรูปภาพ
+  this.modalImageUrls = imageUrl;
+  this.showImageModal = true;
+    // ป้องกันการ scroll ของ body
+    document.body.style.overflow = 'hidden';
+
+  // หา element ของรูปภาพใน modal
+  const modalImageElement = this.imageModalElement?.nativeElement?.querySelector('#modalImage');
+  
+  if (modalImageElement) {
+    modalImageElement.src = imageUrl;
+    modalImageElement.onerror = () => {
+      console.error('Error loading image:', imageUrl);
+      modalImageElement.src = 'assets/images/image-error.png'; // ถ้ามีรูป error placeholder
+    };
+  }
+
+  // เปิด modal
+  if (this.imageBootstrapModal) {
+    this.imageBootstrapModal.show();
+  } else {
+    console.warn("Modal not initialized yet!");
+    // ลองสร้าง modal ใหม่ถ้ายังไม่ได้สร้าง
+    const element = this.imageModalElement?.nativeElement;
+    if (element) {
+      this.imageBootstrapModal = bootstrap.Modal.getOrCreateInstance(element);
+      this.imageBootstrapModal.show();
+    }
+  }
+}
+
+// เพิ่มฟังก์ชันสำหรับปิด Modal (ถ้าต้องการ)
+
+// เมธอดสำหรับเปิด modal
+  // openImageModal(imageUrl: string): void {
+  //   this.modalImageUrls = imageUrl;
+  //   this.showImageModal = true;
+  //   // ป้องกันการ scroll ของ body
+  //   document.body.style.overflow = 'hidden';
+  // }
+
+  // เมธอดสำหรับปิด modal
+  closeImageModal(): void {
+    this.showImageModal = false;
+    this.modalImageUrls = '';
+    // คืนค่าการ scroll ของ body
+    document.body.style.overflow = 'auto';
+  }
+
+  // เมธอดสำหรับจัดการ ESC key
+  @HostListener('document:keydown.escape', ['$event'])
+  onEscapeKey(event: KeyboardEvent): void {
+    if (this.showImageModal) {
+      this.closeImageModal();
+    }
+  }
+
+
+//for phone 
+onTouchStart(event: TouchEvent) {
+  this.startX = event.touches[0].clientX;
+  this.swiping = true;
+}
+
+onTouchMove(event: TouchEvent) {
+  if (!this.swiping) return;
+  this.currentX = event.touches[0].clientX;
+}
+
+onTouchEnd(event: TouchEvent) {
+  if (!this.swiping) return;
+  this.swiping = false;
+
+  const deltaX = this.currentX - this.startX;
+  if (deltaX < -50) { // ปัดซ้ายเกิน 50px = ปิด sidebar
+    this.isSidebarOpen = false;
+  }
+}
+
+  // Method สำหรับตรวจสอบและแสดง date separator
+shouldShowDateSeparator(currentMessage: any, previousMessage: any): boolean {
+  if (!previousMessage) return true;
+  
+  const currentDate = new Date(currentMessage.timestamp).toDateString();
+  const previousDate = new Date(previousMessage.timestamp).toDateString();
+  
+  return currentDate !== previousDate;
+}
+
+// Method สำหรับ format วันที่
+formatDateSeparator(timestamp: string): string {
+  const messageDate = new Date(timestamp);
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  
+  if (messageDate.toDateString() === today.toDateString()) {
+    return 'วันนี้';
+  } else if (messageDate.toDateString() === yesterday.toDateString()) {
+    return 'เมื่อวาน';
+  } else {
+    return messageDate.toLocaleDateString('th-TH', { 
+      day: 'numeric', 
+      month: 'long', 
+      year: 'numeric' 
     });
   }
+}
 
     ngOnDestroy(): void {
     // ตั้งค่าสถานะผู้ใช้ปัจจุบันเป็น 'offline' เมื่อออกจากหน้า
@@ -127,23 +295,40 @@ export class MassageRoomComponent implements OnInit, AfterViewChecked, OnDestroy
     }
   }
 
+  
+
 
   // ดึงข้อมูลสำหรับช่างภาพที่ระบุ
-  getPhotographerData(id: string): void {
+getPhotographerData(id: string): void {
     console.log('กำลังดึงข้อมูลคู่สนทนาสำหรับ ID:', id);
+    const partnerUserId = Number(id); 
+
+    if (partnerUserId === this.myId) {
+        console.warn('พยายามดึงข้อมูลตัวเองเพื่อแชท การกระทำนี้ถูกบล็อก.');
+        this.showAlert('คุณไม่สามารถแชทกับตัวเองได้', false);
+        this.selectedPartnerId = null; 
+        this.selectedRoomId = null; 
+        this.messages = []; 
+        return;
+    }
+
     const url = `${this.constants.API_ENDPOINT}/read/${id}`;
     this.http.get<DataMembers[]>(url).subscribe({
       next: (response) => {
         const newPartner = response[0]; 
         if (newPartner) {
-          // เพิ่มลงในรายการ partnersData ถ้ายังไม่มี
           if (!this.partnersData.some(p => p.user_id === newPartner.user_id)) {
             this.partnersData.push(newPartner);
           }
           console.log("ข้อมูลคู่สนทนา:", newPartner);
-          // ถ้าเป็นผู้ใช้งานทั่วไป (type_user === '1') หรือเป็นช่างภาพ (type_user === '2') และ partner นี้เป็น initialPartnerId
-          // ตั้งค่าแชท
-          if (this.myUserType === '1' || (this.myUserType === '2' && newPartner.user_id === this.initialPartnerId)) {
+          
+          // ปรับเงื่อนไขสำหรับการตั้งค่าแชท
+          // - ผู้ใช้ทั่วไป (type_user === '1') สามารถแชทกับใครก็ได้
+          // - ช่างภาพ (type_user === '2') สามารถแชทกับ initialPartnerId ได้
+          // - ผู้ใช้ที่เป็นทั้งสองอย่าง (type_user === '4') สามารถแชทกับใครก็ได้
+          if (this.myUserType === '1' || 
+              this.myUserType === '4' || 
+              (this.myUserType === '2' && newPartner.user_id === this.initialPartnerId)) {
              this.setupChat(newPartner.user_id);
           }
         } else {
@@ -165,27 +350,28 @@ export class MassageRoomComponent implements OnInit, AfterViewChecked, OnDestroy
       this.chatRooms = [];
 
       // วนลูปผ่านทุกห้องแชทใน Firebase
-      for (const roomId in allRooms) {
+       for (const roomId in allRooms) {
         const roomData = allRooms[roomId];
-        // ตรวจสอบว่าผู้ใช้ปัจจุบัน (myId) อยู่ใน user1 หรือ user2 ของห้องนี้หรือไม่
         if (roomData.user1 === this.myId || roomData.user2 === this.myId) {
-          // กำหนด partnerId: ถ้า user1 คือฉัน, partner คือ user2; ถ้า user2 คือฉัน, partner คือ user1
-          const partnerId = (roomData.user1 === this.myId) ? roomData.user2 : roomData.user1;
+            const partnerId = (roomData.user1 === this.myId) ? roomData.user2 : roomData.user1;
 
-          // ดึงข้อมูลพาร์ทเนอร์หากยังไม่มีในลิสต์ photographers
-          if (!this.partnersData.some(p => p.user_id === partnerId)) {
-            this.getPhotographerData(String(partnerId));
-          }
+            // *** เพิ่มตรงนี้: ข้ามการเพิ่มตัวเองเข้าในรายการคู่สนทนา ***
+            if (partnerId === this.myId) {
+                continue; // ข้าม (ไม่ทำขั้นตอนที่เหลือในลูปนี้)
+            }
 
-          // เพิ่มห้องลงในรายการ chatRooms
-          this.chatRooms.push({
-            roomId: roomId,
-            partnerId: partnerId,
-            lastMessage: roomData.lastMessage || 'ยังไม่มีข้อความ',
-            lastMessageTime: roomData.lastMessageTime || '',
-          });
+            if (!this.partnersData.some(p => p.user_id === partnerId)) {
+                this.getPhotographerData(String(partnerId));
+            }
+
+            this.chatRooms.push({
+                roomId: roomId,
+                partnerId: partnerId,
+                lastMessage: roomData.lastMessage || 'ยังไม่มีข้อความ',
+                lastMessageTime: roomData.lastMessageTime || '',
+            });
         }
-      }
+    }
       // จัดเรียงห้องแชทตามเวลาข้อความล่าสุด
       this.chatRooms.sort((a, b) => new Date(b.lastMessageTime).getTime() - new Date(a.lastMessageTime).getTime());
       console.log('โหลดห้องแชทแล้ว:', this.chatRooms);
@@ -475,6 +661,15 @@ sendMessage(): void {
     return (text.match(/\.(jpeg|jpg|gif|png|webp|bmp)$/) != null) || 
            (text.startsWith('http') && text.includes('ibb.co')); 
   }
+
+    profile(){
+      const type = Number(this.data?.type_user);
+      console.log("ค่าของ type:", type, "| ประเภท:", typeof type); // ✅ ดูค่าที่แท้จริง
+      if(type === 2 ){
+        this.router.navigate(['/'], { state: { data: this.data } });
+      }
+      this.router.navigate(['/profile'], { state: { data: this.data } });
+    }
 
   private showAlert(message: string, isModal: boolean = true): void {
     if (isModal) {

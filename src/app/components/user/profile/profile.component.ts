@@ -1,16 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+
 import { DataLike, DataMembers } from '../../../model/models';
 import { CommonModule } from '@angular/common';
 import { Constants } from '../../../config/constants';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms'
 import { AuthService } from '../../../service/auth.service'; 
+import {MatButtonModule} from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule,FormsModule],
+  imports: [CommonModule,FormsModule,MatButtonModule,MatIconModule],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
@@ -67,7 +70,7 @@ getPrev(portfolioIndex: number) {
     // this.router.navigate(['/edituser'],{ state: { data: this.data } });
   }
   goToShutter(): void {
-    this.router.navigate(['']);
+    this.router.navigate(['/mainshutter']);
   }
 
   back(){
@@ -117,6 +120,23 @@ likeCancel(portfolioId: number | null) {
           error: (error) => console.error("Unlike error:", error)
         });
   
+    }
+
+    toShutter(id_shutter: number | null) {
+      console.log("📤 Sending id_shutter:", id_shutter);
+      // console.log("📤 Sending datauser:", this.datauser[0]);
+    
+      if (!id_shutter) {
+        console.error(" Error: id_shutter is undefined or invalid");
+        return;
+      }
+      
+      this.router.navigate(['/preshutter'], { 
+        state: { 
+          // datauser: this.datauser[0], 
+          idshutter: id_shutter 
+        } 
+      });
     }
 
 

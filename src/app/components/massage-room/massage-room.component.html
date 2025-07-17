@@ -1,14 +1,115 @@
-<div class="chat-container">
-  <div class="chat-sidebar">
+<div class="chat-container" [class.sidebar-open]="isSidebarOpen">
+
+  <div class="chat-main" *ngIf="selectedPartnerId; else noChatSelected">
+     
+    <div class="chat-header">
+      
+      <div class="chat-header-avatar">
+        <ng-container *ngIf="getChatPartnerInfo(selectedPartnerId) as currentPartner">
+          <img *ngIf="currentPartner.image_profile; else noCurrentProfileImage" [src]="currentPartner.image_profile" alt="Profile" class="profile-img">
+          <ng-template #noCurrentProfileImage>
+            {{ currentPartner.username ? currentPartner.username.charAt(0).toUpperCase() : '?' }}
+          </ng-template>
+        </ng-container>
+      </div>
+      <div class="chat-header-info">
+        <h3>{{ getChatPartnerInfo(selectedPartnerId)?.username }}</h3>
+        <div class="chat-header-status">
+          <span [ngClass]="{'status-dot': true, 'online': getPartnerStatus(selectedPartnerId) === 'online'}"></span>
+          {{ getPartnerStatus(selectedPartnerId) === 'online' ? 'ออนไลน์' : 'ออฟไลน์' }}
+        </div>
+      </div>
+
+      <button class="toggle-sidebar-btn" (click)="toggleSidebar()">
+        ☰
+      </button>
+    </div>
+    
+    <div class="messages" #messagesContainer>
+      <div *ngFor="let msg of messages; let i = index">
+        <!-- แสดงเส้นแบ่งวันเมื่อวันที่เปลี่ยน -->
+        <div *ngIf="shouldShowDateSeparator(msg, messages[i - 1])" class="date-separator">
+          <span>{{ formatDateSeparator(msg.timestamp) }}</span>
+        </div>
+
+        <!-- ข้อความ -->
+        <div [ngClass]="{'my-message': msg.senderId === myId, 'other-message': msg.senderId !== myId}">
+          <div class="message-bubble">
+            <ng-container *ngIf="isImageUrl(msg.messageText); else textMessage">
+              <img 
+                [src]="msg.messageText" 
+                alt="Image" 
+                class="chat-image" 
+                (load)="onImageLoad()"
+                (click)="openImageModal(msg.messageText)"
+                style="cursor: pointer; max-width: 200px; max-height: 200px; border-radius: 8px; object-fit: cover;">
+            </ng-container>
+            <ng-template #textMessage>
+              {{ msg.messageText }}
+            </ng-template>
+            <div class="message-time">
+              {{ msg.timestamp | date:'HH:mm' }}
+              <ng-container *ngIf="msg.senderId === myId">
+                <span class="read-status" [class.read]="msg.isRead" title="{{ msg.isRead ? 'อ่านแล้ว' : 'ส่งแล้ว' }}">
+                  <ng-container *ngIf="msg.isRead">✔✔</ng-container>
+                  <ng-container *ngIf="!msg.isRead">✔</ng-container>
+                </span>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-box">
+      <div *ngIf="files.length > 0" class="image-preview-container">
+        <div *ngFor="let fileObj of files; let i = index" class="image-preview-item">
+          <img [src]="fileObj.preview" alt="Preview" class="preview-img">
+          <button (click)="removeFile(i)" class="remove-image-button">x</button>
+        </div>
+      </div>
+
+      <div class="message-input-area">
+        <label for="image-upload" class="image-upload-button">📸</label>
+        <input type="file" id="image-upload" (change)="onFileSelect($event)" accept="image/jpeg, image/png" multiple style="display: none;">
+
+        <input [(ngModel)]="newMessage" (keydown.enter)="sendMessage()" placeholder="พิมพ์ข้อความ..." class="message-input">
+        <button (click)="sendMessage()" class="send-button" [disabled]="isUploading">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #noChatSelected>
+    <div class="no-chat-selected">
+      <div class="icon">💬</div>
+      <h3>เลือกช่างภาพที่ต้องการสนทนา</h3>
+      <p>เลือกจากรายชื่อทางซ้ายเพื่อเริ่มต้นการสนทนา</p>
+    </div>
+  </ng-template>
+
+  <div class="chat-sidebar" *ngIf="isSidebarOpen"
+    (touchstart)="onTouchStart($event)"
+    (touchmove)="onTouchMove($event)"
+    (touchend)="onTouchEnd($event)">
+    
     <div class="sidebar-header">
+      <button mat-button class="circle-button">
+        <img [src]="data?.image_profile" alt="" class="rounded-circle" [title]="data?.username" (click)="profile()">
+      </button>
+      <h2 style="display: flex; justify-content: flex-start;">{{ data?.username }}</h2>
+    </div>
+
+    <div class="chat-list">
       <h3>💬 ข้อความ</h3>
       <div class="sidebar-subtitle">
         <ng-container *ngIf="myUserType === '1'">ช่างภาพที่เคยคุยด้วย</ng-container>
         <ng-container *ngIf="myUserType === '2'">ผู้ใช้งานที่ทักหาคุณ</ng-container>
       </div>
-    </div>
-
-    <div class="chat-list">
       <div
         class="chat-item"
         *ngFor="let room of chatRooms"
@@ -32,74 +133,25 @@
       </div>
     </div>
   </div>
+</div>
 
-  <div class="chat-main" *ngIf="selectedPartnerId; else noChatSelected">
-    <div class="chat-header">
-      <div class="chat-header-avatar">
-        <ng-container *ngIf="getChatPartnerInfo(selectedPartnerId) as currentPartner">
-          <img *ngIf="currentPartner.image_profile; else noCurrentProfileImage" [src]="currentPartner.image_profile" alt="Profile" class="profile-img">
-          <ng-template #noCurrentProfileImage>
-            {{ currentPartner.username ? currentPartner.username.charAt(0).toUpperCase() : '?' }}
-          </ng-template>
-        </ng-container>
-      </div>
-      <div class="chat-header-info">
-        <h3>{{ getChatPartnerInfo(selectedPartnerId)?.username }}</h3>
-        <div class="chat-header-status">
-          <span [ngClass]="{'status-dot': true, 'online': getPartnerStatus(selectedPartnerId) === 'online'}"></span>
-          {{ getPartnerStatus(selectedPartnerId) === 'online' ? 'ออนไลน์' : 'ออฟไลน์' }}
-        </div>
-      </div>
+<!-- Modal สำหรับแสดงรูปภาพเต็ม - แสดงเมื่อคลิกเท่านั้น -->
+<div 
+  *ngIf="showImageModal" 
+  class="image-modal-overlay" 
+  (click)="closeImageModal()"
+  [@fadeInOut]>
+  <div class="image-modal-content" (click)="$event.stopPropagation()">
+    <div class="image-modal-header">
+      <h5 style="color: rgba(255, 255, 255, 0);">รูปภาพ</h5>
+      <button class="close-button" (click)="closeImageModal()">×</button>
     </div>
-
-    <div class="messages" #messagesContainer>
-      <div *ngFor="let msg of messages" [ngClass]="{'my-message': msg.senderId === myId, 'other-message': msg.senderId !== myId}">
-        <div class="message-bubble">
-          <ng-container *ngIf="isImageUrl(msg.messageText); else textMessage">
-            <img [src]="msg.messageText" alt="Image" class="chat-image" (load)="onImageLoad()">
-          </ng-container>
-          <ng-template #textMessage>
-            {{ msg.messageText}}
-          </ng-template>
-          <div class="message-time">
-            {{ msg.timestamp | date:'HH:mm' }}
-            <ng-container *ngIf="msg.senderId === myId">
-              <span class="read-status" [class.read]="msg.isRead" title="{{ msg.isRead ? 'อ่านแล้ว' : 'ส่งแล้ว' }}">
-                <ng-container *ngIf="msg.isRead">✔✔</ng-container>
-                <ng-container *ngIf="!msg.isRead">✔</ng-container>
-              </span>
-            </ng-container>
-          </div>
-        </div>
-      </div>
+    <div class="image-modal-body">
+      <img [src]="modalImageUrls" class="modal-image" alt="Modal Image">
     </div>
-
-    <div class="input-box">
-      <div *ngIf="files.length > 0" class="image-preview-container">
-        <div *ngFor="let fileObj of files; let i = index" class="image-preview-item">
-          <img [src]="fileObj.preview" alt="Preview" class="preview-img">
-          <button (click)="removeFile(i)" class="remove-image-button">x</button>
-        </div>
-      </div>
-
-      <div class="message-input-area"> <label for="image-upload" class="image-upload-button">📸</label>
-        <input type="file" id="image-upload" (change)="onFileSelect($event)" accept="image/jpeg, image/png" multiple style="display: none;">
-
-        <input [(ngModel)]="newMessage" (keydown.enter)="sendMessage()" placeholder="พิมพ์ข้อความ..." class="message-input">
-        <button (click)="sendMessage()" class="send-button" [disabled]="isUploading"> <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
-      </div>
+    <div class="image-modal-footer">
+      <!-- <button class="btn btn-secondary" (click)="closeImageModal()">ปิด</button>
+      <a [href]="modalImageUrls" download class="btn btn-primary">ดาวน์โหลด</a> -->
     </div>
   </div>
-
-  <ng-template #noChatSelected>
-    <div class="no-chat-selected">
-      <div class="icon">💬</div>
-      <h3>เลือกช่างภาพที่ต้องการสนทนา</h3>
-      <p>เลือกจากรายชื่อทางซ้ายเพื่อเริ่มต้นการสนทนา</p>
-    </div>
-  </ng-template>
 </div>
