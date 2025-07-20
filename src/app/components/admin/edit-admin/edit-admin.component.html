@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>แก้ไขข้อมูลผู้ดูแลระบบ</title>
+  </head>
+  <body>
+    <div class="edit-profile-container">
+        <div class="box" (click)="goBack()">
+            <div class="arrow right"></div>
+            <div class="text">กลับ</div>
+        </div>
+
+        <div class="card">
+          <div class="profile-section">
+            <img [src]="imagePreview" alt="Profile" id="profileImage" class="profile-image">
+            <input type="file" id="fileInput" style="display: none;" (change)="onFileSelected($event)">
+            <button class="change-profile-btn" (click)="triggerFileInput()">
+                เลือกรูป Profile
+            </button>
+          </div>
+      
+          <form #editForm="ngForm" (ngSubmit)="onSubmit()" novalidate>
+            <div class="form-group">
+              <label for="firstName">ชื่อ: <span>*</span></label>
+              <input id="firstName" name="firstName" [(ngModel)]="form.firstName" required />
+            </div>
+      
+            <div class="form-group">
+              <label for="lastName">นามสกุล: <span>*</span></label>
+              <input id="lastName" name="lastName" [(ngModel)]="form.lastName" required />
+            </div>
+      
+            <div class="form-group">
+                <label for="email">อีเมล: <span>*</span></label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  [(ngModel)]="form.email"
+                  #emailModel="ngModel"
+                  required
+                  pattern="[^ @]*@[^ @]*"
+                />
+                <small *ngIf="emailModel.invalid && emailModel.touched" style="color: red;">
+                  กรุณากรอกอีเมลที่ถูกต้อง
+                </small>
+            </div>
+      
+            <div class="form-group">
+              <label for="username">ชื่อผู้ใช้งาน: <span>*</span></label>
+              <input id="username" name="username" [(ngModel)]="form.username" required  />
+            </div>
+      
+            <div class="form-group">
+                <label for="phone">เบอร์โทร: <span>*</span></label>
+                <input
+                  id="phone"
+                  name="phone"
+                  [(ngModel)]="form.phone"
+                  #phoneModel="ngModel"
+                  required
+                  pattern="^[0-9]{10}$"
+                />
+                <small *ngIf="phoneModel.invalid && phoneModel.touched" style="color: red;">
+                  กรุณาระบุหมายเลขโทรศัพท์ 10 หลัก (เฉพาะตัวเลข)
+                </small>
+            </div>
+      
+            <div class="form-group">
+              <label for="password">รหัสผ่าน: <span>*</span></label>
+              <input id="password" type="password" name="password" [(ngModel)]="form.password" required  />
+            </div>
+      
+            <div class="form-group">
+              <label for="confirmPassword">ยืนยันรหัสผ่าน: <span>*</span></label>
+              <input id="confirmPassword" type="password" name="confirmPassword" [(ngModel)]="form.confirmPassword" required  />
+            </div>
+      
+            <button type="submit" [disabled]=" !editForm.valid || form.password !== form.confirmPassword ">บันทึกข้อมูล</button>
+          
+          </form>
+        </div>
+      </div>
+      
+  </body>
+</html>

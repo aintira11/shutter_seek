@@ -27,6 +27,8 @@ import { EditSelectWorkComponent } from './components/shutter/edit-select-work/e
 import { AddminComponent } from './components/admin/addmin/addmin.component';
 import { ComfirmShutterComponent } from './components/admin/comfirm-shutter/comfirm-shutter.component';
 import { HomeadComponent } from './components/admin/homead/homead.component';
+import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
+import { EditAdminComponent } from './components/admin/edit-admin/edit-admin.component';
 
 export const routes: Routes = [
     {path: '',component: HomeComponent},
@@ -60,7 +62,9 @@ export const routes: Routes = [
     {path: 'admin',component:HomeadComponent},
     {path: 'addmin',component: AddminComponent},
     {path: 'comfirm',component: ComfirmShutterComponent},
+    {path: 'editadmin',component: EditAdminComponent},
     
+    {path: 'forgot',component: ForgotPasswordComponent},
 
     // { 
     //   path: 'myprofile',
