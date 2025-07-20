@@ -11,212 +11,208 @@
     <div class="box" (click)="back()">
         <div class="arrow right"></div>
         <div class="text">กลับ</div>
-      </div>
+    </div>
       
     <div class="admin-container">
         <header class="admin-header">
             <div class="admin-profile">
-              <img class="profile-avatar" [src]="currentUser.avatar || 'assets/default-avatar.png'" alt="Admin Profile" />
-              <span class="profile-name">{{ currentUser.name || 'ผู้ดูแลระบบ1' }}</span>
-              <button class="add-btn" (click)="goToadd()">+</button>
+                <img class="profile-avatar" [src]="datauser[0].image_profile" alt="Admin Profile" />
+                <span class="profile-name">{{ datauser[0].username }}</span>
+                <button class="add-btn" (click)="goToadd()">+</button>
             </div>
           
             <div class="logo-center">
-              <img src="/assets/images/PIXEL (8).png" alt="Shutter Seek Logo" class="center-logo" />
+                <img src="/assets/images/PIXEL (8).png" alt="Shutter Seek Logo" class="center-logo" />
             </div>
           
             <button class="logout-btn" (click)="goToLogin()">ออกจากระบบ</button>
-          </header>          
+        </header>          
           
-        <h1>ผู้ดูแลระบบ</h1>
+        <h1>อนุมัติช่างภาพ</h1>
     
-        <div class="tabs">
-            <button (click)="filterUsers('รอ')" [class.active]="selectedTab === 'รอ'">รอ ({{ pendingCount }})</button>
-            <button (click)="filterUsers('อนุมัติ')" [class.active]="selectedTab === 'อนุมัติ'">อนุมัติ ({{ comfirmCount }})</button>
-            <button (click)="filterUsers('ปฏิเสธ')" [class.active]="selectedTab === 'ปฏิเสธ'">ปฏิเสธ ({{ refuseCount }})</button>
+        <div class="tabs" >
+            <button (click)="filterUsers(1)" [class.active]="selectedTab === 1">รอ ({{ pending }})</button>
+            <button (click)="filterUsers(2)" [class.active]="selectedTab === 2">อนุมัติ ({{ comfirm }})</button>
+            <button (click)="filterUsers(3)" [class.active]="selectedTab === 3">ปฏิเสธ ({{ refuse }})</button>
         </div>          
               
-        <div *ngFor="let user of filteredUsers" class="user-card">
-            <img [src]="user.avatar || 'assets/default-avatar.png'" alt="User Avatar" class="avatar" />
+        <div *ngFor="let user of datafilterUsers" class="user-card">
+            <img [src]="user.image_profile" alt="User Avatar" class="avatar" />
             
             <div class="user-info">
-              <h3>{{ user.name }}</h3>
-              <p class="role">{{ user.role }}</p>
+            <h3>{{ user.username }}</h3>
+            <p class="role" *ngIf="user.sht_status== 1">รอ</p>
+            <p class="role" *ngIf="user.sht_status== 2">อนุมัติ</p>
+            <p class="role" *ngIf="user.sht_status== 3">ปฏิเสธ</p>
             </div>
           
             <!-- แสดงปุ่มเฉพาะเมื่ออยู่ในแท็บ "รอ" -->
-            <div class="actions" *ngIf="selectedTab === 'รอ'">
+            <div class="actions" *ngIf="selectedTab === 1">
                 <button class="pushable detail" (click)="openDetailDialog(user)">
-                  <span class="front">รายละเอียด</span>
+                    <span class="front">รายละเอียด</span>
                 </button>
               
-                <button class="pushable" (click)="changeUserStatus(user.id, 'อนุมัติ')">
-                  <span class="front">อนุมัติ</span>
+                <button class="pushable" (click)="approveUser(user.user_id)">
+                    <span class="front">อนุมัติ</span>
                 </button>
               
                 <button class="pushable deny" (click)="openRejectDialog(user)">
-                  <span class="front">ปฏิเสธ</span>
+                    <span class="front">ปฏิเสธ</span>
                 </button>
-              </div>
-              
-                    
+            </div>
+
+             <!-- แสดงปุ่มเฉพาะเมื่ออยู่ในแท็บ "รอ" -->
+            <div class="actions" *ngIf="selectedTab === 2"> 
+                <button class="pushable deny" (click)="openRejectDialog(user)">
+                    <span class="front">ปฏิเสธ</span>
+                </button>
+            </div>
           
             <!-- แสดงปุ่ม "แก้ไข" เฉพาะแท็บปฏิเสธ -->
-            <div class="actions" *ngIf="selectedTab === 'ปฏิเสธ'">
-                <!-- <span class="timestamp">
-                  [ {{ user.date || '00' }} ] [ {{ user.time || '00:00:00' }} ]
-                </span> -->
+            <div class="actions" *ngIf="selectedTab === 3">
                 <span style="color: red; font-weight: bold;">
-                   {{ user.countdownText }}
+                    {{ user.countdownText || 'กำลังโหลด...' }}
                 </span>
-                <button class="pushable edit" (click)="openEditDialog(user)">
-                    <span class="front">การแก้ไข</span>
-                  </button>
+                <button class="pushable edit" (click)="openDetailDialog(user)">
+                    <span class="front">ดูรายละเอียด</span>
+                </button>
             </div>
         </div>
 
         <!-- MODAL รายละเอียด -->
-        <div class="modal" *ngIf="isDetailModal && selectedUserForDetail ">
+        <div class="modal" *ngIf="isDetailModal && selectedUserForDetail">
             <div class="modal-content">
-            <h2>รายละเอียดเกณฑ์การอนุมัติ</h2>
-            <!-- <hr /> -->
+                <h2>รายละเอียดเกณฑ์การอนุมัติ</h2>
         
-            <div class="section">
-                <h3>ผลงานละเมิดลิขสิทธิ์</h3>
-                <label>
-                    <input type="checkbox" [(ngModel)]="tempCriteria.copyright1" />
-                    นำภาพจากอินเทอร์เน็ตมาอัปโหลด เช่น google reverse image
-                </label><br />
-                <label>
-                    <input type="checkbox" [(ngModel)]="tempCriteria.copyright2" />
-                    มีลายน้ำของคนอื่นหรือแบรนด์อื่นที่ไม่ใช่ของตนเอง
-                </label>
-            </div>
-        
-            <div class="section">
-                <h3>ใช้ข้อมูลเท็จ/ข้อมูลซ้ำ</h3>
-                <label>
-                    <input type="checkbox" [(ngModel)]="tempCriteria.fake1" />
-                    สมัครหลายบัญชีด้วยชื่อเมล์หรือเบอร์ซ้ำกัน
-                </label><br />
-                <label>
-                    <input type="checkbox" [(ngModel)]="tempCriteria.fake2" />
-                    ใช้ชื่อปลอม เบอร์โทรที่ติดต่อไม่ได้จริง
-                </label><br />
-                <label>
-                    <input type="checkbox" [(ngModel)]="tempCriteria.fake3" />
-                    ลิงก์พอร์ตแบบไม่ตรงกับตัวตน
-                </label><br />
-                <label>
-                    <input type="checkbox" [(ngModel)]="tempCriteria.fake4" />
-                    ให้ลิงก์แฟนเพจที่ไม่มีผลงาน หรือมีโพสต์น้อยเกินไปจนไม่น่าเชื่อถือ
-                </label>
-            </div>
-        
-            <div class="section">
-                <h3>ผลงานขัดกับนโยบายของเว็บไซต์</h3>
-                <label>
-                    <input type="checkbox" [(ngModel)]="tempCriteria.policy1" />
-                    ภาพที่เกี่ยวข้องกับความรุนแรง หรือสื่ออันตราย
-                </label><br />
-                <label>
-                    <input type="checkbox" [(ngModel)]="tempCriteria.policy2" />
-                    ภาพโป๊ เปลือย ลามก หรือสื่อผิดศีลธรรม
-                </label>
-            </div>
-        
-            <div class="section">
-                <h3>สมัครด้วยวัตถุประสงค์ไม่ชัดเจน/ไม่ใช่ช่างภาพจริง</h3>
-                <label>
-                    <input type="checkbox" [(ngModel)]="tempCriteria.purpose1" />
-                    แบบผลงานที่ไม่เกี่ยวกับการถ่ายภาพ เช่น ภาพวาด ภาพออกแบบกราฟิก
+                <div class="section">
+                    <h3>ผลงานละเมิดลิขสิทธิ์</h3>
+                    <label>
+                        <input type="checkbox" [(ngModel)]="tempCriteria.copyright1" disabled />
+                        นำภาพจากอินเทอร์เน็ตมาอัปโหลด เช่น google reverse image
                     </label><br />
-                <label>
-                    <input type="checkbox" [(ngModel)]="tempCriteria.purpose2" />
-                    โปรโมทอย่างอื่น ไม่ได้ภาพถ่าย เช่น โฆษณาสินค้า
-                </label>
-            </div>
+                    <label>
+                        <input type="checkbox" [(ngModel)]="tempCriteria.copyright2" disabled />
+                        มีลายน้ำของคนอื่นหรือแบรนด์อื่นที่ไม่ใช่ของตนเอง
+                    </label>
+                </div>
         
-            <div class="modal-actions" *ngIf="isEditMode">
-                <button class="approve-btn" (click)="approve()">อนุมัติ</button>
-                <button class="reject-btn" (click)="reject()">ปฏิเสธ</button>
-            </div>
+                <div class="section">
+                    <h3>ใช้ข้อมูลเท็จ/ข้อมูลซ้ำ</h3>
+                    <label>
+                        <input type="checkbox" [(ngModel)]="tempCriteria.fake1" disabled />
+                        สมัครหลายบัญชีด้วยชื่อเมล์หรือเบอร์ซ้ำกัน
+                    </label><br />
+                    <label>
+                        <input type="checkbox" [(ngModel)]="tempCriteria.fake2" disabled />
+                        ใช้ชื่อปลอม เบอร์โทรที่ติดต่อไม่ได้จริง
+                    </label><br />
+                    <label>
+                        <input type="checkbox" [(ngModel)]="tempCriteria.fake3" disabled />
+                        ลิงก์พอร์ตแบบไม่ตรงกับตัวตน
+                    </label><br />
+                    <label>
+                        <input type="checkbox" [(ngModel)]="tempCriteria.fake4" disabled />
+                        ให้ลิงก์แฟนเพจที่ไม่มีผลงาน หรือมีโพสต์น้อยเกินไปจนไม่น่าเชื่อถือ
+                    </label>
+                </div>
+        
+                <div class="section">
+                    <h3>ผลงานขัดกับนโยบายของเว็บไซต์</h3>
+                    <label>
+                        <input type="checkbox" [(ngModel)]="tempCriteria.policy1" disabled />
+                        ภาพที่เกี่ยวข้องกับความรุนแรง หรือสื่ออันตราย
+                    </label><br />
+                    <label>
+                        <input type="checkbox" [(ngModel)]="tempCriteria.policy2" disabled />
+                        ภาพโป๊ เปลือย ลามก หรือสื่อผิดศีลธรรม
+                    </label>
+                </div>
+        
+                <div class="section">
+                    <h3>สมัครด้วยวัตถุประสงค์ไม่ชัดเจน/ไม่ใช่ช่างภาพจริง</h3>
+                    <label>
+                        <input type="checkbox" [(ngModel)]="tempCriteria.purpose1" disabled />
+                        แบบผลงานที่ไม่เกี่ยวกับการถ่ายภาพ เช่น ภาพวาด ภาพออกแบบกราฟิก
+                    </label><br />
+                    <label>
+                        <input type="checkbox" [(ngModel)]="tempCriteria.purpose2" disabled />
+                        โปรโมทอย่างอื่น ไม่ได้ภาพถ่าย เช่น โฆษณาสินค้า
+                    </label>
+                </div>
 
-            <div class="modal-actions">
-                <button class="close-btn" (click)="closeDetailModal()">ปิด</button>
-            </div>
+                <div class="modal-actions">
+                    <button class="close-btn" (click)="closeAllModals()">ปิด</button>
+                </div>
             </div>     
         </div> 
 
-        <!-- MODAL การแก้ไข แยกเพราะอยากย้ายปุ่มปิด -->
-        <div class="modal" *ngIf="isEditMode && selectedUserForDetail ">
+        <!-- MODAL การปฏิเสธ -->
+        <div class="modal" *ngIf="isRejectModal && selectedUserForDetail">
             <div class="modal-content">
-            <h2>รายละเอียดเกณฑ์การอนุมัติ</h2>
-            <!-- <hr /> -->
+                <h2>เหตุผลในการปฏิเสธ</h2>
         
-            <div class="section">
-                <h3>ผลงานละเมิดลิขสิทธิ์</h3>
-                <label>
-                    <input type="checkbox" [(ngModel)]="tempCriteria.copyright1" />
-                    นำภาพจากอินเทอร์เน็ตมาอัปโหลด เช่น google reverse image
-                </label><br />
-                <label>
-                    <input type="checkbox" [(ngModel)]="tempCriteria.copyright2" />
-                    มีลายน้ำของคนอื่นหรือแบรนด์อื่นที่ไม่ใช่ของตนเอง
-                </label>
-            </div>
-        
-            <div class="section">
-                <h3>ใช้ข้อมูลเท็จ/ข้อมูลซ้ำ</h3>
-                <label>
-                    <input type="checkbox" [(ngModel)]="tempCriteria.fake1" />
-                    สมัครหลายบัญชีด้วยชื่อเมล์หรือเบอร์ซ้ำกัน
-                </label><br />
-                <label>
-                    <input type="checkbox" [(ngModel)]="tempCriteria.fake2" />
-                    ใช้ชื่อปลอม เบอร์โทรที่ติดต่อไม่ได้จริง
-                </label><br />
-                <label>
-                    <input type="checkbox" [(ngModel)]="tempCriteria.fake3" />
-                    ลิงก์พอร์ตแบบไม่ตรงกับตัวตน
-                </label><br />
-                <label>
-                    <input type="checkbox" [(ngModel)]="tempCriteria.fake4" />
-                    ให้ลิงก์แฟนเพจที่ไม่มีผลงาน หรือมีโพสต์น้อยเกินไปจนไม่น่าเชื่อถือ
-                </label>
-            </div>
-        
-            <div class="section">
-                <h3>ผลงานขัดกับนโยบายของเว็บไซต์</h3>
-                <label>
-                    <input type="checkbox" [(ngModel)]="tempCriteria.policy1" />
-                    ภาพที่เกี่ยวข้องกับความรุนแรง หรือสื่ออันตราย
-                </label><br />
-                <label>
-                    <input type="checkbox" [(ngModel)]="tempCriteria.policy2" />
-                    ภาพโป๊ เปลือย ลามก หรือสื่อผิดศีลธรรม
-                </label>
-            </div>
-        
-            <div class="section">
-                <h3>สมัครด้วยวัตถุประสงค์ไม่ชัดเจน/ไม่ใช่ช่างภาพจริง</h3>
-                <label>
-                    <input type="checkbox" [(ngModel)]="tempCriteria.purpose1" />
-                    แบบผลงานที่ไม่เกี่ยวกับการถ่ายภาพ เช่น ภาพวาด ภาพออกแบบกราฟิก
+                <div class="section">
+                    <h3>ผลงานละเมิดลิขสิทธิ์</h3>
+                    <label>
+                        <input type="checkbox" [(ngModel)]="tempCriteria.copyright1" />
+                        นำภาพจากอินเทอร์เน็ตมาอัปโหลด เช่น google reverse image
                     </label><br />
-                <label>
-                    <input type="checkbox" [(ngModel)]="tempCriteria.purpose2" />
-                    โปรโมทอย่างอื่น ไม่ได้ภาพถ่าย เช่น โฆษณาสินค้า
-                </label>
-            </div>
+                    <label>
+                        <input type="checkbox" [(ngModel)]="tempCriteria.copyright2" />
+                        มีลายน้ำของคนอื่นหรือแบรนด์อื่นที่ไม่ใช่ของตนเอง
+                    </label>
+                </div>
         
-            <div class="modal-actions" *ngIf="isEditMode">
-                <button class="approve-btn" (click)="approve()">อนุมัติ</button>
-                <button class="reject-btn" (click)="reject()">ปฏิเสธ</button>
-                <button class="close-btn" (click)="closeDetailModal()">ปิด</button>
-            </div>
+                <div class="section">
+                    <h3>ใช้ข้อมูลเท็จ/ข้อมูลซ้ำ</h3>
+                    <label>
+                        <input type="checkbox" [(ngModel)]="tempCriteria.fake1" />
+                        สมัครหลายบัญชีด้วยชื่อเมล์หรือเบอร์ซ้ำกัน
+                    </label><br />
+                    <label>
+                        <input type="checkbox" [(ngModel)]="tempCriteria.fake2" />
+                        ใช้ชื่อปลอม เบอร์โทรที่ติดต่อไม่ได้จริง
+                    </label><br />
+                    <label>
+                        <input type="checkbox" [(ngModel)]="tempCriteria.fake3" />
+                        ลิงก์พอร์ตแบบไม่ตรงกับตัวตน
+                    </label><br />
+                    <label>
+                        <input type="checkbox" [(ngModel)]="tempCriteria.fake4" />
+                        ให้ลิงก์แฟนเพจที่ไม่มีผลงาน หรือมีโพสต์น้อยเกินไปจนไม่น่าเชื่อถือ
+                    </label>
+                </div>
+        
+                <div class="section">
+                    <h3>ผลงานขัดกับนโยบายของเว็บไซต์</h3>
+                    <label>
+                        <input type="checkbox" [(ngModel)]="tempCriteria.policy1" />
+                        ภาพที่เกี่ยวข้องกับความรุนแรง หรือสื่ออันตราย
+                    </label><br />
+                    <label>
+                        <input type="checkbox" [(ngModel)]="tempCriteria.policy2" />
+                        ภาพโป๊ เปลือย ลามก หรือสื่อผิดศีลธรรม
+                    </label>
+                </div>
+        
+                <div class="section">
+                    <h3>สมัครด้วยวัตถุประสงค์ไม่ชัดเจน/ไม่ใช่ช่างภาพจริง</h3>
+                    <label>
+                        <input type="checkbox" [(ngModel)]="tempCriteria.purpose1" />
+                        แบบผลงานที่ไม่เกี่ยวกับการถ่ายภาพ เช่น ภาพวาด ภาพออกแบบกราฟิก
+                    </label><br />
+                    <label>
+                        <input type="checkbox" [(ngModel)]="tempCriteria.purpose2" />
+                        โปรโมทอย่างอื่น ไม่ได้ภาพถ่าย เช่น โฆษณาสินค้า
+                    </label>
+                </div>
+        
+                <div class="modal-actions">
+                    <button class="reject-btn" (click)="rejectUser()">ยืนยันปฏิเสธ</button>
+                    <button class="close-btn" (click)="closeAllModals()">ยกเลิก</button>
+                </div>
             </div>     
         </div> 
-   </div>
+    </div>
 </body>
 </html>

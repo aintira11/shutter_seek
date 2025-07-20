@@ -204,3 +204,30 @@ export interface DataWorkforEdit {
     name_tags:    string;
     image_urls:   string[];
 }
+
+export interface DatafilterUsers {
+    user_id:       number;
+    username:      string;
+    email:         string;
+    phone:          string;
+    image_profile: string;
+    type_user:     string;
+    report_count : number|null;
+    sht_status:    number | null;
+}
+
+export interface DataReport {
+    report_id:             number;
+    photographer_id:       number;
+    reporter_id:           number;
+    reason:                string;
+    details:               string;
+    date_reported:         Date;
+    reporter_username:     string;
+    reporter_email:        string;
+    reporter_image:        string;
+    photographer_username: string;
+    photographer_email:    string;
+    photographer_image:    string;
+}
+

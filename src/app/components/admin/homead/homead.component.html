@@ -11,8 +11,8 @@
     <div class="admin-container">
         <header class="admin-header">
             <div class="admin-profile">
-              <img class="profile-avatar" [src]="currentUser.avatar || 'assets/default-avatar.png'" alt="Admin Profile" />
-              <span class="profile-name">{{ currentUser.name || 'ผู้ดูแลระบบ1' }}</span>
+              <img class="profile-avatar" [src]="datauser[0].image_profile" alt="Admin Profile" />
+              <span class="profile-name">{{ datauser[0].username }}</span>
               <button class="add-btn" (click)="goToadd()">+</button>
             </div>
           
@@ -20,51 +20,76 @@
               <img src="/assets/images/PIXEL (8).png" alt="Shutter Seek Logo" class="center-logo" />
             </div>
           
-            <button class="logout-btn" (click)="goToLogin()">ออกจากระบบ</button>
+            <button class="logout-btn" (click)="logout()">ออกจากระบบ</button>
           </header>          
           
         <h1>ผู้ดูแลระบบ</h1>
     
-        <div class="search-container">
-        <input type="text" placeholder="ชื่อ | อีเมลล์ | เบอร์โทร" [(ngModel)]="searchQuery" />
-        <button class="button">
-            <i class="fa fa-search"></i>
-        </button>
-        <div class="button-group">
-            <button class="pushable" (click)="openCategoryModal()">
-                <span class="shadow"></span>
-                <span class="edge"></span>
-                <span class="front">ประเภทที่เลือก</span>
-            </button>
-            <button class="pushable pushable-approve" (click)="goToConfirmShutter()">
-                <span class="shadow"></span>
-                <span class="edge"></span>
-                <span class="front"> อนุมัติช่างภาพ </span>
-              </button>                  
-                           
-        </div>
-                
-        </div>
+        <!--search-container -->
+<div class="search-container">
+    <input 
+        type="text" 
+        placeholder="ชื่อผู้ใช้ | อีเมลล์ | เบอร์โทร" 
+        [(ngModel)]="searchKeyword"
+        (keypress)="onSearchKeyPress($event)"
+        (input)="searchUsers()"
+    />
+    <button class="button" (click)="searchUsers()">
+        <i class="fa fa-search"></i>
+    </button>
+    <!-- เพิ่มปุ่มล้างการค้นหา -->
+    <button class="button clear-btn" *ngIf="isSearching" (click)="clearSearch()" title="ล้างการค้นหา">
+        <i class="fa fa-times"></i>
+    </button>
     
-        <div class="tabs">
-        <button (click)="filterUsers('all')" [class.active]="selectedTab === 'all'">ทั้งหมด ({{ users.length }})</button>
-        <button (click)="filterUsers('ผู้ดูแลระบบ')" [class.active]="selectedTab === 'ผู้ดูแลระบบ'">ผู้ดูแลระบบ({{ adminCount }})</button>
-        <button (click)="filterUsers('สมาชิก')" [class.active]="selectedTab === 'สมาชิก'">สมาชิก ({{ memberCount }})</button>
-        <button (click)="filterUsers('ช่างภาพ')" [class.active]="selectedTab === 'ช่างภาพ'">ช่างภาพ ({{ photographerCount }})</button>
-        </div>
+    <div class="button-group">
+        <button class="pushable" (click)="openCategoryModal()">
+            <span class="shadow"></span>
+            <span class="edge"></span>
+            <span class="front">ประเภทที่เลือก</span>
+        </button>
+        <button class="pushable pushable-approve" (click)="goToConfirmShutter()">
+            <span class="shadow"></span>
+            <span class="edge"></span>
+            <span class="front"> อนุมัติช่างภาพ </span>
+        </button>                  
+    </div>
+</div>
+    
+<!-- แก้ไขส่วน tabs เพื่อแสดงสถานะการค้นหา -->
+<div class="tabs">
+  <button (click)="filterUsers(0)" [class.active]="selectedTab === 'all'" [class.searching]="isSearching">
+    {{ isSearching ? 'ผลการค้นหา' : 'ทั้งหมด' }} ({{ datafilterUsers.length }})
+  </button>
+  <button (click)="filterUsers(3)" [class.active]="selectedTab === 'ผู้ดูแลระบบ'" [disabled]="isSearching">
+    ผู้ดูแลระบบ({{ adminCount }})
+  </button>
+  <button (click)="filterUsers(1)" [class.active]="selectedTab === 'สมาชิก'" [disabled]="isSearching">
+    สมาชิก ({{ memberCount }})
+  </button>
+  <button (click)="filterUsers(2)" [class.active]="selectedTab === 'ช่างภาพ'" [disabled]="isSearching">
+    ช่างภาพ ({{ photographerCount }})
+  </button>
+  <button (click)="filterUsers(4)" [class.active]="selectedTab === 'บัญชีคู่'" [disabled]="isSearching">
+    บัญชีคู่ ({{ MandP }})
+  </button>
+</div>
     
         <div class="user-list">
-            <div *ngFor="let user of filteredUsers" class="user-card">
-                <img [src]="user.avatar || 'assets/default-avatar.png'" alt="User Avatar" class="avatar" />
+            <div *ngFor="let user of datafilterUsers" class="user-card">
+                <img [src]="user.image_profile" alt="User Avatar" class="avatar" />
                 <div class="user-info">
-                    <h3>{{ user.name || 'ชื่อผู้ใช้' }}</h3>
-                    <p class="role">{{ user.role }}</p>
+                    <h3>{{ user.username }}</h3>
+                    <p class="role" *ngIf="user.type_user == '1'">ผู้ใช้ทั่วไป</p>
+                    <p class="role" *ngIf="user.type_user == '2'">ช่างภาพ</p>
+                    <p class="role" *ngIf="user.type_user == '3'">แอดมิน</p>
+                    <p class="role" *ngIf="user.type_user == '4'">ช่างภาพ และ ผู้ใช้ทั่วไป</p>
                 </div>
 
                 <div class="actions">
-                    <button *ngIf="user.role === 'ช่างภาพ'" class="report-btn" (click)="openReportDialog(user)">รายงาน</button>
+                    <button *ngIf="user.type_user === '2' || user.type_user === '4' " class="report-btn" (click)="openReportDialog(user.user_id,user.username)">รายงาน ({{user.report_count}})</button>
                     <button class="detail-btn">รายละเอียด</button>
-                    <button class="delete-btn" (click)="deleteUser(user.id)">
+                    <button class="delete-btn" (click)="deleteUser(user.user_id)">
                         <i class="fa fa-trash"></i>
                     </button>
                 </div>
@@ -78,7 +103,7 @@
                 <hr />
                 <div class="category-list">
                     <div *ngFor="let category of jobCategories; let i = index" class="category-item">
-                        <input [(ngModel)]="jobCategories[i]" type="text" [readonly]="!isEditing[i]" />
+                        <input [(ngModel)]="jobCategories[i].name_tags" type="text" [readonly]="!isEditing[i]" />
                         <button class="edit-btn" *ngIf="!isEditing[i]" (click)="enableEditing(i)">แก้ไข</button>
                         <button class="save-btn" *ngIf="isEditing[i]" (click)="saveEdit(i)">บันทึก</button>
                     </div>
@@ -96,13 +121,13 @@
         <!-- Modal รายงาน -->
         <div class="modal" *ngIf="isModal">
             <div class="modal-content">
-            <h2>ชื่อผู้ใช้ : <strong>{{ selectedUserForReport?.name }}</strong></h2>
+            <h2>ชื่อผู้ใช้ : <strong>{{ sht_username }}</strong></h2>
             <hr />
-            <p>รายงานทั้งหมด {{ reports.length }} รายการ</p>
-            <div class="report-list">
-                <div *ngFor="let report of reports" class="report-item">
-                <strong>{{ report.username }}</strong>
-                <p>{{ report.detail }}</p>
+            <p>รายงานทั้งหมด {{ dataReport.length }} รายการ</p>
+            <div class="report-list"*ngIf="dataReport.length > 0">
+                <div *ngFor="let report of dataReport" class="report-item">
+                <strong>{{ report.reporter_username }}  | เหตุผล : {{report.reason}}</strong>
+                <p>{{ report.details }}</p>
                 </div>
             </div>
             <div class="modal-actions">

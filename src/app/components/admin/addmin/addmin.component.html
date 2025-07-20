@@ -5,12 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Addmin</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
+   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
 <body>
     <div class="admin-add-container">
         <h1>เพิ่มผู้ดูแลระบบ</h1>
-        <form #adminForm="ngForm" (ngSubmit)="submitForm(adminForm)" novalidate>
+        <form [formGroup]="fromaddmin" (ngSubmit)="submitForm(fromaddmin)" novalidate>
             <div class="form-wrapper">
               <div class="logo-section">
                 <img src="assets/images/PIXEL (7).png" alt="Shutter Seek Logo" />
@@ -18,53 +20,153 @@
               <div class="form-section">
                   <div class="profile-section">
                     <img [src]="imagePreview" alt="Profile" id="profileImage" class="profile-image">
-                    <input type="file" id="fileInput" style="display: none;" (change)="onFileSelected($event)">
-                    <button class="change-profile-btn" (click)="triggerFileInput()">
+                    <input type="file" id="fileInput" style="display: none;" (change)="onFileSelected($event)" accept="image/*">
+                    <button type="button" class="change-profile-btn" (click)="triggerFileInput()">
                         เลือกรูป Profile
                     </button>
                   </div> 
 
-                  <label>
-                    <span>ชื่อ: <span style="color: red">*</span></span>
-                    <input type="text" [(ngModel)]="adminData.name" name="name" required #name="ngModel" placeholder="ระบุชื่อ"/>
-                  </label>
+                  <div class="form-field">
+                    <label class="rowform">
+                      <span>อีเมล: <span style="color: red">*</span></span>
+                      <div class="input-container">
+                        <input type="email" class="input-style" 
+                              [class.error]="fromaddmin.get('Email')?.invalid && fromaddmin.get('Email')?.touched"
+                              placeholder="ระบุอีเมล" formControlName="Email">
+                        <div *ngIf="fromaddmin.get('Email')?.invalid && fromaddmin.get('Email')?.touched" class="error-message">
+                            <span *ngIf="fromaddmin.get('Email')?.errors?.['required']" style="color: red; font-size: smaller;">*กรุณากรอกอีเมล์</span>
+                            <span *ngIf="fromaddmin.get('Email')?.errors?.['email']" style="color: red; font-size: smaller;">*รูปแบบอีเมล์ไม่ถูกต้อง</span>
+                            <span *ngIf="fromaddmin.get('Email')?.errors?.['whitespace']" style="color: red; font-size: smaller;">*อีเมล์ไม่สามารถเป็นช่องว่างได้</span>
+                        </div>
+                      </div>
+                    </label>
+                  </div>
+
+                  <div class="form-field">
+                    <label class="rowform">
+                      <span>ชื่อผู้ใช้ : <span style="color: red">*</span></span>
+                      <div class="input-container">
+                        <input type="text" class="input-style" 
+                               [class.error]="fromaddmin.get('UserName')?.invalid && fromaddmin.get('UserName')?.touched"
+                               placeholder="ระบุ ชื่อผู้ใช้" formControlName="UserName">
+                        <div *ngIf="fromaddmin.get('UserName')?.invalid && fromaddmin.get('UserName')?.touched" class="error-message">
+                            <span *ngIf="fromaddmin.get('UserName')?.errors?.['required']" style="color: red; font-size: smaller;">*กรุณากรอก ชื่อผู้ใช้</span>
+                            <span *ngIf="fromaddmin.get('UserName')?.errors?.['whitespace']" style="color: red; font-size: smaller;">*ชื่อผู้ใช้ ไม่สามารถเป็นช่องว่างได้</span>
+                        </div>
+                      </div>
+                    </label>
+                  </div>
+
+                  <div class="form-field">
+                    <label class="rowform">
+                      <span>ชื่อ: <span style="color: red">*</span></span>
+                      <div class="input-container">
+                        <input type="text" class="input-style" 
+                               [class.error]="fromaddmin.get('Name')?.invalid && fromaddmin.get('Name')?.touched"
+                               placeholder="ระบุชื่อ" formControlName="Name">
+                        <div *ngIf="fromaddmin.get('Name')?.invalid && fromaddmin.get('Name')?.touched" class="error-message">
+                            <span *ngIf="fromaddmin.get('Name')?.errors?.['required']" style="color: red; font-size: smaller;">*กรุณากรอกชื่อ</span>
+                            <span *ngIf="fromaddmin.get('Name')?.errors?.['whitespace']" style="color: red; font-size: smaller;">*ชื่อไม่สามารถเป็นช่องว่างได้</span>
+                        </div>
+                      </div>
+                    </label>
+                  </div>
                     
-                  <label>
-                    <span>นามสกุล: <span style="color: red">*</span></span>
-                    <input type="text" [(ngModel)]="adminData.lastName" name="lastName" required #lastName="ngModel" placeholder="ระบุนามสกุล" />
-                  </label>
+                  <div class="form-field">
+                    <label class="rowform">
+                      <span>นามสกุล: <span style="color: red">*</span></span>
+                      <div class="input-container">
+                        <input type="text" class="input-style" 
+                               [class.error]="fromaddmin.get('LastName')?.invalid && fromaddmin.get('LastName')?.touched"
+                               placeholder="ระบุนามสกุล" formControlName="LastName">
+                        <div *ngIf="fromaddmin.get('LastName')?.invalid && fromaddmin.get('LastName')?.touched" class="error-message">
+                            <span *ngIf="fromaddmin.get('LastName')?.errors?.['required']" style="color: red; font-size: smaller;">*กรุณากรอกนามสกุล</span>
+                            <span *ngIf="fromaddmin.get('LastName')?.errors?.['whitespace']" style="color: red; font-size: smaller;">*นามสกุลไม่สามารถเป็นช่องว่างได้</span>
+                        </div>
+                      </div>
+                    </label>
+                  </div>
+                           
+                  <div class="form-field">
+                    <label class="rowform">
+                      <span>เบอร์โทร: <span style="color: red">*</span></span>
+                      <div class="input-container">
+                        <input type="tel" class="input-style" 
+                               [class.error]="fromaddmin.get('Phone')?.invalid && fromaddmin.get('Phone')?.touched"
+                               placeholder="ระบุหมายเลขโทรศัพท์ 10 หลัก" formControlName="Phone">
+                        <div *ngIf="fromaddmin.get('Phone')?.invalid && fromaddmin.get('Phone')?.touched" class="error-message">
+                            <span *ngIf="fromaddmin.get('Phone')?.errors?.['required']" style="color: red; font-size: smaller;">*กรุณากรอกหมายเลขโทรศัพท์</span>
+                            <span *ngIf="fromaddmin.get('Phone')?.errors?.['pattern']" style="color: red; font-size: smaller;">*หมายเลขโทรศัพท์ต้องเป็นตัวเลข 10 หลัก</span>
+                            <span *ngIf="fromaddmin.get('Phone')?.errors?.['whitespace']" style="color: red; font-size: smaller;">*หมายเลขโทรศัพท์ไม่สามารถเป็นช่องว่างได้</span>
+                        </div>
+                      </div>
+                    </label>
+                  </div>
                   
-                  <label>
-                    <span>อีเมล: <span style="color: red">*</span></span>
-                    <input type="email" [(ngModel)]="adminData.email" name="email" required #email="ngModel" placeholder="ระบุอีเมล" />
-                  </label>
+                  <div class="password-field">
+                    <label class="rowform">
+                      <span>รหัสผ่าน: <span style="color: red">*</span></span>
+                      <div class="input-container">
+                        <div class="password-container">
+                          <input
+                            [type]="hidePassword ? 'password' : 'text'"
+                            class="input-style"
+                            [class.error]="fromaddmin.get('Password')?.invalid && fromaddmin.get('Password')?.touched"
+                            placeholder="ระบุรหัสผ่าน" formControlName="Password">
+                          <i
+                            class="bi toggle-icon"
+                            [ngClass]="hidePassword ? 'bi-eye-slash' : 'bi-eye'"
+                            (click)="togglePasswordVisibility('password')"
+                          ></i>
+                        </div>
+                        <div *ngIf="fromaddmin.get('Password')?.invalid && fromaddmin.get('Password')?.touched"
+                             class="error-message-absolute">
+                          <span *ngIf="fromaddmin.get('Password')?.errors?.['required']" style="color: red; font-size: smaller;">*กรุณากรอกรหัสผ่าน</span>
+                          <span *ngIf="fromaddmin.get('Password')?.errors?.['whitespace']" style="color: red; font-size: smaller;">*รหัสผ่านไม่สามารถเป็นช่องว่างได้</span>
+                          <span *ngIf="fromaddmin.get('Password')?.errors?.['pattern']" style="color: red; font-size: smaller;"> *รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร และมีทั้งตัวอักษรพิมพ์ใหญ่,พิมพ์เล็ก,ตัวเลข และ อักขระพิเศษ อย่างน้อย 1 ตัว</span>
+                        </div>
+                      </div>
+                    </label>
+                  </div>
                   
-                  <label>
-                    <span>ชื่อผู้ใช้งาน: <span style="color: red">*</span></span>
-                    <input type="text" [(ngModel)]="adminData.username" name="username" required #username="ngModel" placeholder="ระบุชื่อผู้ใช้งาน" />
-                  </label>
-                  
-                  <label>
-                    <span>เบอร์โทร: <span style="color: red">*</span></span>
-                    <input type="tel" [(ngModel)]="adminData.phone" name="phone" required pattern="^[0-9]{10}$" #phone="ngModel" placeholder="ระบุหมายเลขโทรศัพท์ 10 หลัก" />
-                  </label>
-                  
-                  <label>
-                    <span>รหัสผ่าน: <span style="color: red">*</span></span>
-                    <input type="password" [(ngModel)]="adminData.password" name="password" required #password="ngModel" placeholder="ระบุรหัสผ่าน" />
-                  </label>
-                  
-                  <label>
-                    <span>ยืนยันรหัสผ่าน: <span style="color: red">*</span></span>
-                    <input type="password" [(ngModel)]="adminData.confirmPassword" name="confirmPassword" required #confirmPassword="ngModel" placeholder="ระบุยืนยันรหัสผ่าน" />
-                  </label>
+                  <div class="password-field">
+                    <label class="rowform">
+                      <span>ยืนยันรหัสผ่าน: <span style="color: red">*</span></span>
+                      <div class="input-container">
+                        <div class="password-container">
+                          <input
+                            [type]="hideConfirmPassword ? 'password' : 'text'"
+                            [class.error]="fromaddmin.get('confirmPassword')?.invalid && fromaddmin.get('confirmPassword')?.touched"
+                            placeholder="ระบุยืนยันรหัสผ่าน"
+                            class="input-style"
+                            formControlName="confirmPassword"
+                          />
+                          <i
+                            class="bi toggle-icon"
+                            [ngClass]="hideConfirmPassword ? 'bi-eye-slash' : 'bi-eye'"
+                            (click)="togglePasswordVisibility('confirmPassword')"
+                          ></i>
+                        </div>
+                        <div *ngIf="fromaddmin.get('confirmPassword')?.invalid && fromaddmin.get('confirmPassword')?.touched" class="error-message-absolute">
+                            <span *ngIf="fromaddmin.get('confirmPassword')?.errors?.['required']" style="color: red; font-size: smaller;">*กรุณายืนยันรหัสผ่าน</span>
+                            <span *ngIf="fromaddmin.get('confirmPassword')?.errors?.['whitespace']" style="color: red; font-size: smaller;">*การยืนยันรหัสผ่านไม่สามารถเป็นช่องว่างได้</span>
+                        </div>
+                        <div *ngIf="fromaddmin.get('confirmPassword')?.valid && fromaddmin.get('Password')?.valid && 
+                                      fromaddmin.get('confirmPassword')?.touched && 
+                                      fromaddmin.value.Password !== fromaddmin.value.confirmPassword" 
+                                class="error-message-absolute" style="color: red; font-size: smaller;">
+                              รหัสผ่านไม่ตรงกัน
+                          </div>
+                      </div>
+                    </label>
+                  </div>
                   
               </div>
             </div>
           
             <div class="action-buttons">
               <button type="button" class="cancel-btn" (click)="goToadmin()">ยกเลิก</button>
-              <button type="submit" class="confirm-btn">ยืนยัน</button>
+              <button type="submit" class="confirm-btn" [disabled]="fromaddmin.invalid">ยืนยัน</button>
             </div>
           </form>
           

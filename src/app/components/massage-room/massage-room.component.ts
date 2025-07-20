@@ -300,83 +300,189 @@ formatDateSeparator(timestamp: string): string {
 
   // ดึงข้อมูลสำหรับช่างภาพที่ระบุ
 getPhotographerData(id: string): void {
-    console.log('กำลังดึงข้อมูลคู่สนทนาสำหรับ ID:', id);
-    const partnerUserId = Number(id); 
+  console.log('กำลังดึงข้อมูลคู่สนทนาสำหรับ ID:', id);
+  const partnerUserId = Number(id);
 
-    if (partnerUserId === this.myId) {
-        console.warn('พยายามดึงข้อมูลตัวเองเพื่อแชท การกระทำนี้ถูกบล็อก.');
-        this.showAlert('คุณไม่สามารถแชทกับตัวเองได้', false);
-        this.selectedPartnerId = null; 
-        this.selectedRoomId = null; 
-        this.messages = []; 
-        return;
-    }
-
-    const url = `${this.constants.API_ENDPOINT}/read/${id}`;
-    this.http.get<DataMembers[]>(url).subscribe({
-      next: (response) => {
-        const newPartner = response[0]; 
-        if (newPartner) {
-          if (!this.partnersData.some(p => p.user_id === newPartner.user_id)) {
-            this.partnersData.push(newPartner);
-          }
-          console.log("ข้อมูลคู่สนทนา:", newPartner);
-          
-          // ปรับเงื่อนไขสำหรับการตั้งค่าแชท
-          // - ผู้ใช้ทั่วไป (type_user === '1') สามารถแชทกับใครก็ได้
-          // - ช่างภาพ (type_user === '2') สามารถแชทกับ initialPartnerId ได้
-          // - ผู้ใช้ที่เป็นทั้งสองอย่าง (type_user === '4') สามารถแชทกับใครก็ได้
-          if (this.myUserType === '1' || 
-              this.myUserType === '4' || 
-              (this.myUserType === '2' && newPartner.user_id === this.initialPartnerId)) {
-             this.setupChat(newPartner.user_id);
-          }
-        } else {
-          console.warn('ไม่พบข้อมูลคู่สนทนาสำหรับ ID:', id);
-        }
-      },
-      error: (error) => {
-        console.error('เกิดข้อผิดพลาดในการดึงข้อมูลคู่สนทนา:', error);
-      }
-    });
+  if (partnerUserId === this.myId) {
+    console.warn('พยายามดึงข้อมูลตัวเองเพื่อแชท การกระทำนี้ถูกบล็อก.');
+    this.showAlert('คุณไม่สามารถแชทกับตัวเองได้', false);
+    this.selectedPartnerId = null;
+    this.selectedRoomId = null;
+    this.messages = [];
+    return;
   }
+
+  // ตรวจสอบว่ามีข้อมูล partner อยู่แล้วหรือไม่
+  const existingPartner = this.partnersData.find(p => p.user_id === partnerUserId);
+  if (existingPartner) {
+    console.log("ใช้ข้อมูล partner ที่มีอยู่แล้ว:", existingPartner);
+    this.proceedWithChatSetup(existingPartner);
+    return;
+  }
+
+  // ถ้าไม่มี ให้โหลดข้อมูลใหม่
+  const url = `${this.constants.API_ENDPOINT}/read/${id}`;
+  this.http.get<DataMembers[]>(url).subscribe({
+    next: (response) => {
+      const newPartner = response[0];
+      if (newPartner) {
+        if (!this.partnersData.some(p => p.user_id === newPartner.user_id)) {
+          this.partnersData.push(newPartner);
+          this.listenToPartnerStatus(newPartner.user_id);
+        }
+        console.log("ข้อมูลคู่สนทนา:", newPartner);
+        this.proceedWithChatSetup(newPartner);
+      } else {
+        console.warn('ไม่พบข้อมูลคู่สนทนาสำหรับ ID:', id);
+      }
+    },
+    error: (error) => {
+      console.error('เกิดข้อผิดพลาดในการดึงข้อมูลคู่สนทนา:', error);
+    }
+  });
+}
+
+// เมธอดสำหรับจัดการการตั้งค่าแชทหลังจากได้ข้อมูล partner แล้ว
+private proceedWithChatSetup(partner: DataMembers): void {
+  // ตรวจสอบสิทธิ์ในการแชท
+  if (this.myUserType === '1' || 
+      this.myUserType === '4' || 
+      (this.myUserType === '2' && partner.user_id === this.initialPartnerId)) {
+    this.setupChat(partner.user_id);
+  }
+}
+
+// เมธอดสำหรับการรอให้โหลดข้อมูล partners เสร็จก่อนที่จะเริ่มแชทกับ initialPartnerId
+private initializeChatAfterPartnersLoaded(): void {
+  if (this.initialPartnerId && this.initialPartnerId !== 0) {
+    if (this.initialPartnerId === this.myId) {
+      console.warn('พยายามแชทกับตัวเองจาก initialPartnerId. การกระทำนี้ถูกบล็อก.');
+      this.showAlert('คุณไม่สามารถแชทกับตัวเองได้', false);
+      this.selectedPartnerId = null;
+      this.selectedRoomId = null;
+      this.messages = [];
+    } else {
+      console.log('กำลังเริ่มต้นแชทกับคู่สนทนา ID (จาก initialPartnerId):', this.initialPartnerId);
+      this.isSidebarOpen = false;
+      
+      // รอให้โหลดข้อมูล partners เสร็จก่อน
+      const checkPartnerData = () => {
+        const existingPartner = this.partnersData.find(p => p.user_id === this.initialPartnerId);
+        if (existingPartner) {
+          this.proceedWithChatSetup(existingPartner);
+        } else {
+          // ถ้ายังไม่มีข้อมูล ให้โหลดข้อมูลใหม่
+          this.getPhotographerData(String(this.initialPartnerId));
+        }
+      };
+      
+      // ตรวจสอบทุก 100ms จนกว่าจะมีข้อมูล หรือสูงสุด 3 วินาที
+      let attempts = 0;
+      const maxAttempts = 30;
+      const checkInterval = setInterval(() => {
+        attempts++;
+        const existingPartner = this.partnersData.find(p => p.user_id === this.initialPartnerId);
+        if (existingPartner || attempts >= maxAttempts) {
+          clearInterval(checkInterval);
+          checkPartnerData();
+        }
+      }, 100);
+    }
+  }
+}
 
   loadChatRooms(): void {
-    // ดึงห้องแชททั้งหมดแล้วกรองเฉพาะห้องที่เกี่ยวข้องกับ myId
-    const chatRoomsRef = ref(this.db, 'chatRooms');
+  const chatRoomsRef = ref(this.db, 'chatRooms');
 
-    onValue(chatRoomsRef, snapshot => {
-      const allRooms: any = snapshot.val() || {};
-      this.chatRooms = [];
+  onValue(chatRoomsRef, snapshot => {
+    const allRooms: any = snapshot.val() || {};
+    const tempChatRooms: any[] = [];
+    const partnersToLoad: number[] = [];
 
-      // วนลูปผ่านทุกห้องแชทใน Firebase
-       for (const roomId in allRooms) {
-        const roomData = allRooms[roomId];
-        if (roomData.user1 === this.myId || roomData.user2 === this.myId) {
-            const partnerId = (roomData.user1 === this.myId) ? roomData.user2 : roomData.user1;
+    // วนลูปผ่านทุกห้องแชทใน Firebase
+    for (const roomId in allRooms) {
+      const roomData = allRooms[roomId];
+      if (roomData.user1 === this.myId || roomData.user2 === this.myId) {
+        const partnerId = (roomData.user1 === this.myId) ? roomData.user2 : roomData.user1;
 
-            // *** เพิ่มตรงนี้: ข้ามการเพิ่มตัวเองเข้าในรายการคู่สนทนา ***
-            if (partnerId === this.myId) {
-                continue; // ข้าม (ไม่ทำขั้นตอนที่เหลือในลูปนี้)
-            }
-
-            if (!this.partnersData.some(p => p.user_id === partnerId)) {
-                this.getPhotographerData(String(partnerId));
-            }
-
-            this.chatRooms.push({
-                roomId: roomId,
-                partnerId: partnerId,
-                lastMessage: roomData.lastMessage || 'ยังไม่มีข้อความ',
-                lastMessageTime: roomData.lastMessageTime || '',
-            });
+        // ข้ามการเพิ่มตัวเองเข้าในรายการคู่สนทนา
+        if (partnerId === this.myId) {
+          continue;
         }
+
+        // เก็บข้อมูลห้องแชทไว้ชั่วคราว
+        tempChatRooms.push({
+          roomId: roomId,
+          partnerId: partnerId,
+          lastMessage: roomData.lastMessage || 'ยังไม่มีข้อความ',
+          lastMessageTime: roomData.lastMessageTime || '',
+        });
+
+        // ถ้ายังไม่มีข้อมูล partner ให้เพิ่มเข้าไปในรายการที่ต้องโหลด
+        if (!this.partnersData.some(p => p.user_id === partnerId)) {
+          if (!partnersToLoad.includes(partnerId)) {
+            partnersToLoad.push(partnerId);
+          }
+        }
+      }
     }
-      // จัดเรียงห้องแชทตามเวลาข้อความล่าสุด
-      this.chatRooms.sort((a, b) => new Date(b.lastMessageTime).getTime() - new Date(a.lastMessageTime).getTime());
-      console.log('โหลดห้องแชทแล้ว:', this.chatRooms);
+
+    // ถ้ามี partners ที่ต้องโหลด
+    if (partnersToLoad.length > 0) {
+      this.loadPartnersData(partnersToLoad).then(() => {
+        // เมื่อโหลดข้อมูล partners เสร็จแล้ว ค่อยอัปเดต chatRooms
+        this.updateChatRoomsList(tempChatRooms);
+      });
+    } else {
+      // ถ้าไม่มี partners ที่ต้องโหลด ให้อัปเดต chatRooms เลย
+      this.updateChatRoomsList(tempChatRooms);
+    }
+  });
+}
+
+// เมธอดสำหรับอัปเดตรายการห้องแชท
+private updateChatRoomsList(tempChatRooms: any[]): void {
+  this.chatRooms = tempChatRooms;
+  
+  // จัดเรียงห้องแชทตามเวลาข้อความล่าสุด
+  this.chatRooms.sort((a, b) => new Date(b.lastMessageTime).getTime() - new Date(a.lastMessageTime).getTime());
+  
+  console.log('โหลดห้องแชทแล้ว:', this.chatRooms);
+  console.log('ข้อมูล partners ที่มี:', this.partnersData);
+}
+
+
+// เมธอดสำหรับโหลดข้อมูล partners หลายคนพร้อมกัน
+private loadPartnersData(partnerIds: number[]): Promise<void> {
+  const promises = partnerIds.map(partnerId => {
+    return new Promise<void>((resolve) => {
+      const url = `${this.constants.API_ENDPOINT}/read/${partnerId}`;
+      this.http.get<DataMembers[]>(url).subscribe({
+        next: (response) => {
+          const partner = response[0];
+          if (partner && !this.partnersData.some(p => p.user_id === partner.user_id)) {
+            this.partnersData.push(partner);
+            
+            // เริ่มฟังสถานะออนไลน์ของ partner
+            this.listenToPartnerStatus(partner.user_id);
+            
+            console.log(`โหลดข้อมูล partner ${partnerId} เสร็จแล้ว:`, partner);
+          }
+          resolve();
+        },
+        error: (error) => {
+          console.error(`เกิดข้อผิดพลาดในการดึงข้อมูลคู่สนทนา ${partnerId}:`, error);
+          resolve(); // resolve แม้จะ error เพื่อให้ Promise.all ทำงานต่อได้
+        }
+      });
     });
-  }
+  });
+
+  return Promise.all(promises).then(() => {
+    console.log('โหลดข้อมูล partners ทั้งหมดเสร็จแล้ว');
+  });
+}
+
 
   // ตั้งค่าแชทสำหรับ ID พาร์ทเนอร์ที่ระบุ
 setupChat(partnerId: number): void {

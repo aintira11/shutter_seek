@@ -231,6 +231,132 @@ h1 {
   box-shadow: 0 6px 20px rgba(0, 74, 173, 0.4);
 }
 
+
+.password-container {
+    position: relative;
+    /* ลบ display: flex และ align-items ออก */
+}
+
+.password-container input {
+    width: 100%;
+    padding: 10px 40px 10px 10px; /* เพิ่ม padding-right เพื่อให้มีที่ว่างสำหรับไอคอน */
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box; /* ให้ padding รวมอยู่ในความกว้าง */
+}
+
+.password-container .toggle-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%); /* จัดให้อยู่กึ่งกลางแนวตั้ง */
+    cursor: pointer;
+    font-size: 18px;
+    color: #555;
+    z-index: 1; /* ให้ไอคอนอยู่ด้านบน */
+}
+
+/* สำหรับ hover effect */
+.password-container .toggle-icon:hover {
+    color: #333;
+}
+
+/* ถ้าต้องการให้ไอคอนไม่ถูกเลือกได้ */
+.password-container .toggle-icon {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.error-message,
+.error-message-absolute {
+  font-size: 14px;
+  color: #dc3545;
+  display: flex;
+  align-items: start;
+  gap: 5px;
+  flex-wrap: wrap;           /* ให้ตัดบรรทัดเมื่อข้อความยาว */
+  word-wrap: break-word;
+  max-width: 100%;           /* ไม่เกินพื้นที่ของ container */
+  line-height: 1.4;
+  position: relative;        /* เปลี่ยนจาก absolute ถ้าไม่อยากให้ทับ */
+  margin-top: 5px;
+}
+
+.error-message::before,
+.error-message-absolute::before {
+  content: '⚠';
+  font-size: 14px;
+}  
+
+.form-field {
+            margin-bottom: 5px; /* เพิ่มระยะห่างระหว่างฟิลด์ */
+        }
+        
+        .password-field {
+            margin-bottom: 5px; /* เพิ่มระยะห่างสำหรับฟิลด์รหัสผ่าน */
+        }
+        
+        .error-message {
+            display: block;
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .error-message-absolute {
+            display: block;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            position: static; /* เปลี่ยนจาก absolute เป็น static */
+        }
+        
+        .password-container {
+            position: relative;
+        }
+        
+        .input-style {
+            width: 100%;
+            margin-bottom: 0; /* ลบ margin-bottom เดิมของ input */
+        }
+        
+        .form-section label {
+            margin-bottom: 15px; /* เพิ่มระยะห่างระหว่าง label */
+        }
+        
+        /* Row form styling */
+        .rowform {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .rowform span:first-child {
+            flex: 0 0 20%; /* ตรึงขนาดที่ 20% */
+            text-align: left;
+            padding-top: 8px; /* จัดให้อยู่ในระดับเดียวกับ input */
+            white-space: nowrap; /* ป้องกันข้อความขึ้นบรรทัดใหม่ */
+        }
+        
+        .input-container {
+            flex: 1; /* ใช้พื้นที่ที่เหลือ (80%) */
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .rowform .input-style {
+            width: 100%;
+        }
+        
+        .rowform .password-container {
+            width: 100%;
+        }
+        
+        .rowform .error-message,
+        .rowform .error-message-absolute {
+            margin-left: 0; /* ไม่ต้อง indent error message */
+        }
+
 @media (max-width: 1024px) {
   .form-wrapper {
     flex-direction: column;

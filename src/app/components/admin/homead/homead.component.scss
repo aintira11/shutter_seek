@@ -263,32 +263,33 @@ h1 {
 }
 
 /* Tabs */
-.tabs {
-    display: flex;
-    width: 100%;
-    background: rgba(0, 74, 173, 1);
-    flex-wrap: wrap;
-}
+.tabs { 
+            display: flex;
+            width: 100%;
+            background: rgba(0, 74, 173, 1);
+            flex-wrap: wrap;
+        }
 
-.tabs button {
-    flex: 1;
-    background: rgba(0, 74, 173, 1);
-    color: white;
-    padding: 15px;
-    border: none;
-    cursor: pointer;
-    font-size: 18px;
-    text-align: center;
-    white-space: nowrap;
-}
+        .tabs button {
+            flex: 1;
+            background: rgba(0, 74, 173, 1);
+            color: white;
+            padding: 15px;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            text-align: center;
+            white-space: nowrap;
+            transition: background-color 0.3s ease;
+        }
 
-.tabs button.active {
-    background: #002266;
-}
+        .tabs button.active {
+            background: #002266;
+        }
 
-.tabs button:hover {
-    background: #003399;
-}
+        .tabs button:hover {
+            background: #003399;
+        }
 
 /* รายการผู้ใช้ */
 .user-list {
