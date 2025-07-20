@@ -216,6 +216,12 @@ onSearchKeyPress(event: any) {
   goToConfirmShutter(): void {
     this.router.navigate(['/comfirm']);
   }
+  profile(){
+   this.router.navigate(['/editadmin']);
+}
+gotohome(){
+  this.router.navigate(['/']);
+}
   
   //รายงาน
   isModal: boolean = false;
@@ -360,9 +366,7 @@ addCategory() {
   });
 }
 
-profile(){
-  
-}
+
 
 
 }

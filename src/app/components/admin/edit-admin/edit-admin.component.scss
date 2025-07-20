@@ -224,6 +224,154 @@
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(0, 74, 173, 0.4);
   }
+
+  //model
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.modal-card h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+u{
+  display: flex; 
+  justify-content:  flex-end; 
+  cursor: pointer;
+}
+u:hover {
+  color: #004aad;
+  text-decoration: underline;
+}
+
+
+//password strength
+.password-container {
+    position: relative;
+    /* ลบ display: flex และ align-items ออก */
+}
+
+.password-container input {
+    width: 100%;
+    padding: 10px 40px 10px 10px; /* เพิ่ม padding-right เพื่อให้มีที่ว่างสำหรับไอคอน */
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box; /* ให้ padding รวมอยู่ในความกว้าง */
+}
+
+.password-container .toggle-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%); /* จัดให้อยู่กึ่งกลางแนวตั้ง */
+    cursor: pointer;
+    font-size: 18px;
+    color: #555;
+    z-index: 1; /* ให้ไอคอนอยู่ด้านบน */
+}
+
+/* สำหรับ hover effect */
+.password-container .toggle-icon:hover {
+    color: #333;
+}
+
+/* ถ้าต้องการให้ไอคอนไม่ถูกเลือกได้ */
+.password-container .toggle-icon {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.error-message,
+.error-message-absolute {
+  font-size: 14px;
+  color: #dc3545;
+  display: flex;
+  align-items: start;
+  gap: 5px;
+  flex-wrap: wrap;           /* ให้ตัดบรรทัดเมื่อข้อความยาว */
+  word-wrap: break-word;
+  max-width: 100%;           /* ไม่เกินพื้นที่ของ container */
+  line-height: 1.4;
+  position: relative;        /* เปลี่ยนจาก absolute ถ้าไม่อยากให้ทับ */
+  margin-top: 5px;
+}
+
+.error-message::before,
+.error-message-absolute::before {
+  content: '⚠';
+  font-size: 14px;
+}  
+
+.cancel-button {
+  background-color: #ffbb37;
+  color: white;
+}
+
+.cancel-button:hover {
+  background-color: #e6a500;
+}
+
+.save-button {
+  background-color: #004aad;
+  color: white;
+}
+
+.save-button:hover {
+  background-color: #003080;
+}
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.button-group button {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+}
   
   /* ================= RESPONSIVE ================= */
   
