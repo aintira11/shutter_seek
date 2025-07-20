@@ -11,19 +11,19 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 // Confirm delete dialog component
-@Component({
-  selector: 'app-confirm-delete-dialog',
-  standalone: true,
-  imports: [MatButtonModule, CommonModule, MatDialogModule],
-  template: `
-    <h2 mat-dialog-title>ยืนยันการลบ</h2>
-    <div mat-dialog-content>คุณต้องการลบแพ็กเกจนี้ใช่หรือไม่?</div>
-    <div mat-dialog-actions>
-      <button mat-button mat-dialog-close>ยกเลิก</button>
-      <button mat-button [mat-dialog-close]="true" color="warn">ลบ</button>
-    </div>
-  `
-})
+// @Component({
+//   selector: 'app-confirm-delete-dialog',
+//   standalone: true,
+//   imports: [MatButtonModule, CommonModule, MatDialogModule],
+//   template: `
+//     <h2 mat-dialog-title>ยืนยันการลบ</h2>
+//     <div mat-dialog-content>คุณต้องการลบแพ็กเกจนี้ใช่หรือไม่?</div>
+//     <div mat-dialog-actions>
+//       <button mat-button mat-dialog-close>ยกเลิก</button>
+//       <button mat-button [mat-dialog-close]="true" color="warn">ลบ</button>
+//     </div>
+//   `
+// })
 
 @Component({
   selector: 'app-homead',
@@ -187,22 +187,22 @@ onSearchKeyPress(event: any) {
 }
 
   deleteUser(userId: number) {
-   const dialogRef = this.dialog.open(HomeadComponent);
-   dialogRef.afterClosed().subscribe(result=>{
-       if(userId){
-            const url = `${this.Constants.API_ENDPOINT}/deleteUser/`+userId;
-            this.http.delete(url, {}).subscribe({
-        next: (response) => {
-          console.log(' deleted successfully:', response);
-          this.showSnackBar('ลบผู้ใช้สำเร็จ');
-        },
-        error: (error) => {
-          console.error('Delete portfolio error details:', error);
-          this.showSnackBar('เกิดข้อผิดพลาดในการลบผู้ใช้');
-        }
-      });
-       }
-   });
+  //  const dialogRef = this.dialog.open(HomeadComponent);
+  //  dialogRef.afterClosed().subscribe(result=>{
+  //      if(userId){
+  //           const url = `${this.Constants.API_ENDPOINT}/deleteUser/`+userId;
+  //           this.http.delete(url, {}).subscribe({
+  //       next: (response) => {
+  //         console.log(' deleted successfully:', response);
+  //         this.showSnackBar('ลบผู้ใช้สำเร็จ');
+  //       },
+  //       error: (error) => {
+  //         console.error('Delete portfolio error details:', error);
+  //         this.showSnackBar('เกิดข้อผิดพลาดในการลบผู้ใช้');
+  //       }
+  //     });
+  //      }
+  //  });
   }
 
   goToadd(): void {
@@ -360,6 +360,9 @@ addCategory() {
   });
 }
 
+profile(){
+  
+}
 
 
 }

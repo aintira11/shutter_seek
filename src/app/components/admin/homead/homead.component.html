@@ -11,19 +11,19 @@
     <div class="admin-container">
         <header class="admin-header">
             <div class="admin-profile">
-              <img class="profile-avatar" [src]="datauser[0].image_profile" alt="Admin Profile" />
+              <img class="profile-avatar" [src]="datauser[0].image_profile" alt="Admin Profile" title="{{datauser[0].username}}" (click)="profile()"/>
               <span class="profile-name">{{ datauser[0].username }}</span>
               <button class="add-btn" (click)="goToadd()">+</button>
             </div>
           
-            <div class="logo-center">
-              <img src="/assets/images/PIXEL (8).png" alt="Shutter Seek Logo" class="center-logo" />
+            <div class="logo-center" >
+              <img  src="/assets/images/PIXEL (8).png" alt="Shutter Seek Logo" class="center-logo" />
             </div>
           
             <button class="logout-btn" (click)="logout()">ออกจากระบบ</button>
           </header>          
           
-        <h1>ผู้ดูแลระบบ</h1>
+        <h1 >ผู้ดูแลระบบ</h1>
     
         <!--search-container -->
 <div class="search-container">
