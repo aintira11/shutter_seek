@@ -29,6 +29,7 @@ import { ComfirmShutterComponent } from './components/admin/comfirm-shutter/comf
 import { HomeadComponent } from './components/admin/homead/homead.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { EditAdminComponent } from './components/admin/edit-admin/edit-admin.component';
+import { ProfileUserComponent } from './components/shutter/profile-user/profile-user.component';
 
 export const routes: Routes = [
     {path: '',component: HomeComponent},
@@ -41,6 +42,7 @@ export const routes: Routes = [
     {path: 'base2_2',component: BShutter22Component},
     {path: 'base2_3',component: BShutter23Component},
     {path: 'base3',component: BShutter3Component},
+    {path: 'profileuser',component: ProfileUserComponent},
 
     {path: 'createuser',component: CreateUseraccComponent},
     {path: 'profile',component: ProfileComponent}, 

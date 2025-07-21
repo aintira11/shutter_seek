@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>โปรไฟล์ผู้ใช้</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <div class="box" (click)="goBack()">
+        <div class="arrow right"></div>
+        <div class="text">กลับ</div>
+    </div>
+
+    <div class="profile-container" *ngIf="userProfile">
+    <div class="profile-card">
+        <img [src]="userProfile.imageUrl" alt="Profile Image" class="profile-image" />
+        <div class="profile-info">
+        <h2 class="username">{{ userProfile.username }}</h2>
+        <p class="follow-info">กำลังติดตาม {{ userProfile.followCount }} คน</p>
+        <p class="member-since">เป็นสมาชิกตั้งแต่ {{ userProfile.memberSince }}</p>
+        </div>
+    </div>
+    </div>
+
+</body>
+</html>
+
