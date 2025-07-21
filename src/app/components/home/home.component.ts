@@ -301,13 +301,17 @@ getPrev(portfolioIndex: number) {
         }
       });
     }
-    profile(){
-      const type = Number(this.datauser[0].type_user);
+    profile(typeuser : string){
+      const type = typeuser;
       console.log("ค่าของ type:", type, "| ประเภท:", typeof type); // ✅ ดูค่าที่แท้จริง
-      if(type === 2 ){
+      if(type === '2' ){
         this.router.navigate(['/'], { state: { data: this.datauser } });
+      }else if (type === '3'){
+          this.router.navigate(['/admin'],);
+      }else{
+        this.router.navigate(['/profile'], { state: { data: this.datauser } });
       }
-      this.router.navigate(['/profile'], { state: { data: this.datauser } });
+      
     }
 
 // ตรวจสอบว่าโพสนี้ถูกใจหรือไม่
