@@ -32,7 +32,7 @@
               <!-- <button class="btn btn-outline-primary me-2" routerLink="/register">ลงทะเบียน</button> -->
               <button class="btn btn-primary btn-sm" (click)="logout()">ออกจากระบบ</button>
               <button mat-button class="circle-button" >
-                <img src="{{ data.image_profile }}" alt="" class="rounded-circle" title="{{ data.username }}"(click)="profile()" style="border-radius: 100%; object-fit: cover;">
+                <img src="{{ data.image_profile }}" alt="" class="rounded-circle" title="{{ data.username }}"(click)="profile(data.type_user)" style="border-radius: 100%; object-fit: cover;">
               </button>
               </div>
           </div>

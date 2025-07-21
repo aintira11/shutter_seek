@@ -28,7 +28,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 @Component({
   selector: 'app-homead',
   standalone: true,
-  imports: [FormsModule,CommonModule,
+  imports: [FormsModule,CommonModule,MatButtonModule
     ],
   templateUrl: './homead.component.html',
   styleUrl: './homead.component.scss'
@@ -315,6 +315,29 @@ gotohome(){
       verticalPosition: 'top',
     });
   }
+
+     toShutter(id_shutter?: number) {
+      console.log("Sending id_shutter:", id_shutter);
+      // console.log(" Sending datauser:", this.datauser[0]);
+    
+      if (!id_shutter) {
+        console.error(" Error: id_shutter is undefined or invalid");
+        return;
+      }
+      if (!this.datauser ) {
+        console.error(" Error: this.datauser is empty or undefined");
+        this.showSnackBar('กรุณาเข้าสู่ระบบก่อนใช้งาน');
+        return;
+      }
+    
+      this.router.navigate(['/homeshutter'], { 
+        state: { 
+          // datauser: this.datauser[0], 
+          idshutter: id_shutter 
+        } 
+      });
+    }
+
   
 
   // เพิ่มประเภทงานใหม่
