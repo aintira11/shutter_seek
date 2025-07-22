@@ -98,7 +98,6 @@ export class HomeShutterComponent implements OnInit{
         this.currentSlideIndex[index] = 0;
       });
     }
-
   }
 
   delay(ms: number) {
@@ -291,7 +290,7 @@ toggleFollow(followedId: number) {
   postreport(){
 
   }
- 
+  
     profile(typeuser : string){
       const type = typeuser;
       console.log("ค่าของ type:", type, "| ประเภท:", typeof type); // ✅ ดูค่าที่แท้จริง

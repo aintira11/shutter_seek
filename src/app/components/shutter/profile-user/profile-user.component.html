@@ -12,13 +12,13 @@
         <div class="text">กลับ</div>
     </div>
 
-    <div class="profile-container" *ngIf="userProfile">
+    <div class="profile-container" *ngIf="datauser.length >0">
     <div class="profile-card">
-        <img [src]="userProfile.imageUrl" alt="Profile Image" class="profile-image" />
+        <img [src]="datauser[0].image_profile" alt="Profile Image" class="profile-image" />
         <div class="profile-info">
-        <h2 class="username">{{ userProfile.username }}</h2>
-        <p class="follow-info">กำลังติดตาม {{ userProfile.followCount }} คน</p>
-        <p class="member-since">เป็นสมาชิกตั้งแต่ {{ userProfile.memberSince }}</p>
+        <h2 class="username">{{ datauser[0].username }}</h2>
+        <p class="follow-info">กำลังติดตาม {{ Follow.length }} คน</p>
+        <p class="member-since">เป็นสมาชิกตั้งแต่ {{ datauser[0].date_of_member | date:'dd/MM/yyyy'}}</p>
         </div>
     </div>
     </div>

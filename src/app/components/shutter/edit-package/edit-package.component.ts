@@ -153,7 +153,7 @@ export class EditPackageComponent {
     const dialogRef = this.dialog.open(ConfirmDeleteDialogComponent);
     
     dialogRef.afterClosed().subscribe(result => {
-      if (result) {
+      if (result  === true ) {
         const packageToDelete = this.packages[index];
         
         // ถ้าแพ็กเกจมี ID แสดงว่ามีอยู่ในฐานข้อมูลและต้องลบ
@@ -203,6 +203,8 @@ this.http.request('delete', url, { body: { package_id: packageToDelete.package_i
             });
           }
         }
+      }else{
+        this.showNotification('ยกเลิกการลบแพ็กเกจ');
       }
     });
   }

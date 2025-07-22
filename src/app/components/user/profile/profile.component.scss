@@ -191,106 +191,87 @@ h3 i {
     fill: #E3474F;
   }
 
-
-// .favorite-works {
-//     text-align: center;
-
-//     .works-grid {
-//         display: grid;
-//         grid-template-columns: repeat(4, 1fr); /* 4 columns on larger screens */
-//         gap: 20px;
-//         justify-items: center;
-//     }
-
-//     .work-card {
-//         background: #fff;
-//         border: 1px solid #ddd;
-//         border-radius: 10px;
-//         overflow: hidden;
-//         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-//         width: 100%; /* Ensure it fills its grid cell */
-//         max-width: 300px; /* Limit the card's width */
-//         text-align: center;
-//     }
-
-//     .work-image {
-//         width: 100%;
-//         height: 200px;
-//         object-fit: cover;
-//     }
-
-//     .owner-image {
-//         width: 50px;
-//         height: 50px;
-//         border-radius: 50%;
-//         object-fit: cover;
-//         margin-right: 10px;
-//     }
-
-//     .owner-title {
-//         font-size: 16px;
-//         font-weight: bold;
-//     }
-
-//     .work-details {
-//         display: flex;
-//         align-items: center; 
-//         padding: 10px;
-//     }
-    
-//     .owner-info {
-//         display: flex;
-//         flex-direction: column; /* เปลี่ยนเป็นแนวตั้ง */
-//         align-items: flex-start; /* จัดให้อยู่ทางซ้าย */
-//     }
-    
-//     .work-owner {
-//         margin-top: 5px; /* เพิ่มระยะห่างระหว่างชื่อกับหัวใจ */
-//     }
-    
-//     .work-like {
-//         font-size: 20px;
-//         color: red;
-//         margin-top: 1px; 
-//         margin-left: 170px;
-//     }
-//     /* From Uiverse.io by Peary74 */ 
-// .btn {
-//     display: flex;
-//     align-items: center;
-//     justify-content: center;
-//     border-radius: 10px;
-//     border: none;
-//     background-color: transparent;
-//     position: relative;
-//   }
-  
-//   .btn:hover > .icon {
-//     transform: scale(1.2);
-//     cursor: pointer;
-//     transition: .2s linear;
-//   }
-  
-//   .btn:focus > .icon {
-//     fill: #fd1853;
-//     animation: grosseur .2s linear;
-//   }
-  
-//   @keyframes grosseur {
-//     0% {
-//       width: 50px;
-//       height: 50px;
-//       fill: #fd1853;
-//     }
-  
-//     100% {
-//       width: 30px;
-//       height: 30px;
-//       fill: #fd1853;
-//     }
-//   }    
-
+/* Chat Icon */
+// .fixed-chat-icon {
+//   position: fixed;
+//   bottom: 20px; /* ระยะห่างจากด้านล่าง */
+//   right: 20px;  /* ระยะห่างจากด้านขวา */
+//   font-size: 40px;
+//   color:#004AAD;
+//   cursor: pointer; /* เพิ่ม cursor แบบ pointer */
+//   z-index: 1000; /* ทำให้ไอคอนอยู่เหนือส่วนอื่น */
+//   transform: scale(1.5);
 // }
+/* --- NEW: Styles for Chat Icon Container and Badge --- */
+.fixed-chat-icon-container {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  cursor: pointer;
+  z-index: 1050; // Ensure it's above other content
+}
+
+.fixed-chat-icon {
+  font-size: 48px; // Larger icon
+  color: #004AAD; // Example color
+  transition: transform 0.2s ease-in-out;
+  
+  &:hover {
+    transform: scale(1.1); // Slight zoom on hover
+  }
+}
+
+.notification-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 14px;
+  height: 14px;
+  background-color: red;
+  border-radius: 50%;
+  border: 2px solid white;
+  animation: pulse 1.5s infinite;
+}
+
+// Animation for the badge to make it more noticeable
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(255, 0, 0, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
+  }
+}
+
+/* You might need to adjust other styles if they conflict */
+/* For example, the original .left class from your HTML */
+.left {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+
+.box {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.arrow {
+  border: solid black;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+  transform: rotate(135deg);
+  -webkit-transform: rotate(135deg);
+}
+
 
  
 /* Media Queries */

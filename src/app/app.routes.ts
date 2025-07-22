@@ -30,6 +30,7 @@ import { HomeadComponent } from './components/admin/homead/homead.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { EditAdminComponent } from './components/admin/edit-admin/edit-admin.component';
 import { ProfileUserComponent } from './components/shutter/profile-user/profile-user.component';
+import { ApprovalComponent } from './components/admin/approval/approval.component';
 
 export const routes: Routes = [
     {path: '',component: HomeComponent},
@@ -67,6 +68,7 @@ export const routes: Routes = [
     {path: 'editadmin',component: EditAdminComponent},
     
     {path: 'forgot',component: ForgotPasswordComponent},
+    {path: 'Approval',component: ApprovalComponent},
 
     // { 
     //   path: 'myprofile',

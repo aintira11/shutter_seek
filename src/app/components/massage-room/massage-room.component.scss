@@ -37,6 +37,9 @@ body.sidebar-open {
   position: relative;
 }
 
+// .chat-item.unread {
+//   border: 2px solid #f32121; /* กรอบสีน้ำเงินสดใส หรือสีที่คุณต้องการ */
+// }
 /* --- Chat Sidebar --- */
 .chat-sidebar {
   width: 0;
@@ -230,6 +233,8 @@ body.sidebar-open {
 .status-indicator.online {
   background-color: #10b981;
 }
+
+/* *** สไตล์สำหรับกรอบสีเหลืองเมื่อ chat-item มี class 'unread' *** */
 
 /* --- Chat Info --- */
 .chat-info {
@@ -601,14 +606,18 @@ body.sidebar-open {
 
 .message-input-area {
   display: flex;
-  align-items: center;
+  // align-items: center;
   width: 100%;
   gap: clamp(8px, 2vw, 10px);
+
+  align-items: flex-end; /* จัดให้เนื้อหาด้านล่างชิดกัน (ถ้า textarea ขยาย) */
+  gap: 10px; /* ระยะห่างระหว่างองค์ประกอบ */
+  padding: 10px;
 }
 
 .message-input {
   flex-grow: 1;
-  padding: clamp(12px, 3vw, 14px) clamp(16px, 4vw, 20px);
+  // padding: clamp(12px, 3vw, 14px) clamp(16px, 4vw, 20px);
   border: 2px solid #e5e7eb;
   border-radius: 25px;
   font-size: clamp(14px, 3.5vw, 15px);
@@ -619,6 +628,15 @@ body.sidebar-open {
   min-height: 44px; /* ขนาดขั้นต่ำสำหรับการแตะ */
   resize: none;
   line-height: 1.4;
+
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  // border-radius: 20px;
+  // font-size: 1rem;
+
+  overflow-y: hidden; /* ซ่อน scrollbar ถ้าไม่จำเป็น */
+  max-height: 120px; /* (ไม่บังคับ) กำหนดความสูงสูงสุดที่ต้องการก่อนที่จะมี scrollbar */
+  box-sizing: border-box; /* ให้ padding และ border อยู่ในความกว้าง/ความสูงที่กำหนด */
 }
 
 .message-input:focus {

@@ -248,11 +248,13 @@
     <!-- Modal รายชื่อผู้ถูกใจ -->
 <div class="modal-overlay" *ngIf="showLikeModal">
   <div class="modal-content">
-    <h3>รายชื่อผู้ที่ถูกใจ</h3>
+    <h3>รายชื่อผู้ที่ถูกใจ ({{datalike.length}})</h3>
     <hr>
     <div class="like-list">
-      <div *ngFor="let person of datalike" class="like-item">
+      <div *ngFor="let person of datalike" class="like-item" >
+        <img class="profile-pic" src="{{person.liker_image}}" alt="" (click)="showprofile(person.liker_id)">
         {{ person.liker_name }}
+        <hr>
       </div>
     </div>
 
@@ -373,7 +375,7 @@
             <div *ngFor="let review of datareview">
             <div class="review-card">
               <div class="review-header">
-                <img src="{{review.profile}}" alt="User Avatar" class="avatar">
+                <img src="{{review.profile}}" alt="User Avatar" class="avatar" (click)="showprofile(review.reviewer_id)">
                 <div class="review-info">
                   <h4 class="username">{{review.reviewer_name}}</h4>
                   <p class="review-date">{{review.date_review | date:'dd/MM/yyyy'}}</p>
@@ -392,9 +394,12 @@
             
       </section>
       
-      <i class="bi bi-chat-dots-fill fixed-chat-icon" (click)="chat(data[0].user_id)" ></i>
-     
-      <!-- <i class="bi bi-chat-dots-fill" style="font-size: 40px; color: #007bff;"></i> -->
+      <!-- <i class="bi bi-chat-dots-fill fixed-chat-icon" (click)="chat(data[0].user_id)" ></i> -->
+       <!-- Chat Icon  -->
+    <div class="fixed-chat-icon-container" (click)="chat(data[0].user_id)">
+      <i class="bi bi-chat-dots-fill fixed-chat-icon"></i>
+      <span *ngIf="hasUnreadMessages" class="notification-badge"></span>
+    </div>
     
        <button *ngIf="showButton" class="scroll-to-top" (click)="scrollToTop()">
         ⬆ เลื่อนขึ้น
@@ -413,7 +418,7 @@
   <div class="follower-card" *ngFor="let follower of datafollower">
     <div class="profile-section">
       <div >
-        <img src="{{follower.image_profile}}" alt="" class="profile-pic">
+        <img src="{{follower.image_profile}}" alt="" class="profile-pic" (click)="showprofile(follower.user_id)">
       </div>
       <span class="username">{{ follower.username }}</span>
     </div>

@@ -33,31 +33,33 @@
         </div>
 
         <!-- ข้อความ -->
-        <div [ngClass]="{'my-message': msg.senderId === myId, 'other-message': msg.senderId !== myId}">
-          <div class="message-bubble">
-            <ng-container *ngIf="isImageUrl(msg.messageText); else textMessage">
-              <img 
-                [src]="msg.messageText" 
-                alt="Image" 
-                class="chat-image" 
-                (load)="onImageLoad()"
-                (click)="openImageModal(msg.messageText)"
-                style="cursor: pointer; max-width: 200px; max-height: 200px; border-radius: 8px; object-fit: cover;">
-            </ng-container>
-            <ng-template #textMessage>
-              {{ msg.messageText }}
-            </ng-template>
-            <div class="message-time">
-              {{ msg.timestamp | date:'HH:mm' }}
-              <ng-container *ngIf="msg.senderId === myId">
-                <span class="read-status" [class.read]="msg.isRead" title="{{ msg.isRead ? 'อ่านแล้ว' : 'ส่งแล้ว' }}">
-                  <ng-container *ngIf="msg.isRead">✔✔</ng-container>
-                  <ng-container *ngIf="!msg.isRead">✔</ng-container>
-                </span>
-              </ng-container>
-            </div>
-          </div>
-        </div>
+     <div [ngClass]="{'my-message': msg.senderId === myId, 'other-message': msg.senderId !== myId}">
+  <div class="message-bubble">
+    <ng-container *ngIf="isImageUrl(msg.messageText); else textMessage">
+      <img
+        [src]="msg.messageText"
+        alt="Image"
+        class="chat-image"
+        (load)="onImageLoad()"
+        (click)="openImageModal(msg.messageText)"
+        style="cursor: pointer; max-width: 200px; max-height: 200px; border-radius: 8px; object-fit: cover;">
+    </ng-container>
+    <ng-template #textMessage>
+      <div style="white-space: pre-wrap; word-wrap: break-word;">
+        {{ msg.messageText }}
+      </div>
+    </ng-template>
+    <div class="message-time">
+      {{ msg.timestamp | date:'HH:mm' }}
+      <ng-container *ngIf="msg.senderId === myId">
+        <span class="read-status" [class.read]="msg.isRead" title="{{ msg.isRead ? 'อ่านแล้ว' : 'ส่งแล้ว' }}">
+          <ng-container *ngIf="msg.isRead">✔✔</ng-container>
+          <ng-container *ngIf="!msg.isRead">✔</ng-container>
+        </span>
+      </ng-container>
+    </div>
+  </div>
+</div>
       </div>
     </div>
 
@@ -110,12 +112,12 @@
         <ng-container *ngIf="myUserType === '1'">ช่างภาพที่เคยคุยด้วย</ng-container>
         <ng-container *ngIf="myUserType === '2'">ผู้ใช้งานที่ทักหาคุณ</ng-container>
       </div>
-      <div
-        class="chat-item"
-        *ngFor="let room of chatRooms"
-        [class.active]="selectedPartnerId === room.partnerId"
-        (click)="setupChat(room.partnerId)"
-      >
+<div
+  class="chat-item"
+  *ngFor="let room of chatRooms"
+  [class.active]="selectedPartnerId === room.partnerId"
+  [class.unread]="room.hasUnreadMessages" (click)="setupChat(room.partnerId)"
+>
         <ng-container *ngIf="getChatPartnerInfo(room.partnerId) as partner">
           <div class="photographer-avatar">
             <img *ngIf="partner.image_profile; else noProfileImage" [src]="partner.image_profile" alt="Profile" class="profile-img">
@@ -126,7 +128,16 @@
           </div>
           <div class="chat-info">
             <div class="photographer-name">{{ partner.username }}</div>
-            <div class="last-message">{{ room.lastMessage }}</div>
+
+            <div class="last-message">
+               <ng-container *ngIf="room.hasUnreadMessages; else showLastMessage">
+               <strong style="color: #007bff;">มีข้อความใหม่</strong> </ng-container>
+
+        <ng-template #showLastMessage>
+          <ng-container *ngIf="room.lastMessageSenderId === myId">คุณ : </ng-container>
+          {{ room.lastMessage }}
+        </ng-template>
+      </div>
           </div>
           <div class="message-time">{{ room.lastMessageTime | date:'shortTime' }}</div>
         </ng-container>

@@ -126,7 +126,7 @@ export class ForgotPasswordComponent {
     } catch (error) {
       console.error('เกิดข้อผิดพลาด:', error);
       this.showSnackBar('เกิดข้อผิดพลาดในระบบ กรุณาลองอีกครั้ง');
-    }
+    } 
   }
 
   showSnackBar(message: string) {

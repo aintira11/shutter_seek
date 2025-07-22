@@ -1,0 +1,129 @@
+/* src/app/admin/approval-criteria/approval.component.scss */
+
+/* ... (CSS เดิมสำหรับ .approval-criteria-container, .loading-indicator, .error-message, etc.) ... */
+
+.add-new-category, .add-new-sub-criterion {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  align-items: center;
+
+  input[type="text"] {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+  }
+
+  button {
+    padding: 10px 15px;
+    background-color: #28a745; /* Green for add */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #218838;
+    }
+  }
+}
+
+.criteria-category {
+  /* ... (CSS เดิม) ... */
+}
+
+.category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+
+  h3 {
+    margin: 0;
+    flex-grow: 1;
+  }
+
+  .category-actions {
+    display: flex;
+    gap: 8px;
+  }
+}
+
+.sub-criterion-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 0; /* Adjust padding for items */
+
+  label {
+    flex-grow: 1;
+    margin-left: 5px; /* Space between checkbox and label */
+  }
+
+  .sub-criterion-actions {
+    display: flex;
+    gap: 8px;
+    margin-left: auto; /* Push actions to the right */
+  }
+}
+
+/* Styles for edit/save/cancel/delete buttons */
+.edit-btn, .delete-btn, .save-btn, .cancel-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease;
+}
+
+.edit-btn {
+  background-color: #007bff; /* Blue for edit */
+  color: white;
+  &:hover { background-color: #0056b3; }
+}
+
+.delete-btn {
+  background-color: #dc3545; /* Red for delete */
+  color: white;
+  &:hover { background-color: #c82333; }
+}
+
+.save-btn {
+  background-color: #28a745; /* Green for save */
+  color: white;
+  &:hover { background-color: #218838; }
+}
+
+.cancel-btn {
+  background-color: #6c757d; /* Grey for cancel */
+  color: white;
+  &:hover { background-color: #5a6268; }
+}
+
+.edit-input {
+  flex-grow: 1;
+  padding: 8px;
+  border: 1px solid #007bff;
+  border-radius: 4px;
+  font-size: 1rem;
+  margin-right: 10px; /* Space before buttons */
+}
+
+.action-buttons {
+  margin-top: 30px;
+  button {
+    background-color: #007bff; /* Blue for main save button */
+    padding: 15px 30px; /* Larger padding */
+    font-size: 1.2rem; /* Larger font */
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+    &:hover {
+      background-color: #0056b3;
+      box-shadow: 0 6px 15px rgba(0, 123, 255, 0.3);
+    }
+  }
+}

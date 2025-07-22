@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- src/app/admin/approval-criteria/approval.component.html -->
+<div class="approval-criteria-container">
+  <h2>แก้ไขเกณฑ์อนุมัติช่างภาพ</h2>
+
+  <!-- Loading Indicator -->
+  <div *ngIf="isLoading" class="loading-indicator">
+    <p>กำลังโหลดข้อมูลเกณฑ์...</p>
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="hasError && !isLoading" class="error-message">
+    <p>ไม่สามารถดึงข้อมูลเกณฑ์ได้ กรุณาลองใหม่อีกครั้ง</p>
+    <button (click)="loadCriteria()">ลองโหลดใหม่</button>
+  </div>
+
+  <!-- Main Content (Show only when not loading and no major error) -->
+  <ng-container *ngIf="!isLoading && !hasError">
+    <!-- ส่วนสำหรับเพิ่มหมวดหมู่ใหม่ -->
+    <div class="add-new-category">
+      <input
+        type="text"
+        [(ngModel)]="newCategoryTitle"
+        placeholder="ชื่อหมวดหมู่ใหม่"
+      />
+      <button (click)="addCategory()">+ เพิ่มหมวดหมู่</button>
+    </div>
+
+    <div class="criteria-list">
+      <div *ngFor="let category of approvalCategories" class="criteria-category">
+        <div class="category-header">
+          <!-- แสดงชื่อหมวดหมู่ หรือช่องแก้ไข -->
+          <ng-container *ngIf="!category.isEditing; else editCategoryTitle">
+            <h3>{{ category.title }}</h3>
+            <div class="category-actions">
+              <button (click)="startEditCategory(category)" class="edit-btn">แก้ไข</button>
+              <button (click)="deleteCategory(category.id)" class="delete-btn">ลบ</button>
+            </div>
+          </ng-container>
+          <ng-template #editCategoryTitle>
+            <input
+              type="text"
+              [(ngModel)]="category.title"
+              (keydown.enter)="finishEditCategory(category)"
+              (keydown.escape)="cancelEditCategory(category)"
+              class="edit-input"
+            />
+            <div class="category-actions">
+              <button (click)="finishEditCategory(category)" class="save-btn">บันทึก</button>
+              <button (click)="cancelEditCategory(category)" class="cancel-btn">ยกเลิก</button>
+            </div>
+          </ng-template>
+        </div>
+
+        <div class="sub-criteria-list">
+          <div *ngFor="let sub of category.subCriteria" class="sub-criterion-item">
+            <!-- Checkbox สำหรับเปิด/ปิดการใช้งาน -->
+            <input
+              type="checkbox"
+              [id]="'sub-' + sub.id"
+              [checked]="sub.isEnabled"
+              (change)="toggleSubCriterion(category.id, sub.id)"
+            />
+            
+            <!-- แสดงข้อความเกณฑ์ย่อย หรือช่องแก้ไข -->
+            <ng-container *ngIf="!sub.isEditing; else editSubCriterionText">
+              <label [for]="'sub-' + sub.id">{{ sub.text }}</label>
+              <div class="sub-criterion-actions">
+                <button (click)="startEditSubCriterion(sub)" class="edit-btn">แก้ไข</button>
+                <button (click)="deleteSubCriterion(category.id, sub.id)" class="delete-btn">ลบ</button>
+              </div>
+            </ng-container>
+            <ng-template #editSubCriterionText>
+              <input
+                type="text"
+                [(ngModel)]="sub.text"
+                (keydown.enter)="finishEditSubCriterion(sub)"
+                (keydown.escape)="cancelEditSubCriterion(sub)"
+                class="edit-input"
+              />
+              <div class="sub-criterion-actions">
+                <button (click)="finishEditSubCriterion(sub)" class="save-btn">บันทึก</button>
+                <button (click)="cancelEditSubCriterion(sub)" class="cancel-btn">ยกเลิก</button>
+              </div>
+            </ng-template>
+          </div>
+
+          <!-- ส่วนสำหรับเพิ่มเกณฑ์ย่อยใหม่ -->
+          <div class="add-new-sub-criterion">
+            <input
+              type="text"
+              [(ngModel)]="newSubCriterionText[category.id]"
+              placeholder="เกณฑ์ย่อยใหม่"
+            />
+            <button (click)="addSubCriterion(category.id)">+ เพิ่มเกณฑ์ย่อย</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="action-buttons">
+      <button (click)="saveCriteria()">บันทึกการเปลี่ยนแปลงทั้งหมด</button>
+    </div>
+  </ng-container>
+</div>
+</body>
+</html>

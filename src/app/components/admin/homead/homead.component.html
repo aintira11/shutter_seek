@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <!-- chat icon -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
 </head>
 
 <body>
@@ -23,7 +26,7 @@
             <button class="logout-btn" (click)="logout()">ออกจากระบบ</button>
           </header>          
           
-<div style="position: relative; display: flex; justify-content: center; align-items: center; height: 80px;">
+<div style="position: relative; display: flex; justify-content: center; align-items: center; height: 100px;">
   <!-- ปุ่มอยู่ซ้าย -->
   <button 
     mat-raised-button 
@@ -38,7 +41,6 @@
 </div>
 
 
-    
         <!--search-container -->
 <div class="search-container">
     <input 
@@ -72,41 +74,70 @@
     
 <!-- แก้ไขส่วน tabs เพื่อแสดงสถานะการค้นหา -->
 <div class="tabs">
-  <button (click)="filterUsers(0)" [class.active]="selectedTab === 'all'" [class.searching]="isSearching">
+  <button 
+    (click)="filterUsers(0)" 
+    [class.active]="selectedTab === 'all'" 
+    [class.searching]="isSearching"
+    [class.disabled]="false">
     {{ isSearching ? 'ผลการค้นหา' : 'ทั้งหมด' }} ({{ datafilterUsers.length }})
   </button>
-  <button (click)="filterUsers(3)" [class.active]="selectedTab === 'ผู้ดูแลระบบ'" [disabled]="isSearching">
+  
+  <button 
+    (click)="!isSearching && filterUsers(3)" 
+    [class.active]="selectedTab === 'ผู้ดูแลระบบ'" 
+    [class.disabled]="isSearching"
+    [disabled]="isSearching">
     ผู้ดูแลระบบ({{ adminCount }})
   </button>
-  <button (click)="filterUsers(1)" [class.active]="selectedTab === 'สมาชิก'" [disabled]="isSearching">
+  
+  <button 
+    (click)="!isSearching && filterUsers(1)" 
+    [class.active]="selectedTab === 'สมาชิก'" 
+    [class.disabled]="isSearching"
+    [disabled]="isSearching">
     สมาชิก ({{ memberCount }})
   </button>
-  <button (click)="filterUsers(2)" [class.active]="selectedTab === 'ช่างภาพ'" [disabled]="isSearching">
+  
+  <button 
+    (click)="!isSearching && filterUsers(2)" 
+    [class.active]="selectedTab === 'ช่างภาพ'" 
+    [class.disabled]="isSearching"
+    [disabled]="isSearching">
     ช่างภาพ ({{ photographerCount }})
   </button>
-  <button (click)="filterUsers(4)" [class.active]="selectedTab === 'บัญชีคู่'" [disabled]="isSearching">
+  
+  <button 
+    (click)="!isSearching && filterUsers(4)" 
+    [class.active]="selectedTab === 'บัญชีคู่'" 
+    [class.disabled]="isSearching"
+    [disabled]="isSearching">
     บัญชีคู่ ({{ MandP }})
   </button>
 </div>
+ 
     
-        <div class="user-list">
-            <div *ngFor="let user of datafilterUsers" class="user-card">
+        <div class="user-list" >
+            <div *ngFor="let user of datafilterUsers" >
+                <div  *ngIf="user.type_user != '5'"class="user-card" >
                 <img [src]="user.image_profile" alt="User Avatar" class="avatar" />
                 <div class="user-info">
                     <h3>{{ user.username }}</h3>
-                    <p class="role" *ngIf="user.type_user == '1'">ผู้ใช้ทั่วไป</p>
-                    <p class="role" *ngIf="user.type_user == '2'">ช่างภาพ</p>
+                    <p class="role" *ngIf="user.type_user == '1' ">ผู้ใช้ทั่วไป</p>
+                    <p class="role" *ngIf="user.type_user == '2' && user.sht_status == 1">ช่างภาพ (รอการอนุมัติ)</p>
+                    <p class="role" *ngIf="user.type_user == '2' && user.sht_status == 2">ช่างภาพ (อนุมัติแล้ว)</p>
+                    <p class="role" *ngIf="user.type_user == '2' && user.sht_status == 3">ช่างภาพ (ปฏิเสธ)</p>
                     <p class="role" *ngIf="user.type_user == '3'">แอดมิน</p>
                     <p class="role" *ngIf="user.type_user == '4'">ช่างภาพ และ ผู้ใช้ทั่วไป</p>
                 </div>
 
                 <div class="actions">
                     <button *ngIf="user.type_user === '2' || user.type_user === '4' " class="report-btn" (click)="openReportDialog(user.user_id,user.username)">รายงาน ({{user.report_count}})</button>
-                    <button class="detail-btn" (click)="toShutter(user.user_id)">รายละเอียด</button>
+                    <button  class="detail-btn" (click)="toShutter(user.user_id,user.type_user)">รายละเอียด</button>
                     <button class="delete-btn" (click)="deleteUser(user.user_id)">
                         <i class="fa fa-trash"></i>
                     </button>
                 </div>
+            </div>
             </div>
         </div>  
 
@@ -149,6 +180,35 @@
             </div>
             </div>
         </div>
+
+        <!-- model profile -->
+         <div class="modal" *ngIf="isModalprofile">
+            <div class="profile-container" *ngIf="getprofile">
+                  <div class="profile-card">
+                      <img [src]="getprofile[0].image_profile" alt="Profile Image" class="profile-image" />
+                      <div class="profile-info">
+                      <h2 class="username">{{ getprofile[0].username }}</h2>
+                        <p class="follow-info" *ngIf="getprofile[0].type_user == '1'">สถานะ : ผู้ใช้ทั่วไป </p>
+                        <p class="follow-info" *ngIf="getprofile[0].type_user == '3'">สถานะ : ผู้ดูแลระบบ </p>
+                        <p class="follow-info">อีเมล : {{ getprofile[0].email }} </p>
+                        <p class="follow-info">เบอร์โทร : {{ getprofile[0].phone }} </p>
+                        <p class="member-since">เป็นสมาชิกตั้งแต่ {{ getprofile[0].date_of_member | date:'dd/MM/yyyy'}}</p>
+                      
+                    </div>
+                    
+                  </div>                
+                </div>  
+                <div class="modal-actions">
+                     <button class="close-btn" (click)="closeModal()">ปิด</button>
+                 </div>   
+         </div>
    </div>
+
+    <!-- Chat Icon  -->
+    <div class="fixed-chat-icon-container" (click)="chat(datauser[0].user_id)">
+      <i class="bi bi-chat-dots-fill fixed-chat-icon"></i>
+      <span *ngIf="hasUnreadMessages" class="notification-badge"></span>
+    </div>
+
 </body>
 </html>

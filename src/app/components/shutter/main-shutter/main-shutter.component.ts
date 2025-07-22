@@ -13,6 +13,7 @@ import {MatIconModule} from '@angular/material/icon';
 import { AuthService } from '../../../service/auth.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Database, ref, onValue } from '@angular/fire/database';
 
 // Confirm delete dialog component
 @Component({
@@ -58,6 +59,10 @@ export class MainShutterComponent implements OnInit{
   hoverRating = 0;
   stars = new Array(5).fill(0);
 
+  // for chat notification ---
+  hasUnreadMessages = false;
+  private chatRoomListenerUnsubscribe?: () => void;
+  private messageListenersUnsubscribe: (() => void)[] = [];
   
   averageRating: number = 0; // ค่าเริ่มต้นของคะแนนเฉลี่ย
   Ratingstars: any[] = [];
@@ -77,7 +82,8 @@ selectedPortfolioId: string = '';
     private http: HttpClient
   ,private authService: AuthService,
 private dialog: MatDialog,
-private snackBar: MatSnackBar,){
+private snackBar: MatSnackBar,
+private db: Database ){
     
    
   }
@@ -99,7 +105,62 @@ ngOnInit(): void {
     this.router.navigate(['/login']);
     return;
   }
+  this.listenForUnreadMessages(user.user_id);
 }
+
+ ngOnDestroy(): void {
+    if (this.chatRoomListenerUnsubscribe) {
+      this.chatRoomListenerUnsubscribe();
+    }
+    this.messageListenersUnsubscribe.forEach(unsub => unsub());
+  }
+
+  listenForUnreadMessages(userId: number): void {
+      const chatRoomsRef = ref(this.db, 'chatRooms');
+  
+      // Listen for changes in the list of chat rooms
+      this.chatRoomListenerUnsubscribe = onValue(chatRoomsRef, (snapshot) => {
+        // Clear old message listeners before creating new ones
+        this.messageListenersUnsubscribe.forEach(unsub => unsub());
+        this.messageListenersUnsubscribe = [];
+        this.hasUnreadMessages = false;
+  
+        const allRooms = snapshot.val() || {};
+        const unreadStatusByRoom: { [roomId: string]: boolean } = {};
+  
+        const updateGlobalUnreadStatus = () => {
+          this.hasUnreadMessages = Object.values(unreadStatusByRoom).some(status => status);
+        };
+  
+        const userRooms = Object.entries(allRooms).filter(([, roomData]: [string, any]) => roomData.user1 === userId || roomData.user2 === userId);
+  
+        if (userRooms.length === 0) {
+          this.hasUnreadMessages = false;
+          return;
+        }
+  
+        // For each room the user is in, listen to its messages
+        userRooms.forEach(([roomId]) => {
+          const messagesRef = ref(this.db, `messages/${roomId}`);
+          const messageListener = onValue(messagesRef, (msgSnapshot) => {
+            const messages = msgSnapshot.val() || {};
+            let roomHasUnread = false;
+            for (const msgId in messages) {
+              const message = messages[msgId];
+              // Check if there's a message from another user that is not read
+              if (message.senderId !== userId && !message.isRead) {
+                roomHasUnread = true;
+                break;
+              }
+            }
+            unreadStatusByRoom[roomId] = roomHasUnread;
+            updateGlobalUnreadStatus();
+          });
+          this.messageListenersUnsubscribe.push(messageListener);
+        });
+      });
+    }
+
 
   toggleSidenav() {
     this.opened = !this.opened;
@@ -372,6 +433,16 @@ closeList() {
 
    goToMember(): void {
     this.router.navigate(['/profile']);
+  }
+
+  showprofile(id: number ){
+    console.log("main sent id:",id);
+       this.router.navigate(['/profileuser'], { 
+        state: { 
+          // datauser: this.datauser[0], 
+          iduser: id 
+        } 
+      });
   }
 
      logout(): void {

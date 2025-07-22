@@ -9,26 +9,30 @@ import { DatafilterUsers, DataMembers, DataReport, DataTegs } from '../../../mod
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { HttpClientModule } from '@angular/common/http';
+import { Database, ref, onValue } from '@angular/fire/database';
+
 
 // Confirm delete dialog component
-// @Component({
-//   selector: 'app-confirm-delete-dialog',
-//   standalone: true,
-//   imports: [MatButtonModule, CommonModule, MatDialogModule],
-//   template: `
-//     <h2 mat-dialog-title>ยืนยันการลบ</h2>
-//     <div mat-dialog-content>คุณต้องการลบแพ็กเกจนี้ใช่หรือไม่?</div>
-//     <div mat-dialog-actions>
-//       <button mat-button mat-dialog-close>ยกเลิก</button>
-//       <button mat-button [mat-dialog-close]="true" color="warn">ลบ</button>
-//     </div>
-//   `
-// })
+@Component({
+  selector: 'app-confirm-delete-dialog',
+  standalone: true,
+  imports: [MatButtonModule, CommonModule, MatDialogModule],
+  template: `
+    <h2 mat-dialog-title>ยืนยันการลบ</h2>
+    <div mat-dialog-content>คุณต้องการลบผู้ใช้นี้ใช่หรือไม่?</div>
+    <div mat-dialog-actions>
+      <button mat-button mat-dialog-close>ยกเลิก</button>
+      <button mat-button [mat-dialog-close]="true" color="warn">ลบ</button>
+    </div>
+  `
+})
+export class ConfirmDeleteDialogComponent {}
 
 @Component({
   selector: 'app-homead',
   standalone: true,
-  imports: [FormsModule,CommonModule,MatButtonModule
+  imports: [FormsModule,CommonModule,MatButtonModule,HttpClientModule
     ],
   templateUrl: './homead.component.html',
   styleUrl: './homead.component.scss'
@@ -46,6 +50,11 @@ export class HomeadComponent implements OnInit {
 
     selectedTab: string = 'all'; 
 
+      // for chat notification ---
+  hasUnreadMessages = false;
+  private chatRoomListenerUnsubscribe?: () => void;
+  private messageListenersUnsubscribe: (() => void)[] = [];
+
     searchKeyword: string = '';
     allUsersData: DatafilterUsers[] = []; // เก็บข้อมูลผู้ใช้ทั้งหมดไว้สำหรับค้นหา
     isSearching: boolean = false; // สถานะการค้นหา
@@ -58,6 +67,7 @@ export class HomeadComponent implements OnInit {
      private Constants: Constants, 
      private snackBar: MatSnackBar,
      private dialog: MatDialog,
+     private db: Database
     ){}
 
 
@@ -73,18 +83,97 @@ export class HomeadComponent implements OnInit {
   }
 
     this.filterUsers(0);
-    
+    this.countUsersByType(); 
+
+    this.listenForUnreadMessages(user.user_id);
   }
+
+  // --- NEW: Clean up listeners when component is destroyed to prevent memory leaks ---
+    ngOnDestroy(): void {
+      if (this.chatRoomListenerUnsubscribe) {
+        this.chatRoomListenerUnsubscribe();
+      }
+      this.messageListenersUnsubscribe.forEach(unsub => unsub());
+    }
+  
+    // --- NEW: Method to listen for unread messages in real-time ---
+    listenForUnreadMessages(userId: number): void {
+      const chatRoomsRef = ref(this.db, 'chatRooms');
+  
+      // Listen for changes in the list of chat rooms
+      this.chatRoomListenerUnsubscribe = onValue(chatRoomsRef, (snapshot) => {
+        // Clear old message listeners before creating new ones
+        this.messageListenersUnsubscribe.forEach(unsub => unsub());
+        this.messageListenersUnsubscribe = [];
+        this.hasUnreadMessages = false;
+  
+        const allRooms = snapshot.val() || {};
+        const unreadStatusByRoom: { [roomId: string]: boolean } = {};
+  
+        const updateGlobalUnreadStatus = () => {
+          this.hasUnreadMessages = Object.values(unreadStatusByRoom).some(status => status);
+        };
+  
+        const userRooms = Object.entries(allRooms).filter(([, roomData]: [string, any]) => roomData.user1 === userId || roomData.user2 === userId);
+  
+        if (userRooms.length === 0) {
+          this.hasUnreadMessages = false;
+          return;
+        }
+  
+        // For each room the user is in, listen to its messages
+        userRooms.forEach(([roomId]) => {
+          const messagesRef = ref(this.db, `messages/${roomId}`);
+          const messageListener = onValue(messagesRef, (msgSnapshot) => {
+            const messages = msgSnapshot.val() || {};
+            let roomHasUnread = false;
+            for (const msgId in messages) {
+              const message = messages[msgId];
+              // Check if there's a message from another user that is not read
+              if (message.senderId !== userId && !message.isRead) {
+                roomHasUnread = true;
+                break;
+              }
+            }
+            unreadStatusByRoom[roomId] = roomHasUnread;
+            updateGlobalUnreadStatus();
+          });
+          this.messageListenersUnsubscribe.push(messageListener);
+        });
+      });
+    }
 
   
 countUsersByType() {
-  this.adminCount = this.datafilterUsers.filter(user => user.type_user === '3').length;
-  this.memberCount = this.datafilterUsers.filter(user => user.type_user === '1').length;
-  this.photographerCount = this.datafilterUsers.filter(user => user.type_user === '2').length;
-   this.MandP = this.datafilterUsers.filter(user => user.type_user === '4').length;
+  if (this.isSearching) {
+    // เมื่อกำลังค้นหา ให้นับจากผลลัพธ์การค้นหา
+    this.adminCount = this.datafilterUsers.filter(user => user.type_user === '3').length;
+    this.memberCount = this.datafilterUsers.filter(user => user.type_user === '1').length;
+    this.photographerCount = this.datafilterUsers.filter(user => user.type_user === '2').length;
+    this.MandP = this.datafilterUsers.filter(user => user.type_user === '4').length;
+  } else {
+    // เมื่อไม่ได้ค้นหา ให้นับจากข้อมูลทั้งหมด
+    if (this.allUsersData.length > 0) {
+      this.adminCount = this.allUsersData.filter(user => user.type_user === '3').length;
+      this.memberCount = this.allUsersData.filter(user => user.type_user === '1').length;
+      this.photographerCount = this.allUsersData.filter(user => user.type_user === '2').length;
+      this.MandP = this.allUsersData.filter(user => user.type_user === '4').length;
+    } else {
+      // ถ้ายังไม่มีข้อมูลทั้งหมด ให้นับจากข้อมูลปัจจุบัน
+      this.adminCount = this.datafilterUsers.filter(user => user.type_user === '3').length;
+      this.memberCount = this.datafilterUsers.filter(user => user.type_user === '1').length;
+      this.photographerCount = this.datafilterUsers.filter(user => user.type_user === '2').length;
+      this.MandP = this.datafilterUsers.filter(user => user.type_user === '4').length;
+    }
+  }
 }
 
 filterUsers(type: number) {
+  // ถ้ากำลังค้นหาอยู่และไม่ใช่แท็บ "ทั้งหมด" ให้ return เลย
+  if (this.isSearching && type !== 0) {
+    return;
+  }
+
   // อัพเดตสถานะ tab ที่เลือก
   switch(type) {
     case 0:
@@ -104,8 +193,8 @@ filterUsers(type: number) {
       break;
   }
 
-  // ถ้ากำลังค้นหาอยู่ ให้ยกเลิกการค้นหา
-  if (this.isSearching) {
+  // ถ้ากำลังค้นหาอยู่และเป็นแท็บ "ทั้งหมด" ให้ล้างการค้นหา
+  if (this.isSearching && type === 0) {
     this.clearSearch();
   }
 
@@ -156,7 +245,7 @@ private performSearch(keyword: string) {
     (user.phone && user.phone.includes(keyword))
   );
 
-  // อัพเดต count
+  // อัพเดต count สำหรับผลลัพธ์การค้นหา
   this.countUsersByType();
   
   // แสดงผลลัพธ์การค้นหา
@@ -167,18 +256,26 @@ private performSearch(keyword: string) {
   }
 }
 
+onTabClick(type: number) {
+  if (this.isSearching && type !== 0) {
+    // ถ้ากำลังค้นหาและไม่ใช่แท็บทั้งหมด ให้แสดงข้อความแจ้งเตือน
+    this.showSnackBar('กรุณาล้างการค้นหาก่อนเปลี่ยนแท็บ');
+    return;
+  }
+  this.filterUsers(type);
+}
+
+
 // ฟังก์ชันล้างการค้นหา
 clearSearch() {
   this.searchKeyword = '';
   this.isSearching = false;
   
-  // ถ้าอยู่ในแท็บ "ทั้งหมด" ให้แสดงข้อมูลทั้งหมด
-  if (this.selectedTab === 'all') {
-    this.datafilterUsers = [...this.allUsersData];
-    this.countUsersByType();
-  }
+  // กลับไปแสดงข้อมูลทั้งหมด
+  this.selectedTab = 'all';
+  this.datafilterUsers = [...this.allUsersData];
+  this.countUsersByType();
 }
-
 // เพิ่มฟังก์ชันสำหรับ Enter key
 onSearchKeyPress(event: any) {
   if (event.key === 'Enter') {
@@ -187,23 +284,27 @@ onSearchKeyPress(event: any) {
 }
 
   deleteUser(userId: number) {
-  //  const dialogRef = this.dialog.open(HomeadComponent);
-  //  dialogRef.afterClosed().subscribe(result=>{
-  //      if(userId){
-  //           const url = `${this.Constants.API_ENDPOINT}/deleteUser/`+userId;
-  //           this.http.delete(url, {}).subscribe({
-  //       next: (response) => {
-  //         console.log(' deleted successfully:', response);
-  //         this.showSnackBar('ลบผู้ใช้สำเร็จ');
-  //       },
-  //       error: (error) => {
-  //         console.error('Delete portfolio error details:', error);
-  //         this.showSnackBar('เกิดข้อผิดพลาดในการลบผู้ใช้');
-  //       }
-  //     });
-  //      }
-  //  });
-  }
+    const dialogRef = this.dialog.open(ConfirmDeleteDialogComponent);
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (result === true) {  // ✅ ตรวจสอบว่า user กดยืนยันลบ
+      const url = `${this.Constants.API_ENDPOINT}/deleteUser/` + userId;
+      this.http.delete(url).subscribe({
+        next: (response) => {
+          console.log('Deleted successfully:', response);
+          this.showSnackBar('ลบผู้ใช้สำเร็จ');
+          this.filterUsers(0); // โหลดข้อมูลใหม่
+        },
+        error: (error) => {
+          console.error('Delete error:', error);
+          this.showSnackBar('เกิดข้อผิดพลาดในการลบผู้ใช้');
+        }
+      });
+    } else {
+      this.showSnackBar('ยกเลิกการลบผู้ใช้');
+    }
+  });
+}
 
   goToadd(): void {
     this.router.navigate(['/addmin']);
@@ -229,6 +330,8 @@ gotohome(){
   reportText: string = '';
   reports: any[] = [];
 
+  isModalprofile:boolean = false;
+
   // เปิด modal เมื่อกดปุ่ม "รายงาน"
  openReportDialog(user: number, username: string): void {
   this.sht_username = username;
@@ -250,7 +353,11 @@ gotohome(){
     this.selectedUserForReport = null;
     this.reports = [];
     this.sht_username='';
+
+    this.getprofile=[];
+    this.isModalprofile = false;
   }
+
 
   //ประเภทที่เลือก
   isCategoryModal: boolean = false;
@@ -316,7 +423,7 @@ gotohome(){
     });
   }
 
-     toShutter(id_shutter?: number) {
+     toShutter(id_shutter?: number , type?:string) {
       console.log("Sending id_shutter:", id_shutter);
       // console.log(" Sending datauser:", this.datauser[0]);
     
@@ -329,13 +436,35 @@ gotohome(){
         this.showSnackBar('กรุณาเข้าสู่ระบบก่อนใช้งาน');
         return;
       }
-    
-      this.router.navigate(['/homeshutter'], { 
+     if(type == '2' || type == '4'){
+          this.router.navigate(['/homeshutter'], { 
         state: { 
           // datauser: this.datauser[0], 
           idshutter: id_shutter 
         } 
       });
+     }else{
+      //  this.router.navigate(['/profileuser'], { 
+      //   state: { 
+      //     // datauser: this.datauser[0], 
+      //     iduser: id_shutter 
+      //   } 
+      // });
+      this.getuser(id_shutter);
+      this.isModalprofile = true;
+
+     }
+    
+    }
+
+    getprofile: DataMembers[] = [];
+
+    getuser(id: number){
+      const url = this.Constants.API_ENDPOINT + '/read/' + id;
+      this.http.get(url).subscribe((response: any) => {
+      this.getprofile = response;
+      console.log("data Tegs :", this.getprofile);
+    });
     }
 
   
@@ -389,6 +518,21 @@ addCategory() {
   });
 }
 
+
+  chat(id_shutter: number){
+      // console.log("📤 Sending datauser:", this.data);
+    
+      // if (!this.data ) {
+      //   console.error("Error: this.datauser is empty or undefined");
+      //   return;
+      // }
+    
+      this.router.navigate(['/roomchat'], { 
+        // state: { 
+        //   datauser: this.data, 
+        // } 
+      });
+     }
 
 
 
