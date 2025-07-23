@@ -47,7 +47,7 @@
         <div >
 
     <div class="form-container">
-        <form [formGroup]="fromreister" (ngSubmit)="base_for_shutt()" >
+        <form [formGroup]="fromreister" (ngSubmit)="$event.preventDefault()">
             <div class="form-group">
                 <label class="label">อีเมล์  <span style="color: red;">*</span> </label>
                <input type="email" class="input-style" 
@@ -173,14 +173,23 @@
                         รหัสผ่านไม่ตรงกัน
                     </div>
             </div>
-           <div class="column">
-        <button type="submit" 
-                class="btn-submit" 
-                #submitBtn
-                [disabled]="fromreister.invalid">
-            บันทึกและไปต่อ
-        </button>
-    </div>
+        <div class="column">
+            <!-- ปรับปุ่ง submit ให้ป้องกันการ double click -->
+            <button 
+                type="button"
+                mat-raised-button 
+                color="primary"
+                [disabled]="isRegistering || fromreister.invalid"
+                (click)="base_for_shutt()"
+                [style.pointer-events]="isRegistering ? 'none' : 'auto'">
+                
+                <span *ngIf="!isRegistering">บันทึกและไปต่อ</span>
+                <span *ngIf="isRegistering">
+                  <mat-spinner diameter="20" style="display: inline-block; margin-right: 8px;"></mat-spinner>
+                  กำลังบันทึก...
+                </span>
+            </button>
+        </div>
         </form>
     </div>
   </div>

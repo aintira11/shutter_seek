@@ -12,6 +12,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatMenuModule} from '@angular/material/menu';
 import { AuthService } from '../../../service/auth.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 declare var bootstrap: any;
 @Component({
@@ -22,7 +23,8 @@ declare var bootstrap: any;
     ReactiveFormsModule, 
     MatMenuModule, 
     MatIconModule,
-  MatSnackBarModule],
+  MatSnackBarModule,
+MatProgressSpinnerModule],
   templateUrl: './home-shutter.component.html',
   styleUrl: './home-shutter.component.scss'
 })
@@ -229,41 +231,80 @@ toggleFollow(followedId: number) {
     }
   }
 
-  postreview() { 
-    const userId = this.data[0].user_id; //  บอกให้ TypeScript รู้ว่าเป็น Object
-    const url = this.Constants.API_ENDPOINT + '/post/review/' + userId; 
-    console.log(this.reviewform.value);  // แสดงค่าทั้งหมดในฟอร์ม
-    console.log('Rating:', this.rating); // แสดงค่า rating ที่เลือก
+// ตัวแปรสำหรับติดตาม loading state
+isSubmittingReview = false;
 
-    if (!this.reviewform.valid) {
-      alert('กรุณากรอกข้อมูลให้ครบ');
-      return;
-    }
-
-    try {
-      // const formData = this.reviewform.value;
-      const formData = {
-        reviewed_id: this.datauser[0].user_id,
-        comment: this.reviewform.value.comment,
-        rating: this.rating, 
-      };
-  
-      this.http.post(url, formData).subscribe({
-        next: (res) => {
-          console.log('respon:', res);
-          this.isModelOpen = false;
-          window.location.reload();
-        },
-        error: (err) => {
-          console.error('Error:', err);
-          alert(err.status === 409 ? 'เกิดข้อผิดพลาด' : 'กรุณาลองอีกครั้ง');
-        }
-      });
-    } catch (error) {
-      console.error('Review Failed:', error);
-      alert('เกิดข้อผิดพลาดในการรีวิว');
-    }
+postreview() {
+  // ตรวจสอบว่ากำลังส่งข้อมูลอยู่หรือไม่
+  if (this.isSubmittingReview) {
+    console.log('Review is already being submitted');
+    return;
   }
+
+  const userId = this.data[0].user_id;
+  const url = this.Constants.API_ENDPOINT + '/post/review/' + userId;
+  
+  console.log(this.reviewform.value);  // แสดงค่าทั้งหมดในฟอร์ม
+  console.log('Rating:', this.rating); // แสดงค่า rating ที่เลือก
+  
+  if (!this.reviewform.valid) {
+    alert('กรุณากรอกข้อมูลให้ครบ');
+    return;
+  }
+
+  // ตรวจสอบว่ามี rating หรือไม่
+  if (!this.rating || this.rating === 0) {
+    alert('กรุณาให้คะแนน');
+    return;
+  }
+
+  try {
+    const formData = {
+      reviewed_id: this.datauser[0].user_id,
+      comment: this.reviewform.value.comment,
+      rating: this.rating,
+    };
+    
+    // เริ่มต้น loading state
+    this.isSubmittingReview = true;
+    
+    this.http.post(url, formData).subscribe({
+      next: (res) => {
+        console.log('respon:', res);
+        this.isModelOpen = false;
+        
+        // แสดงข้อความสำเร็จ
+        alert('บันทึกรีวิวเรียบร้อยแล้ว');
+        
+        // รีเซ็ตฟอร์ม
+        this.reviewform.reset();
+        this.rating = 0;
+        
+        window.location.reload();
+      },
+      error: (err) => {
+        console.error('Error:', err);
+      if (err.status === 409) {
+       this.snackBar.open('คุณได้รีวิวช่างภาพคนนี้ไปแล้ว ไม่สามารถรีวิวซ้ำได้', 'ปิด', { duration: 3000 , verticalPosition: 'top'});
+
+    } else {
+       this.snackBar.open('เกิดข้อผิดพลาดในการส่งรีวิว กรุณาลองใหม่อีกครั้ง', 'ปิด', { duration: 3000 , verticalPosition: 'top'});
+    }
+      },
+      complete: () => {
+        // สิ้นสุด loading state ไม่ว่าจะสำเร็จหรือล้มเหลว
+        this.isSubmittingReview = false;
+      }
+    });
+  } catch (error) {
+    console.error('Review Failed:', error);
+    alert('เกิดข้อผิดพลาดในการรีวิว');
+    // สิ้นสุด loading state ในกรณี error
+    this.isSubmittingReview = false;
+  }
+}
+
+
   toShutter(id_shutter: number | null) {
       console.log("📤 Sending id_shutter:", id_shutter);
       // console.log("📤 Sending datauser:", this.datauser[0]);

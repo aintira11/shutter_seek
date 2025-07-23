@@ -2,6 +2,8 @@ import { Component , inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Database, ref, set, get, onValue, update, DataSnapshot, push } from '@angular/fire/database';
+import { Router } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
 
 // กำหนดโครงสร้างข้อมูลสำหรับเกณฑ์ย่อย (Sub-Criterion)
 interface SubCriterion {
@@ -24,7 +26,7 @@ interface ApprovalCategory {
 @Component({
   selector: 'app-approval',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule,MatButtonModule],
   templateUrl: './approval.component.html',
   styleUrl: './approval.component.scss'
 })
@@ -40,7 +42,7 @@ export class ApprovalComponent implements OnInit{
   newCategoryTitle: string = '';
   newSubCriterionText: { [categoryId: string]: string } = {};
 
-  constructor() { }
+  constructor(private router: Router,) { }
 
   ngOnInit(): void {
     this.loadCriteria();
@@ -229,4 +231,9 @@ export class ApprovalComponent implements OnInit{
       this.isLoading = false; 
     }
   }
+
+    back(): void {
+    this.router.navigate(['/comfirm']);
+  }
+
 }

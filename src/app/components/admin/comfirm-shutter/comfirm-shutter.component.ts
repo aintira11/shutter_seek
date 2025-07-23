@@ -535,4 +535,13 @@ closeChatMessagePreviewModal(): void {
   back(): void {
     this.router.navigate(['/admin']);
   }
+
+  gotoshutter(id_shutter:number): void {
+      this.router.navigate(['/mainshutter'], { 
+        state: { 
+          // datauser: this.data, 
+          idshutter: id_shutter 
+        } 
+      });
+  }
 }

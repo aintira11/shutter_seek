@@ -390,25 +390,31 @@ gotohome(){
 
   // บันทึกการแก้ไข
   saveEdit(index: number) {
-    const categoryId = this.jobCategories[index].tags_id;
-    const updatedName = this.jobCategories[index].name_tags;
-    
-    const url = this.Constants.API_ENDPOINT + '/edit/Category/' + categoryId;
-    const updateData = { name_tags: updatedName };
-    
-    this.http.put(url, updateData).subscribe({
-      next: (response: any) => {
-        console.log("Category updated successfully:", response);
-        this.isEditing[index] = false;
-        // แสดงข้อความสำเร็จ (optional)
-        this.showSnackBar('อัพเดตประเภทงานสำเร็จ');
-      },
-      error: (error) => {
-        console.error("Error updating category:", error);
-        this.showSnackBar('เกิดข้อผิดพลาดในการอัพเดต');
-      }
-    });
+  const categoryId = this.jobCategories[index].tags_id;
+  const updatedName = this.jobCategories[index].name_tags;
+
+  // ตรวจสอบว่ามีการกรอกข้อมูลหรือไม่
+  if (!updatedName || updatedName.trim() === '') {
+    this.showSnackBar('กรุณากรอกชื่อประเภทงาน');
+    return;
   }
+
+  const url = this.Constants.API_ENDPOINT + '/edit/Category/' + categoryId;
+  const updateData = { name_tags: updatedName };
+
+  this.http.put(url, updateData).subscribe({
+    next: (response: any) => {
+      console.log("Category updated successfully:", response);
+      this.isEditing[index] = false;
+      this.showSnackBar('อัพเดตประเภทงานสำเร็จ');
+    },
+    error: (error) => {
+      console.error("Error updating category:", error);
+      this.showSnackBar('เกิดข้อผิดพลาดในการอัพเดต');
+    }
+  });
+}
+
 
   currentUser = {
     name: 'ผู้ดูแลระบบ1',
@@ -437,9 +443,9 @@ gotohome(){
         return;
       }
      if(type == '2' || type == '4'){
-          this.router.navigate(['/homeshutter'], { 
+          this.router.navigate(['/mainshutter'], { 
         state: { 
-          // datauser: this.datauser[0], 
+          // datauser: this.data, 
           idshutter: id_shutter 
         } 
       });

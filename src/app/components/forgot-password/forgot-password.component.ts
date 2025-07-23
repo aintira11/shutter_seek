@@ -118,7 +118,9 @@ export class ForgotPasswordComponent {
             this.showSnackBar('ไม่พบผู้ใช้ที่ตรงกับข้อมูลที่ระบุ');
           } else if (err.status === 400) {
             this.showSnackBar('กรุณาระบุข้อมูลให้ครบถ้วน');
-          } else {
+          } else if (err.status === 405) {
+            this.showSnackBar('รหัสผ่านใหม่ต้องไม่ซ้ำกับรหัสผ่านเดิม');
+          } else{
             this.showSnackBar('ไม่สามารถรีเซ็ตรหัสผ่านได้ กรุณาลองอีกครั้ง');
           }
         }

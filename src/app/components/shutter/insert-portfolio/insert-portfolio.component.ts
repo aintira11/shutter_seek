@@ -180,12 +180,17 @@ export class InsertPortfolioComponent {
     console.log('Current tag ID:', this.selectedTagId);
   }
 
-  cancelEdit() {
-    this.selectedCategoryIndex = null;
-    this.isAddingNewCategory = false;
-    this.isEditCategory = false
-    this.selectedTagId = 0; // รีเซ็ตค่า
+cancelEdit() {
+  // ถ้าเป็นการเพิ่มใหม่ให้ลบ category ว่างที่เพิ่มไปแล้วออก
+  if (this.isAddingNewCategory && this.selectedCategoryIndex !== null) {
+    this.dataWork.splice(this.selectedCategoryIndex, 1);
   }
+  
+  this.selectedCategoryIndex = null;
+  this.isAddingNewCategory = false;
+  this.isEditCategory = false;
+  this.selectedTagId = 0; // รีเซ็ตค่า
+}
 
   uploadImage(file: File, catIndex: number) {
     this.isUploading = true;
@@ -349,25 +354,32 @@ export class InsertPortfolioComponent {
     this.selectedTagId = 0; // รีเซ็ตค่าเริ่มต้น
   }
 
-  deleteCategory(catIndex: number) {
-    const dialogRef = this.dialog.open(ConfirmDeleteDialogComponent);
-      dialogRef.afterClosed().subscribe(result => {
-        if (result) {
-
-    const categoryToDelete = this.dataWork[catIndex];
-    if (!categoryToDelete || !categoryToDelete.portfolio_id) {
-      this.showSnackBar('ไม่พบข้อมูลที่จะลบ');
-      return;
-    }
-    
-    console.log('Category to delete:', categoryToDelete);
-    console.log('Portfolio ID:', categoryToDelete.portfolio_id);
-    
-    if (confirm('คุณต้องการลบผลงานนี้ใช่หรือไม่?')) {
+deleteCategory(catIndex: number) {
+  const categoryToDelete = this.dataWork[catIndex];
+  
+  // ถ้าเป็น category ที่เพิ่งเพิ่มใหม่ (ยังไม่ได้บันทึกลง database)
+  if (!categoryToDelete.portfolio_id || categoryToDelete.portfolio_id === 0) {
+    // ลบออกจาก array โดยตรง
+    this.dataWork.splice(catIndex, 1);
+    this.selectedCategoryIndex = null;
+    this.isAddingNewCategory = false;
+    this.isEditCategory = false;
+    this.selectedTagId = 0;
+    this.showSnackBar('ยกเลิกการเพิ่มผลงานแล้ว');
+    return;
+  }
+  
+  // ถ้าเป็น category ที่มีอยู่ใน database แล้ว
+  const dialogRef = this.dialog.open(ConfirmDeleteDialogComponent);
+  dialogRef.afterClosed().subscribe(result => {
+    if (result) {
+      console.log('Category to delete:', categoryToDelete);
+      console.log('Portfolio ID:', categoryToDelete.portfolio_id);
+      
       const url = `${this.Constants.API_ENDPOINT}/delete/portfolio`;
       const requestBody = { 
         portfolio_id: categoryToDelete.portfolio_id,
-        user_id: this.data[0].user_id // ต้องแน่ใจว่ามีตัวแปรนี้
+        user_id: this.data[0].user_id
       };
       
       console.log('Delete request URL:', url);
@@ -381,6 +393,9 @@ export class InsertPortfolioComponent {
           this.showSnackBar('ลบผลงานสำเร็จ');
           this.dataWork.splice(catIndex, 1);
           this.selectedCategoryIndex = null;
+          this.isAddingNewCategory = false;
+          this.isEditCategory = false;
+          this.selectedTagId = 0;
         },
         error: (error) => {
           console.error('Delete portfolio error details:', error);
@@ -388,9 +403,8 @@ export class InsertPortfolioComponent {
         }
       });
     }
-    }
-   });
-  }
+  });
+}
 
   cancel() {
     this.router.navigate(['/profile'], { state: { data: this.data } });

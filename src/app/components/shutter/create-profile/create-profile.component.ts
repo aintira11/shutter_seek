@@ -13,6 +13,7 @@ import { DataMembers } from '../../../model/models';
 import { ImageUploadService } from '../../../services_image/image-upload.service';
 import { AuthService } from '../../../service/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-create-profile',
@@ -23,7 +24,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     FormsModule,
     RouterModule,
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatProgressSpinnerModule
   ],
   templateUrl: './create-profile.component.html',
   styleUrl: './create-profile.component.scss'
@@ -51,7 +53,7 @@ export class CreateProfileComponent implements OnInit {
     ,private authService: AuthService,
     private snackBar: MatSnackBar,
   ){ 
-    console.log(this.thaijson);
+    // console.log(this.thaijson);
 
      this.fromreister = this.fb.group({
             email: ['', [Validators.required, Validators.email, this.noWhitespaceValidator]],
@@ -133,12 +135,29 @@ private generateRandomFileName(originalName: string): string {
   return `${Date.now()}-${Math.random().toString(36).substring(2, 10)}.${extension}`;
 }
 
-async base_for_shutt() {
+// เพิ่มตัวแปรสำหรับติดตาม loading state
+isRegistering = false;
+
+base_for_shutt() {
+  // เพิ่มการป้องกันการ submit ซ้ำแบบเข้มงวดขึ้น
+  if (this.isRegistering) {
+    console.log('Registration is already in progress - blocked duplicate submit');
+    return; // เปลี่ยนจาก return false เป็น return
+  }
+
+  console.log('Starting registration process...');
+
+  // Set flag ทันทีเพื่อป้องกันการ click ซ้ำ
+  this.isRegistering = true;
+  console.log('Set isRegistering to true immediately');
 
   this.fromreister.markAllAsTouched();
-
+  
   // ตรวจสอบความถูกต้องของฟอร์ม
   if (this.fromreister.invalid) {
+    this.isRegistering = false; // reset flag ถ้า validation ไม่ผ่าน
+    console.log('Form invalid - reset isRegistering to false');
+    
     const firstErrorField = Object.keys(this.fromreister.controls).find(key =>
       this.fromreister.get(key)?.invalid
     );
@@ -146,67 +165,106 @@ async base_for_shutt() {
       const element = document.querySelector(`[formControlName="${firstErrorField}"]`) as HTMLElement;
       element?.focus();
     }
-    alert('กรุณากรอกข้อมูลให้ครบถ้วนและถูกต้อง');
+    this.showSnackBar('กรุณากรอกข้อมูลให้ครบถ้วนและถูกต้อง');
     return;
   }
-
-    // ตรวจสอบรหัสผ่าน
+   
+  // ตรวจสอบรหัสผ่าน
   if (this.fromreister.value.Password !== this.fromreister.value.confirmPassword) {
-    alert('ยืนยันรหัสผ่านไม่ถูกต้อง');
+    this.isRegistering = false; // reset flag ถ้ารหัสผ่านไม่ตรงกัน
+    console.log('Password mismatch - reset isRegistering to false');
+    this.showSnackBar('ยืนยันรหัสผ่านไม่ถูกต้อง');
+    return;
+  }
+   
+  const url = this.Constants.API_ENDPOINT + '/register';
+  
+  // ตรวจสอบว่ามีการเลือกไฟล์หรือไม่
+  if (this.selectedFile) {
+    // อัปโหลดรูปภาพก่อน
+    this.imageUploadService.uploadImage(this.selectedFile).subscribe({
+      next: (response: any) => {
+        console.log('Image upload success');
+        const imageUrl = response?.data?.url || 'https://cdn-icons-png.flaticon.com/512/954/954560.png';
+        this.submitRegistration(url, imageUrl);
+      },
+      error: (error) => {
+        console.error('การอัปโหลดรูปผิดพลาด:', error);
+        this.showSnackBar('เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ');
+        this.isRegistering = false;
+        console.log('Set isRegistering to false (image upload error)');
+      }
+    });
+  } else {
+    // ไม่มีรูปภาพ ใช้รูป default
+    console.log('No image selected, using default');
+    const defaultImage = 'https://cdn-icons-png.flaticon.com/512/954/954560.png';
+    this.submitRegistration(url, defaultImage);
+  }
+}
+
+private submitRegistration(url: string, imageUrl: string) {
+  // ตรวจสอบอีกครั้งก่อน submit และเพิ่มการป้องกันเพิ่มเติม
+  if (!this.isRegistering) {
+    console.log('Registration process was cancelled');
     return;
   }
 
-    const url = this.Constants.API_ENDPOINT + '/register';
-    let image: string;
-  try {
+  console.log('Submitting registration...');
+  
+  const formData = {
+    email: this.fromreister.value.email,
+    username: this.fromreister.value.UserName,
+    first_name: this.fromreister.value.Name,
+    last_name: this.fromreister.value.LastName,
+    phone: this.fromreister.value.phone,
+    address: this.fromreister.value.address,
+    province: this.fromreister.value.province,
+    password: this.fromreister.value.Password,
+    image_profile: imageUrl,
+    type_user: "2",
+    // เพิ่มข้อมูลเพื่อระบุสถานะการสมัคร
+    sth_status: "active", // หรือค่าที่เหมาะสม
+    created_at: new Date().toISOString() // timestamp เพื่อป้องกันการสร้างซ้ำ
+  };
 
-     if (this.selectedFile) {
-      const randomName = this.generateRandomFileName(this.selectedFile.name); // ถ้าคุณใช้ชื่อใหม่
-      const response: any = await this.imageUploadService.uploadImage(this.selectedFile).toPromise();
-      image = response.data.url;
-    } else {
-      // ถ้าไม่ได้อัปโหลด ใช้รูป default
-      image = 'https://cdn-icons-png.flaticon.com/512/954/954560.png';
-    }
-    
-    const formData = {
-      email: this.fromreister.value.email,
-      username: this.fromreister.value.UserName,
-      first_name: this.fromreister.value.Name,
-      last_name: this.fromreister.value.LastName,
-      phone: this.fromreister.value.phone,
-      address: this.fromreister.value.address,
-      province: this.fromreister.value.province,
-      password:this.fromreister.value.Password,
-      image_profile: image,
-      type_user:"2"
-    };
-
+  // เพิ่ม debounce เพื่อป้องกันการ submit ติดต่อกัน
+  setTimeout(() => {
     this.http.post<any>(url, formData).subscribe({
       next: (res) => {
-
-        console.log('data:', res);
-        const user = res.user;
-        this.getdatauser(user.user_id);
-        this.router.navigate(['/base']);
+        console.log('Registration success:', res);
+        const user = res?.newUser || res?.user;
+        if (user?.user_id) {
+          this.getdatauser(user.user_id);
+          this.showSnackBar('สมัครสมาชิกสำเร็จ');
+          // รอสักครู่ก่อน navigate เพื่อให้ข้อมูลถูกบันทึกก่อน
+          setTimeout(() => {
+            this.router.navigate(['/base']);
+          }, 1000);
+        } else {
+          console.error('ไม่พบข้อมูล user_id ใน response:', res);
+          this.showSnackBar('เกิดข้อผิดพลาดในการสมัครสมาชิก');
+        }
       },
       error: (err) => {
-        console.error('เกิดข้อผิดพลาด:', err);
+        console.error('Registration error:', err);
         if (err.status === 400) {
           this.showSnackBar('มีอีเมลนี้อยู่ในระบบแล้ว');
         } else if (err.status === 401) {
           this.showSnackBar('ชื่อผู้ใช้นี้ถูกใช้ไปแล้ว');
-        }else if (err.status === 402) {
+        } else if (err.status === 402) {
           this.showSnackBar('เบอร์โทรนี้ถูกใช้ไปแล้ว');
         } else {
           this.showSnackBar('ไม่สามารถสมัครสมาชิกได้ กรุณาลองอีกครั้ง');
         }
       },
+      complete: () => {
+        // สิ้นสุด loading state ไม่ว่าจะสำเร็จหรือล้มเหลว
+        this.isRegistering = false;
+        console.log('Set isRegistering to false (complete)');
+      }
     });
-  } catch(error) {
-    console.error('การอัปโหลดรูปผิดพลาด:', error);
-    alert('เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ');
-  }
+  }, 100); // debounce 100ms
 }
 
 triggerFileInput() {

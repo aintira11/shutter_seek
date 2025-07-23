@@ -312,13 +312,15 @@
 
     <br>
     <!-- [disabled]="!reviewform.valid" -->
-    <div class="button-container">
-      <button class="btn-submit" 
-      [disabled]="!reviewform.valid"
-              (click)="postreview()">
-        ยืนยัน
-      </button>
-    </div>
+    <button 
+  mat-raised-button 
+  color="primary"
+  (click)="postreview()" 
+  [disabled]="isSubmittingReview || !reviewform.valid">
+  
+  <mat-spinner *ngIf="isSubmittingReview" diameter="20" class="inline-spinner"></mat-spinner>
+  {{ isSubmittingReview ? 'กำลังส่งรีวิว...' : 'ส่งรีวิว' }}
+</button>
 
   </div>
 </div>

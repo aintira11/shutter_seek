@@ -16,9 +16,9 @@
 </head>
 
 <body >
-    <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav-container class="sidenav-container" >
         <!-- Sidebar -->
-        <mat-sidenav #sidenav mode="side" [(opened)]="opened" class="sidebar">
+        <mat-sidenav #sidenav mode="side" [(opened)]="opened" class="sidebar"*ngIf="dataAdmin.length < 1">
             <div class="sidebar-header" style="margin-bottom: 15px;">
               
               <button mat-icon-button (click)="toggleSidenav()" class="menu-toggle">
@@ -84,8 +84,8 @@
     top: 60px; 
     left: 20px; 
     z-index: 1000;
-  "
->
+  " 
+  *ngIf="dataAdmin.length < 1">
   ☰
 </button>
 
@@ -106,6 +106,10 @@
       <div class="d-flex align-items-center">
         <button class="btn btn-outline-primary btn-sm me-2" (click)="logout()">ลงทะเบียน</button>
         <button class="btn btn-primary me-2" (click)="logout()">ออกจากระบบ</button>
+
+         <button mat-button class="circle-button"  (click)="profile()" *ngIf="dataAdmin.length > 0">
+            <img [src]="dataAdmin[0].image_profile" alt="" class="rounded-circle" title="{{ dataAdmin[0].username }}"style="object-fit: cover; border: 2px solid #0046ad; boder-radius: 50%; width: 50px; height: 50px;">
+         </button>
       </div>
     </header>
   </div>
@@ -134,12 +138,12 @@
         </div>
       </div> -->
     
-      <section id="first">
+      <section id="first" *ngIf="data.length > 0">
     <div class="profile-container">
         <!-- Profile Section -->
         <div class="profile-header" >
           <img
-          *ngIf="data[0]?.image_profile" [src]="data[0].image_profile"
+          *ngIf="data[0].image_profile" [src]="data[0].image_profile"
             alt="Profile"
             class="profile-image"
           />
@@ -151,7 +155,7 @@
             <p>เป็นสมาชิกเมื่อ {{ data[0].date_of_member | date:'dd/MM/yyyy' }}</p>
           </div>
           
-            <div class="profile-actions" *ngIf="data[0].type_user==='4'">
+            <div class="profile-actions" *ngIf="data[0].type_user==='4' && dataAdmin.length < 1">
                 <!-- <button class="edit-button" (click)="goToEditPro()">แก้ไข</button> -->
                 <button class="logout-button" (click)="goToMember()" >สลับบัญชี</button>
               </div>
@@ -223,30 +227,30 @@
     <h2 style="margin: 0; color: #004AAD; font-weight: 600;">ผลงาน</h2>
   </div>
   
-  <div *ngFor="let data of datawork" class="work-item">
+  <div *ngFor="let dataW of datawork" class="work-item">
         <!-- หัวข้อผลงานและไลค์ -->
     <div class="work-header">
-      <h3 class="work-title">{{ data.name_work }}</h3>
+      <h3 class="work-title">{{ dataW.name_work }}</h3>
       <div class="work-actions">
         <!-- ปุ่มแก้ไขและลบ -->
-        <div class="edit-delete-section">
-          <button mat-icon-button class="edit-btn" (click)="editWork(data.portfolio_id)" matTooltip="แก้ไขผลงาน">
+        <div class="edit-delete-section" *ngIf="dataAdmin.length < 1">
+          <button mat-icon-button class="edit-btn" (click)="editWork(dataW.portfolio_id)" matTooltip="แก้ไขผลงาน">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-icon-button class="delete-btn" (click)="deleteWork(data.portfolio_id)" matTooltip="ลบผลงาน">
+          <button mat-icon-button class="delete-btn" (click)="deleteWork(dataW.portfolio_id)" matTooltip="ลบผลงาน">
             <mat-icon>delete</mat-icon>
           </button>
         </div>
         <!-- ส่วนไลค์ -->
-        <div class="like-section" (click)="getLike(data.portfolio_id)">
+        <div class="like-section" (click)="getLike(dataW.portfolio_id)">
           <mat-icon class="like-icon">favorite</mat-icon>
-          <span class="like-count" [title]="likerNames">{{ data.like_count }}</span>
+          <span class="like-count" [title]="likerNames">{{ dataW.like_count }}</span>
         </div>
       </div>
     </div>
 
     <!-- Modal รายชื่อผู้ถูกใจ -->
-<div class="modal-overlay" *ngIf="showLikeModal">
+<div class="modal-overlay" *ngIf="showLikeModal && dataAdmin.length < 1">
   <div class="modal-content">
     <h3>รายชื่อผู้ที่ถูกใจ ({{datalike.length}})</h3>
     <hr>
@@ -270,7 +274,7 @@
       
       <div class="image-container" #wrapper>
         <div class="image-track">
-          <div *ngFor="let imgUrl of data.image_urls" class="image-item">
+          <div *ngFor="let imgUrl of dataW.image_urls" class="image-item">
             <img [src]="imgUrl" alt="งานตัวอย่าง" class="work-image">
           </div>
         </div>
@@ -289,15 +293,15 @@
       </div>
 
       <!-- แสดงแพ็กเกจ -->
-      <div *ngIf="data.packages && data.packages.length > 0 && data.packages[0].package_id != null; else noPackages">
+      <div *ngIf="dataW.packages && dataW.packages.length > 0 && dataW.packages[0].package_id != null; else noPackages">
         <div class="packages-grid">
-          <mat-card *ngFor="let package of data.packages" class="package-card" elevation="2">
+          <mat-card *ngFor="let package of dataW.packages" class="package-card" elevation="2">
             <mat-card-header class="package-header">
               <div class="package-title-section">
                 <mat-card-title class="package-name">{{ package.name_package }}</mat-card-title>
                 <mat-card-subtitle class="package-category">
                   <mat-icon class="category-icon">category</mat-icon>
-                  {{ data.name_tags }}
+                  {{ dataW.name_tags }}
                 </mat-card-subtitle>
               </div>
               <div class="package-price-section">
@@ -375,7 +379,7 @@
             <div *ngFor="let review of datareview">
             <div class="review-card">
               <div class="review-header">
-                <img src="{{review.profile}}" alt="User Avatar" class="avatar" (click)="showprofile(review.reviewer_id)">
+                <img src="{{review.profile}}" alt="User Avatar" class="avatar" >
                 <div class="review-info">
                   <h4 class="username">{{review.reviewer_name}}</h4>
                   <p class="review-date">{{review.date_review | date:'dd/MM/yyyy'}}</p>
@@ -396,7 +400,7 @@
       
       <!-- <i class="bi bi-chat-dots-fill fixed-chat-icon" (click)="chat(data[0].user_id)" ></i> -->
        <!-- Chat Icon  -->
-    <div class="fixed-chat-icon-container" (click)="chat(data[0].user_id)">
+    <div class="fixed-chat-icon-container" (click)="chat(data[0].user_id)" *ngIf="dataAdmin.length < 1">
       <i class="bi bi-chat-dots-fill fixed-chat-icon"></i>
       <span *ngIf="hasUnreadMessages" class="notification-badge"></span>
     </div>
@@ -408,7 +412,7 @@
     </div>
 
 <!-- model แสดงรายชื่อผู้ติดตาม -->
-<div  class="modal" style="z-index: 9999;" *ngIf="isModelOpen"> 
+<div  class="modal" style="z-index: 9999;" *ngIf="isModelOpen && dataAdmin.length < 1"> 
   <div class="follower-container">
   <div class="header">
     <h3>ผู้ติดตามทั้งหมด</h3>

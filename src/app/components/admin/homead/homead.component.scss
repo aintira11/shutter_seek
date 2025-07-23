@@ -1,3 +1,6 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+}
 body, html {
     margin: 0;
     padding: 0;
@@ -26,6 +29,10 @@ body, html {
   }
 }
 
+.logout-btn:hover {
+  background-color: #c82333;
+}
+
 .notification-badge {
   position: absolute;
   top: 2px;
@@ -45,6 +52,9 @@ body, html {
   align-items: center;
   width: 100%;
   height: 100vh;
+  min-height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .profile-card {
@@ -58,8 +68,8 @@ body, html {
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
 
   width: 90%;
-  max-width: 700px;
-  height: 200px;
+  max-width: 600px;
+  height: 380px;
 
   gap: 40px;
 }
@@ -191,11 +201,11 @@ h1 {
 }
 
 /* User Info */
-.user-info {
-    text-align: center;
-    font-size: 18px;
-    margin-bottom: 20px;
-}
+// .user-info {
+//   display: flex;
+//   flex-direction: column; /* ให้เรียงจากบนลงล่าง */
+//   align-items: flex-start; /* ชิดซ้าย */
+// }
 
 /* ค้นหา */
 .search-container {
@@ -248,7 +258,7 @@ h1 {
     gap: 15px; /* เว้นระยะระหว่างปุ่ม */
     justify-content: center;
     margin-top: 10px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
 }
 
 .pushable-approve .front {
@@ -380,80 +390,263 @@ h1 {
 .user-list {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 16px;
     margin-top: 20px;
+    padding: 0 4px;
 }
 
 .user-card {
     display: flex;
     align-items: center;
-    border: 1px solid #ddd;
-    padding: 15px;
-    border-radius: 10px;
-    background: white;
-    flex-wrap: nowrap; /* ไม่ให้ wrap */
-    justify-content: flex-start; /* ชิดซ้าย */
-    gap: 15px; /* เว้นระยะระหว่าง avatar กับ user-info */
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    gap: 16px;
 }
 
-.avatar {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    margin: 0; /* ลบ margin ขวาที่มี */
+.user-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    border-color: #d1d5db;
+}
+
+/* Avatar Section */
+.user-avatar {
     flex-shrink: 0;
 }
 
+.avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #f3f4f6;
+    transition: border-color 0.3s ease;
+}
+
+.user-card:hover .avatar {
+    border-color: #3b82f6;
+}
+
+/* User Info Section */
 .user-info {
-    flex-grow: 0;
-    flex-shrink: 1;
-    min-width: 150px;
-    text-align: left; /* ชิดซ้าย */
+    flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 4px; /* เว้นช่องว่างชื่อ กับ สถานะ */
+    gap: 8px;
 }
 
-.user-info h3 {
+.username {
     margin: 0;
     font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+    line-height: 1.2;
+    word-break: break-word;
 }
 
-.role {
-    color: gray;
-    font-size: 16px;
-}
-
-/* ปุ่ม */
-.actions {
-    margin-left: auto;
+.role-container {
     display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
+    align-items: center;
 }
 
-.report-btn,
-.detail-btn {
-    padding: 8px 12px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
+.role-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
     white-space: nowrap;
 }
 
-.delete-btn {
-    background: red;
-    color: white;
-    padding: 10px 15px;
+.role-badge i {
+    font-size: 12px;
+}
+
+/* Role Badge Colors */
+.role-badge.general {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.role-badge.photographer.pending {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.role-badge.photographer.approved {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.role-badge.photographer.rejected {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.role-badge.admin {
+    background: #ddd6fe;
+    color: #7c3aed;
+}
+
+.role-badge.hybrid {
+    background: #e0f2fe;
+    color: #0369a1;
+}
+
+/* Actions Section */
+.actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+/* Button Styles */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
     border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
     cursor: pointer;
-    border-radius: 5px;
-    font-size: 18px;
-    display: block;
-    margin: 10px auto;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+/* Report Button */
+.report-btn {
+    background: #fef3c7;
+    color: #d97706;
+    border: 1px solid #fbbf24;
+}
+
+.report-btn:hover {
+    background: #fde68a;
+    border-color: #f59e0b;
+}
+
+.report-count {
+    background: #d97706;
+    color: white;
+    border-radius: 12px;
+    padding: 2px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    min-width: 20px;
     text-align: center;
 }
 
+/* Detail Button */
+.detail-btn {
+    background: #dbeafe;
+    color: #1d4ed8;
+    border: 1px solid #93c5fd;
+}
+
+.detail-btn:hover {
+    background: #bfdbfe;
+    border-color: #60a5fa;
+}
+
+/* Delete Button */
+.delete-btn {
+    background: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fca5a5;
+    padding: 10px 12px;
+}
+
+.delete-btn:hover {
+    background: #fecaca;
+    border-color: #f87171;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .user-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
+    }
+    
+    .user-info {
+        text-align: center;
+        width: 100%;
+    }
+    
+    .actions {
+        justify-content: center;
+        width: 100%;
+    }
+    
+    .btn {
+        flex: 1;
+        justify-content: center;
+        min-width: 100px;
+    }
+
+    
+}
+
+@media (max-width: 480px) {
+    .actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .btn {
+        width: 100%;
+    }
+    .profile-card {
+    flex-direction: column;
+    height: auto;
+    padding: 20px;
+    align-items: center;
+    text-align: center;
+  }
+
+  .profile-image {
+    width: 120px;
+    height: 120px;
+  }
+
+  .profile-info .username {
+    font-size: 24px;
+  }
+  .modal-content {
+    width: 100%;
+    padding: 10px;
+  }
+  .profile-name {
+    white-space: normal;
+    text-align: center;
+  }
+
+  .logout-btn {
+    white-space: normal;
+  }
+    
+}
 /* Modal */
 .modal {
     position: fixed;
@@ -590,7 +783,8 @@ h1 {
         font-size: 16px;
         padding: 12px;
         flex: 1 1 45%;
-        min-width: 140px;
+          min-width: 100px;
+            max-width: 100%;
     }
 
     .user-card {
@@ -613,7 +807,7 @@ h1 {
         gap: 10px;
     }
     
-  
+
     /* เปลี่ยน logo-center เป็น static และย้ายไปบนสุด */
     .logo-center {
         position: static !important;
@@ -703,4 +897,15 @@ h1 {
         font-size: 16px;
         padding: 5px 10px;
     }
+    .button-group {
+
+    font-size: 12px;
+    padding:10px;
+}
+
+.pushable .front {
+    padding: 10px 20px; /* ปรับขนาดด้านในของปุ่ม */
+    font-size: 12px;
+}
+
 }

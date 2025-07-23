@@ -10,6 +10,7 @@ import { DataTegs } from '../../../model/models';
 import { Constants } from '../../../config/constants';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { AuthService } from '../../../service/auth.service';
 
 @Component({
   selector: 'app-b-shutter3',
@@ -48,6 +49,7 @@ export class BShutter3Component {
         private Constants: Constants, 
         private route: ActivatedRoute, 
         private http: HttpClient, private snackBar: MatSnackBar,
+        private authService: AuthService,
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -166,7 +168,8 @@ if (item && item.image_urls && Array.isArray(item.image_urls)) {
   
     if (!hasErrors) {
       this.isModelOpen = false;
-      this.router.navigate(['/login'], { state: { data: this.data } });
+      this.authService.logout();
+      this.router.navigate(['/login']);
     } else {
       alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล กรุณาลองใหม่อีกครั้ง");
     }

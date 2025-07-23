@@ -17,6 +17,14 @@
               <img class="profile-avatar" [src]="datauser[0].image_profile" alt="Admin Profile" title="{{datauser[0].username}}" (click)="profile()"/>
               <span class="profile-name">{{ datauser[0].username }}</span>
               <button class="add-btn" (click)="goToadd()">+</button>
+                <button 
+    mat-raised-button 
+    color="primary" 
+    (click)="gotohome()"
+    style="flex: 0 0 auto;"
+  >
+    🏠 หน้าแรก
+  </button>
             </div>
           
             <div class="logo-center" >
@@ -26,19 +34,17 @@
             <button class="logout-btn" (click)="logout()">ออกจากระบบ</button>
           </header>          
           
-<div style="position: relative; display: flex; justify-content: center; align-items: center; height: 100px;">
-  <!-- ปุ่มอยู่ซ้าย -->
-  <button 
-    mat-raised-button 
-    color="primary" 
-    (click)="gotohome()" 
-    style="position: absolute; left: 20px;">
-    🏠 หน้าแรก
-  </button>
+<div 
+  style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; padding: 16px; gap: 16px;"
+>
 
-  <!-- หัวข้ออยู่ตรงกลาง -->
-  <h1 style="margin: 0;">ผู้ดูแลระบบ</h1>
+
+  <!-- หัวข้ออยู่ตรงกลางในจอใหญ่ และด้านล่างในจอแคบ -->
+  <h1 style="margin: 0; flex: 1 1 100%; text-align: center;">
+    ผู้ดูแลระบบ
+  </h1>
 </div>
+
 
 
         <!--search-container -->
@@ -116,30 +122,64 @@
 </div>
  
     
-        <div class="user-list" >
-            <div *ngFor="let user of datafilterUsers" >
-                <div  *ngIf="user.type_user != '5'"class="user-card" >
+        <div class="user-list">
+    <div *ngFor="let user of datafilterUsers">
+        <div *ngIf="user.type_user != '5'" class="user-card">
+            <div class="user-avatar">
                 <img [src]="user.image_profile" alt="User Avatar" class="avatar" />
-                <div class="user-info">
-                    <h3>{{ user.username }}</h3>
-                    <p class="role" *ngIf="user.type_user == '1' ">ผู้ใช้ทั่วไป</p>
-                    <p class="role" *ngIf="user.type_user == '2' && user.sht_status == 1">ช่างภาพ (รอการอนุมัติ)</p>
-                    <p class="role" *ngIf="user.type_user == '2' && user.sht_status == 2">ช่างภาพ (อนุมัติแล้ว)</p>
-                    <p class="role" *ngIf="user.type_user == '2' && user.sht_status == 3">ช่างภาพ (ปฏิเสธ)</p>
-                    <p class="role" *ngIf="user.type_user == '3'">แอดมิน</p>
-                    <p class="role" *ngIf="user.type_user == '4'">ช่างภาพ และ ผู้ใช้ทั่วไป</p>
+            </div>
+            
+            <div class="user-info">
+                <h3 class="username">{{ user.username }}</h3>
+                <div class="role-container">
+                    <span class="role-badge general" *ngIf="user.type_user == '1'">ผู้ใช้ทั่วไป</span>
+                    <span class="role-badge photographer pending" *ngIf="user.type_user == '2' && user.sht_status == 1">
+                        <i class="fa fa-clock-o"></i> ช่างภาพ (รอการอนุมัติ)
+                    </span>
+                    <span class="role-badge photographer approved" *ngIf="user.type_user == '2' && user.sht_status == 2">
+                        <i class="fa fa-check-circle"></i> ช่างภาพ (อนุมัติแล้ว)
+                    </span>
+                    <span class="role-badge photographer rejected" *ngIf="user.type_user == '2' && user.sht_status == 3">
+                        <i class="fa fa-times-circle"></i> ช่างภาพ (ปฏิเสธ)
+                    </span>
+                    <span class="role-badge admin" *ngIf="user.type_user == '3'">
+                        <i class="fa fa-crown"></i> แอดมิน
+                    </span>
+                    <span class="role-badge hybrid" *ngIf="user.type_user == '4'&& user.sht_status == 1">
+                        <i class="fa fa-users"></i> ช่างภาพ และ ผู้ใช้ทั่วไป <i class="fa fa-clock-o"></i>(รอการอนุมัติ)
+                    </span>
+                    <span class="role-badge hybrid" *ngIf="user.type_user == '4'&& user.sht_status == 2">
+                        <i class="fa fa-users"></i> ช่างภาพ และ ผู้ใช้ทั่วไป <i class="fa fa-check-circle"></i>(อนุมัติแล้ว)
+                    </span>
+                    <span class="role-badge hybrid" *ngIf="user.type_user == '4'&& user.sht_status == 3">
+                        <i class="fa fa-users"></i> ช่างภาพ และ ผู้ใช้ทั่วไป <i class="fa fa-times-circle"></i> (ปฏิเสธ)
+                    </span>
                 </div>
+            </div>
 
-                <div class="actions">
-                    <button *ngIf="user.type_user === '2' || user.type_user === '4' " class="report-btn" (click)="openReportDialog(user.user_id,user.username)">รายงาน ({{user.report_count}})</button>
-                    <button  class="detail-btn" (click)="toShutter(user.user_id,user.type_user)">รายละเอียด</button>
-                    <button class="delete-btn" (click)="deleteUser(user.user_id)">
-                        <i class="fa fa-trash"></i>
-                    </button>
-                </div>
+            <div class="actions">
+                <button *ngIf="user.type_user === '2' || user.type_user === '4'" 
+                        class="btn report-btn" 
+                        (click)="openReportDialog(user.user_id,user.username)">
+                    <i class="fa fa-flag"></i>
+                    <span>รายงาน</span>
+                    <span class="report-count">{{user.report_count}}</span>
+                </button>
+                
+                <button class="btn detail-btn" 
+                        (click)="toShutter(user.user_id,user.type_user)">
+                    <i class="fa fa-info-circle"></i>
+                    <span>รายละเอียด</span>
+                </button>
+                
+                <button class="btn delete-btn" 
+                        (click)="deleteUser(user.user_id)">
+                    <i class="fa fa-trash"></i>
+                </button>
             </div>
-            </div>
-        </div>  
+        </div>
+    </div>
+</div>
 
         <!-- Modal แก้ไขประเภทงาน -->
         <div class="modal" *ngIf="isCategoryModal">
@@ -193,14 +233,16 @@
                         <p class="follow-info">อีเมล : {{ getprofile[0].email }} </p>
                         <p class="follow-info">เบอร์โทร : {{ getprofile[0].phone }} </p>
                         <p class="member-since">เป็นสมาชิกตั้งแต่ {{ getprofile[0].date_of_member | date:'dd/MM/yyyy'}}</p>
-                      
+                      <div class="modal-actions">
+                     <button class="close-btn" (click)="closeModal()">ปิด</button>
+                 </div> 
                     </div>
+
+                    
                     
                   </div>                
                 </div>  
-                <div class="modal-actions">
-                     <button class="close-btn" (click)="closeModal()">ปิด</button>
-                 </div>   
+                  
          </div>
    </div>
 

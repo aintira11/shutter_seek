@@ -49,7 +49,8 @@ export class ConfirmDeleteDialogComponent {}
 })
 export class MainShutterComponent implements OnInit{
   // dataLogin:any
- data: DataMembers[]=[];
+  data: DataMembers[]=[];
+  dataAdmin: DataMembers[] = [];
   datawork:DataShowWork[]=[]
   datareview:any[]=[]
   datafollower : DataFollow[] =[] ;
@@ -73,6 +74,8 @@ export class MainShutterComponent implements OnInit{
   isModelOpen: boolean = false;
  datalike: any[] = [];  // ข้อมูลการถูกใจ (likes) ของ portfolio
 
+ private photographerId: number | null = null;
+
 showLikeModal: boolean = false; // ใช้สำหรับควบคุมการแสดง modal ของ likes
 selectedPortfolioId: string = '';
   constructor(private fb: FormBuilder,
@@ -89,24 +92,66 @@ private db: Database ){
   }
 
 ngOnInit(): void {
-  
-    // ดึงข้อมูลจาก AuthService
-   const user = this.authService.getUser();
+  // 1. ดึงข้อมูลผู้ใช้ที่ล็อกอินอยู่เสมอ เป็นขั้นตอนแรก
+  const currentUser = this.authService.getUser();
 
-     if (user) {
-    this.data = [user];
-    console.log("Loaded user from AuthService:", this.data);
-        this.getpackages(user.user_id);
-        this.getwork(user.user_id);
-        this.getFollower(user.user_id);
-        this.getreview(user.user_id);
-  } else {
-    console.warn(" No user found in AuthService. Redirecting to login...");
+  // 2. ตรวจสอบว่ามีผู้ใช้ล็อกอินหรือไม่ ถ้าไม่มีให้ไปหน้า login
+  if (!currentUser) {
+    console.warn("No user logged in. Redirecting to login...");
     this.router.navigate(['/login']);
     return;
   }
-  this.listenForUnreadMessages(user.user_id);
+
+  // 3. ดึง ID ของช่างภาพจาก navigation state ที่ส่งมา
+  //    history.state จะมี property 'idshutter' ตามที่คุณส่งมาใน router.navigate
+  const photographerIdFromState = history.state.idshutter;
+
+  // 4. ตรวจสอบเงื่อนไข: 
+  //    - เป็นแอดมิน (type 3) และ 
+  //    - มี ID ช่างภาพส่งมาใน state หรือไม่
+  //    - (ปรับปรุงการเช็ค type_user ให้รัดกุมขึ้น)
+  if (String(currentUser.type_user) === '3' && photographerIdFromState) {
+    // --- กรณีแอดมินดูโปรไฟล์ช่างภาพ ---
+    const photographerId = +photographerIdFromState; // แปลง ID เป็น number
+    console.log(`Admin view: Fetching data for photographer ID: ${photographerId}`);
+    this.dataAdmin = [currentUser]; // ใช้ข้อมูลของแอดมิน
+    this.getdatauser(photographerId);
+    this.listenForUnreadMessages(photographerId); // เรียกใช้ listener ด้วย ID ของช่างภาพ
+
+  } else {
+    // --- กรณีผู้ใช้ทั่วไปดูโปรไฟล์ตัวเอง หรือ แอดมินดูโปรไฟล์ตัวเอง ---
+    console.log(`Self view: Displaying data for logged-in user ID: ${currentUser.user_id}`);
+    this.data = [currentUser]; // ใช้ข้อมูลของคนที่ล็อกอินอยู่ได้เลย
+    
+    // เรียกใช้ฟังก์ชันต่างๆ ด้วย ID ของตัวเอง
+    this.getpackages(currentUser.user_id);
+    this.getwork(currentUser.user_id);
+    this.getFollower(currentUser.user_id);
+    this.getreview(currentUser.user_id);
+    this.listenForUnreadMessages(currentUser.user_id); // เรียกใช้ listener ด้วย ID ของตัวเอง
+  }
 }
+
+// ฟังก์ชัน getdatauser (ควรมีลักษณะนี้)
+getdatauser(id: number): void {
+  console.log('Fetching user data via API for id:', id);
+  const url = `${this.Constants.API_ENDPOINT}/read/${id}`; // ตัวอย่าง URL
+  this.http.get<DataMembers[]>(url).subscribe((response: any) => {
+    this.data = response;
+    console.log("API response for User:", this.data);
+
+    if (this.data && this.data.length > 0) {
+      const photographer = this.data[0];
+      this.getpackages(photographer.user_id);
+      this.getwork(photographer.user_id);
+      this.getFollower(photographer.user_id);
+      this.getreview(photographer.user_id);
+    } else {
+      console.error("No data returned from API for the given photographer ID.");
+    }
+  });
+}
+
 
  ngOnDestroy(): void {
     if (this.chatRoomListenerUnsubscribe) {
@@ -274,18 +319,6 @@ get likerNames(): string {
     });
   }
 
-  // getdatauser(id : number){
-  //   console.log('id',id);
-  //   const url = this.Constants.API_ENDPOINT+'/read/'+id;
-  //   this.http.get(url).subscribe((response: any) => {
-  //     this.data = response; 
-  //     console.log("data User :",this.data); 
-  //     this.getpackages(this.data[0].user_id);
-  //     this.getwork(this.data[0].user_id);
-  //     this.getFollower(this.data[0].user_id);
-  //     this.getreview(this.data[0].user_id);
-  //   });
-  // }
   delay(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
@@ -444,6 +477,11 @@ closeList() {
         } 
       });
   }
+
+      profile(){
+          this.router.navigate(['/admin'],);
+      
+    }
 
      logout(): void {
       this.authService.logout();

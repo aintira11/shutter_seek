@@ -10,18 +10,24 @@
 
 <body>
 
-  <div class="box" (click)="back()">
-    <div class="arrow right"></div>
-    <div class="text">กลับ</div>
-  </div>
+ 
 
-  <div class="admin-container">
+  <div class="admin-container"> 
+    <div class="left">
+      <div class="box" (click)="back()">
+        <i class="arrow right"></i>
+        <span class="text">กลับ</span>
+      </div>
+    </div> 
 
     <header class="admin-header">
       <div class="admin-profile">
         <img class="profile-avatar" [src]="datauser[0].image_profile" alt="Admin Profile" (click)="profile()" />
         <span class="profile-name">{{ datauser[0].username }}</span>
         <button class="add-btn" (click)="goToadd()">+</button>
+          <button mat-raised-button color="primary" (click)="Approval()" class="approval-btn">
+    ✏️ แก้ไขเกณฑ์การอนุมัติ
+  </button>
       </div>
 
       <div class="logo-center">
@@ -31,12 +37,10 @@
       <button class="logout-btn" (click)="goToLogin()">ออกจากระบบ</button>
     </header>
 
-    <div style="position: relative; display: flex; justify-content: center; align-items: center; height: 120px;">
-      <h1 style="margin: 0;">อนุมัติช่างภาพ</h1>
-      <button mat-raised-button color="primary" (click)="Approval()" style="position: absolute; right: 20px;">
-        ✏️ แก้ไขเกณฑ์การอนุมัติ
-      </button>
-    </div>
+<div class="approval-header">
+  <h1 class="approval-title">อนุมัติช่างภาพ</h1>
+</div>
+
 
     <div class="tabs">
       <button (click)="filterUsers(1)" [class.active]="selectedTab === 1">รอ ({{ pending }})</button>
@@ -44,46 +48,47 @@
       <button (click)="filterUsers(3)" [class.active]="selectedTab === 3">ปฏิเสธ ({{ refuse }})</button>
     </div>
 
-    <div *ngFor="let user of datafilterUsers" class="user-card">
-      <img [src]="user.image_profile" alt="User Avatar" class="avatar" />
 
-      <div class="user-info">
-        <h3>{{ user.username }}</h3>
-        <p class="role" *ngIf="user.sht_status == 1">รอ</p>
-        <p class="role" *ngIf="user.sht_status == 2">อนุมัติ</p>
-        <p class="role" *ngIf="user.sht_status == 3">ปฏิเสธ</p>
-      </div>
-
-      <div class="actions" *ngIf="selectedTab === 1">
-        <button class="pushable detail">
-          <span class="front">รายละเอียด</span>
-        </button>
-
-        <button class="pushable" (click)="approveUser(user.user_id)">
-          <span class="front">อนุมัติ</span>
-        </button>
-
-        <button class="pushable deny" (click)="openRejectModal(user.user_id)">
-          <span class="front">ปฏิเสธ</span>
-        </button>
-      </div>
-
-      <div class="actions" *ngIf="selectedTab === 2">
-        <button class="pushable deny" (click)="openRejectModal(user.user_id)">
-          <span class="front">ปฏิเสธ</span>
-        </button>
-      </div>
-
-      <div class="actions" *ngIf="selectedTab === 3">
-        <button class="pushable detail" (click)="openViewReasonsModal(user.user_id)">
-          <span class="front">ดูเหตุผล</span>
-        </button>
-        <button class="pushable" (click)="approveUser(user.user_id)">
-          <span class="front">อนุมัติ</span>
-        </button>
-      </div>
-    </div>
-
+<div class="user-list">
+<div *ngFor="let user of datafilterUsers" class="user-card">
+  <img [src]="user.image_profile" alt="User Avatar" class="avatar" />
+  
+  <div class="user-info">
+  <div class="role-container">
+    <h3>{{ user.username }}</h3>
+      <span class="role-badge photographer pending"  *ngIf="user.sht_status == 1">
+           <i class="fa fa-clock-o"></i> รอการอนุมัติ
+       </span>
+       <span class="role-badge photographer approved" *ngIf="user.sht_status == 2">
+           <i class="fa fa-check-circle"></i> อนุมัติแล้ว
+       </span>
+       <span class="role-badge photographer rejected" *ngIf="user.sht_status == 3">
+           <i class="fa fa-times-circle"></i> ปฏิเสธ
+       </span>
+  </div>
+  </div>
+  <!-- ปุ่มต่าง ๆ ยังใช้ actions เดิม -->
+<div class="actions">
+    <button class="btn detail-btn" (click)="gotoshutter(user.user_id)">
+        <i class="fa fa-info-circle"></i>
+        <span>รายละเอียด</span>
+    </button>
+    <button class="btn approve-btn" (click)="approveUser(user.user_id)" *ngIf="selectedTab === 3 || selectedTab === 1">
+        <i class="fa fa-check-circle"></i>
+        <span>อนุมัติ</span>
+    </button>
+    <button class="btn reject-btn" (click)="openRejectModal(user.user_id)" *ngIf="selectedTab === 2 || selectedTab === 1">
+        <i class="fa fa-times-circle"></i>
+        <span>ปฏิเสธ</span>
+    </button>
+    <button class="btn reason-btn" (click)="openViewReasonsModal(user.user_id)" *ngIf="selectedTab === 3">
+        <i class="fa fa-eye"></i>
+        <span>ดูเหตุผล</span>
+    </button>
+</div>
+ 
+    </div>
+</div>
   </div>
 
   <div class="modal-overlay" *ngIf="isRejectModalOpen">

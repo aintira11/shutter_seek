@@ -128,12 +128,14 @@ async save() {
   }
 
   let image = this.data?.image_profile || ""; // ใช้ค่าเริ่มต้น
+  let hasImageChanged = false;
 
   // ถ้ามีไฟล์ใหม่ อัปโหลดก่อน
   if (this.selectedFile) {
     try {
       const response: any = await this.imageUploadService.uploadImage(this.selectedFile).toPromise();
       image = response.data.url; // ใช้ URL รูปใหม่
+      hasImageChanged = true;
     } catch (error) {
       console.error("Upload error:", error);
       alert("เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ");
@@ -141,24 +143,33 @@ async save() {
     }
   }
 
-  const url = `${this.Constants.API_ENDPOINT}/edit/${this.data.user_id}`;
   const formData = {
-      // email: this.fromreister.value.Email,
-      username: this.fromreister.value.UserName,
-      first_name: this.fromreister.value.Name,
-      last_name: this.fromreister.value.LastName,
-      phone: this.fromreister.value.Phone,
-      image_profile: image,
-      address: this.fromreister.value.address,
+    username: this.fromreister.value.UserName,
+    first_name: this.fromreister.value.Name,
+    last_name: this.fromreister.value.LastName,
+    phone: this.fromreister.value.Phone,
+    image_profile: image,
+    address: this.fromreister.value.address,
   };
+
   // ตรวจสอบค่าว่างหรือ whitespace
-for (const [key, value] of Object.entries(formData)) {
-  if (key !== 'address' && typeof value === 'string' && value.trim() === '') {
-    this.showSnackBar(`กรุณากรอกข้อมูล ${key}`);
+  for (const [key, value] of Object.entries(formData)) {
+    if (key !== 'address' && typeof value === 'string' && value.trim() === '') {
+      this.showSnackBar(`กรุณากรอกข้อมูล ${key}`);
+      return;
+    }
+  }
+
+  // เช็คการเปลี่ยนแปลงข้อมูล
+  const hasDataChanged = this.checkDataChanges(formData, hasImageChanged);
+  
+  if (!hasDataChanged) {
+    this.showSnackBar('ไม่มีการเปลี่ยนแปลงข้อมูล');
     return;
   }
-}
 
+  const url = `${this.Constants.API_ENDPOINT}/edit/${this.data.user_id}`;
+  
   this.isLoading = true;
 
   this.http.post(url, formData).subscribe({
@@ -166,19 +177,73 @@ for (const [key, value] of Object.entries(formData)) {
       const updatedUser = { ...this.data, ...formData };  // 🔁 รวมข้อมูลเดิมกับใหม่
       this.authService.setUser(updatedUser);              // ✅ อัปเดตใน AuthService
       this.data = updatedUser;                            // ✅ อัปเดตในตัวแปร local ด้วย
-
+      
       console.log("Update success:", response);
-      alert("บันทึกข้อมูลเรียบร้อย!");
+      this.showSnackBar("บันทึกข้อมูลเรียบร้อย!");
       this.router.navigate(['/profile'], { state: { data: updatedUser } }); // ส่งข้อมูลล่าสุดไปด้วย
     },
     error: (error) => {
       console.error("Update error:", error);
-      alert("เกิดข้อผิดพลาดในการอัปเดตข้อมูล");
+      this.showSnackBar("เกิดข้อผิดพลาดในการอัปเดตข้อมูล");
     },
     complete: () => {
       this.isLoading = false;
     }
   });
+}
+
+// ฟังก์ชันเช็คการเปลี่ยนแปลงข้อมูล
+private checkDataChanges(newData: any, hasImageChanged: boolean): boolean {
+  // เช็ครูปภาพก่อน
+  if (hasImageChanged) {
+    return true;
+  }
+
+  // เช็คข้อมูลอื่นๆ โดยเข้าถึง property โดยตรง
+  const formValues = this.fromreister.value;
+  
+  // เปรียบเทียบทีละฟิลด์
+  if ((formValues.UserName || '').trim() !== (this.data.username || '').trim()) {
+    console.log('Username changed:', {
+      original: this.data.username,
+      new: formValues.UserName
+    });
+    return true;
+  }
+
+  if ((formValues.Name || '').trim() !== (this.data.first_name || '').trim()) {
+    console.log('First name changed:', {
+      original: this.data.first_name,
+      new: formValues.Name
+    });
+    return true;
+  }
+
+  if ((formValues.LastName || '').trim() !== (this.data.last_name || '').trim()) {
+    console.log('Last name changed:', {
+      original: this.data.last_name,
+      new: formValues.LastName
+    });
+    return true;
+  }
+
+  if ((formValues.Phone || '').trim() !== (this.data.phone || '').trim()) {
+    console.log('Phone changed:', {
+      original: this.data.phone,
+      new: formValues.Phone
+    });
+    return true;
+  }
+
+  if ((formValues.address || '').trim() !== (this.data.address || '').trim()) {
+    console.log('Address changed:', {
+      original: this.data.address,
+      new: formValues.address
+    });
+    return true;
+  }
+
+  return false;
 }
 
 
