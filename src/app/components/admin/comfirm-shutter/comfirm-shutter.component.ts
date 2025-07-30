@@ -8,7 +8,6 @@ import { Constants } from '../../../config/constants';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DatafilterUsers, DataMembers } from '../../../model/models';
 import { MatButtonModule } from '@angular/material/button';
-// เพิ่ม import สำหรับ Firebase Realtime Database (push, update, serverIncrement)
 import { Database, DataSnapshot, get, ref, set, push, update } from '@angular/fire/database';
 
 // กำหนดโครงสร้างข้อมูลสำหรับหมวดหมู่หลัก (Main Category)
@@ -56,7 +55,7 @@ export class ComfirmShutterComponent implements OnInit, OnDestroy {
   pending = 0;
 
   // สถานะ Tab ที่เลือก
-  public selectedTab: 1 | 2 | 3 = 1;
+  public selectedTab: number = 1;
 
   // สถานะ Modal สำหรับปฏิเสธ
   public isRejectModalOpen: boolean = false; // สถานะสำหรับ Modal เหตุผลการปฏิเสธ
@@ -65,13 +64,13 @@ export class ComfirmShutterComponent implements OnInit, OnDestroy {
   public isViewReasonsModalOpen: boolean = false;
   public reasonsToDisplay: { categoryTitle: string; reasonText: string; }[] = [];
 
-  // สถานะ Modal สำหรับแสดงตัวอย่างข้อความแชท (เปลี่ยนชื่อจาก isEmailPreviewModalOpen)
+  // สถานะ Modal สำหรับแสดงตัวอย่างข้อความแชท 
   public isChatMessagePreviewModalOpen: boolean = false;
-  // เนื้อหาข้อความแชทสำหรับแสดงตัวอย่าง (เปลี่ยนชื่อจาก emailPreviewContent)
+  // เนื้อหาข้อความแชทสำหรับแสดงตัวอย่าง 
   public chatMessagePreviewContent: string = '';
-  // หัวข้อ Modal (เช่น "ตัวอย่างข้อความอนุมัติ/ปฏิเสธ") (เปลี่ยนชื่อจาก emailPreviewSubject)
+  // หัวข้อ Modal (เช่น "ตัวอย่างข้อความอนุมัติ/ปฏิเสธ") 
   public chatMessagePreviewTitle: string = '';
-  // Flag เพื่อระบุว่าเป็นข้อความอนุมัติหรือปฏิเสธ (เปลี่ยนชื่อจาก isApprovalEmail)
+  // Flag เพื่อระบุว่าเป็นข้อความอนุมัติหรือปฏิเสธ 
   public isApprovalMessage: boolean = false;
 
   // ตัวแปรสำหรับเก็บ user_id ของช่างภาพที่กำลังจะถูกปฏิเสธ/แสดงเหตุผล/อนุมัติ
@@ -82,7 +81,7 @@ export class ComfirmShutterComponent implements OnInit, OnDestroy {
   // Key คือ subCriterion.id, Value คือ true/false (ถูกเลือกหรือไม่)
   public selectedRejectionReasons: { [subCriterionId: string]: boolean } = {};
 
-  // ตัวแปรสำหรับเก็บ interval ของ countdown (ไม่ได้ใช้ในบริบทนี้ แต่คงไว้ตามโค้ดเดิม)
+  // ตัวแปรสำหรับเก็บ interval ของ countdown 
   private countdownIntervals: { [userId: number]: any } = {};
 
   constructor(
@@ -105,9 +104,10 @@ export class ComfirmShutterComponent implements OnInit, OnDestroy {
       return;
     }
 
+     this.updateAllTabCounts(); // เรียกใช้ฟังก์ชันเพื่ออัปเดตจำนวนผู้ใช้ในแต่ละแท็บ
     // โหลดข้อมูลครั้งแรก
-    this.filterUsers(1);
-    this.countUsersByType();
+    this.filterUsers(0); // เริ่มต้นโหลดข้อมูลผู้ใช้ทั้งหมด
+    // this.countUsersByType();
     this.loadCriteria(); // โหลดเกณฑ์การอนุมัติ
   }
 
@@ -159,40 +159,59 @@ export class ComfirmShutterComponent implements OnInit, OnDestroy {
     }
   }
 
-  countUsersByType(): void {
-    // นับจำนวนผู้ใช้ในแต่ละสถานะ
-    this.pending = this.datafilterUsers.filter(user => user.sht_status === 1).length;
-    this.comfirm = this.datafilterUsers.filter(user => user.sht_status === 2).length;
-    this.refuse = this.datafilterUsers.filter(user => user.sht_status === 3).length;
+  // countUsersByType(): void {
+  //   // นับจำนวนผู้ใช้ในแต่ละสถานะ
+  //   this.pending = this.datafilterUsers.filter(user => user.sht_status === 1).length;
+  //   this.comfirm = this.datafilterUsers.filter(user => user.sht_status === 2).length;
+  //   this.refuse = this.datafilterUsers.filter(user => user.sht_status === 3).length;
+  // }
+
+  // API call แยกกันสำหรับแต่ละสถานะเพื่อดึงข้อมูลมานับจำนวน
+  updateAllTabCounts(): void {
+    // ดึงจำนวนผู้ใช้สถานะ "รอ" (Status 1)
+    this.http.get(this.Constants.API_ENDPOINT + '/getshutterbytype/1').subscribe(
+      (response: any) => {
+        // 'response' คือ array ของผู้ใช้สถานะ 1, เราจึงใช้ .length เพื่อหานับจำนวน
+        this.pending = response.length;
+        console.log("Pending count updated:", this.pending);
+      },
+      (error) => console.error('Error fetching pending count:', error)
+    );
+
+    // ดึงจำนวนผู้ใช้สถานะ "อนุมัติ" (Status 2)
+    this.http.get(this.Constants.API_ENDPOINT + '/getshutterbytype/2').subscribe(
+      (response: any) => {
+        this.comfirm = response.length;
+        console.log("Confirmed count updated:", this.comfirm);
+      },
+      (error) => console.error('Error fetching confirmed count:', error)
+    );
+
+    // ดึงจำนวนผู้ใช้สถานะ "ปฏิเสธ" (Status 3)
+    this.http.get(this.Constants.API_ENDPOINT + '/getshutterbytype/3').subscribe(
+      (response: any) => {
+        this.refuse = response.length;
+        console.log("Refused count updated:", this.refuse);
+      },
+      (error) => console.error('Error fetching refused count:', error)
+    );
   }
 
   public filterUsers(status: number): void {
-    // อัพเดตสถานะ tab ที่เลือก
-    switch (status) {
-      case 1:
-        this.selectedTab = 1;
-        break;
-      case 2:
-        this.selectedTab = 2;
-        break;
-      case 3:
-        this.selectedTab = 3;
-        break;
-    }
+    // อัปเดตสถานะแท็บที่ถูกเลือก
+    this.selectedTab = status;
 
     const url = this.Constants.API_ENDPOINT + '/getshutterbytype/' + this.selectedTab;
     this.http.get(url).subscribe(
       (response: any) => {
-        // แปลงข้อมูลจาก API เป็น ExtendedDatafilterUsers
-        this.datafilterUsers = response.map((user: DatafilterUsers) => ({
+        // 'datafilterUsers' จะถูกอัปเดตให้มีเฉพาะข้อมูลของแท็บที่เลือกเท่านั้น สำหรับการแสดงผลในตาราง
+        this.datafilterUsers = response.map((user: any) => ({
           ...user,
         }));
+        console.log(`Loaded data for tab ${this.selectedTab}:`, this.datafilterUsers);
 
-        console.log("data datafilterUsers :", this.datafilterUsers);
-
-        // นับจำนวนผู้ใช้ในแต่ละสถานะ
-        this.countUsersByType();
-
+        // *** สำคัญ: ไม่ต้องเรียกนับจำนวนรวมของแท็บทั้งหมดที่นี่อีกต่อไป ***
+        // เพราะเรามี updateAllTabCounts() ที่ดูแลการดึงและอัปเดตตัวเลขบนปุ่มแล้ว
       },
       (error) => {
         console.error('Error fetching users:', error);

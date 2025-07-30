@@ -8,6 +8,58 @@
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
         }
 
+//สถานะของช่างภาพ
+
+.role-container {
+    display: flex;
+    align-items: center;
+     padding: 6px 12px;
+}
+.role-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.role-badge i {
+    font-size: 12px;
+}
+.role-badge.photographer.pending {
+    background: #fdfdfd;
+    color: #d97706;
+}
+
+.role-badge.photographer.approved {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.role-badge.photographer.rejected {
+    background: #fee2e2;
+    color: #dc2626;
+}
+/* สีตามสถานะ */
+.user-info .role:nth-child(2) {
+    background-color: #fef3c7; /* pending */
+    color: #d97706;
+}
+
+.user-info .role:nth-child(3) {
+    background-color: #d1fae5; /* approved */
+    color: #065f46;
+}
+
+.user-info .role:nth-child(4) {
+    background-color: #fee2e2; /* rejected */
+    color: #dc2626;
+}
+
+
         /* Profile Section */
         .profile-header {
             display: flex;

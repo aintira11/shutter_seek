@@ -230,6 +230,7 @@
                       <h2 class="username">{{ getprofile[0].username }}</h2>
                         <p class="follow-info" *ngIf="getprofile[0].type_user == '1'">สถานะ : ผู้ใช้ทั่วไป </p>
                         <p class="follow-info" *ngIf="getprofile[0].type_user == '3'">สถานะ : ผู้ดูแลระบบ </p>
+                        <p class="follow-info">ชื่อ : {{ getprofile[0].first_name }}     {{getprofile[0].last_name}}</p>
                         <p class="follow-info">อีเมล : {{ getprofile[0].email }} </p>
                         <p class="follow-info">เบอร์โทร : {{ getprofile[0].phone }} </p>
                         <p class="member-since">เป็นสมาชิกตั้งแต่ {{ getprofile[0].date_of_member | date:'dd/MM/yyyy'}}</p>

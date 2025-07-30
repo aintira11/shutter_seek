@@ -140,6 +140,7 @@
     
       <section id="first" *ngIf="data.length > 0">
     <div class="profile-container">
+
         <!-- Profile Section -->
         <div class="profile-header" >
           <img
@@ -148,7 +149,21 @@
             class="profile-image"
           />
           <div class="profile-info" >
-            <h2>{{data[0].username}}</h2>
+            <div class="role-container"> 
+                 <h2>{{data[0].username}}</h2>
+<div style="padding-left: 20px;">
+
+            <span class="role-badge photographer pending"  *ngIf="data[0].sht_status == 1">
+              <i class="fa fa-clock-o"></i>สถานะ : รอการอนุมัติ
+            </span>
+           <span class="role-badge photographer approved" *ngIf="data[0].sht_status == 2">
+              <i class="fa fa-check-circle"></i>สถานะ : อนุมัติแล้ว
+          </span>
+           <span class="role-badge photographer rejected" *ngIf="data[0].sht_status == 3">
+              <i class="fa fa-times-circle"></i>สถานะ : ปฏิเสธ
+           </span>
+            </div>
+</div>
             <button class="btn me-2" (click)="openModel()">
               <p>มีผู้ติดตาม {{datafollower.length}} คน</p>
             </button>
@@ -180,7 +195,8 @@
             <p style="margin-left: 10%;margin-bottom: 5%;"> Line ID : {{data[0].lineID}} </p>
             <p style="margin-left: 10%;margin-bottom: 5%;"> Email : {{data[0].email}} </p>
             <p style="margin-left: 10%;margin-bottom: 5%;"> เว็บไซต์ : {{data[0].facebook}} </p>
-            <!-- <p style="margin-left: 10%;"> พื้นที่ที่รับงาน : {{datauser[0].first_name}} </p> -->
+            <p style="margin-left: 10%;" *ngIf="dataAdmin.length  == 1 "> จังหวัด : {{data[0].province}} </p>
+            <p style="margin-left: 10%;" *ngIf="dataAdmin.length  == 1 "> ที่อยู่ : {{data[0].address}} </p>
           </div>
           <!-- aboub me --> 
             <div  class="info-card highlight" style="background-color: rgb(255, 187, 55);">
@@ -421,7 +437,7 @@
 
   <div class="follower-card" *ngFor="let follower of datafollower">
     <div class="profile-section">
-      <div >
+      <div>
         <img src="{{follower.image_profile}}" alt="" class="profile-pic" (click)="showprofile(follower.user_id)">
       </div>
       <span class="username">{{ follower.username }}</span>

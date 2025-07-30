@@ -209,6 +209,8 @@ export interface DatafilterUsers {
     user_id:       number;
     username:      string;
     email:         string;
+    first_name:    string;
+    last_name:     string;
     phone:          string;
     image_profile: string;
     type_user:     string;

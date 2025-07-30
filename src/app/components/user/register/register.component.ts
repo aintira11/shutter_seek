@@ -117,13 +117,33 @@ export class RegisterComponent {
     return;
   }
 
-  // เตรียม URL สำหรับเรียก API
+  const checkEmailUrl = this.Constants.API_ENDPOINT + '/check-email';
+
+  const email = this.fromreister.value.Email;
+  const type_user = '1'; // สมัครในบทบาท user
+  const checkBody = { email, type_user };
+
+
+
+  try { 
+    const checkRes: any = await this.http.post(checkEmailUrl, checkBody).toPromise();
+
+    if (checkRes.exists && checkRes.updatePrompt) {
+      const confirmed = confirm(checkRes.message || 'อีเมลนี้ถูกใช้สมัครไว้ในบทบาทอื่นแล้ว ต้องการใช้ข้อมูลนี้เพิ่มบทบาทหรือไม่?');
+      if (!confirmed) {
+        this.showSnackBar('ยกเลิกการสมัครสมาชิก');
+        return;
+      }
+      // หากยืนยัน จะดำเนินการสมัครต่อ
+    } else if (checkRes.exists) {
+      // ถ้าเคยสมัครไว้แล้วในบทบาทนี้
+      this.showSnackBar('อีเมลนี้ได้สมัครไว้แล้วกับบทบาทนี้');
+      return;
+    }
+
+    // เริ่มสมัครจริง
   const url = this.Constants.API_ENDPOINT + '/register';
-
-  // ประกาศตัวแปร image นอก if/else เพื่อใช้ต่อได้
   let image: string;
-
-  try {
     // ถ้ามีการเลือกไฟล์
     if (this.selectedFile) {
       const randomName = this.generateRandomFileName(this.selectedFile.name); // ถ้าคุณใช้ชื่อใหม่
@@ -156,7 +176,7 @@ export class RegisterComponent {
       error: (err) => {
         console.error('เกิดข้อผิดพลาด:', err);
         if (err.status === 400) {
-          this.showSnackBar('มีอีเมลนี้อยู่ในระบบแล้ว');
+          this.showSnackBar('อีเมลนี้ได้สมัครไว้แล้วกับบทบาทนี้');
         } else if (err.status === 401) {
           this.showSnackBar('ชื่อผู้ใช้นี้ถูกใช้ไปแล้ว');
         }else if (err.status === 402) {

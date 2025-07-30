@@ -138,8 +138,8 @@ private generateRandomFileName(originalName: string): string {
 // เพิ่มตัวแปรสำหรับติดตาม loading state
 isRegistering = false;
 
-base_for_shutt() {
-  // เพิ่มการป้องกันการ submit ซ้ำแบบเข้มงวดขึ้น
+  async base_for_shutt() {
+  // เพิ่มการป้องกันการ submit ซ้ำ
   if (this.isRegistering) {
     console.log('Registration is already in progress - blocked duplicate submit');
     return; // เปลี่ยนจาก return false เป็น return
@@ -168,6 +168,26 @@ base_for_shutt() {
     this.showSnackBar('กรุณากรอกข้อมูลให้ครบถ้วนและถูกต้อง');
     return;
   }
+  // ตรวจสอบเมลล์ซ้ำ
+  const checkEmailUrl = this.Constants.API_ENDPOINT + '/check-email';
+
+  const email = this.fromreister.value.email;
+  const type_user = '2'; // สมัครในบทบาท user
+  const checkBody = { email, type_user };
+   const checkRes: any = await this.http.post(checkEmailUrl, checkBody).toPromise();
+
+    if (checkRes.exists && checkRes.updatePrompt) {
+      const confirmed = confirm(checkRes.message || 'อีเมลนี้ถูกใช้สมัครไว้ในบทบาทอื่นแล้ว ต้องการใช้ข้อมูลนี้เพิ่มบทบาทหรือไม่?');
+      if (!confirmed) {
+        this.showSnackBar('ยกเลิกการสมัครสมาชิก');
+        return;
+      }
+      // หากยืนยัน จะดำเนินการสมัครต่อ
+    } else if (checkRes.exists) {
+      // ถ้าเคยสมัครไว้แล้วในบทบาทนี้
+      this.showSnackBar('อีเมลนี้ได้สมัครไว้แล้วกับบทบาทนี้');
+      return;
+    }
    
   // ตรวจสอบรหัสผ่าน
   if (this.fromreister.value.Password !== this.fromreister.value.confirmPassword) {
@@ -224,7 +244,7 @@ private submitRegistration(url: string, imageUrl: string) {
     image_profile: imageUrl,
     type_user: "2",
     // เพิ่มข้อมูลเพื่อระบุสถานะการสมัคร
-    sth_status: "active", // หรือค่าที่เหมาะสม
+    sth_status: "1", // สถานะการสมัคร
     created_at: new Date().toISOString() // timestamp เพื่อป้องกันการสร้างซ้ำ
   };
 
