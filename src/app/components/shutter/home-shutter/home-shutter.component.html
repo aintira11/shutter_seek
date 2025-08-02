@@ -24,7 +24,7 @@
             <img src="/assets/images/PIXEL (8).png" alt="SHUTTER seek" class="logo">
             <nav class="ms-3">
                 <a href="/" class="nav-link">หน้าแรก</a>
-                <a href="/contact" class="nav-link">ติดต่อเรา</a>
+                <a  class="nav-link" (click)="scroll()" >เกี่ยวกับเรา</a>
                 <a (click)="interresShutter()" class="nav-link" >สนใจเป็นช่างภาพ</a>
             </nav>
         
@@ -276,56 +276,156 @@
 <!-- icon chat -->
   <!-- <i class="bi bi-chat-dots-fill fixed-chat-icon" (click)="chat(datauser[0].user_id)" ></i> -->
 
-   <button *ngIf="showButton" class="scroll-to-top" (click)="scrollToTop()">
-    ⬆ เลื่อนขึ้น
-  </button>
+
   
 
 <!-- model review -->
 <div *ngIf="isModelOpen" class="modal">
-  <div class="modal-content" [formGroup]="reviewform">
-    <span class="close" (click)="closeModel()">&times;</span>
-    <h3 class="modal-title">เขียนรีวิว</h3>
-    <hr>
-
-    <div class="star-container">
-      <p>การให้บริการ</p>
-      <div class="stars">
-        <button *ngFor="let star of stars; let i = index" 
-                class="star" 
-                [ngClass]="{'active': i < rating, 'hover': i < hoverRating}" 
-                (click)="rate(i + 1)" 
-                (mouseover)="hover(i + 1)" 
-                (mouseleave)="hover(0)">
-          &#9733;
-        </button>
-      </div>
-      <p class="rating-text">{{ rating }} of 5</p>
-      <p class="rating-subtext">ให้คะแนนการบริการและฝีมือ</p>
-    </div>
-    <!-- <input formControlName="rating" type="hidden" [value]="rating">
-    <input formControlName="reviewed_id" type="hidden" [value]="datauser[0].user_id"> -->
-    <p>เขียนรีวิว</p>
-    <div class="review-card">
-      <textarea class="custom-textarea" formControlName="comment" rows="3" placeholder="เขียนรีวิวที่นี่..."></textarea>
-    </div>
-
-    <br>
-    <!-- [disabled]="!reviewform.valid" -->
-    <button 
-  mat-raised-button 
-  color="primary"
-  (click)="postreview()" 
-  [disabled]="isSubmittingReview || !reviewform.valid">
+  <div class="modal-backdrop" (click)="closeModel()"></div>
   
-  <mat-spinner *ngIf="isSubmittingReview" diameter="20" class="inline-spinner"></mat-spinner>
-  {{ isSubmittingReview ? 'กำลังส่งรีวิว...' : 'ส่งรีวิว' }}
-</button>
+  <div class="responsive-modal">
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <h3 class="modal-title">เขียนรีวิว</h3>
+      <button class="close-btn" (click)="closeModel()" aria-label="ปิด">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
 
+    <!-- Modal Body -->
+    <div class="modal-body" [formGroup]="reviewform">
+      <!-- Star Rating Section -->
+      <div class="rating-section">
+        <div class="rating-label">
+          <i class="fas fa-star-half-alt"></i>
+          <span>การให้บริการ</span>
+        </div>
+        
+        <div class="stars-container">
+          <button *ngFor="let star of stars; let i = index"
+                  class="star-btn"
+                  [ngClass]="{'active': i < rating, 'hover': i < hoverRating}"
+                  (click)="rate(i + 1)"
+                  (mouseover)="hover(i + 1)"
+                  (mouseleave)="hover(0)"
+                  [attr.aria-label]="'ให้คะแนน ' + (i + 1) + ' ดาว'">
+            <i class="fas fa-star"></i>
+          </button>
+        </div>
+        
+        <div class="rating-display">
+          <span class="rating-score">{{ rating }}</span>
+          <span class="rating-max">/ 5</span>
+        </div>
+        
+        <p class="rating-subtext">ให้คะแนนการบริการและฝีมือ</p>
+      </div>
+
+      <!-- Comment Section -->
+      <div class="comment-section">
+        <label class="comment-label">
+          <i class="fas fa-edit"></i>
+          <span>เขียนรีวิว</span>
+        </label>
+        
+        <div class="comment-input-container">
+          <textarea 
+            class="comment-textarea" 
+            formControlName="comment" 
+            rows="4" 
+            placeholder="แบ่งปันประสบการณ์ของคุณ..."
+            maxlength="500">
+          </textarea>
+          <div class="character-count">
+            {{ reviewform.get('comment')?.value?.length || 0 }}/500
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+      <!-- <button class="btn-cancel" (click)="closeModel()">
+        ยกเลิก
+      </button> -->
+      
+      <button 
+        class="btn-submit"
+        (click)="postreview()"
+        [disabled]="isSubmittingReview || !reviewform.valid || rating === 0">
+        
+        <span *ngIf="isSubmittingReview" class="spinner"></span>
+        <i *ngIf="!isSubmittingReview" class="fas fa-paper-plane"></i>
+        <span>{{ isSubmittingReview ? 'กำลังส่งรีวิว...' : 'ส่งรีวิว' }}</span>
+      </button>
+    </div>
   </div>
 </div>
 
+   
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+ <!-- Enhanced Footer -->
+    <footer class="enhanced-footer" id="about">
+        <div class="container">
+            <!-- Logo Section -->
+            <div class="footer-logo-section">
+                <img src="/assets/images/PIXEL (8).png" 
+                     alt="Shutter Seek Logo" class="footer-logo">
+                <!-- <h2 class="footer-brand-name">SHUTTER SEEK</h2> -->
+                <p class="footer-tagline">เก็บทุกช่วงเวลาสำคัญ ด้วยภาพถ่ายที่สมบูรณ์แบบ</p>
+            </div>
+
+            <!-- Footer Content -->
+            <div class="footer-content">
+                <!-- About Section -->
+                <div class="footer-section">
+                    <h4><i class="fas fa-info-circle"></i> เกี่ยวกับเรา</h4>
+                    <p>
+                        เว็บไซต์ของเราเป็นพื้นที่กลางสำหรับลูกค้าและช่างภาพที่ต้องการเชื่อมต่อกัน 
+                        ด้วยระบบค้นหา โปรไฟล์ และรีวิวที่โปร่งใส
+                    </p>
+                    <p>
+                        มุ่งมั่นในการให้บริการที่ปลอดภัยและเชื่อถือได้ สำหรับทุกโอกาสสำคัญในชีวิตของคุณ
+                    </p>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="footer-section">
+                    <h4><i class="fas fa-address-book"></i> ติดต่อเรา</h4>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>support&#64;shutterseek.com</span>
+                    </div>
+                    <!-- <div class="contact-item">
+                        <i class="fab fa-line"></i>
+                        <span>&#64;shutterseek</span>
+                    </div> -->
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span>02-XXX-XXXX</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>กรุงเทพมหานคร, ประเทศไทย</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Bottom -->
+            <!-- <div class="footer-bottom">
+                <p>
+                    &copy; 2025 Shutter Seek. สงวนลิขสิทธิ์ทุกประการ | 
+                    Made with <span class="heart">❤️</span> in Thailand
+                </p>
+            </div> -->
+        </div>
+    </footer>
+
+       <button *ngIf="showButton" class="scroll-to-top" (click)="scrollToTop()">
+    ⬆ เลื่อนขึ้น
+  </button>
 
 </body>
 </html>

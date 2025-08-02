@@ -525,5 +525,12 @@ getMyLike(id: number) {
   this.authService.logout();
   this.router.navigate(['/login']); // กลับไปหน้า login
 }
+
+  scroll(){
+     const rankElement = document.getElementById('about');
+      if (rankElement) {
+          rankElement.scrollIntoView({ behavior: 'smooth' });
+      }
+  }
 }
 

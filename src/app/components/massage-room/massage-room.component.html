@@ -1,4 +1,4 @@
-<div class="chat-container" [class.sidebar-open]="isSidebarOpen">
+<div class="chat-container" [class.sidebar-open]="isSidebarOpen || !selectedPartnerId">
 
   <div class="chat-main" *ngIf="selectedPartnerId; else noChatSelected">
      
@@ -94,14 +94,15 @@
     </div>
   </ng-template>
 
-  <div class="chat-sidebar" *ngIf="isSidebarOpen"
+  <!-- แก้ไขเงื่อนไขการแสดง sidebar ให้แสดงเมื่อ isSidebarOpen หรือเมื่อยังไม่เลือกห้อง -->
+  <div class="chat-sidebar" *ngIf="isSidebarOpen || !selectedPartnerId"
     (touchstart)="onTouchStart($event)"
     (touchmove)="onTouchMove($event)"
     (touchend)="onTouchEnd($event)">
     
-    <div class="sidebar-header">
+    <div class="sidebar-header" (click)="profile(data?.type_user)">
       <button mat-button class="circle-button">
-        <img [src]="data?.image_profile" alt="" class="rounded-circle" [title]="data?.username" (click)="profile()">
+        <img [src]="data?.image_profile" alt="" class="rounded-circle" [title]="data?.username" >
       </button>
       <h2 style="display: flex; justify-content: flex-start;">{{ data?.username }}</h2>
     </div>
@@ -116,32 +117,41 @@
   class="chat-item"
   *ngFor="let room of chatRooms"
   [class.active]="selectedPartnerId === room.partnerId"
-  [class.unread]="room.hasUnreadMessages" (click)="setupChat(room.partnerId)"
+  [class.unread]="room.hasUnreadMessages" 
+  (click)="setupChat(room.partnerId)"
+  (touchstart)="onChatItemTouchStart($event, room.partnerId)"
+  (touchend)="onChatItemTouchEnd($event, room.partnerId)"
+  [attr.data-partner-id]="room.partnerId"
+  role="button"
+  tabindex="0"
+  [attr.aria-label]="'แชทกับ ' + getChatPartnerInfo(room.partnerId)?.username"
 >
-        <ng-container *ngIf="getChatPartnerInfo(room.partnerId) as partner">
-          <div class="photographer-avatar">
-            <img *ngIf="partner.image_profile; else noProfileImage" [src]="partner.image_profile" alt="Profile" class="profile-img">
-            <ng-template #noProfileImage>
-              {{ partner.username ? partner.username.charAt(0).toUpperCase() : '?' }}
-            </ng-template>
-            <span class="status-indicator" [class.online]="getPartnerStatus(partner.user_id) === 'online'"></span>
-          </div>
-          <div class="chat-info">
-            <div class="photographer-name">{{ partner.username }}</div>
-
-            <div class="last-message">
-               <ng-container *ngIf="room.hasUnreadMessages; else showLastMessage">
-               <strong style="color: #007bff;">มีข้อความใหม่</strong> </ng-container>
-
+  <ng-container *ngIf="getChatPartnerInfo(room.partnerId) as partner">
+    <div class="photographer-avatar">
+      <img *ngIf="partner.image_profile; else noProfileImage" 
+           [src]="partner.image_profile" 
+           alt="Profile" 
+           class="profile-img">
+      <ng-template #noProfileImage>
+        {{ partner.username ? partner.username.charAt(0).toUpperCase() : '?' }}
+      </ng-template>
+      <span class="status-indicator" [class.online]="getPartnerStatus(partner.user_id) === 'online'"></span>
+    </div>
+    <div class="chat-info">
+      <div class="photographer-name">{{ partner.username }}</div>
+      <div class="last-message">
+        <ng-container *ngIf="room.hasUnreadMessages; else showLastMessage">
+          <strong style="color: #007bff;">มีข้อความใหม่</strong> 
+        </ng-container>
         <ng-template #showLastMessage>
           <ng-container *ngIf="room.lastMessageSenderId === myId">คุณ : </ng-container>
           {{ room.lastMessage }}
         </ng-template>
       </div>
-          </div>
-          <div class="message-time">{{ room.lastMessageTime | date:'shortTime' }}</div>
-        </ng-container>
-      </div>
+    </div>
+    <div class="message-time">{{ room.lastMessageTime | date:'shortTime' }}</div>
+  </ng-container>
+</div>
     </div>
   </div>
 </div>

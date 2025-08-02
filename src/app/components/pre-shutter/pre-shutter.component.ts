@@ -388,6 +388,13 @@ handleKeyboard(event: KeyboardEvent): void {
   this.router.navigate(['/login']); // กลับไปหน้า login
 }
 
+  scroll(){
+     const rankElement = document.getElementById('about');
+      if (rankElement) {
+          rankElement.scrollIntoView({ behavior: 'smooth' });
+      }
+  }
+
 }
 
 

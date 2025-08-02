@@ -401,16 +401,22 @@ closeList() {
   chat(id_shutter: number){
       // console.log("📤 Sending datauser:", this.data);
     
-      // if (!this.data ) {
-      //   console.error("Error: this.datauser is empty or undefined");
-      //   return;
-      // }
-    
-      this.router.navigate(['/roomchat'], { 
+      if (id_shutter ) {
+         this.router.navigate(['/roomchat'], { 
+        state: { 
+          // datauser: this.data, 
+          idshutter: id_shutter 
+        } 
+      });
+      }else{
+        this.router.navigate(['/roomchat'], { 
         // state: { 
         //   datauser: this.data, 
         // } 
       });
+      }
+    
+      
      }
 
      editWork(id: number) {

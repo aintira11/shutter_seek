@@ -50,6 +50,12 @@ export class HomeComponent implements OnInit , AfterViewInit{
   isLoading: boolean = false;
   // lastVoteTime: Date | null = null; // เวลาล่าสุดที่โหวต
 
+    // เพิ่มตัวแปรสำหรับ pagination
+  currentPage: number = 1;
+  itemsPerPage: number = 4;
+  totalPages: number = 0;
+  paginatedPortfolio: any[] = [];
+
   constructor(private fb: FormBuilder,
     private Constants: Constants, 
     private route: ActivatedRoute, 
@@ -88,6 +94,7 @@ ngOnInit(): void {
   // โหลดข้อมูลหน้าแรก
   this.gettegs();
   this.getPortfolio();
+  this.getPortfolioIfId(0);
   
     // ตรวจสอบว่ามี Portfolio หรือไม่ ก่อนวนลูป
     if (this.Portfolio) {
@@ -260,18 +267,71 @@ getPrev(portfolioIndex: number) {
       });
     }
 
-    getPortfolioIfId(id: number) {
-      console.log('id:', id);
-      const url = this.Constants.API_ENDPOINT + '/get/portfolio/' + id;
-      this.http.get(url).subscribe((response: any) => {
-        this.PortfolioID = response;
-    
-        // รีเซ็ตค่า index ของสไลด์ให้ตรงกับจำนวนของ Portfolio ที่เปลี่ยนไป
-        this.currentSlideIndex1 = new Array(this.PortfolioID.length).fill(0);
-    
-        console.log("data PortfolioID:", this.PortfolioID);
-      });
+  getPortfolioIfId(id: number) {
+    console.log('id:', id);
+    const url = this.Constants.API_ENDPOINT + '/get/portfolio/' + id;
+    this.http.get(url).subscribe((response: any) => {
+      this.PortfolioID = response;
+      
+      // รีเซ็ตค่า index ของสไลด์ให้ตรงกับจำนวนของ Portfolio ที่เปลี่ยนไป
+      this.currentSlideIndex1 = new Array(this.PortfolioID.length).fill(0);
+      
+      // คำนวณ pagination
+      this.calculatePagination();
+      
+      console.log("data PortfolioID:", this.PortfolioID);
+    });
+  }
+
+  // ฟังก์ชันคำนวณ pagination
+  calculatePagination() {
+    this.totalPages = Math.ceil(this.PortfolioID.length / this.itemsPerPage);
+    this.updatePaginatedData();
+  }
+
+  // ฟังก์ชันอัพเดทข้อมูลที่จะแสดงในหน้าปัจจุบัน
+  updatePaginatedData() {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    this.paginatedPortfolio = this.PortfolioID.slice(startIndex, endIndex);
+  }
+
+  // ฟังก์ชันไปหน้าถัดไป
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.updatePaginatedData();
     }
+  }
+
+  // ฟังก์ชันไปหน้าก่อนหน้า
+  previousPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.updatePaginatedData();
+    }
+  }
+
+  // ฟังก์ชันไปหน้าที่ระบุ
+  goToPage(page: number) {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.updatePaginatedData();
+    }
+  }
+
+  // ฟังก์ชันสำหรับสร้าง array ของหมายเลขหน้า
+  getPageNumbers(): number[] {
+    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  }
+
+ getDisplayRange(): { start: number; end: number; total: number } {
+  const start = (this.currentPage - 1) * this.itemsPerPage + 1;
+  const end = Math.min(this.currentPage * this.itemsPerPage, this.PortfolioID.length);
+  const total = this.PortfolioID.length;
+  
+  return { start, end, total };
+}
     
     sreach() {
       const params: any = {}; // สร้าง object เก็บค่า query params
@@ -385,6 +445,13 @@ getMyLike(id: number) {
       horizontalPosition: 'center',
       verticalPosition: 'top',
     });
+  }
+
+  scroll(){
+     const rankElement = document.getElementById('about');
+      if (rankElement) {
+          rankElement.scrollIntoView({ behavior: 'smooth' });
+      }
   }
     
     testShutter(id: number) {

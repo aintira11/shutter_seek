@@ -155,6 +155,12 @@ body.sidebar-open {
   margin: 2px 8px;
   border-radius: 12px;
   min-height: 60px; /* ขนาดขั้นต่ำสำหรับการแตะ */
+
+    /* เพิ่มสำหรับแก้ปัญหามือถือ */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  width: calc(100% - 16px); /* ให้ครอบคลุมพื้นที่เต็ม */
 }
 
 .chat-item::before {
@@ -856,6 +862,49 @@ body.sidebar-open {
   .chat-container.sidebar-open .chat-sidebar {
     animation: slideInLeft 0.3s ease;
   }
+
+  .chat-item {
+    padding: 16px 20px; /* เพิ่ม padding ให้มากขึ้น */
+    min-height: 72px; /* เพิ่มความสูงขั้นต่ำ */
+    margin: 3px 8px; /* เพิ่มระยะห่าง */
+    width: calc(100% - 16px);
+    /* ทำให้แน่ใจว่าคลิกได้ทั้งหมด */
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* ทำให้ photographer-avatar ไม่บล็อกการคลิก */
+  .photographer-avatar {
+    pointer-events: none; /* ป้องกันการคลิกที่รูป */
+    position: relative;
+    z-index: 2;
+  }
+  
+  /* ทำให้ chat-info ไม่บล็อกการคลิก */
+  .chat-info {
+    pointer-events: none;
+    position: relative;
+    z-index: 2;
+  }
+  
+  /* ทำให้ message-time ไม่บล็อกการคลิก */
+  .message-time {
+    pointer-events: none;
+    position: relative;
+    z-index: 2;
+  }
+  
+  /* เพิ่ม pseudo element เพื่อให้คลิกได้ทั้งหมด */
+  .chat-item::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    cursor: pointer;
+  }
 }
 
 @keyframes fadeIn {
@@ -932,16 +981,18 @@ body.sidebar-open {
     font-size: 18px;
   }
   
-  .chat-item {
-    padding: 12px 16px;
-    margin: 1px 4px;
+ .chat-item {
+    padding: 18px 16px; /* เพิ่ม padding อีก */
+    min-height: 76px;
+    margin: 4px 6px;
+    width: calc(100% - 12px);
   }
   
   .photographer-avatar {
-    width: 40px;
-    height: 40px;
-    font-size: 16px;
-    margin-right: 12px;
+    width: 44px;
+    height: 44px;
+    margin-right: 14px;
+    flex-shrink: 0;
   }
   
   .photographer-name {
@@ -1366,6 +1417,18 @@ body.sidebar-open {
 
 /* Touch Targets */
 @media (hover: none) and (pointer: coarse) {
+    .chat-item:hover {
+    transform: none;
+  }
+  
+  .chat-item:hover::before {
+    width: 0;
+  }
+  
+  .chat-item:active::before {
+    width: 100%;
+  }
+  
   .chat-item,
   .toggle-sidebar-btn,
   .send-button,

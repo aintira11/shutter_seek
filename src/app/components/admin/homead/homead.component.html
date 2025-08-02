@@ -212,6 +212,7 @@
             <div class="report-list"*ngIf="dataReport.length > 0">
                 <div *ngFor="let report of dataReport" class="report-item">
                 <strong>{{ report.reporter_username }}  | เหตุผล : {{report.reason}}</strong>
+                <p style="color: gray; font-size: small;">{{report.date_reported | date:'dd/MM/yyyy'}}</p>
                 <p>{{ report.details }}</p>
                 </div>
             </div>

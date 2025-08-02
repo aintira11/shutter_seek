@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    
     </head>
 
 <body style="margin-left: 5%;margin-right: 5%;">
@@ -21,7 +23,7 @@
             <img src="/assets/images/PIXEL (8).png" alt="SHUTTER seek" class="logo">
             <nav class="ms-3">
                 <a href="/" class="nav-link">หน้าแรก</a>
-                <a href="/contact" class="nav-link">ติดต่อเรา</a>
+                <a href="#" class="nav-link" (click)="scroll()">เกี่ยวกับเรา</a>
                 <a (click)="interresShutter()" class="nav-link" >สนใจเป็นช่างภาพ</a>
             </nav>
              <div class="button-container">
@@ -45,7 +47,7 @@
         <img src="/assets/images/PIXEL (8).png" alt="SHUTTER seek" class="logo">
         <nav class="ms-3">
             <a href="/" class="nav-link">หน้าแรก</a>
-            <a href="/contact" class="nav-link">ติดต่อเรา</a>
+            <a href="#" class="nav-link" (click)="scroll()">เกี่ยวกับเรา</a>
             <a href="/shutter" class="nav-link" >สนใจเป็นช่างภาพ</a>
         </nav>
     </div>
@@ -202,66 +204,158 @@
 
 
 <section class="container mt-5">
-<div class="row justify-content-center" *ngIf="PortfolioID.length > 0">
-    <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3 px-2" *ngFor="let photographer of PortfolioID; let portfolioIndex = index">
-        <div class="card border-0 text-center p-2 shadow-sm" style="max-width: 250px; margin: auto;">
-            <!-- Bootstrap Carousel -->
-            <div class="carousel slide rounded" [attr.id]="'carousel' + photographer.portfolio_id" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    <div *ngFor="let image of photographer.image_urls; let i = index">
-                        <div class="carousel-item" [class.active]="i === (currentSlideIndex1[portfolioIndex] || 0)">
-                            <img [src]="image" class="d-block w-100 rounded img-fluid"
-                                style="height: 200px; object-fit: cover; cursor: pointer;"
-                                 alt="portfolio image" (click)="openImageModal(photographer.image_urls, i)">
-                          
-                        </div>
-                        
-                    </div>
-                </div>
-                <button class="carousel-control-prev" type="button"
-                    [attr.data-bs-target]="'#carousel' + photographer.portfolio_id" 
-                    (click)="getPrev(portfolioIndex)">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                </button>
-                <button class="carousel-control-next" type="button"
-                    [attr.data-bs-target]="'#carousel' + photographer.portfolio_id" 
-                    (click)="getNext(portfolioIndex)">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                </button>
+  <!-- แสดงข้อมูล Portfolio -->
+  <div class="row justify-content-center" *ngIf="paginatedPortfolio.length > 0">
+    <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3 px-2" 
+         *ngFor="let photographer of paginatedPortfolio; let portfolioIndex = index">
+      <div class="card border-0 text-center p-2 shadow-sm" style="max-width: 250px; margin: auto;">
+        <!-- Bootstrap Carousel -->
+        <div class="carousel slide rounded" [attr.id]="'carousel' + photographer.portfolio_id" data-bs-ride="carousel">
+          <div class="carousel-inner">
+            <div *ngFor="let image of photographer.image_urls; let i = index">
+              <div class="carousel-item" [class.active]="i === (currentSlideIndex1[portfolioIndex] || 0)">
+                <img [src]="image" class="d-block w-100 rounded img-fluid"
+                     style="height: 200px; object-fit: cover; cursor: pointer;"
+                     alt="portfolio image" (click)="openImageModal(photographer.image_urls, i)">
+              </div>
             </div>
-
-            
-
-            <!-- ส่วนข้อมูลช่างภาพ -->
-            <div class="d-flex align-items-center justify-content-between mt-2 px-2">
-                <!-- รูปโปรไฟล์ -->
-                <img [src]="photographer.image_profile" class="rounded-circle border border-primary" style="border-radius: 100%;object-fit: cover; "
-                    width="40" height="40"  alt="profile" (click)="toShutter(photographer.portfolio_id)">
-
-                <!-- ข้อมูลช่างภาพ -->
-                <div class="text-center flex-grow-1">
-                    <p class="mb-0 text-muted" style="font-size: 12px;">{{ photographer.name_tags }}</p>
-                    <p class="fw-bold mb-0" style="font-size: 14px;">{{ photographer.name_work }}</p>
-                    <p style="color: #0e51d5; font-size: 13px;">ราคาเริ่มต้น {{photographer.min_price|  number:'1.0-0'}} บาท</p>
-                </div>
-
-                 <!-- ไอคอนหัวใจ -->
-                  <div class="container heart-container">
-                                        <label>
-                                            <input type="checkbox"
-                                            [checked]="isLiked(photographer.portfolio_id)"
-                                            (change)="Liked(photographer.portfolio_id)">
-                                            <svg id="Layer_1" version="1.0" viewBox="0 0 24 24" xml:space="preserve"
-                                                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                                                <path d="M16.4,4C14.6,4,13,4.9,12,6.3C11,4.9,9.4,4,7.6,4C4.5,4,2,6.5,2,9.6C2,14,12,22,12,22s10-8,10-12.4C22,6.5,19.5,4,16.4,4z"></path>
-                                            </svg>
-                                        </label>
-                                    </div>
-            </div>
+          </div>
+          <button class="carousel-control-prev" type="button"
+                  [attr.data-bs-target]="'#carousel' + photographer.portfolio_id"
+                  (click)="getPrev(portfolioIndex)">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          </button>
+          <button class="carousel-control-next" type="button"
+                  [attr.data-bs-target]="'#carousel' + photographer.portfolio_id"
+                  (click)="getNext(portfolioIndex)">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          </button>
         </div>
+        
+        <!-- ส่วนข้อมูลช่างภาพ -->
+        <div class="d-flex align-items-center justify-content-between mt-2 px-2">
+          <!-- รูปโปรไฟล์ -->
+          <img [src]="photographer.image_profile" class="rounded-circle border border-primary" 
+               style="border-radius: 100%; object-fit: cover;"
+               width="40" height="40" alt="profile" (click)="toShutter(photographer.portfolio_id)">
+          
+          <!-- ข้อมูลช่างภาพ -->
+          <div class="text-center flex-grow-1">
+            <p class="mb-0 text-muted" style="font-size: 12px;">{{ photographer.name_tags }}</p>
+            <p class="fw-bold mb-0" style="font-size: 14px;">{{ photographer.name_work }}</p>
+            <p style="color: #0e51d5; font-size: 13px;">ราคาเริ่มต้น {{photographer.min_price | number:'1.0-0'}} บาท</p>
+          </div>
+          
+          <!-- ไอคอนหัวใจ -->
+          <div class="container heart-container">
+            <label>
+              <input type="checkbox"
+                     [checked]="isLiked(photographer.portfolio_id)"
+                     (change)="Liked(photographer.portfolio_id)">
+              <svg id="Layer_1" version="1.0" viewBox="0 0 24 24" xml:space="preserve"
+                   xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <path d="M16.4,4C14.6,4,13,4.9,12,6.3C11,4.9,9.4,4,7.6,4C4.5,4,2,6.5,2,9.6C2,14,12,22,12,22s10-8,10-12.4C22,6.5,19.5,4,16.4,4z"></path>
+              </svg>
+            </label>
+          </div>
+        </div>
+      </div>
     </div>
-</div>
+  </div>
+
+  <!-- Pagination Controls -->
+  <div class="row mt-4" *ngIf="PortfolioID.length > itemsPerPage">
+    <div class="col-12">
+      <!-- Desktop Pagination -->
+      <nav aria-label="Portfolio pagination" class="d-none d-md-block">
+        <ul class="pagination justify-content-center mb-0">
+          <!-- ปุ่มหน้าก่อนหน้า -->
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <button class="page-link" (click)="previousPage()" [disabled]="currentPage === 1" 
+                    type="button" aria-label="หน้าก่อนหน้า">
+              <i class="fas fa-chevron-left" aria-hidden="true"></i> ก่อนหน้า
+            </button>
+          </li>
+
+          <!-- หมายเลขหน้า -->
+          <li class="page-item" 
+              *ngFor="let page of getPageNumbers()" 
+              [class.active]="page === currentPage">
+            <button class="page-link" (click)="goToPage(page)" 
+                    type="button" [attr.aria-label]="'ไปยังหน้า ' + page">
+              {{ page }}
+            </button>
+          </li>
+
+          <!-- ปุ่มหน้าถัดไป -->
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <button class="page-link" (click)="nextPage()" [disabled]="currentPage === totalPages"
+                    type="button" aria-label="หน้าถัดไป">
+              ถัดไป <i class="fas fa-chevron-right" aria-hidden="true"></i>
+            </button>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Mobile Pagination -->
+      <div class="d-block d-md-none">
+        <div class="mobile-pagination d-flex align-items-center justify-content-center">
+          <!-- ปุ่มก่อนหน้า -->
+          <button class="btn mobile-nav-btn" 
+                  (click)="previousPage()" 
+                  [disabled]="currentPage === 1"
+                  [class.disabled]="currentPage === 1">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+
+          <!-- แสดงหน้าปัจจุบัน -->
+          <div class="mobile-page-info mx-3">
+            <span class="current-page">{{ currentPage }}</span>
+            <span class="page-separator">/</span>
+            <span class="total-pages">{{ totalPages }}</span>
+          </div>
+
+          <!-- ปุ่มถัดไป -->
+          <button class="btn mobile-nav-btn" 
+                  (click)="nextPage()" 
+                  [disabled]="currentPage === totalPages"
+                  [class.disabled]="currentPage === totalPages">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+
+        <!-- แสดงตัวเลือกหน้าแบบ dropdown สำหรับโทรศัพท์ -->
+        <div class="mobile-page-selector text-center mt-2" *ngIf="totalPages > 5">
+          <select class="form-select mobile-page-select" 
+                  [value]="currentPage" 
+                  (change)="goToPage(+$any($event.target).value)">
+            <option *ngFor="let page of getPageNumbers()" [value]="page">
+              หน้า {{ page }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- แสดงข้อมูลสถานะ -->
+  <div class="row justify-content-center mt-2" *ngIf="PortfolioID.length > 0">
+    <div class="col-12 text-center">
+      <small class="text-muted">
+        แสดง {{ getDisplayRange().start }} - {{ getDisplayRange().end }} 
+        จาก {{ getDisplayRange().total }} รายการ
+      </small>
+    </div>
+  </div>
+
+  <!-- แสดงข้อความเมื่อไม่มีข้อมูล -->
+  <div class="row justify-content-center" *ngIf="PortfolioID.length === 0">
+    <div class="col-12 text-center">
+      <p class="text-muted">ไม่พบข้อมูล Portfolio</p>
+    </div>
+  </div>
 </section>
+
 </section>
 </div>
 </ng-template>
@@ -279,14 +373,14 @@
                             <img
                                 [src]="photographer.image_profile || 'https://via.placeholder.com/100'"
                                 class="rounded-circle border border-3 border-light me-3 shadow-sm"
-                                alt="profile" (click)="toShutter(photographer.portfolio_id)"
+                                alt="profile" (click)="toShutter(photographer.portfolio_id)" style="border-radius: 100%;object-fit: cover; " 
                             >
                             <div>
                                 <h5 class="fw-bold mb-1">
                                     <i class="bi bi-person-circle text-warning"></i>ชื่อผู้ใช้ : {{ photographer.username }}
                                 </h5>
                                 <small class="text-light">
-                                    <i class="bi bi-tag"></i> ราคา <span class="fw-bold text-warning">{{ photographer.min_price| number:'1.0-0'
+                                    <i class="bi bi-tag"></i> ราคาเริ่มต้น <span class="fw-bold text-warning">{{ photographer.min_price| number:'1.0-0'
  }}</span> บาท
                                 </small>
                                 <p class="mb-1 mt-2"><i class="bi bi-person-fill text-light"></i> ชื่อจริง : {{ photographer.first_name }} {{ photographer.last_name }}</p>
@@ -364,7 +458,62 @@
     </div>
 </div>
 
+    <!-- Enhanced Footer -->
+    <footer class="enhanced-footer" id="about">
+        <div class="container">
+            <!-- Logo Section -->
+            <div class="footer-logo-section">
+                <img src="/assets/images/PIXEL (8).png" 
+                     alt="Shutter Seek Logo" class="footer-logo">
+                <!-- <h2 class="footer-brand-name">SHUTTER SEEK</h2> -->
+                <p class="footer-tagline">เก็บทุกช่วงเวลาสำคัญ ด้วยภาพถ่ายที่สมบูรณ์แบบ</p>
+            </div>
 
+            <!-- Footer Content -->
+            <div class="footer-content">
+                <!-- About Section -->
+                <div class="footer-section">
+                    <h4><i class="fas fa-info-circle"></i> เกี่ยวกับเรา</h4>
+                    <p>
+                        เว็บไซต์ของเราเป็นพื้นที่กลางสำหรับลูกค้าและช่างภาพที่ต้องการเชื่อมต่อกัน 
+                        ด้วยระบบค้นหา โปรไฟล์ และรีวิวที่โปร่งใส
+                    </p>
+                    <p>
+                        มุ่งมั่นในการให้บริการที่ปลอดภัยและเชื่อถือได้ สำหรับทุกโอกาสสำคัญในชีวิตของคุณ
+                    </p>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="footer-section">
+                    <h4><i class="fas fa-address-book"></i> ติดต่อเรา</h4>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>support&#64;shutterseek.com</span>
+                    </div>
+                    <!-- <div class="contact-item">
+                        <i class="fab fa-line"></i>
+                        <span>&#64;shutterseek</span>
+                    </div> -->
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span>02-XXX-XXXX</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>กรุงเทพมหานคร, ประเทศไทย</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Bottom -->
+            <!-- <div class="footer-bottom">
+                <p>
+                    &copy; 2025 Shutter Seek. สงวนลิขสิทธิ์ทุกประการ | 
+                    Made with <span class="heart">❤️</span> in Thailand
+                </p>
+            </div> -->
+        </div>
+    </footer>
 
 
 </body>
