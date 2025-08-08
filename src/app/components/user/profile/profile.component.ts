@@ -39,12 +39,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const user = this.authService.getUser();
     if (!user) {
-      console.error("ไม่พบข้อมูลผู้ใช้ใน AuthService");
+       alert("ไม่พบข้อมูลผู้ใช้ กรุณาเข้าสู่ระบบอีกครั้ง");
+      this.router.navigate(['/login']);
       return;
     }
 
     this.data = [user];
-    console.log("🔐 ผู้ใช้:", this.data);
+    // console.log("🔐 ผู้ใช้:", this.data);
 
     this.getMyLike(this.data[0].user_id);
     this.getFollow(this.data[0].user_id);
@@ -153,7 +154,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         ...item,
         isLiked: true  // เพิ่ม isLiked = true
       }));
-      console.log("สิ่งที่ถูกใจ :", this.Like);
+      // console.log("สิ่งที่ถูกใจ :", this.Like);
     });
   }
 
@@ -183,7 +184,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   toShutter(id_shutter: number | null) {
-    console.log("📤 Sending id_shutter:", id_shutter);
+    // console.log("📤 Sending id_shutter:", id_shutter);
 
     if (!id_shutter) {
       console.error(" Error: id_shutter is undefined or invalid");
@@ -206,7 +207,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     const url = `${this.Constants.API_ENDPOINT}/get/follow/${id}`;
     this.http.get(url).subscribe((res: any) => {
       this.Follow = res;
-      console.log("👥 รายการติดตาม:", this.Follow);
+      // console.log("👥 รายการติดตาม:", this.Follow);
     });
   }
 }

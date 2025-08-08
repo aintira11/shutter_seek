@@ -11,6 +11,30 @@ body, html {
     font-family: Arial, sans-serif;
     background-color: white;
 }
+//ปุ่มเลื่อขึ้นข้างบน
+.scroll-to-top {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%); /* จัดให้อยู่ตรงกลาง */
+  
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 50px;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+  transition: opacity 0.3s ease-in-out;
+}
+
+.scroll-to-top:hover {
+  background: #0056b3;
+}
 /* ปรับ layout หลัก */
 .approval-header {
   display: flex;

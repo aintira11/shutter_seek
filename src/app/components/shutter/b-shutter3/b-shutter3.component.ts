@@ -55,7 +55,7 @@ export class BShutter3Component {
   async ngOnInit(): Promise<void> {
     const stateData = history.state.data;
     if (stateData) {
-      console.log("Data received:", stateData);
+      // console.log("Data received:", stateData);
       this.user_id = stateData.user_id;
       this.tags_id = stateData.tags_id;
       this.portfolio_id = stateData.portfolio_id;
@@ -78,7 +78,7 @@ export class BShutter3Component {
     
     try {
       const apiUrl = `${this.Constants.API_ENDPOINT}/get/portfolio_images/${this.portfolio_id}`;
-      console.log('กำลังดึงภาพจาก API:', apiUrl);
+      // console.log('กำลังดึงภาพจาก API:', apiUrl);
       
       const response: any = await this.http.get(apiUrl).toPromise();
       
@@ -98,8 +98,8 @@ if (item && item.image_urls && Array.isArray(item.image_urls)) {
   this.portfolioImages = [];
 }
       
-      console.log('ข้อมูลภาพที่ได้รับ:', this.portfolioImages);
-      console.log('ข้อมูลทั้งหมด:', this.portfolioData);
+      // console.log('ข้อมูลภาพที่ได้รับ:', this.portfolioImages);
+      // console.log('ข้อมูลทั้งหมด:', this.portfolioData);
       
     } catch (error) {
       console.error('เกิดข้อผิดพลาดในการดึงภาพ:', error);
@@ -155,11 +155,11 @@ if (item && item.image_urls && Array.isArray(item.image_urls)) {
         price: packageData.price,
       };
   
-      console.log("กำลังส่งข้อมูล:", payload);
+      // console.log("กำลังส่งข้อมูล:", payload);
   
       try {
         const response = await this.http.post(apiUrl, payload).toPromise();
-        console.log("การตอบสนองจาก API:", response);
+        // console.log("การตอบสนองจาก API:", response);
       } catch (error) {
         console.error("เกิดข้อผิดพลาดขณะส่งข้อมูลแพ็กเกจ:", error);
         hasErrors = true;

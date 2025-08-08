@@ -79,11 +79,15 @@ export class HomeShutterComponent implements OnInit{
         const user = this.authService.getUser();
         if (user) {
         this.data = [user];
-        console.log('Received data:', this.data);
-        console.log('Received idshutter:', this.idshutter);
+        // console.log('Received data:', this.data);
+        // console.log('Received idshutter:', this.idshutter);
         this.getMyLike(user.user_id);
            } else {
-          console.error("Error: User data not found in AuthService");
+            console.error("Error: User data not found in AuthService");
+             alert("ไม่พบข้อมูลผู้ใช้ กรุณาเข้าสู่ระบบอีกครั้ง");
+              this.router.navigate(['/login']);
+             return;
+           
         }
         
         if (!this.idshutter) {
@@ -124,7 +128,7 @@ forfollow(shutterId: number) {
 
   this.http.post<{ success: boolean, message: string }>(url, {}).subscribe({
     next: (response) => {
-      console.log(response.message); 
+      // console.log(response.message); 
     },
     error: (error) => console.error("Follow/Unfollow error:", error)
   }); 
@@ -139,11 +143,11 @@ forfollow(shutterId: number) {
   }
 
   getdatashutter(id : string){
-    console.log('id',id);
+    // console.log('id',id);
     const url = this.Constants.API_ENDPOINT+'/read/'+id;
     this.http.get(url).subscribe((response: any) => {
       this.datauser = response; 
-      console.log("data User :",this.datauser); 
+      // console.log("data User :",this.datauser); 
       this.getpackages(this.datauser[0].user_id);
       this.getwork(this.datauser[0].user_id);
       this.getFollower(this.datauser[0].user_id);
@@ -155,37 +159,37 @@ forfollow(shutterId: number) {
     const url = this.Constants.API_ENDPOINT+'/get/likes/'+portfolio_id;
     this.http.get(url).subscribe((response: any) => {
       this.datapackages = response; 
-      console.log("datapackages :",this.datapackages); 
+      // console.log("datapackages :",this.datapackages); 
       
     });
   }
   getpackages(id : number){
-    console.log('id',id);
+    // console.log('id',id);
     const url = this.Constants.API_ENDPOINT+'/get/packages/'+id;
     this.http.get(url).subscribe((response: any) => {
       this.datapackages = response; 
-      console.log("datapackages :",this.datapackages); 
+      // console.log("datapackages :",this.datapackages); 
       
     });
   }
 
   getwork(id : number){ //เพิ่มเอาคนที่ถูกใจออกมาด้วย
-    console.log('id',id);
+    // console.log('id',id);
     const url = this.Constants.API_ENDPOINT+'/get/workAndPack/'+id;
     this.http.get(url).subscribe((response: any) => {
       this.datawork = response; 
-      console.log("datawork :",this.datawork); 
+      // console.log("datawork :",this.datawork); 
       
     });
   }
 
   isFollowing = false;
   getFollower(id : number){
-    console.log('id',id);
+    // console.log('id',id);
     const url = this.Constants.API_ENDPOINT+'/get/Follower/'+id;
     this.http.get(url).subscribe((response: any) => {
       this.datafollower = response; 
-      console.log("datafollower :",this.datafollower); 
+      // console.log("datafollower :",this.datafollower); 
       // ตรวจสอบว่าผู้ใช้ปัจจุบันติดตามช่างภาพคนนี้หรือไม่
     this.isFollowing = this.datafollower.some(f => f.follower_id === this.data[0].user_id); 
 
@@ -204,7 +208,7 @@ toggleFollow(followedId: number) {
     const url = this.Constants.API_ENDPOINT+'/get/review/'+id;
     this.http.get(url).subscribe((response: any) => {
       this.datareview = response; 
-      console.log("datareview :",this.datareview); 
+      // console.log("datareview :",this.datareview); 
      // คำนวณคะแนนเฉลี่ย ทั้งหมด/จำนวนรีวิว
       const total = this.datareview.reduce((sum, r) => sum + r.rating, 0);
       this.averageRating = parseFloat((total / this.datareview.length).toFixed(1));
@@ -244,8 +248,8 @@ postreview() {
   const userId = this.data[0].user_id;
   const url = this.Constants.API_ENDPOINT + '/post/review/' + userId;
   
-  console.log(this.reviewform.value);  // แสดงค่าทั้งหมดในฟอร์ม
-  console.log('Rating:', this.rating); // แสดงค่า rating ที่เลือก
+  // console.log(this.reviewform.value);  // แสดงค่าทั้งหมดในฟอร์ม
+  // console.log('Rating:', this.rating); // แสดงค่า rating ที่เลือก
   
   if (!this.reviewform.valid) {
     alert('กรุณากรอกข้อมูลให้ครบ');
@@ -306,7 +310,7 @@ postreview() {
 
 
   toShutter(id_shutter: number | null) {
-      console.log("📤 Sending id_shutter:", id_shutter);
+      // console.log("📤 Sending id_shutter:", id_shutter);
       // console.log("📤 Sending datauser:", this.datauser[0]);
     
       if (!id_shutter) {
@@ -396,7 +400,7 @@ postreview() {
       });
   }
   report(){
-    console.log(" Sending data shutter:", this.datauser[0]);
+    // console.log(" Sending data shutter:", this.datauser[0]);
   
     if (!this.datauser[0]) {
       console.error(" Error: data shutter is undefined or invalid");
@@ -416,7 +420,7 @@ postreview() {
   }
 
   chat(id_shutter: number){
-      console.log("Sending id_shutter:", id_shutter);
+      // console.log("Sending id_shutter:", id_shutter);
       // console.log(" Sending datauser:", this.data);
   
       if (!id_shutter) {
@@ -513,7 +517,7 @@ getMyLike(id: number) {
       ...item,
       isLiked: true  // เพิ่ม isLiked = true
     }));
-    console.log("data Like :", this.Like);
+    // console.log("data Like :", this.Like);
   }); 
 }
 

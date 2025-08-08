@@ -32,6 +32,7 @@ import { EditAdminComponent } from './components/admin/edit-admin/edit-admin.com
 import { ProfileUserComponent } from './components/shutter/profile-user/profile-user.component';
 import { ApprovalComponent } from './components/admin/approval/approval.component';
 
+
 export const routes: Routes = [
     {path: '',component: HomeComponent},
     {path: 'login',component: LoginComponent},
@@ -80,3 +81,4 @@ export const routes: Routes = [
     //   ],
     // },
   ];
+

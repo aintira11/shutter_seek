@@ -86,11 +86,11 @@ async login(): Promise<void> {
       this.showSnackBar('ไม่พบข้อมูลผู้ใช้');
     }
   } catch (error: any) {
-    console.error('Login Failed:', error);
+    // console.error('Login Failed:', error);
     if (error.status === 401) {
       this.showSnackBar('ชื่อผู้ใช้และรหัสผ่านไม่ตรงกัน');
     } else if (error.status === 404) {
-      console.error("เกิดข้อผิดพลาดในการโหลดข้อมูลผู้ใช้:", error);
+      // console.error("เกิดข้อผิดพลาดในการโหลดข้อมูลผู้ใช้:", error);
       this.showSnackBar('เกิดข้อผิดพลาดในการส่งรายงาน กรุณาลองใหม่อีกครั้ง');
     }
   }

@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=image" />
 <div class="chat-container" [class.sidebar-open]="isSidebarOpen || !selectedPartnerId">
 
   <div class="chat-main" *ngIf="selectedPartnerId; else noChatSelected">
@@ -72,7 +73,9 @@
       </div>
 
       <div class="message-input-area">
-        <label for="image-upload" class="image-upload-button">📸</label>
+        <label for="image-upload" class="image-upload-button"><span for="image-upload" class="material-symbols-outlined" style="margin-bottom: 10px;font-size: 1.5rem; color: #004aad; cursor: pointer;">
+image
+</span></label>
         <input type="file" id="image-upload" (change)="onFileSelect($event)" accept="image/jpeg, image/png" multiple style="display: none;">
 
         <input [(ngModel)]="newMessage" (keydown.enter)="sendMessage()" placeholder="พิมพ์ข้อความ..." class="message-input">

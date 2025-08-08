@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { RouterModule,Router } from '@angular/router';
 import { DataLike, DataMembers, DataPortfolio, DataSreach, DataTegs, DataTopten } from '../../model/models';
 import { Constants } from '../../config/constants';
-import { ActivatedRoute,Params  } from '@angular/router';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { ActivatedRoute  } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 import jsonData from '../../../assets/thai_provinces.json'
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../service/auth.service';
@@ -46,9 +46,10 @@ export class HomeComponent implements OnInit , AfterViewInit{
 
  modalImageUrls: string[] = [];
  modalSlideIndex: number = 0;
-
+  showButton = false; 
   isLoading: boolean = false;
-  // lastVoteTime: Date | null = null; // เวลาล่าสุดที่โหวต
+  isSearching: boolean = false; // ตัวแปรสำหรับควบคุม loading ตอนค้นหา
+  hasSearched: boolean = false; // ตัวแปรสำหรับตรวจสอบว่ามีการค้นหาหรือไม่
 
     // เพิ่มตัวแปรสำหรับ pagination
   currentPage: number = 1;
@@ -72,16 +73,16 @@ export class HomeComponent implements OnInit , AfterViewInit{
 }
 
 ngOnInit(): void {
-  this.isLoading = true;
-  setTimeout(() => {
-    this.isLoading = false;
-  }, 200);
+  // this.isLoading = true;
+  // setTimeout(() => {
+  //   this.isLoading = false;
+  // }, 2000);
 
   // ดึงข้อมูลจาก AuthService
   const user = this.authService.getUser();
   if (user) {
     this.datauser = [user];
-    console.log("Loaded user from AuthService:", this.datauser);
+    // console.log("Loaded user from AuthService:", this.datauser);
     this.getMyLike(user.user_id);
   } else {
     console.warn(" No user found in AuthService. Redirecting to login...");
@@ -159,11 +160,18 @@ openImageModal(images: string[], index: number): void {
   if (this.imageBootstrapModal) {
     this.imageBootstrapModal.show(); 
   } else {
-    console.warn("Modal not initialized yet!");
+    // console.warn("Modal not initialized yet!");
   }
 }
 
-
+ @HostListener('window:scroll', [])
+        onScroll() {
+          this.showButton = window.scrollY > 300; // แสดงปุ่มเมื่อเลื่อนลงมาเกิน 300px
+        }
+      
+        scrollToTop() {
+          window.scrollTo({ top: 0, behavior: 'smooth' }); // เลื่อนไปบนสุดแบบ Smooth
+        }
 
 nextModalImage() {
   if (this.modalImageUrls.length === 0) return;
@@ -241,7 +249,7 @@ getPrev(portfolioIndex: number) {
     const url = this.Constants.API_ENDPOINT + '/tegs' ;
     this.http.get(url).subscribe((response: any) => {
       this.Tags = response;
-      console.log("data Tegs :", this.Tags);
+      // console.log("data Tegs :", this.Tags);
     });
   }
 
@@ -259,16 +267,20 @@ getPrev(portfolioIndex: number) {
         }
     }
     getPortfolio(){
+      this.isLoading = true;
       const url = this.Constants.API_ENDPOINT + '/get/portfolio/count' ;
       this.http.get(url).subscribe((response: any) => {
         this.Portfolio = response;
         this.currentSlideIndex = new Array(this.Portfolio.length).fill(0); // กำหนด index ให้ทุก portfolio
-        console.log("data Portfolio :", this.Portfolio);
+        // console.log("data Portfolio :", this.Portfolio);
       });
+      setTimeout(() => {
+    this.isLoading = false;
+  }, 2000);
     }
 
   getPortfolioIfId(id: number) {
-    console.log('id:', id);
+    // console.log('id:', id);
     const url = this.Constants.API_ENDPOINT + '/get/portfolio/' + id;
     this.http.get(url).subscribe((response: any) => {
       this.PortfolioID = response;
@@ -279,7 +291,7 @@ getPrev(portfolioIndex: number) {
       // คำนวณ pagination
       this.calculatePagination();
       
-      console.log("data PortfolioID:", this.PortfolioID);
+      // console.log("data PortfolioID:", this.PortfolioID);
     });
   }
 
@@ -333,37 +345,73 @@ getPrev(portfolioIndex: number) {
   return { start, end, total };
 }
     
-    sreach() {
-      const params: any = {}; // สร้าง object เก็บค่า query params
+sreach() {
     
-      // ดึงค่าจากฟอร์ม
-      const tags_id = this.form.value.tags_id;
-      const province = this.form.value.province;
-      const price = this.form.value.price;
-      const search = this.form.value.search;
+    // [1] ตั้งค่าสถานะต่างๆ ก่อนเริ่มค้นหา
+    this.isSearching = true;
+    this.hasSearched = true; // <-- อย่าลืมบรรทัดนี้ เพื่อให้ HTML ทำงานถูกต้อง
+    this.dataSreach = [];
+
+    // [2] ส่วนของการสร้าง URL สำหรับเรียก API (โค้ดส่วนนี้ของคุณถูกต้องแล้ว)
+    const params: any = {};
+    const tags_id = this.form.value.tags_id;
+    const province = this.form.value.province;
+    const price = this.form.value.price;
+    const search = this.form.value.search;
     
-      // ใส่ค่าเฉพาะที่ผู้ใช้กรอกลงไปใน params object
-      if (tags_id) params.tags_id = tags_id;
-      if (province) params.province = province;
-      if (price) params.price = price;
-      if (search) params.search = search;
+    if (tags_id) params.tags_id = tags_id;
+    if (province) params.province = province;
+    if (price) params.price = price;
+    if (search) params.search = search;
     
-      // แปลง object เป็น query string
-      const queryString = new URLSearchParams(params).toString();
-    
-      // เรียก API พร้อม query parameters
-      const url = `${this.Constants.API_ENDPOINT}/search/photographers?${queryString}`;
-      this.http.get(url).subscribe((response: any) => {
+    const queryString = new URLSearchParams(params).toString();
+    const url = `${this.Constants.API_ENDPOINT}/search/photographers?${queryString}`;
+
+    // [3] เรียก API และจัดการสถานะ Loading ภายใน subscribe
+    this.http.get(url).subscribe({
+      next: (response: any) => {
+        // ทำงานเมื่อ API ส่งข้อมูลกลับมาสำเร็จ
         this.dataSreach = response;
-        console.log("ผลลัพธ์ที่ค้นหา:", response);
-        if (this.dataSreach.length === 0) {
-          this.showSnackBar('ไม่พบข้อมูลที่ค้นหา');
+        // console.log("ผลลัพธ์ที่ค้นหา:", response);
+  
+      },
+      error: (err) => {
+        // ทำงานเมื่อเกิดข้อผิดพลาด
+        console.error('API Error:', err);
+        this.showSnackBar('เกิดข้อผิดพลาดในการค้นหา');
+        this.isSearching = false; // <-- ซ่อน Loading แม้จะเกิด error
+      },
+    complete: () => {
+      setTimeout(() => {
+    this.isSearching = false;
+    if (this.dataSreach.length > 0) {
+      this.showSnackBar('พบผลลัพธ์ ' + this.dataSreach.length + ' รายการ');
+      // ให้ Angular วาดผลลัพธ์เสร็จก่อน แล้วค่อยเลื่อน
+      setTimeout(() => {
+        const rankElement = document.getElementById('search');
+        if (rankElement) {
+          rankElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
-      });
+      }, 100); // ดีเลย์ 0.1 วินาที
+    } else {
+      this.showSnackBar('ไม่พบผลลัพธ์ที่ค้นหา');
+      setTimeout(() => {
+        const rankElement = document.getElementById('third');
+        if (rankElement) {
+          rankElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
     }
+  }, 1000);
+  console.log('การค้นหาเสร็จสิ้น');
+}
+      
+    });
+}
+
     profile(typeuser : string){
       const type = typeuser;
-      console.log("ค่าของ type:", type, "| ประเภท:", typeof type); // ✅ ดูค่าที่แท้จริง
+      
       if(type === '2' ){
         this.router.navigate(['/'], { state: { data: this.datauser } });
       }else if (type === '3'){
@@ -413,12 +461,12 @@ getMyLike(id: number) {
       ...item,
       isLiked: true  // เพิ่ม isLiked = true
     }));
-    console.log("data Like :", this.Like);
+    // console.log("data Like :", this.Like);
   }); 
 }
 
     toShutter(id_shutter: number | null) {
-      console.log("📤 Sending id_shutter:", id_shutter);
+      // console.log("📤 Sending id_shutter:", id_shutter);
       // console.log("📤 Sending datauser:", this.datauser[0]);
     
       if (!id_shutter) {
@@ -453,9 +501,15 @@ getMyLike(id: number) {
           rankElement.scrollIntoView({ behavior: 'smooth' });
       }
   }
+  scrollsearch(){
+     const rankElement = document.getElementById('search');
+      if (rankElement) {
+          rankElement.scrollIntoView({ behavior: 'smooth' });
+      }
+  }
     
     testShutter(id: number) {
-      console.log(" Clicked photographer ID:", id);
+      // console.log(" Clicked photographer ID:", id);
       this.toShutter(id);
     }
 

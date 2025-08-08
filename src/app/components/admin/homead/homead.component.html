@@ -132,7 +132,7 @@
             <div class="user-info">
                 <h3 class="username">{{ user.username }}</h3>
                 <div class="role-container">
-                    <span class="role-badge general" *ngIf="user.type_user == '1'">ผู้ใช้ทั่วไป</span>
+                    <span class="role-badge general" *ngIf="user.type_user == '1'">สมาชิก</span>
                     <span class="role-badge photographer pending" *ngIf="user.type_user == '2' && user.sht_status == 1">
                         <i class="fa fa-clock-o"></i> ช่างภาพ (รอการอนุมัติ)
                     </span>
@@ -146,13 +146,13 @@
                         <i class="fa fa-crown"></i> แอดมิน
                     </span>
                     <span class="role-badge hybrid" *ngIf="user.type_user == '4'&& user.sht_status == 1">
-                        <i class="fa fa-users"></i> ช่างภาพ และ ผู้ใช้ทั่วไป <i class="fa fa-clock-o"></i>(รอการอนุมัติ)
+                        <i class="fa fa-users"></i> ช่างภาพ และ สมาชิก <i class="fa fa-clock-o"></i>(รอการอนุมัติ)
                     </span>
                     <span class="role-badge hybrid" *ngIf="user.type_user == '4'&& user.sht_status == 2">
-                        <i class="fa fa-users"></i> ช่างภาพ และ ผู้ใช้ทั่วไป <i class="fa fa-check-circle"></i>(อนุมัติแล้ว)
+                        <i class="fa fa-users"></i> ช่างภาพ และ สมาชิก <i class="fa fa-check-circle"></i>(อนุมัติแล้ว)
                     </span>
                     <span class="role-badge hybrid" *ngIf="user.type_user == '4'&& user.sht_status == 3">
-                        <i class="fa fa-users"></i> ช่างภาพ และ ผู้ใช้ทั่วไป <i class="fa fa-times-circle"></i> (ปฏิเสธ)
+                        <i class="fa fa-users"></i> ช่างภาพ และ สมาชิก <i class="fa fa-times-circle"></i> (ปฏิเสธ)
                     </span>
                 </div>
             </div>
@@ -229,7 +229,7 @@
                       <img [src]="getprofile[0].image_profile" alt="Profile Image" class="profile-image" />
                       <div class="profile-info">
                       <h2 class="username">{{ getprofile[0].username }}</h2>
-                        <p class="follow-info" *ngIf="getprofile[0].type_user == '1'">สถานะ : ผู้ใช้ทั่วไป </p>
+                        <p class="follow-info" *ngIf="getprofile[0].type_user == '1'">สถานะ : สมาชิก </p>
                         <p class="follow-info" *ngIf="getprofile[0].type_user == '3'">สถานะ : ผู้ดูแลระบบ </p>
                         <p class="follow-info">ชื่อ : {{ getprofile[0].first_name }}     {{getprofile[0].last_name}}</p>
                         <p class="follow-info">อีเมล : {{ getprofile[0].email }} </p>
@@ -247,6 +247,10 @@
                   
          </div>
    </div>
+
+   <button *ngIf="showButton" class="scroll-to-top" (click)="scrollToTop()">
+    ⬆ เลื่อนขึ้น
+  </button>
 
     <!-- Chat Icon  -->
     <div class="fixed-chat-icon-container" (click)="chat(datauser[0].user_id)">

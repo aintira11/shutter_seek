@@ -35,7 +35,7 @@
                    </div>
 
                                <div class="form-group">
-                <label for="email">อีเมล: <span>*</span></label>
+                <label for="email">อีเมล์: <span>*</span></label>
                <input type="email" 
          [(ngModel)]="datauser[0].email" 
          formControlName="Email" 
@@ -63,7 +63,7 @@
                    </div>
       
             <div class="form-group">
-                <label for="phone">เบอร์โทร: <span>*</span></label>
+                <label for="phone">เบอร์โทรศัพท์: <span>*</span></label>
                <input type="tel" [(ngModel)]="datauser[0].phone" formControlName="Phone"/>
             <div *ngIf="fromadmin.get('Phone')?.invalid && fromadmin.get('Phone')?.touched" class="error-message">
                         <span *ngIf="fromadmin.get('Phone')?.errors?.['required']"style="color: red; font-size: smaller;">*กรุณากรอกหมายเลขโทรศัพท์</span>

@@ -7,6 +7,105 @@ body {
     box-sizing: border-box;
 }
 
+//โหลดดิ้ง
+/* From Uiverse.io by barisdogansutcu */ 
+.loading-container svg,
+.loading-overlay svg {
+  width: 3.25em;
+  transform-origin: center;
+  animation: rotate4 2s linear infinite;
+}
+
+.loading-container circle,
+.loading-overlay circle {
+  fill: none;
+  stroke: hsl(214, 97%, 59%);
+  stroke-width: 2;
+  stroke-dasharray: 1, 200;
+  stroke-dashoffset: 0;
+  stroke-linecap: round;
+  animation: dash4 1.5s ease-in-out infinite;
+}
+
+@keyframes rotate4 {
+ 100% {
+  transform: rotate(360deg);
+ }
+}
+
+@keyframes dash4 {
+ 0% {
+  stroke-dasharray: 1, 200;
+  stroke-dashoffset: 0;
+ }
+
+ 50% {
+  stroke-dasharray: 90, 200;
+  stroke-dashoffset: -35px;
+ }
+
+ 100% {
+  stroke-dashoffset: -125px;
+ }
+}
+.loading-container {
+  display: flex;
+  justify-content: center; /* จัดตำแหน่งแนวนอน (ซ้าย-ขวา) ให้อยู่กึ่งกลาง */
+  align-items: center;    /* จัดตำแหน่งแนวตั้ง (บน-ล่าง) ให้อยู่กึ่งกลาง */
+  position: fixed;        /* ทำให้ element ยึดกับหน้าจอโดยตรง */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8); /* เพิ่มพื้นหลังสีขาวโปร่งแสง (แนะนำ) */
+}
+/* ใช้ class นี้สำหรับ Loading Spinner ตอนค้นหา */
+.loading-overlay {
+  /* ทำให้เต็มจอและลอยทับทุกอย่าง */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw; /* เต็มความกว้างหน้าจอ */
+  height: 100vh; /* เต็มความสูงหน้าจอ */
+  z-index: 9999; /* ให้แสดงอยู่ชั้นบนสุด */
+
+  /* จัดให้อยู่กึ่งกลาง */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  /* เอฟเฟกต์พื้นหลัง */
+  background-color: rgba(0, 0, 0, 0.5); /* สีดำโปร่งแสง */
+  backdrop-filter: blur(5px); /* ทำให้พื้นหลังเบลอ (ทำงานบนเบราว์เซอร์สมัยใหม่) */
+  -webkit-backdrop-filter: blur(5px); /* สำหรับ Safari */
+}
+
+//ปุ่มเลื่อขึ้นข้างบน
+.scroll-to-top {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%); /* จัดให้อยู่ตรงกลาง */
+  
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 50px;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+  transition: opacity 0.3s ease-in-out;
+}
+
+.scroll-to-top:hover {
+  background: #0056b3;
+}
+
 
 .header-container {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;

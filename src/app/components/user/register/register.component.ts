@@ -7,12 +7,12 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ImageUploadService } from '../../../services_image/image-upload.service';
 import { CommonModule } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule,CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, MatProgressSpinnerModule],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
 })
@@ -31,7 +31,7 @@ export class RegisterComponent {
   private snackBar: MatSnackBar,)
   {
     this.fromreister = this.fromBuilder.group({
-      Email: ['', [Validators.required, Validators.email, this.noWhitespaceValidator]],
+      Email: ['', [Validators.required, Validators.email, this.noWhitespaceValidator, this.StrictEmailValidator]],
       Password: [
   '',
   [
@@ -95,102 +95,99 @@ export class RegisterComponent {
     return `${Date.now()}-${Math.random().toString(36).substring(2, 10)}.${extension}`;
   }
 
-  async register() {
-  this.fromreister.markAllAsTouched();
+StrictEmailValidator(control: AbstractControl): ValidationErrors | null {
+  const email = control.value;
+  if (!email) return null;
 
-  // ตรวจสอบความถูกต้องของฟอร์ม
-  if (this.fromreister.invalid) {
-    const firstErrorField = Object.keys(this.fromreister.controls).find(key =>
-      this.fromreister.get(key)?.invalid
-    );
-    if (firstErrorField) {
-      const element = document.querySelector(`[formControlName="${firstErrorField}"]`) as HTMLElement;
-      element?.focus();
-    }
-    alert('กรุณากรอกข้อมูลให้ครบถ้วนและถูกต้อง');
-    return;
-  }
+  const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return regex.test(email) ? null : { invalidEmailFormat: true };
+}
 
-  // ตรวจสอบรหัสผ่าน
-  if (this.fromreister.value.Password !== this.fromreister.value.confirmPassword) {
-    alert('ยืนยันรหัสผ่านไม่ถูกต้อง');
-    return;
-  }
-
-  const checkEmailUrl = this.Constants.API_ENDPOINT + '/check-email';
-
-  const email = this.fromreister.value.Email;
-  const type_user = '1'; // สมัครในบทบาท user
-  const checkBody = { email, type_user };
-
-
-
-  try { 
-    const checkRes: any = await this.http.post(checkEmailUrl, checkBody).toPromise();
-
-    if (checkRes.exists && checkRes.updatePrompt) {
-      const confirmed = confirm(checkRes.message || 'อีเมลนี้ถูกใช้สมัครไว้ในบทบาทอื่นแล้ว ต้องการใช้ข้อมูลนี้เพิ่มบทบาทหรือไม่?');
-      if (!confirmed) {
-        this.showSnackBar('ยกเลิกการสมัครสมาชิก');
+// เพิ่มตัวแปรสำหรับติดตาม loading state
+isRegistering = false;
+ async register() {
+    // 1. ป้องกันการกดซ้ำซ้อน
+    if (this.isRegistering) {
         return;
-      }
-      // หากยืนยัน จะดำเนินการสมัครต่อ
-    } else if (checkRes.exists) {
-      // ถ้าเคยสมัครไว้แล้วในบทบาทนี้
-      this.showSnackBar('อีเมลนี้ได้สมัครไว้แล้วกับบทบาทนี้');
-      return;
     }
 
-    // เริ่มสมัครจริง
-  const url = this.Constants.API_ENDPOINT + '/register';
-  let image: string;
-    // ถ้ามีการเลือกไฟล์
-    if (this.selectedFile) {
-      const randomName = this.generateRandomFileName(this.selectedFile.name); // ถ้าคุณใช้ชื่อใหม่
-      const response: any = await this.imageUploadService.uploadImage(this.selectedFile).toPromise();
-      image = response.data.url;
-    } else {
-      // ถ้าไม่ได้อัปโหลด ใช้รูป default
-      image = 'https://cdn-icons-png.flaticon.com/512/18469/18469518.png';
+    // 2. แสดงข้อความ error ถ้าฟอร์มไม่สมบูรณ์
+    this.fromreister.markAllAsTouched();
+    if (this.fromreister.invalid) {
+        this.showSnackBar('กรุณากรอกข้อมูลในช่องที่มีเครื่องหมาย * ให้ครบถ้วนและถูกต้อง');
+        return;
+    }
+    if (this.fromreister.value.Password !== this.fromreister.value.confirmPassword) {
+        this.showSnackBar('รหัสผ่านและการยืนยันรหัสผ่านไม่ตรงกัน');
+        return;
     }
 
-    // เตรียมข้อมูลที่ส่งไป API
-    const formData = {
-      email: this.fromreister.value.Email,
-      password: this.fromreister.value.Password,
-      username: this.fromreister.value.UserName,
-      first_name: this.fromreister.value.Name,
-      last_name: this.fromreister.value.LastName,
-      phone: this.fromreister.value.Phone,
-      image_profile: image,
-      address: this.fromreister.value.address,
-      type_user:"1"
-    };
+    // 3. เริ่มการหมุน Spinner และครอบโค้ดทั้งหมดด้วย try/finally
+    this.isRegistering = true;
 
-    // ส่งข้อมูลไป API
-    this.http.post(url, formData).subscribe({
-      next: (res) => {
-        console.log('สมัครสมาชิกสำเร็จ:', res);
-        this.router.navigate(['/login']);
-      },
-      error: (err) => {
-        console.error('เกิดข้อผิดพลาด:', err);
-        if (err.status === 400) {
-          this.showSnackBar('อีเมลนี้ได้สมัครไว้แล้วกับบทบาทนี้');
-        } else if (err.status === 401) {
-          this.showSnackBar('ชื่อผู้ใช้นี้ถูกใช้ไปแล้ว');
-        }else if (err.status === 402) {
-          this.showSnackBar('เบอร์โทรนี้ถูกใช้ไปแล้ว');
-        } else {
-          this.showSnackBar('ไม่สามารถสมัครสมาชิกได้ กรุณาลองอีกครั้ง');
+    try {
+        // 4. ตรวจสอบอีเมล (เหมือนเดิม)
+        const checkEmailUrl = this.Constants.API_ENDPOINT + '/check-email';
+        const checkBody = { email: this.fromreister.value.Email, type_user: '1' };
+        const checkRes: any = await this.http.post(checkEmailUrl, checkBody).toPromise();
+
+        if (checkRes.exists && checkRes.updatePrompt) {
+            // หมายเหตุ: confirm() อาจไม่ทำงานในบางสภาพแวดล้อม แนะนำให้ใช้ Dialog ของ Angular Material ในอนาคต
+            const confirmed = confirm(checkRes.message || 'อีเมลนี้ถูกใช้สมัครไว้ในบทบาทอื่นแล้ว ต้องการใช้ข้อมูลนี้เพิ่มบทบาทหรือไม่?');
+            if (!confirmed) {
+                this.showSnackBar('ยกเลิกการสมัครสมาชิก');
+                // หยุดการทำงานและหยุดหมุน (ทำใน finally)
+                return; 
+            }
+        } else if (checkRes.exists) {
+            this.showSnackBar('อีเมลนี้ได้สมัครไว้แล้วกับบทบาทนี้');
+            return;
         }
-      }
-    });
-  } catch (error) {
-    console.error('การอัปโหลดรูปผิดพลาด:', error);
-    alert('เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ');
-  }
-  
+
+        // 5. อัปโหลดรูปภาพ (ถ้ามี)
+        let imageUrl = 'https://cdn-icons-png.flaticon.com/512/18469/18469518.png'; // รูปเริ่มต้น
+        if (this.selectedFile) {
+            const response: any = await this.imageUploadService.uploadImage(this.selectedFile).toPromise();
+            imageUrl = response.data.url;
+        }
+
+        // 6. เตรียมข้อมูลสำหรับส่งไปสมัคร
+        const url = this.Constants.API_ENDPOINT + '/register';
+        const formData = {
+            email: this.fromreister.value.Email,
+            password: this.fromreister.value.Password,
+            username: this.fromreister.value.UserName,
+            first_name: this.fromreister.value.Name,
+            last_name: this.fromreister.value.LastName,
+            phone: this.fromreister.value.Phone,
+            image_profile: imageUrl,
+            address: this.fromreister.value.address,
+            type_user: "1"
+        };
+
+        // 7. ส่งข้อมูลไปสมัคร และรอจนกว่าจะสำเร็จ
+        await this.http.post(url, formData).toPromise();
+
+        // 8. เมื่อสำเร็จแล้ว
+        this.showSnackBar('สมัครสมาชิกสำเร็จ!');
+        this.router.navigate(['/login']);
+
+    } catch (err: any) {
+        // 9. จัดการ Error ทั้งหมดที่นี่
+        console.error('เกิดข้อผิดพลาดในการสมัคร:', err);
+        if (err.status === 400) {
+            this.showSnackBar('อีเมลนี้ได้สมัครไว้แล้วกับบทบาทนี้');
+        } else if (err.status === 401) {
+            this.showSnackBar('ชื่อผู้ใช้นี้ถูกใช้ไปแล้ว');
+        } else if (err.status === 402) {
+            this.showSnackBar('เบอร์โทรนี้ถูกใช้ไปแล้ว');
+        } else {
+            this.showSnackBar('ไม่สามารถสมัครสมาชิกได้ กรุณาลองอีกครั้ง');
+        }
+    } finally {
+        // 10. หยุดการหมุน Spinner (ส่วนนี้จะทำงานเสมอ ไม่ว่าจะสำเร็จหรือล้มเหลว)
+        this.isRegistering = false;
+    }
 }
 
 togglePasswordVisibility(field: string) {

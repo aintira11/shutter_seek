@@ -100,7 +100,7 @@ export class EditPackageComponent {
       const url = this.Constants.API_ENDPOINT + '/get/workType/' + id;
       const response: any = await this.http.get(url).toPromise();
       this.TagsWork = response;
-      console.log("ข้อมูลผลงานสำหรับแพ็กเกจ:", this.TagsWork);
+      // console.log("ข้อมูลผลงานสำหรับแพ็กเกจ:", this.TagsWork);
       
       // หลังจากได้ข้อมูลผลงานแล้ว จึงโหลดแพ็กเกจ
       this.loadUserPackages(id);
@@ -123,7 +123,7 @@ export class EditPackageComponent {
         // ถ้ายังไม่มีแพ็กเกจใดๆ ให้เริ่มด้วยแพ็กเกจว่าง
         this.packages = [];
       }
-      console.log("Loaded packages:", this.packages);
+      // console.log("Loaded packages:", this.packages);
     }, error => {
       console.error("Error loading packages:", error);
       // เริ่มด้วยแพ็กเกจว่างในกรณีเกิดข้อผิดพลาด
@@ -264,7 +264,7 @@ this.http.request('delete', url, { body: { package_id: packageToDelete.package_i
         price: packageData.price,
       };
   
-      console.log("Payload ที่กำลังจะส่งไป:", payload); // ตรวจสอบข้อมูลที่ส่งไป
+      // console.log("Payload ที่กำลังจะส่งไป:", payload); // ตรวจสอบข้อมูลที่ส่งไป
   
       try {
         if (packageData.package_id) {
@@ -292,12 +292,12 @@ this.http.request('delete', url, { body: { package_id: packageToDelete.package_i
   
 
   getdatauser(id: number) {
-    console.log('Fetching user data for ID:', id);
+    // console.log('Fetching user data for ID:', id);
     const url = `${this.Constants.API_ENDPOINT}/read/${id}`;
     
     this.http.get(url).subscribe((response: any) => {
       this.data = response;  
-      console.log("Updated User Data:", this.data);
+      // console.log("Updated User Data:", this.data);
     });
   }
 

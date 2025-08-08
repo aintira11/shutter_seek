@@ -34,7 +34,7 @@ export class PreShutterComponent implements OnInit,OnDestroy{
   currentImageIndex: number = 0;
   touchStartX: number = 0;
   touchEndX: number = 0;
-
+showButton = false; 
  modalImageUrls: string[] = [];
  modalSlideIndex: number = 0;
 
@@ -57,11 +57,14 @@ export class PreShutterComponent implements OnInit,OnDestroy{
         const user = this.authService.getUser();
        if (user) {
           this.datauser = [user];
-          console.log("Loaded user from AuthService:", this.datauser);
+          // console.log("Loaded user from AuthService:", this.datauser);
           // โหลดข้อมูล Like ของ user หลังจากได้ user_id แล้ว
           this.getMyLike(user.user_id);
         } else {
           console.error("Error: User data not found in AuthService");
+           alert("ไม่พบข้อมูลผู้ใช้ กรุณาเข้าสู่ระบบอีกครั้ง");
+           this.router.navigate(['/login']);
+          return;
         }
         
         if (!this.PortfolioID) {
@@ -76,14 +79,22 @@ export class PreShutterComponent implements OnInit,OnDestroy{
     // Clean up event listeners if needed
   }
 
+   @HostListener('window:scroll', [])
+        onScroll() {
+          this.showButton = window.scrollY > 300; // แสดงปุ่มเมื่อเลื่อนลงมาเกิน 300px
+        }
+      
+        scrollToTop() {
+          window.scrollTo({ top: 0, behavior: 'smooth' }); // เลื่อนไปบนสุดแบบ Smooth
+        }
 
 
     getdatashutter(portfolio_id : string){
-    console.log('id',portfolio_id);
+    // console.log('id',portfolio_id);
     const url = `${this.Constants.API_ENDPOINT}/get/portfolioByportfolio_id/`+portfolio_id;
     this.http.get(url).subscribe((response: any) => {
       this.portfolioData = response; 
-      console.log("data portfolio :",this.portfolioData); 
+      // console.log("data portfolio :",this.portfolioData); 
       
       // โหลดข้อมูล Like ของ portfolio นี้
       this.getLike(portfolio_id);
@@ -92,11 +103,11 @@ export class PreShutterComponent implements OnInit,OnDestroy{
 
   
    getLike(portfolio_id : string){
-    console.log('id',portfolio_id);
+    // console.log('id',portfolio_id);
     const url = `${this.Constants.API_ENDPOINT}/get/likes/`+portfolio_id;
     this.http.get(url).subscribe((response: any) => {
       this.datalike = response; 
-      console.log("data datalike :",this.datalike); 
+      // console.log("data datalike :",this.datalike); 
       
     });
   }
@@ -110,7 +121,7 @@ export class PreShutterComponent implements OnInit,OnDestroy{
       ...item,
       isLiked: true  // เพิ่ม isLiked = true
     }));
-    console.log("data Like :", this.Like);
+    // console.log("data Like :", this.Like);
   }); 
 }
 
@@ -308,11 +319,11 @@ handleKeyboard(event: KeyboardEvent): void {
 
   
    toShutter(id_shutter?: number) {
-      console.log("Sending id_shutter:", id_shutter);
+      // console.log("Sending id_shutter:", id_shutter);
       // console.log(" Sending datauser:", this.datauser[0]);
     
       if (!id_shutter) {
-        console.error(" Error: id_shutter is undefined or invalid");
+        // console.error(" Error: id_shutter is undefined or invalid");
         return;
       }
       if (!this.datauser ) {
@@ -331,7 +342,7 @@ handleKeyboard(event: KeyboardEvent): void {
 
     profile(typeuser : string){
       const type = typeuser;
-      console.log("ค่าของ type:", type, "| ประเภท:", typeof type); // ✅ ดูค่าที่แท้จริง
+      // console.log("ค่าของ type:", type, "| ประเภท:", typeof type); 
       if(type === '2' ){
         this.router.navigate(['/'], { state: { data: this.datauser } });
       }else if (type === '3'){
@@ -351,7 +362,7 @@ handleKeyboard(event: KeyboardEvent): void {
   }
 
     chat(id_shutter: number | null) {
-      console.log("Sending id_shutter:", id_shutter);
+      // console.log("Sending id_shutter:", id_shutter);
       // console.log(" Sending datauser:", this.data);
   
       if (!id_shutter) {

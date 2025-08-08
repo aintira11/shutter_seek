@@ -38,7 +38,7 @@ export class UserFollowComponent implements OnInit{
   const user = this.authService.getUser();
   if (user) {
     this.data = [user];
-    console.log("Loaded user from AuthService:", this.data);
+    // console.log("Loaded user from AuthService:", this.data);
     this.getfollow(this.data[0].user_id);
   } else {
     console.warn(" No user found in AuthService. Redirecting to login...");
@@ -50,7 +50,7 @@ export class UserFollowComponent implements OnInit{
     const url = this.Constants.API_ENDPOINT + '/get/follow/'+ id;
     this.http.get(url).subscribe((response: any) => {
       this.Follow = response;
-      console.log("data getfollow :", this.Follow);
+      // console.log("data getfollow :", this.Follow);
     });
   }
 
@@ -67,7 +67,7 @@ export class UserFollowComponent implements OnInit{
     const url = this.Constants.API_ENDPOINT + '/Follow/'+ userId +'/'+id;
     this.http.post(url, {}).subscribe({
       next: () => {
-        console.log("UnFollow success");
+        // console.log("UnFollow success");
         this.router.navigate(['/tofollow'],{ state: { data: this.data } }).then(() => {
           window.location.reload(); // ใช้เมื่อ Angular Router ไม่เพียงพอ
         });

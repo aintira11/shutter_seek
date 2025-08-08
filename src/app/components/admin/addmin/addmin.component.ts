@@ -31,7 +31,7 @@ export class AddminComponent {
     private readonly imageUploadService: ImageUploadService,
   ) {
     this.fromaddmin = this.fromBuilder.group({
-      Email: ['', [Validators.required, Validators.email, this.noWhitespaceValidator]],
+      Email: ['', [Validators.required, Validators.email, this.noWhitespaceValidator, this.StrictEmailValidator]],
       Password: [
         '',
         [
@@ -57,6 +57,13 @@ export class AddminComponent {
     const isValid = !isWhitespace;
     return isValid ? null : { 'whitespace': true };
   }
+  StrictEmailValidator(control: AbstractControl): ValidationErrors | null {
+  const email = control.value;
+  if (!email) return null;
+
+  const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return regex.test(email) ? null : { invalidEmailFormat: true };
+}
 
   goToadmin(): void {
     this.router.navigate(['/admin']);

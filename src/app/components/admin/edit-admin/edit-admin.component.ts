@@ -47,7 +47,7 @@ export class EditAdminComponent {
     const user = this.authService.getUser();
        if (user) {
       this.datauser = [user];
-    console.log("Loaded user from AuthService:", this.datauser);
+    // console.log("Loaded user from AuthService:", this.datauser);
   } else {
     console.warn(" No user found in AuthService. Redirecting to login...");
     this.router.navigate(['/']);
@@ -101,7 +101,7 @@ export class EditAdminComponent {
         // this.authService.setUser(updatedUser);              // ✅ อัปเดตใน AuthService
         // this.data = updatedUser;                            // ✅ อัปเดตในตัวแปร local ด้วย
   
-        console.log("Update success:", response);
+        // console.log("Update success:", response);
         alert("บันทึกข้อมูลเรียบร้อย!");
         this.showModal = false;
         this.router.navigate(['/login']);
@@ -213,7 +213,7 @@ export class EditAdminComponent {
       this.authService.setUser(updatedUser);              // ✅ อัปเดตใน AuthService
       this.datauser[0] = updatedUser;                            // ✅ อัปเดตในตัวแปร local ด้วย
 
-      console.log("Update success:", response);
+      // console.log("Update success:", response);
       alert("บันทึกข้อมูลเรียบร้อย!");
       this.router.navigate(['/admin'], { state: { data: updatedUser } }); // ส่งข้อมูลล่าสุดไปด้วย
     },

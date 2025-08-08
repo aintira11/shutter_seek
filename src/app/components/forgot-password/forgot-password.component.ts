@@ -106,7 +106,7 @@ export class ForgotPasswordComponent {
       // ส่งข้อมูลไป API
       this.http.post(url, formData).subscribe({
         next: (res: any) => {
-          console.log('รีเซ็ตรหัสผ่านสำเร็จ:', res);
+          // console.log('รีเซ็ตรหัสผ่านสำเร็จ:', res);
           this.showSnackBar('รีเซ็ตรหัสผ่านเรียบร้อยแล้ว');
           setTimeout(() => {
             this.router.navigate(['/login']);

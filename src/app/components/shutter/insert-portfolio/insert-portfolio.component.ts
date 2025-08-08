@@ -116,7 +116,7 @@ export class InsertPortfolioComponent {
     const url = `${this.Constants.API_ENDPOINT}/read/${id}`;
     this.http.get(url).subscribe((response: any) => {
       this.data = response;
-      console.log('Updated User Data:', this.data);
+      // console.log('Updated User Data:', this.data);
     });
   }
 
@@ -124,7 +124,7 @@ export class InsertPortfolioComponent {
     const url = `${this.Constants.API_ENDPOINT}/get/PortfolioForEdit/${id}`;
     this.http.get(url).subscribe((response: any) => {
       this.dataWork = response;
-      console.log('Data Work for Edit:', this.dataWork);
+      // console.log('Data Work for Edit:', this.dataWork);
     });
   }
   // ฟังก์ชันเช็คว่า tag ที่เลือกจะถูก disabled หรือไม่
@@ -138,7 +138,7 @@ export class InsertPortfolioComponent {
     this.http.get<DataTegs[]>(url).subscribe({
       next: (response) => {
         this.Tags = response;
-        console.log('Tags data:', this.Tags);
+        // console.log('Tags data:', this.Tags);
       },
       error: (error) => {
         console.error('Error fetching tags:', error);
@@ -176,8 +176,8 @@ export class InsertPortfolioComponent {
     // ตั้งค่า selectedTagId เป็นหมวดหมู่เดิมของผลงานที่จะแก้ไข
     this.selectedTagId = this.dataWork[index].tags_id;
     
-    console.log('Editing category:', this.dataWork[index]);
-    console.log('Current tag ID:', this.selectedTagId);
+    // console.log('Editing category:', this.dataWork[index]);
+    // console.log('Current tag ID:', this.selectedTagId);
   }
 
 cancelEdit() {
@@ -226,18 +226,18 @@ cancelEdit() {
       return;
     }
     
-    console.log('Current data:', this.data);
+    // console.log('Current data:', this.data);
     const userId = Array.isArray(this.data) && this.data.length > 0 ? this.data[0].user_id : null;
     if (!userId) {
        this.showSnackBar('ไม่พบรหัสผู้ใช้');
      return;
     }
-    console.log('User ID:', userId);
+    // console.log('User ID:', userId);
     
     if (this.isAddingNewCategory) {
       // Create new category
       const newCategory = this.dataWork[this.dataWork.length - 1];
-      console.log('New category to add:', newCategory);
+      // console.log('New category to add:', newCategory);
       
       if (!newCategory.name_work || newCategory.name_work.trim() === '') {
         this.showSnackBar('กรุณาระบุชื่อผลงาน');
@@ -258,8 +258,8 @@ cancelEdit() {
         image_urls: newCategory.image_urls
       };
       
-      console.log('POST URL for adding portfolio:', url);
-      console.log('Form data for adding portfolio:', formData);
+      // console.log('POST URL for adding portfolio:', url);
+      // console.log('Form data for adding portfolio:', formData);
       
       this.http.post(url, formData).subscribe({
         next: (response) => {
@@ -278,8 +278,8 @@ cancelEdit() {
     } else if(this.isEditCategory){
       // Update existing category
       const categoryToUpdate = this.dataWork[this.selectedCategoryIndex!];
-      console.log('Category to update:', categoryToUpdate);
-      console.log('Selected category index:', this.selectedCategoryIndex);
+      // console.log('Category to update:', categoryToUpdate);
+      // console.log('Selected category index:', this.selectedCategoryIndex);
       
       if (!categoryToUpdate.name_work || categoryToUpdate.name_work.trim() === '') {
         this.showSnackBar('กรุณาระบุชื่อผลงาน');
@@ -296,12 +296,12 @@ cancelEdit() {
         image_urls: categoryToUpdate.image_urls
       };
       
-      console.log('POST URL for updating portfolio:', url);
-      console.log('Form data for updating portfolio:', formData);
+      // console.log('POST URL for updating portfolio:', url);
+      // console.log('Form data for updating portfolio:', formData);
       
       this.http.put(url, formData).subscribe({
         next: (response) => {
-          console.log('Portfolio updated - API response:', response);
+          // console.log('Portfolio updated - API response:', response);
           this.showSnackBar('อัปเดตผลงานสำเร็จ');
           this.selectedCategoryIndex = null;
           this.isEditCategory = false;
@@ -373,8 +373,8 @@ deleteCategory(catIndex: number) {
   const dialogRef = this.dialog.open(ConfirmDeleteDialogComponent);
   dialogRef.afterClosed().subscribe(result => {
     if (result) {
-      console.log('Category to delete:', categoryToDelete);
-      console.log('Portfolio ID:', categoryToDelete.portfolio_id);
+      // console.log('Category to delete:', categoryToDelete);
+      // console.log('Portfolio ID:', categoryToDelete.portfolio_id);
       
       const url = `${this.Constants.API_ENDPOINT}/delete/portfolio`;
       const requestBody = { 
@@ -382,14 +382,14 @@ deleteCategory(catIndex: number) {
         user_id: this.data[0].user_id
       };
       
-      console.log('Delete request URL:', url);
-      console.log('Delete request body:', requestBody);
+      // console.log('Delete request URL:', url);
+      // console.log('Delete request body:', requestBody);
       
       this.http.delete(url, {
         body: requestBody
       }).subscribe({
         next: (response) => {
-          console.log('Portfolio deleted successfully:', response);
+          // console.log('Portfolio deleted successfully:', response);
           this.showSnackBar('ลบผลงานสำเร็จ');
           this.dataWork.splice(catIndex, 1);
           this.selectedCategoryIndex = null;

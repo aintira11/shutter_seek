@@ -51,7 +51,7 @@ export class CreateUseraccComponent implements OnInit{
   
     register() {
       if (this.fromreister.valid) {
-        console.log('Form Data:', this.fromreister.value);
+        // console.log('Form Data:', this.fromreister.value);
       if(this.fromreister.value.Password != this.fromreister.value.confirmPassword){
         alert('ยืนยันรหัสผ่านไม่ถูกต้อง');
       }
@@ -64,7 +64,7 @@ export class CreateUseraccComponent implements OnInit{
     };
     this.http.post(url, formData).subscribe({
       next: (res) => {
-          console.log(res);
+          // console.log(res);
           this.router.navigate(['/creatfro']);
       },
       error: (err) => {

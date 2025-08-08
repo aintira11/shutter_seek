@@ -32,12 +32,14 @@
                       <div class="input-container">
                         <input type="email" class="input-style" 
                               [class.error]="fromaddmin.get('Email')?.invalid && fromaddmin.get('Email')?.touched"
-                              placeholder="ระบุอีเมล" formControlName="Email">
+                              placeholder="ระบุอีเมล์" formControlName="Email">
                         <div *ngIf="fromaddmin.get('Email')?.invalid && fromaddmin.get('Email')?.touched" class="error-message">
                             <span *ngIf="fromaddmin.get('Email')?.errors?.['required']" style="color: red; font-size: smaller;">*กรุณากรอกอีเมล์</span>
                             <span *ngIf="fromaddmin.get('Email')?.errors?.['email']" style="color: red; font-size: smaller;">*รูปแบบอีเมล์ไม่ถูกต้อง</span>
                             <span *ngIf="fromaddmin.get('Email')?.errors?.['whitespace']" style="color: red; font-size: smaller;">*อีเมล์ไม่สามารถเป็นช่องว่างได้</span>
-                        </div>
+                            <span *ngIf="fromaddmin.get('Email')?.errors?.['invalidEmailFormat']" style="color: red; font-size: smaller;">*อีเมลไม่ถูกต้อง เช่น yourname&#64;example.com</span>
+                        
+                          </div>
                       </div>
                     </label>
                   </div>
@@ -89,7 +91,7 @@
                            
                   <div class="form-field">
                     <label class="rowform">
-                      <span>เบอร์โทร: <span style="color: red">*</span></span>
+                      <span>เบอร์โทรศัพท์: <span style="color: red">*</span></span>
                       <div class="input-container">
                         <input type="tel" class="input-style" 
                                [class.error]="fromaddmin.get('Phone')?.invalid && fromaddmin.get('Phone')?.touched"

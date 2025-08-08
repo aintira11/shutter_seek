@@ -52,11 +52,12 @@
                 <label class="label">อีเมล์  <span style="color: red;">*</span> </label>
                <input type="email" class="input-style" 
                            [class.error]="fromreister.get('email')?.invalid && fromreister.get('email')?.touched"
-                           placeholder="ระบุอีเมล" formControlName="email">
+                           placeholder="ระบุอีเมล์" formControlName="email">
                     <div *ngIf="fromreister.get('email')?.invalid && fromreister.get('email')?.touched" class="error-message">
                         <span *ngIf="fromreister.get('email')?.errors?.['required']"style="color: red; font-size: smaller;">*กรุณากรอกอีเมล์</span>
                         <span *ngIf="fromreister.get('email')?.errors?.['email']"style="color: red; font-size: smaller;">*รูปแบบอีเมล์ไม่ถูกต้อง</span>
                         <span *ngIf="fromreister.get('email')?.errors?.['whitespace']"style="color: red; font-size: smaller;">*อีเมล์ไม่สามารถเป็นช่องว่างได้</span>
+                        <span *ngIf="fromreister.get('email')?.errors?.['invalidEmailFormat']"style="color: red; font-size: smaller;">*อีเมลไม่ถูกต้อง เช่น yourname&#64;example.com</span>
                     </div>
                  </div>
 
@@ -94,7 +95,7 @@
                 </div>
             
             <div class="form-group">
-                <label class="label">หมายเลขโทรศัพท์ <span style="color: red;">*</span></label>
+                <label class="label">เบอร์โทรศัพท์ <span style="color: red;">*</span></label>
                     <input type="tel" class="input-style" 
                            [class.error]="fromreister.get('phone')?.invalid && fromreister.get('phone')?.touched"
                            placeholder="ระบุหมายเลขโทรศัพท์ 10 หลัก" formControlName="phone">

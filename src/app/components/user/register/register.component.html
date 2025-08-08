@@ -32,11 +32,12 @@
                     <label class="label">อีเมล์ <span style="color: red;">*</span></label>
                     <input type="email" class="input-style" 
                            [class.error]="fromreister.get('Email')?.invalid && fromreister.get('Email')?.touched"
-                           placeholder="ระบุอีเมล" formControlName="Email">
+                           placeholder="ระบุอีเมล์" formControlName="Email">
                     <div *ngIf="fromreister.get('Email')?.invalid && fromreister.get('Email')?.touched" class="error-message">
                         <span *ngIf="fromreister.get('Email')?.errors?.['required']"style="color: red; font-size: smaller;">*กรุณากรอกอีเมล์</span>
                         <span *ngIf="fromreister.get('Email')?.errors?.['email']"style="color: red; font-size: smaller;">*รูปแบบอีเมล์ไม่ถูกต้อง</span>
                         <span *ngIf="fromreister.get('Email')?.errors?.['whitespace']"style="color: red; font-size: smaller;">*อีเมล์ไม่สามารถเป็นช่องว่างได้</span>
+                        <span *ngIf="fromreister.get('Email')?.errors?.['invalidEmailFormat']"style="color: red; font-size: smaller;">*อีเมลไม่ถูกต้อง เช่น yourname&#64;example.com</span>
                     </div>
                 </div>
 
@@ -74,7 +75,7 @@
                 </div>
             
                 <div class="form-group">
-                    <label class="label">หมายเลขโทรศัพท์ <span style="color: red;">*</span></label>
+                    <label class="label">เบอร์โทรศัพท์ <span style="color: red;">*</span></label>
                     <input type="tel" class="input-style" 
                            [class.error]="fromreister.get('Phone')?.invalid && fromreister.get('Phone')?.touched"
                            placeholder="ระบุหมายเลขโทรศัพท์ 10 หลัก" formControlName="Phone">
@@ -144,7 +145,15 @@
                     </div>
             </div>
                 
-                <button type="submit" class="submit-btn">บันทึกและไปต่อ</button>
+                <button type="submit" mat-raised-button 
+                        [disabled]="isRegistering||fromreister.invalid" 
+                        [class.disabled]="fromreister.invalid"
+                class="submit-btn"[style.pointer-events]="isRegistering ? 'none' : 'auto'"
+                ><span *ngIf="!isRegistering">สมัครสมาชิก</span>
+                <span *ngIf="isRegistering">
+                  <mat-spinner diameter="20" style="display: inline-block; margin-right: 8px;"></mat-spinner>
+                  กำลังบันทึก...
+                </span> </button>
             </form>
         </div>        
     </div>

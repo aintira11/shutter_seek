@@ -83,12 +83,12 @@ export class BaseShuttComponent {
       
       if (user) {
         this.currentUser = user;
-        console.log("Loaded user from AuthService:", this.currentUser);
+        // console.log("Loaded user from AuthService:", this.currentUser);
         this.prefillPersonalInfoForm();
         this.fetchTags();
       } else if (retryCount < maxRetries) {
         retryCount++;
-        console.log(`Retry ${retryCount}/${maxRetries} - User not found, retrying...`);
+        // console.log(`Retry ${retryCount}/${maxRetries} - User not found, retrying...`);
         setTimeout(checkUser, delay);
       } else {
         console.warn("No user found in AuthService after retries. Redirecting to login...");
@@ -144,7 +144,7 @@ export class BaseShuttComponent {
     this.http.get<DataTegs[]>(url).subscribe({
       next: (response) => {
         this.Tags = response;
-        console.log('Tags data:', this.Tags);
+        // console.log('Tags data:', this.Tags);
       },
       error: (error) => {
         console.error('Error fetching tags:', error);
@@ -251,7 +251,7 @@ export class BaseShuttComponent {
       };
 
       const portfolioResponse: any = await this.http.post(portfolioUrl, portfolioData).toPromise();
-      console.log('Portfolio info saved successfully:', portfolioResponse);
+      // console.log('Portfolio info saved successfully:', portfolioResponse);
 
       // ตรวจสอบว่ามี portfolio_id หรือไม่
       if (!portfolioResponse || !portfolioResponse.last_idx) {

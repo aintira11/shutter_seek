@@ -56,7 +56,7 @@ export class CreateProfileComponent implements OnInit {
     // console.log(this.thaijson);
 
      this.fromreister = this.fb.group({
-            email: ['', [Validators.required, Validators.email, this.noWhitespaceValidator]],
+            email: ['', [Validators.required, Validators.email, this.noWhitespaceValidator, this.StrictEmailValidator]],
             phone: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]], // เบอร์โทร 10 หลัก
             UserName: ['', [Validators.required, this.noWhitespaceValidator]],
             Name: ['', [Validators.required, this.noWhitespaceValidator]],
@@ -97,7 +97,7 @@ export class CreateProfileComponent implements OnInit {
 }
 
 getdatauser(id: number) {
-  console.log('id', id);
+  // console.log('id', id);
   const url = this.Constants.API_ENDPOINT + '/read/' + id;
   this.http.get<DataMembers[]>(url).subscribe({
     next: (fullUserData) => {
@@ -129,6 +129,14 @@ getdatauser(id: number) {
     const isValid = !isWhitespace;
     return isValid ? null : { 'whitespace': true };
   }
+
+  StrictEmailValidator(control: AbstractControl): ValidationErrors | null {
+  const email = control.value;
+  if (!email) return null;
+
+  const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return regex.test(email) ? null : { invalidEmailFormat: true };
+}
 
 private generateRandomFileName(originalName: string): string {
   const extension = originalName.split('.').pop();
@@ -252,7 +260,7 @@ private submitRegistration(url: string, imageUrl: string) {
   setTimeout(() => {
     this.http.post<any>(url, formData).subscribe({
       next: (res) => {
-        console.log('Registration success:', res);
+        // console.log('Registration success:', res);
         const user = res?.newUser || res?.user;
         if (user?.user_id) {
           this.getdatauser(user.user_id);

@@ -82,16 +82,16 @@ export class ReportsComponent implements OnInit{
   if (state) {
     this.photographerId = state.idshutter || null;
     this.username_shutter = state.username_shutter || null;
-    console.log('ID:', this.photographerId);
-    console.log('ชื่อ:', this.username_shutter);
+  //   console.log('ID:', this.photographerId);
+  //   console.log('ชื่อ:', this.username_shutter);
   }
     // ดึงข้อมูล user จาก AuthService (sessionStorage)
         const user = this.authService.getUser();
         if (user) {
         this.datauser = [user];
-        console.log('Received data:', this.datauser);
-        console.log('Received idshutter:', this.photographerId);
-        console.log('Received username_shutter:', this.username_shutter);
+        // console.log('Received data:', this.datauser);
+        // console.log('Received idshutter:', this.photographerId);
+        // console.log('Received username_shutter:', this.username_shutter);
            } else {
           console.error("Error: User data not found in AuthService");
         }
@@ -151,7 +151,7 @@ get truthConfirmationControl() {
     const formData = this.reportForm.value;
     const finalReason = formData.reason === 'อื่นๆ' ? formData.customReason : formData.reason;
 
-    console.log('เหตุผลที่เลือก:', finalReason);
+    // console.log('เหตุผลที่เลือก:', finalReason);
 
     const reportData = {
       reporter_id: this.datauser[0].user_id,
@@ -161,14 +161,14 @@ get truthConfirmationControl() {
       
     };
 
-      console.log('Report Data:', reportData);
+      // console.log('Report Data:', reportData);
 
       const apiUrl = `${this.Constants.API_ENDPOINT}/reportShutter`;
       // สำหรับการส่งข้อมูลจริง - uncomment และแก้ไขตาม API ของคุณ
       
      this.http.post(apiUrl, reportData).subscribe({
   next: (response) => {
-    console.log("Update success:", response);
+    // console.log("Update success:", response);
     alert("ส่งรายงานเรียบร้อยแล้ว ทางระบบจะดำเนินการตรวจสอบต่อไป");
     this.router.navigate(['/homeshutter'], { 
         state: { 

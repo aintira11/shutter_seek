@@ -178,7 +178,7 @@ async save() {
       this.authService.setUser(updatedUser);              // ✅ อัปเดตใน AuthService
       this.data = updatedUser;                            // ✅ อัปเดตในตัวแปร local ด้วย
       
-      console.log("Update success:", response);
+      // console.log("Update success:", response);
       this.showSnackBar("บันทึกข้อมูลเรียบร้อย!");
       this.router.navigate(['/profile'], { state: { data: updatedUser } }); // ส่งข้อมูลล่าสุดไปด้วย
     },
@@ -270,7 +270,7 @@ change_password(){
       // this.authService.setUser(updatedUser);              // ✅ อัปเดตใน AuthService
       // this.data = updatedUser;                            // ✅ อัปเดตในตัวแปร local ด้วย
 
-      console.log("Update success:", response);
+      // console.log("Update success:", response);
       alert("บันทึกข้อมูลเรียบร้อย!");
       this.showModal = false;
       this.logout();

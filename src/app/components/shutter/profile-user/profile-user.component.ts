@@ -35,12 +35,12 @@ export class ProfileUserComponent implements OnInit {
   }
 
     getdatashutter(id : string){
-    console.log('id   :',id);
+    // console.log('id   :',id);
     const url = this.Constants.API_ENDPOINT+'/read/'+id;
     this.http.get(url).subscribe({
   next: (response: any) => {
     this.datauser = response; 
-    console.log("data User :", this.datauser); 
+    // console.log("data User :", this.datauser); 
     this.getFollow(this.id);
   },
   error: (err) => {
@@ -55,7 +55,7 @@ export class ProfileUserComponent implements OnInit {
     const url = `${this.Constants.API_ENDPOINT}/get/follow/${id}`;
     this.http.get(url).subscribe((res: any) => {
       this.Follow = res;
-      console.log("รายการติดตาม:", this.Follow);
+      // console.log("รายการติดตาม:", this.Follow);
     });
   }
 

@@ -214,7 +214,7 @@ ngOnInit(): void {
     const url = `${this.Constants.API_ENDPOINT}/edit/${userId}`;
     this.http.post(url, personalData).subscribe({
       next: (response) => {
-        console.log("Update success (Personal Data):", response);
+        // console.log("Update success (Personal Data):", response);
         updateCount++;
         this.updateAuthData(personalData);
         
@@ -234,7 +234,7 @@ ngOnInit(): void {
     const urls = this.Constants.API_ENDPOINT + '/updateline/' + userId;
     this.http.post(urls, additionalData).subscribe({
       next: (response) => {
-        console.log("Update success (Additional Data):", response);
+        // console.log("Update success (Additional Data):", response);
         updateCount++;
         this.updateAuthData(additionalData);
         
@@ -259,7 +259,7 @@ private hasDataChanged(newData: any, originalData: any): boolean {
       const originalValue = (originalData[key] || '').toString().trim();
       
       if (newValue !== originalValue) {
-        console.log(`Data changed - ${key}: "${originalValue}" -> "${newValue}"`);
+        // console.log(`Data changed - ${key}: "${originalValue}" -> "${newValue}"`);
         return true;
       }
     }
@@ -292,12 +292,12 @@ private updateAuthData(newFields: Partial<DataMembers>) {
 
 
   getdatauser(id: number) {
-    console.log('Fetching user data for ID:', id);
+    // console.log('Fetching user data for ID:', id);
     const url = `${this.Constants.API_ENDPOINT}/read/${id}`;
     
     this.http.get(url).subscribe((response: any) => {
       this.data = response;  
-      console.log("Updated User Data:", this.data);
+      // console.log("Updated User Data:", this.data);
       
       // ✅ รีเซ็ตค่า form หลังจากดึงข้อมูลใหม่
       this.photographerForm.patchValue({
@@ -367,7 +367,7 @@ toggleSidenav() {
        // this.authService.setUser(updatedUser);              // ✅ อัปเดตใน AuthService
        // this.data = updatedUser;                            // ✅ อัปเดตในตัวแปร local ด้วย
  
-       console.log("Update success:", response);
+      //  console.log("Update success:", response);
        alert("บันทึกข้อมูลเรียบร้อย!");
        this.showModal = false;
        this.logout();

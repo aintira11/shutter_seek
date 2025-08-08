@@ -82,7 +82,7 @@ export class ApprovalComponent implements OnInit{
           console.warn('รูปแบบข้อมูลเกณฑ์จาก Firebase ไม่ตรงกับที่คาดไว้ จะแสดงเป็นหน้าว่าง.');
           this.approvalCategories = []; // ตั้งค่าเป็น Array ว่าง
         }
-        console.log('ข้อมูลเกณฑ์ที่ดึงมา:', this.approvalCategories);
+        // console.log('ข้อมูลเกณฑ์ที่ดึงมา:', this.approvalCategories);
       } else {
         // *** แก้ไข: ถ้าไม่มีข้อมูลใน Firebase ก็แค่ตั้งค่าเป็น Array ว่าง ***
         console.warn('ไม่พบข้อมูลเกณฑ์ใน Firebase จะแสดงเป็นหน้าว่างเปล่าเพื่อให้เพิ่มข้อมูลใหม่.');

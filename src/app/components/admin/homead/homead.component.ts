@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy } from '@angular/core'; // เพิ่ม OnDestroy
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core'; // เพิ่ม OnDestroy
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../service/auth.service';
@@ -50,6 +50,7 @@ export class HomeadComponent implements OnInit, OnDestroy { // เพิ่ม O
     MandP = 0;
 
     selectedTab: string = 'all';
+    showButton = false; 
 
     hasUnreadMessages = false;
     private chatRoomListenerUnsubscribe?: () => void;
@@ -75,7 +76,7 @@ export class HomeadComponent implements OnInit, OnDestroy { // เพิ่ม O
       const user = this.authService.getUser();
         if (user) {
     this.datauser = [user];
-    console.log("Loaded user from AuthService:", this.datauser);
+    // console.log("Loaded user from AuthService:", this.datauser);
   } else {
     console.warn(" No user found in AuthService. Redirecting to login...");
     this.router.navigate(['/']);
@@ -86,6 +87,14 @@ export class HomeadComponent implements OnInit, OnDestroy { // เพิ่ม O
 
     this.listenForUnreadMessages(user.user_id);
   }
+   @HostListener('window:scroll', [])
+          onScroll() {
+            this.showButton = window.scrollY > 300; // แสดงปุ่มเมื่อเลื่อนลงมาเกิน 300px
+          }
+        
+          scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' }); // เลื่อนไปบนสุดแบบ Smooth
+          }
 
   // ล้าง Listener เมื่อ Component ถูกทำลาย เพื่อป้องกัน Memory Leak
     ngOnDestroy(): void {
@@ -96,47 +105,75 @@ export class HomeadComponent implements OnInit, OnDestroy { // เพิ่ม O
     }
 
     // ฟังก์ชันสำหรับฟังข้อความที่ยังไม่ได้อ่านแบบ Real-time
-    listenForUnreadMessages(userId: number): void {
-      const chatRoomsRef = ref(this.db, 'chatRooms');
+   listenForUnreadMessages(userId: number): void {
+  const chatRoomsRef = ref(this.db, 'chatRooms');
 
-      this.chatRoomListenerUnsubscribe = onValue(chatRoomsRef, (snapshot) => {
-        this.messageListenersUnsubscribe.forEach(unsub => unsub());
-        this.messageListenersUnsubscribe = [];
-        this.hasUnreadMessages = false;
+  // *** แก้ไขสำหรับ Admin: ใช้ userId = 1 ในการฟังข้อความ ***
+  const chatUserId = this.datauser[0].type_user === '3' ? 1 : userId;
+  
+  console.log(`[Admin Unread] Original userId: ${userId}, Chat userId: ${chatUserId}, User type: ${this.datauser[0].type_user}`);
 
-        const allRooms = snapshot.val() || {};
-        const unreadStatusByRoom: { [roomId: string]: boolean } = {};
+  // Listen for changes in the list of chat rooms
+  this.chatRoomListenerUnsubscribe = onValue(chatRoomsRef, (snapshot) => {
+    // Clear old message listeners before creating new ones
+    this.messageListenersUnsubscribe.forEach(unsub => unsub());
+    this.messageListenersUnsubscribe = [];
+    this.hasUnreadMessages = false;
 
-        const updateGlobalUnreadStatus = () => {
-          this.hasUnreadMessages = Object.values(unreadStatusByRoom).some(status => status);
-        };
+    const allRooms = snapshot.val() || {};
+    const unreadStatusByRoom: { [roomId: string]: boolean } = {};
 
-        const userRooms = Object.entries(allRooms).filter(([, roomData]: [string, any]) => roomData.user1 === userId || roomData.user2 === userId);
+    const updateGlobalUnreadStatus = () => {
+      this.hasUnreadMessages = Object.values(unreadStatusByRoom).some(status => status);
+      console.log(`[Admin Unread] Global unread status updated: ${this.hasUnreadMessages}`);
+    };
 
-        if (userRooms.length === 0) {
-          this.hasUnreadMessages = false;
-          return;
-        }
+    // *** ใช้ chatUserId แทน userId ในการกรองห้องแชท ***
+    const userRooms = Object.entries(allRooms).filter(([, roomData]: [string, any]) => 
+      roomData.user1 === chatUserId || roomData.user2 === chatUserId
+    );
 
-        userRooms.forEach(([roomId]) => {
-          const messagesRef = ref(this.db, `messages/${roomId}`);
-          const messageListener = onValue(messagesRef, (msgSnapshot) => {
-            const messages = msgSnapshot.val() || {};
-            let roomHasUnread = false;
-            for (const msgId in messages) {
-              const message = messages[msgId];
-              if (message.senderId !== userId && !message.isRead) {
-                roomHasUnread = true;
-                break;
-              }
-            }
-            unreadStatusByRoom[roomId] = roomHasUnread;
-            updateGlobalUnreadStatus();
-          });
-          this.messageListenersUnsubscribe.push(messageListener);
-        });
-      });
+    console.log(`[Admin Unread] Found ${userRooms.length} rooms for user ${chatUserId}`);
+
+    if (userRooms.length === 0) {
+      this.hasUnreadMessages = false;
+      return;
     }
+
+    // For each room the user is in, listen to its messages
+    userRooms.forEach(([roomId]) => {
+      const messagesRef = ref(this.db, `messages/${roomId}`);
+      const messageListener = onValue(messagesRef, (msgSnapshot) => {
+        const messages = msgSnapshot.val() || {};
+        let roomHasUnread = false;
+        let unreadCount = 0;
+        
+        for (const msgId in messages) {
+          const message = messages[msgId];
+          // *** ใช้ chatUserId ในการตรวจสอบข้อความที่ยังไม่ได้อ่าน ***
+          if (message.senderId !== chatUserId && !message.isRead) {
+            roomHasUnread = true;
+            unreadCount++;
+          }
+        }
+        
+        unreadStatusByRoom[roomId] = roomHasUnread;
+        console.log(`[Admin Unread] Room ${roomId} has ${unreadCount} unread messages, roomHasUnread: ${roomHasUnread}`);
+        updateGlobalUnreadStatus();
+      });
+      this.messageListenersUnsubscribe.push(messageListener);
+    });
+  });
+}
+
+debugUnreadMessages(): void {
+  console.log('=== DEBUG UNREAD MESSAGES ===');
+  console.log('User data:', this.datauser[0]);
+  console.log('User type:', this.datauser[0]?.type_user);
+  console.log('User ID:', this.datauser[0]?.user_id);
+  console.log('Has unread messages:', this.hasUnreadMessages);
+  console.log('Chat user ID (for listening):', this.datauser[0]?.type_user === '3' ? 1 : this.datauser[0]?.user_id);
+}
 
 // นับจำนวนผู้ใช้ตามประเภท
 countUsersByType() {
@@ -192,7 +229,7 @@ filterUsers(type: number) {
 
     this.countUsersByType(); // เรียกเพื่ออัปเดตจำนวนบนแท็บ (จะใช้ allUsersData ถ้าไม่ได้อยู่ในโหมดค้นหา)
 
-    console.log("data datafilterUsers :", this.datafilterUsers);
+    // console.log("data datafilterUsers :", this.datafilterUsers);
   });
 }
 
@@ -278,7 +315,7 @@ deleteUser(userId: number) {
       const deleteApiUrl = `${this.Constants.API_ENDPOINT}/deleteUser/${userId}`;
       this.http.delete(deleteApiUrl).subscribe({
         next: async (response) => { // ใช้ async สำหรับการดำเนินการ Firebase
-          console.log('User deleted successfully from API:', response);
+          // console.log('User deleted successfully from API:', response);
           this.showSnackBar('ลบผู้ใช้สำเร็จ');
 
           // 2. เริ่มต้นลบข้อมูลแชทที่เกี่ยวข้องจาก Firebase Realtime Database
@@ -306,21 +343,21 @@ deleteUser(userId: number) {
             });
 
             if (roomIdsToDelete.size > 0) {
-              console.log(`Found ${roomIdsToDelete.size} chat rooms to delete for user ${userId}.`);
+              // console.log(`Found ${roomIdsToDelete.size} chat rooms to delete for user ${userId}.`);
               for (const roomId of roomIdsToDelete) {
                 // ลบข้อความทั้งหมดที่อยู่ในห้องแชทนั้นๆ
                 const messagesPath = `messages/${roomId}`;
                 await remove(ref(this.db, messagesPath)); // ใช้ await
-                console.log(`Deleted messages for room: ${roomId}`);
+                // console.log(`Deleted messages for room: ${roomId}`);
 
                 // ลบห้องแชทออกจาก 'chatRooms'
                 const chatRoomPath = `chatRooms/${roomId}`;
                 await remove(ref(this.db, chatRoomPath)); // ใช้ await
-                console.log(`Deleted chat room: ${roomId}`);
+                // console.log(`Deleted chat room: ${roomId}`);
               }
               this.showSnackBar('ลบข้อมูลแชทที่เกี่ยวข้องสำเร็จ');
             } else {
-              console.log(`No chat rooms found for user ${userId}.`);
+              // console.log(`No chat rooms found for user ${userId}.`);
             }
           } catch (firebaseError) {
             console.error('Error deleting chat data from Firebase:', firebaseError);
@@ -373,7 +410,7 @@ gotohome(){
   const url = this.Constants.API_ENDPOINT + '/getreport/' + user;
   this.http.get(url).subscribe((response: any) => {
     this.dataReport = response;
-    console.log("data dataReport:", this.dataReport);
+    // console.log("data dataReport:", this.dataReport);
   });
 
   this.isModal = true;
@@ -408,7 +445,7 @@ gotohome(){
         const url = this.Constants.API_ENDPOINT + '/tegs' ;
          this.http.get(url).subscribe((response: any) => {
       this.jobCategories = response;
-      console.log("data Tegs :", this.jobCategories);
+      // console.log("data Tegs :", this.jobCategories);
     });
 
   }
@@ -438,7 +475,7 @@ gotohome(){
 
   this.http.put(url, updateData).subscribe({
     next: (response: any) => {
-      console.log("Category updated successfully:", response);
+      // console.log("Category updated successfully:", response);
       this.isEditing[index] = false;
       this.showSnackBar('อัพเดตประเภทงานสำเร็จ');
     },
@@ -464,7 +501,7 @@ gotohome(){
   }
 
       toShutter(id_shutter?: number , type?:string) {
-      console.log("Sending id_shutter:", id_shutter);
+      // console.log("Sending id_shutter:", id_shutter);
 
       if (!id_shutter) {
         console.error(" Error: id_shutter is undefined or invalid");
@@ -495,7 +532,7 @@ gotohome(){
       const url = this.Constants.API_ENDPOINT + '/read/' + id;
       this.http.get(url).subscribe((response: any) => {
       this.getprofile = response;
-      console.log("data Tegs :", this.getprofile);
+      // console.log("data Tegs :", this.getprofile);
     });
     }
 
@@ -522,7 +559,7 @@ addCategory() {
 
   this.http.post(url, newCategoryData).subscribe({
     next: (response: any) => {
-      console.log("Category added successfully:", response);
+      // console.log("Category added successfully:", response);
 
       this.jobCategories.push({
         tags_id: response.tags_id || this.jobCategories.length + 1,
@@ -539,7 +576,6 @@ addCategory() {
     }
   });
 }
-
 
   chat(id_shutter: number){
       this.router.navigate(['/roomchat']);

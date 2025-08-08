@@ -86,8 +86,9 @@ private touchStartPosition: { x: number, y: number } = { x: 0, y: 0 };
 
         if (!this.data || !this.data.user_id || !this.data.type_user) {
           console.error("[OnInit] Error: ไม่พบข้อมูลผู้ใช้ที่ล็อกอิน (datauser), user_id หรือ type_user ขาดหายไป");
-          // จัดการตรงนี้ เช่น เปลี่ยนเส้นทางไปยังหน้าล็อกอิน
-          return;
+           alert("ไม่พบข้อมูลผู้ใช้ กรุณาเข้าสู่ระบบอีกครั้ง");
+      this.router.navigate(['/login']);
+      return;
         }
 
         this.myActualId = this.data.user_id; // เก็บ ID จริงของผู้ใช้
@@ -101,11 +102,11 @@ private touchStartPosition: { x: number, y: number } = { x: 0, y: 0 };
           this.myId = this.data.user_id; // ใช้ ID จริงสำหรับผู้ใช้ทั่วไป
         }
 
-        console.log('[OnInit] ID ผู้ใช้จริง (myActualId):', this.myActualId);
-        console.log('[OnInit] ID ที่ใช้ในแชท (myId):', this.myId);
-        console.log('[OnInit] ประเภทผู้ใช้ของฉัน (myUserType):', this.myUserType);
-        console.log('[OnInit] ได้รับข้อมูลผู้ใช้ที่ล็อกอินแล้ว:', this.data);
-        console.log('[OnInit] ได้รับ ID คู่สนทนาเริ่มต้น (initialPartnerId):', this.initialPartnerId);
+        // console.log('[OnInit] ID ผู้ใช้จริง (myActualId):', this.myActualId);
+        // console.log('[OnInit] ID ที่ใช้ในแชท (myId):', this.myId);
+        // console.log('[OnInit] ประเภทผู้ใช้ของฉัน (myUserType):', this.myUserType);
+        // console.log('[OnInit] ได้รับข้อมูลผู้ใช้ที่ล็อกอินแล้ว:', this.data);
+        // console.log('[OnInit] ได้รับ ID คู่สนทนาเริ่มต้น (initialPartnerId):', this.initialPartnerId);
 
         // --- Online Status Management (ใช้ myActualId สำหรับสถานะออนไลน์) ---
         if (this.myActualId) {
@@ -116,7 +117,7 @@ private touchStartPosition: { x: number, y: number } = { x: 0, y: 0 };
             if (snapshot.val() === true) {
               set(userStatusRef, 'online').catch(e => console.error("[Online Status] Error setting online status:", e));
               onDisconnect(userStatusRef).set('offline');
-              console.log(`[Online Status] User ${this.myActualId} is now online.`);
+              // console.log(`[Online Status] User ${this.myActualId} is now online.`);
             } else {
               console.log(`[Online Status] Not connected to Firebase.`);
             }
@@ -136,7 +137,7 @@ private touchStartPosition: { x: number, y: number } = { x: 0, y: 0 };
 
   toggleSidebar() {
     this.isSidebarOpen = !this.isSidebarOpen;
-    console.log('[UI] Sidebar open:', this.isSidebarOpen);
+    // console.log('[UI] Sidebar open:', this.isSidebarOpen);
     if (this.isSidebarOpen) {
       document.body.classList.add('sidebar-open');
     } else {
@@ -160,7 +161,7 @@ private touchStartPosition: { x: number, y: number } = { x: 0, y: 0 };
   
 
   openImageModal(imageUrl: string): void {
-    console.log('[Modal] Opening image modal with URL:', imageUrl);
+    // console.log('[Modal] Opening image modal with URL:', imageUrl);
     this.modalImageUrls = imageUrl;
     this.showImageModal = true;
     document.body.style.overflow = 'hidden';
@@ -259,7 +260,7 @@ private touchStartPosition: { x: number, y: number } = { x: 0, y: 0 };
     for (const partnerId in this.partnerStatusUnsubscribe) {
       if (this.partnerStatusUnsubscribe.hasOwnProperty(partnerId)) {
         this.partnerStatusUnsubscribe[partnerId]();
-        console.log(`[Firebase] Partner status listener for ${partnerId} unsubscribed.`);
+        // console.log(`[Firebase] Partner status listener for ${partnerId} unsubscribed.`);
       }
     }
     // เมื่อ Component ถูกทำลาย ให้ตั้งค่าสถานะผู้ใช้เป็น 'offline' (ใช้ myActualId)
@@ -279,7 +280,7 @@ private touchStartPosition: { x: number, y: number } = { x: 0, y: 0 };
   }
 
   getPhotographerData(id: string): void {
-    console.log('[Data Fetch] กำลังดึงข้อมูลคู่สนทนาสำหรับ ID:', id);
+    // console.log('[Data Fetch] กำลังดึงข้อมูลคู่สนทนาสำหรับ ID:', id);
     const partnerUserId = Number(id);
 
     // สำหรับแอดมิน: ตรวจสอบกับ myActualId เพื่อป้องกันการแชทกับตัวเอง
@@ -295,7 +296,7 @@ private touchStartPosition: { x: number, y: number } = { x: 0, y: 0 };
 
     const existingPartner = this.partnersData.find(p => p.user_id === partnerUserId);
     if (existingPartner) {
-      console.log("[Data Fetch] ใช้ข้อมูล partner ที่มีอยู่แล้ว:", existingPartner);
+      // console.log("[Data Fetch] ใช้ข้อมูล partner ที่มีอยู่แล้ว:", existingPartner);
       this.proceedWithChatSetup(existingPartner);
       return;
     }
@@ -309,7 +310,7 @@ private touchStartPosition: { x: number, y: number } = { x: 0, y: 0 };
             this.partnersData.push(newPartner);
             this.listenToPartnerStatus(newPartner.user_id);
           }
-          console.log("[Data Fetch] ข้อมูลคู่สนทนาที่ดึงมาใหม่:", newPartner);
+          // console.log("[Data Fetch] ข้อมูลคู่สนทนาที่ดึงมาใหม่:", newPartner);
           this.proceedWithChatSetup(newPartner);
         } else {
           console.warn('[Data Fetch] ไม่พบข้อมูลคู่สนทนาสำหรับ ID:', id);
@@ -324,7 +325,7 @@ private touchStartPosition: { x: number, y: number } = { x: 0, y: 0 };
   private proceedWithChatSetup(partner: DataMembers): void {
     // เพิ่มเงื่อนไขสำหรับแอดมิน (type_user = 3)
     if (this.myUserType === '1' || this.myUserType === '4' || this.myUserType === '2' || this.myUserType === '3') {
-      console.log(`[Chat Setup] Proceeding with chat setup for partner ${partner.user_id} based on user type ${this.myUserType}.`);
+      // console.log(`[Chat Setup] Proceeding with chat setup for partner ${partner.user_id} based on user type ${this.myUserType}.`);
       this.setupChat(partner.user_id);
     } else {
       console.warn(`[Chat Setup] Not proceeding with chat setup for partner ${partner.user_id}. User type ${this.myUserType} not allowed or initialPartnerId not matched.`);
@@ -333,7 +334,7 @@ private touchStartPosition: { x: number, y: number } = { x: 0, y: 0 };
 
   private initializeChatAfterPartnersLoaded(): void {
     if (this.initialPartnerId && this.initialPartnerId !== 0) {
-      console.log('[Chat Init] Checking initialPartnerId for chat setup:', this.initialPartnerId);
+      // console.log('[Chat Init] Checking initialPartnerId for chat setup:', this.initialPartnerId);
       
       // สำหรับแอดมิน: ตรวจสอบกับ myActualId เพื่อป้องกันการแชทกับตัวเอง
       const idToCheck = this.myUserType === '3' ? this.myActualId : this.myId;
@@ -344,7 +345,7 @@ private touchStartPosition: { x: number, y: number } = { x: 0, y: 0 };
         this.selectedRoomId = null;
         this.messages = [];
       } else {
-        console.log('[Chat Init] กำลังเริ่มต้นแชทกับคู่สนทนา ID (จาก initialPartnerId):', this.initialPartnerId);
+        // console.log('[Chat Init] กำลังเริ่มต้นแชทกับคู่สนทนา ID (จาก initialPartnerId):', this.initialPartnerId);
         this.isSidebarOpen = false;
 
         const existingPartner = this.partnersData.find(p => p.user_id === this.initialPartnerId);
@@ -370,10 +371,10 @@ private touchStartPosition: { x: number, y: number } = { x: 0, y: 0 };
       const tempChatRooms: ChatRoomDisplay[] = [];
       const partnersToLoad: number[] = [];
 
-      console.log('--- [loadChatRooms] Firebase Snapshot Received ---');
-      console.log('My Chat ID (used for rooms):', this.myId);
-      console.log('My Actual ID:', this.myActualId);
-      console.log('All rooms from Firebase (raw):', allRooms);
+      // console.log('--- [loadChatRooms] Firebase Snapshot Received ---');
+      // console.log('My Chat ID (used for rooms):', this.myId);
+      // console.log('My Actual ID:', this.myActualId);
+      // console.log('All rooms from Firebase (raw):', allRooms);
 
       for (const roomId in allRooms) {
         const roomData = allRooms[roomId];
@@ -409,9 +410,9 @@ private touchStartPosition: { x: number, y: number } = { x: 0, y: 0 };
              lastMessageSenderId: lastSenderId
           });
 
-          console.log(`[loadChatRooms] Processed room: ${roomId}, Partner ID: ${partnerId}`);
-          console.log(`  - My unread count key: ${myUnreadCountKey}, Value from Firebase: ${unreadCountForMe}`);
-          console.log(`  - hasUnreadMessages calculated as: ${hasUnread}`);
+          // console.log(`[loadChatRooms] Processed room: ${roomId}, Partner ID: ${partnerId}`);
+          // console.log(`  - My unread count key: ${myUnreadCountKey}, Value from Firebase: ${unreadCountForMe}`);
+          // console.log(`  - hasUnreadMessages calculated as: ${hasUnread}`);
 
           if (!this.partnersData.some(p => p.user_id === partnerId)) {
             if (!partnersToLoad.includes(partnerId)) {
@@ -421,7 +422,7 @@ private touchStartPosition: { x: number, y: number } = { x: 0, y: 0 };
         }
       }
 
-      console.log('[loadChatRooms] Finished processing rooms. Partners to load:', partnersToLoad);
+      // console.log('[loadChatRooms] Finished processing rooms. Partners to load:', partnersToLoad);
 
       if (partnersToLoad.length > 0) {
         this.loadPartnersData(partnersToLoad).then(() => {
@@ -444,12 +445,12 @@ private touchStartPosition: { x: number, y: number } = { x: 0, y: 0 };
     return timeB - timeA;
   });
 
-  console.log('[ChatRooms List] โหลดห้องแชทแล้ว (sorted):', this.chatRooms);
-  console.log('[ChatRooms List] ข้อมуล partners ที่มีในระบบ:', this.partnersData);
+  // console.log('[ChatRooms List] โหลดห้องแชทแล้ว (sorted):', this.chatRooms);
+  // console.log('[ChatRooms List] ข้อมуล partners ที่มีในระบบ:', this.partnersData);
 }
 
   private loadPartnersData(partnerIds: number[]): Promise<void> {
-    console.log('[Partners Data] Loading partner data for IDs:', partnerIds);
+    // console.log('[Partners Data] Loading partner data for IDs:', partnerIds);
     const promises = partnerIds.map(partnerId => {
       return new Promise<void>((resolve) => {
         const url = `${this.constants.API_ENDPOINT}/read/${partnerId}`;
@@ -459,7 +460,7 @@ private touchStartPosition: { x: number, y: number } = { x: 0, y: 0 };
             if (partner && !this.partnersData.some(p => p.user_id === partner.user_id)) {
               this.partnersData.push(partner);
               this.listenToPartnerStatus(partner.user_id);
-              console.log(`[Partners Data] โหลดข้อมูล partner ${partnerId} สำเร็จ:`, partner);
+              // console.log(`[Partners Data] โหลดข้อมูล partner ${partnerId} สำเร็จ:`, partner);
             } else if (!partner) {
                 console.warn(`[Partners Data] No data found for partner ID ${partnerId}.`);
             }
@@ -480,7 +481,7 @@ private touchStartPosition: { x: number, y: number } = { x: 0, y: 0 };
 
   // ตั้งค่าแชทสำหรับ ID พาร์ทเนอร์ที่ระบุ
   setupChat(partnerId: number): void {
-  console.log(`--- [Chat Setup] Entering setupChat for partnerId: ${partnerId} ---`);
+  // console.log(`--- [Chat Setup] Entering setupChat for partnerId: ${partnerId} ---`);
 
   // เพิ่มการปิด sidebar อัตโนมัติบนมือถือ
   if (window.innerWidth <= 768) {
@@ -490,7 +491,7 @@ private touchStartPosition: { x: number, y: number } = { x: 0, y: 0 };
 
   // *** เพิ่มการตรวจสอบว่ากำลังแชทกับคนเดียวกันหรือไม่ ***
   if (this.selectedPartnerId === partnerId) {
-    console.log(`[Chat Setup] Already in chat with partnerId: ${partnerId}. Marking messages as read.`);
+    // console.log(`[Chat Setup] Already in chat with partnerId: ${partnerId}. Marking messages as read.`);
     this.scrollToBottom();
     const currentRoomId = this.getRoomId(this.myId, partnerId);
     this.markMessagesAsRead(currentRoomId);
@@ -506,13 +507,13 @@ private touchStartPosition: { x: number, y: number } = { x: 0, y: 0 };
   this.selectedPartnerId = partnerId;
   const roomId = this.getRoomId(this.myId, partnerId);
   this.selectedRoomId = roomId;
-  console.log(`[Chat Setup] Selected Room ID: ${roomId}, Selected Partner ID: ${partnerId}`);
+  // console.log(`[Chat Setup] Selected Room ID: ${roomId}, Selected Partner ID: ${partnerId}`);
 
   const roomRef = ref(this.db, `chatRooms/${roomId}`);
   // ตรวจสอบว่าห้องแชทมีอยู่หรือไม่ ถ้าไม่มีให้สร้าง
   get(roomRef).then(snapshot => {
     if (!snapshot.exists()) {
-      console.log(`[Firebase] Chat room ${roomId} does not exist. Creating new room.`);
+      // console.log(`[Firebase] Chat room ${roomId} does not exist. Creating new room.`);
       set(roomRef, {
         user1: this.myId,
         user2: partnerId,
@@ -521,13 +522,13 @@ private touchStartPosition: { x: number, y: number } = { x: 0, y: 0 };
         [`unreadCount_${this.myId}`]: 0,
         [`unreadCount_${partnerId}`]: 0
       }).then(() => {
-          console.log(`[Firebase] Room ${roomId} created with initial unread counts.`);
+          // console.log(`[Firebase] Room ${roomId} created with initial unread counts.`);
           this.markMessagesAsRead(roomId);
       }).catch(error => {
           console.error(`[Firebase] Error setting initial chat room data for ${roomId}:`, error);
       });
     } else {
-      console.log(`[Firebase] Chat room ${roomId} already exists. Marking messages as read.`);
+      // console.log(`[Firebase] Chat room ${roomId} already exists. Marking messages as read.`);
       this.markMessagesAsRead(roomId);
     }
   }).catch(error => {
@@ -540,9 +541,9 @@ private touchStartPosition: { x: number, y: number } = { x: 0, y: 0 };
     this.messages = data ? Object.values(data) : [];
     this.shouldScroll = true;
 
-    console.log('[Firebase Listener] Received messages update for room:', roomId);
-    console.log('  Raw message data from Firebase:', data);
-    console.log('  Processed messages array:', this.messages);
+    // console.log('[Firebase Listener] Received messages update for room:', roomId);
+    // console.log('  Raw message data from Firebase:', data);
+    // console.log('  Processed messages array:', this.messages);
   }, (error) => {
       console.error(`[Firebase Listener] Error listening to messages in room ${roomId}:`, error);
   });
@@ -551,36 +552,48 @@ private touchStartPosition: { x: number, y: number } = { x: 0, y: 0 };
   const currentRoomInList = this.chatRooms.find(r => r.roomId === roomId);
   if (currentRoomInList) {
     if (currentRoomInList.hasUnreadMessages) {
-        console.log(`[Chat Setup] Setting hasUnreadMessages to false for room ${roomId} in UI.`);
+        // console.log(`[Chat Setup] Setting hasUnreadMessages to false for room ${roomId} in UI.`);
         currentRoomInList.hasUnreadMessages = false;
     }
   }
-  console.log(`--- [Chat Setup] Exiting setupChat for partnerId: ${partnerId} ---`);
+  // console.log(`--- [Chat Setup] Exiting setupChat for partnerId: ${partnerId} ---`);
 }
 
   getRoomId(a: number, b: number): string {
     return a < b ? `room_${a}_${b}` : `room_${b}_${a}`;
   }
 
-  sendMessage(): void {
-    console.log('[Send] Attempting to send message.');
-    if (!this.selectedRoomId) {
-      this.showAlert('กรุณาเลือกห้องแชทก่อนส่งข้อความ');
-      console.warn('[Send] No room selected.');
-      return;
-    }
-
-    if (this.files.length > 0) {
-      console.log('[Send] Sending image(s).');
-      this.uploadAndSendImage();
-    } else if (this.newMessage?.trim()) {
-      console.log('[Send] Sending text message.');
-      this.sendTextMessage(this.newMessage);
-    } else {
-      this.showAlert('กรุณาพิมพ์ข้อความหรือเลือกรูปภาพ', false);
-      console.warn('[Send] Message is empty or no files selected.');
-    }
+sendMessage(): void {
+  console.log('[Send] Attempting to send message.');
+  
+  // ตรวจสอบ state พื้นฐาน
+  if (!this.selectedRoomId || this.selectedPartnerId === null) {
+    this.showAlert('กรุณาเลือกห้องแชทและคู่สนทนาก่อนส่งข้อความ');
+    console.warn('[Send] Invalid state: No room or partner selected.');
+    return;
   }
+
+  // *** เพิ่มการตรวจสอบความสอดคล้องของ roomId ***
+  const expectedRoomId = this.getRoomId(this.myId, this.selectedPartnerId);
+  if (this.selectedRoomId !== expectedRoomId) {
+    console.warn('[Send] Room ID mismatch detected, correcting...');
+    console.log(`[Send] Current roomId: ${this.selectedRoomId}, Expected: ${expectedRoomId}`);
+    this.selectedRoomId = expectedRoomId;
+  }
+
+  console.log(`[Send] Confirmed sending to Partner ID: ${this.selectedPartnerId}, Room ID: ${this.selectedRoomId}`);
+
+  if (this.files.length > 0) {
+    console.log('[Send] Sending image(s).');
+    this.uploadAndSendImage();
+  } else if (this.newMessage?.trim()) {
+    console.log('[Send] Sending text message.');
+    this.sendTextMessage(this.newMessage);
+  } else {
+    this.showAlert('กรุณาพิมพ์ข้อความหรือเลือกรูปภาพ', false);
+    console.warn('[Send] Message is empty or no files selected.');
+  }
+}
 
 
 private sendTextMessage(text: string): void {
@@ -593,6 +606,12 @@ private sendTextMessage(text: string): void {
     return;
   }
 
+  // *** แก้ไขหลัก: เก็บค่า state และป้องกันการเปลี่ยนแปลงระหว่างการส่งข้อความ ***
+  const targetPartnerId = this.selectedPartnerId;
+  const targetRoomId = this.selectedRoomId;
+  
+  console.log(`[Send Text] Sending to Partner ID: ${targetPartnerId}, Room ID: ${targetRoomId}`);
+
   const now = new Date().toISOString();
   const msg = {
     senderId: this.myId,
@@ -602,17 +621,24 @@ private sendTextMessage(text: string): void {
     type: 'text'
   };
 
-  console.log(`[Send Text] Preparing to send text message: "${text}" to room ${this.selectedRoomId}.`);
-  const msgListRef = push(ref(this.db, `messages/${this.selectedRoomId}`));
+  console.log(`[Send Text] Preparing to send text message: "${text}" to room ${targetRoomId}.`);
+  const msgListRef = push(ref(this.db, `messages/${targetRoomId}`));
   set(msgListRef, msg)
-      .then(() => console.log('[Send Text] Message saved to /messages successfully.'))
-      .catch(e => console.error('[Send Text] Error saving message to /messages:', e));
+      .then(() => {
+        console.log('[Send Text] Message saved to /messages successfully.');
+        // *** ยืนยันว่า state ยังคงเป็นของห้องที่ต้องการ ***
+        this.ensureCorrectChatState(targetPartnerId, targetRoomId);
+      })
+      .catch(e => {
+        console.error('[Send Text] Error saving message to /messages:', e);
+        this.ensureCorrectChatState(targetPartnerId, targetRoomId);
+      });
 
   // *** อัปเดต lastMessage และ unreadCount สำหรับผู้รับ ***
-  const chatRoomRef = ref(this.db, `chatRooms/${this.selectedRoomId}`);
-  const partnerUnreadCountKey = `unreadCount_${this.selectedPartnerId}`;
+  const chatRoomRef = ref(this.db, `chatRooms/${targetRoomId}`);
+  const partnerUnreadCountKey = `unreadCount_${targetPartnerId}`;
 
-  console.log(`[Send Text] Updating chatRooms/${this.selectedRoomId} for partner: ${this.selectedPartnerId} (key: ${partnerUnreadCountKey}).`);
+  console.log(`[Send Text] Updating chatRooms/${targetRoomId} for partner: ${targetPartnerId} (key: ${partnerUnreadCountKey}).`);
 
   get(chatRoomRef).then(snapshot => {
     const currentRoomData = snapshot.val();
@@ -622,7 +648,7 @@ private sendTextMessage(text: string): void {
     } else if (currentRoomData) {
         console.warn(`[Send Text] ${partnerUnreadCountKey} not found in chat room data. Initializing unread count to 0.`);
     } else {
-        console.error(`[Send Text] No chat room data found for ${this.selectedRoomId}. Cannot update unread count.`);
+        console.error(`[Send Text] No chat room data found for ${targetRoomId}. Cannot update unread count.`);
         return;
     }
 
@@ -636,9 +662,17 @@ private sendTextMessage(text: string): void {
       [partnerUnreadCountKey]: newUnreadCount,
       lastMessageSenderId: this.myId 
     }).then(() => {
-        console.log(`[Send Text] Successfully updated chat room ${this.selectedRoomId} with new lastMessage, lastMessageTime, and unreadCount for partner.`);
-    }).catch(error => console.error("[Send Text] Error updating chat room unread count or last message:", error));
-  }).catch(error => console.error("[Send Text] Error getting chat room data to update unread count:", error));
+        console.log(`[Send Text] Successfully updated chat room ${targetRoomId} with new lastMessage, lastMessageTime, and unreadCount for partner.`);
+        // *** ยืนยันว่า state ยังคงเป็นของห้องที่ต้องการ ***
+        this.ensureCorrectChatState(targetPartnerId, targetRoomId);
+    }).catch(error => {
+      console.error("[Send Text] Error updating chat room unread count or last message:", error);
+      this.ensureCorrectChatState(targetPartnerId, targetRoomId);
+    });
+  }).catch(error => {
+    console.error("[Send Text] Error getting chat room data to update unread count:", error);
+    this.ensureCorrectChatState(targetPartnerId, targetRoomId);
+  });
 
   this.newMessage = '';
   this.shouldScroll = true;
@@ -667,8 +701,8 @@ private sendTextMessage(text: string): void {
 
   // เมธอดสำหรับ 'อ่านแล้ว' และรีเซ็ต unread count ใน chatRooms
   private markMessagesAsRead(roomId: string): void {
-    console.log(`--- [Mark Read] markMessagesAsRead called for room: ${roomId} ---`);
-    console.log(`[Mark Read] My ID for unread count reset: ${this.myId}`);
+    // console.log(`--- [Mark Read] markMessagesAsRead called for room: ${roomId} ---`);
+    // console.log(`[Mark Read] My ID for unread count reset: ${this.myId}`);
 
     const messagesRef = ref(this.db, `messages/${roomId}`);
 
@@ -692,7 +726,7 @@ private sendTextMessage(text: string): void {
       const myUnreadCountKey = `unreadCount_${this.myId}`;
       updates[`chatRooms/${roomId}/${myUnreadCountKey}`] = 0;
 
-      console.log(`[Mark Read] Updates to be applied to Firebase (includes unread count reset):`, updates);
+      // console.log(`[Mark Read] Updates to be applied to Firebase (includes unread count reset):`, updates);
 
       // อัปเดตข้อมูลทั้งหมดใน Firebase ครั้งเดียว
       if (Object.keys(updates).length > 0) {
@@ -716,12 +750,12 @@ private sendTextMessage(text: string): void {
 
   private listenToPartnerStatus(partnerId: number): void {
     if (this.partnerStatusUnsubscribe[partnerId]) {
-      console.log(`[Firebase Listener] Already listening to status for partner ${partnerId}.`);
+      // console.log(`[Firebase Listener] Already listening to status for partner ${partnerId}.`);
       return;
     }
 
     const partnerStatusRef = ref(this.db, `users/${partnerId}/onlineStatus`);
-    console.log(`[Firebase Listener] Setting up status listener for partner ${partnerId}.`);
+    // console.log(`[Firebase Listener] Setting up status listener for partner ${partnerId}.`);
 
     const unsubscribe = onValue(partnerStatusRef, (snapshot) => {
       this.partnerOnlineStatus[partnerId] = snapshot.val() || 'offline';
@@ -766,7 +800,7 @@ private sendTextMessage(text: string): void {
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.files.push({ file, preview: e.target.result });
-        console.log(`[File Select] Added file: ${file.name}, preview generated.`);
+        // console.log(`[File Select] Added file: ${file.name}, preview generated.`);
       };
       reader.readAsDataURL(file);
     });
@@ -781,12 +815,18 @@ private sendTextMessage(text: string): void {
     }
   }
 
-  async uploadAndSendImage(): Promise<void> {
+async uploadAndSendImage(): Promise<void> {
   if (this.files.length === 0 || !this.selectedRoomId || this.selectedPartnerId === null) {
     this.showAlert('กรุณาเลือกรูปภาพและเลือกห้องแชท');
     console.warn('[Send Image] Cannot upload: no files, room, or partner selected.');
     return;
   }
+
+  // *** แก้ไขหลัก: เก็บค่า state และป้องกันการเปลี่ยนแปลงระหว่างการส่งรูปภาพ ***
+  const targetPartnerId = this.selectedPartnerId;
+  const targetRoomId = this.selectedRoomId;
+  
+  console.log(`[Send Image] Sending to Partner ID: ${targetPartnerId}, Room ID: ${targetRoomId}`);
 
   this.isUploading = true;
   let successCount = 0;
@@ -811,7 +851,7 @@ private sendTextMessage(text: string): void {
         type: 'image'
       };
 
-      const msgListRef = push(ref(this.db, `messages/${this.selectedRoomId}`));
+      const msgListRef = push(ref(this.db, `messages/${targetRoomId}`));
       await set(msgListRef, msg);
       console.log(`[Send Image] Image message ${i + 1} saved to /messages successfully.`);
       successCount++;
@@ -824,10 +864,10 @@ private sendTextMessage(text: string): void {
 
   if (successCount > 0) {
     const now = new Date().toISOString();
-    const chatRoomRef = ref(this.db, `chatRooms/${this.selectedRoomId}`);
-    const partnerUnreadCountKey = `unreadCount_${this.selectedPartnerId}`;
+    const chatRoomRef = ref(this.db, `chatRooms/${targetRoomId}`);
+    const partnerUnreadCountKey = `unreadCount_${targetPartnerId}`;
 
-    console.log(`[Send Image] All images processed. Updating chatRooms/${this.selectedRoomId} for partner: ${this.selectedPartnerId} (key: ${partnerUnreadCountKey}).`);
+    console.log(`[Send Image] All images processed. Updating chatRooms/${targetRoomId} for partner: ${targetPartnerId} (key: ${partnerUnreadCountKey}).`);
 
     get(chatRoomRef).then(snapshot => {
       const currentRoomData = snapshot.val();
@@ -837,7 +877,7 @@ private sendTextMessage(text: string): void {
       } else if (currentRoomData) {
           console.warn(`[Send Image] ${partnerUnreadCountKey} not found in chat room data. Initializing unread count to 0.`);
       } else {
-          console.error(`[Send Image] No chat room data found for ${this.selectedRoomId}. Cannot update unread count.`);
+          console.error(`[Send Image] No chat room data found for ${targetRoomId}. Cannot update unread count.`);
           return;
       }
 
@@ -851,31 +891,70 @@ private sendTextMessage(text: string): void {
         [partnerUnreadCountKey]: newUnreadCount,
         lastMessageSenderId: this.myId
       }).then(() => {
-          console.log(`[Send Image] Successfully updated chat room ${this.selectedRoomId} with new lastMessage, lastMessageTime, and unreadCount for partner.`);
-      }).catch(error => console.error("[Send Image] Error updating chat room unread count or last message:", error));
-    }).catch(error => console.error("[Send Image] Error getting chat room data to update unread count:", error));
+          console.log(`[Send Image] Successfully updated chat room ${targetRoomId} with new lastMessage, lastMessageTime, and unreadCount for partner.`);
+          // *** ยืนยันว่า state ยังคงเป็นของห้องที่ต้องการ ***
+          this.ensureCorrectChatState(targetPartnerId, targetRoomId);
+      }).catch(error => {
+        console.error("[Send Image] Error updating chat room unread count or last message:", error);
+        this.ensureCorrectChatState(targetPartnerId, targetRoomId);
+      });
+    }).catch(error => {
+      console.error("[Send Image] Error getting chat room data to update unread count:", error);
+      this.ensureCorrectChatState(targetPartnerId, targetRoomId);
+    });
   }
 
   this.files = [];
   this.shouldScroll = true;
   this.isUploading = false;
+  
+  // *** ยืนยันว่า state ยังคงเป็นของห้องที่ต้องการ ***
+  this.ensureCorrectChatState(targetPartnerId, targetRoomId);
   console.log('[Send Image] Finished upload process.');
 }
 
-//พื่อป้องกันการเปลี่ยนแชทโดยไม่ตั้งใจ
-private maintainCurrentChatState(): void {
-  // Method นี้จะถูกเรียกเมื่อต้องการให้แน่ใจว่าสถานะแชทปัจจุบันไม่เปลี่ยนแปลง
-  const currentPartnerId = this.selectedPartnerId;
-  const currentRoomId = this.selectedRoomId;
-  
+private ensureCorrectChatState(targetPartnerId: number, targetRoomId: string): void {
+  // ตรวจสอบและบังคับให้ state เป็นไปตามที่ต้องการ
   setTimeout(() => {
-    if (currentPartnerId !== null && currentRoomId !== null) {
-      this.selectedPartnerId = currentPartnerId;
-      this.selectedRoomId = currentRoomId;
-      console.log(`[Chat State] Maintained chat state: Partner ${currentPartnerId}, Room ${currentRoomId}`);
+    if (this.selectedPartnerId !== targetPartnerId || this.selectedRoomId !== targetRoomId) {
+      console.warn(`[Chat State] State mismatch detected! Correcting...`);
+      console.log(`[Chat State] Current: Partner ${this.selectedPartnerId}, Room ${this.selectedRoomId}`);
+      console.log(`[Chat State] Expected: Partner ${targetPartnerId}, Room ${targetRoomId}`);
+      
+      // บังคับให้ state เป็นไปตามที่ต้องการ
+      this.selectedPartnerId = targetPartnerId;
+      this.selectedRoomId = targetRoomId;
+      
+      // ตรวจสอบว่า messages listener กำลังฟังห้องที่ถูกต้องหรือไม่
+      // ถ้าไม่ใช่ให้ setup ใหม่
+      this.reestablishMessagesListener(targetRoomId);
     }
+    
+    console.log(`[Chat State] State confirmed: Partner ${this.selectedPartnerId}, Room ${this.selectedRoomId}`);
   }, 100);
 }
+private reestablishMessagesListener(targetRoomId: string): void {
+  console.log(`[Messages Listener] Re-establishing listener for room: ${targetRoomId}`);
+  
+  // ยกเลิก listener เก่า
+  if (this.messagesUnsubscribe) {
+    this.messagesUnsubscribe();
+    console.log('[Messages Listener] Previous listener unsubscribed.');
+  }
+
+  // สร้าง listener ใหม่
+  const msgRef = ref(this.db, `messages/${targetRoomId}`);
+  this.messagesUnsubscribe = onValue(msgRef, snapshot => {
+    const data = snapshot.val();
+    this.messages = data ? Object.values(data) : [];
+    this.shouldScroll = true;
+
+    console.log(`[Messages Listener] Messages updated for room: ${targetRoomId}`);
+  }, (error) => {
+      console.error(`[Messages Listener] Error listening to messages in room ${targetRoomId}:`, error);
+  });
+}
+
 
   onImageLoad(): void {
     // This is useful for images loaded within the chat bubble itself
@@ -938,7 +1017,7 @@ onChatItemTouchEnd(event: TouchEvent, partnerId: number): void {
     const deltaY = Math.abs(touchEndPosition.y - this.touchStartPosition.y);
     
     if (deltaX < 10 && deltaY < 10) { // ถ้าเลื่อนน้อยกว่า 10px
-      console.log(`[Touch] Valid touch end on partner ${partnerId}, setting up chat`);
+      // console.log(`[Touch] Valid touch end on partner ${partnerId}, setting up chat`);
       this.setupChat(partnerId);
       event.preventDefault();
       event.stopPropagation();

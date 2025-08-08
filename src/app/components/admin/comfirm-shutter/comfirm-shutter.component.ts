@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, OnDestroy, NgZone } from '@angular/core'; // เพิ่ม NgZone
+import { Component, inject, OnInit, OnDestroy, NgZone, HostListener } from '@angular/core'; // เพิ่ม NgZone
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../service/auth.service';
@@ -56,6 +56,7 @@ export class ComfirmShutterComponent implements OnInit, OnDestroy {
 
   // สถานะ Tab ที่เลือก
   public selectedTab: number = 1;
+  showButton = false; 
 
   // สถานะ Modal สำหรับปฏิเสธ
   public isRejectModalOpen: boolean = false; // สถานะสำหรับ Modal เหตุผลการปฏิเสธ
@@ -97,7 +98,7 @@ export class ComfirmShutterComponent implements OnInit, OnDestroy {
     const user = this.authService.getUser();
     if (user) {
       this.datauser = [user];
-      console.log("Loaded user from AuthService:", this.datauser);
+      // console.log("Loaded user from AuthService:", this.datauser);
     } else {
       console.warn("No user found in AuthService. Redirecting to login...");
       this.router.navigate(['/']);
@@ -117,6 +118,15 @@ export class ComfirmShutterComponent implements OnInit, OnDestroy {
       clearInterval(interval);
     });
   }
+
+   @HostListener('window:scroll', [])
+          onScroll() {
+            this.showButton = window.scrollY > 300; // แสดงปุ่มเมื่อเลื่อนลงมาเกิน 300px
+          }
+        
+          scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' }); // เลื่อนไปบนสุดแบบ Smooth
+          }
 
   // โหลดข้อมูลเกณฑ์อนุมัติจาก Firebase Realtime Database
   async loadCriteria(): Promise<void> {
@@ -145,7 +155,7 @@ export class ComfirmShutterComponent implements OnInit, OnDestroy {
           console.warn('รูปแบบข้อมูลเกณฑ์จาก Firebase ไม่ตรงกับที่คาดไว้ จะแสดงเป็นหน้าว่าง.');
           this.approvalCategories = [];
         }
-        console.log('ข้อมูลเกณฑ์ที่ดึงมา:', this.approvalCategories);
+        // console.log('ข้อมูลเกณฑ์ที่ดึงมา:', this.approvalCategories);
       } else {
         console.warn('ไม่พบข้อมูลเกณฑ์ใน Firebase จะแสดงเป็นหน้าว่างเปล่าเพื่อให้เพิ่มข้อมูลใหม่.');
         this.approvalCategories = [];
@@ -173,7 +183,7 @@ export class ComfirmShutterComponent implements OnInit, OnDestroy {
       (response: any) => {
         // 'response' คือ array ของผู้ใช้สถานะ 1, เราจึงใช้ .length เพื่อหานับจำนวน
         this.pending = response.length;
-        console.log("Pending count updated:", this.pending);
+        // console.log("Pending count updated:", this.pending);
       },
       (error) => console.error('Error fetching pending count:', error)
     );
@@ -182,7 +192,7 @@ export class ComfirmShutterComponent implements OnInit, OnDestroy {
     this.http.get(this.Constants.API_ENDPOINT + '/getshutterbytype/2').subscribe(
       (response: any) => {
         this.comfirm = response.length;
-        console.log("Confirmed count updated:", this.comfirm);
+        // console.log("Confirmed count updated:", this.comfirm);
       },
       (error) => console.error('Error fetching confirmed count:', error)
     );
@@ -191,7 +201,7 @@ export class ComfirmShutterComponent implements OnInit, OnDestroy {
     this.http.get(this.Constants.API_ENDPOINT + '/getshutterbytype/3').subscribe(
       (response: any) => {
         this.refuse = response.length;
-        console.log("Refused count updated:", this.refuse);
+        // console.log("Refused count updated:", this.refuse);
       },
       (error) => console.error('Error fetching refused count:', error)
     );
@@ -208,7 +218,7 @@ export class ComfirmShutterComponent implements OnInit, OnDestroy {
         this.datafilterUsers = response.map((user: any) => ({
           ...user,
         }));
-        console.log(`Loaded data for tab ${this.selectedTab}:`, this.datafilterUsers);
+        // console.log(`Loaded data for tab ${this.selectedTab}:`, this.datafilterUsers);
 
         // *** สำคัญ: ไม่ต้องเรียกนับจำนวนรวมของแท็บทั้งหมดที่นี่อีกต่อไป ***
         // เพราะเรามี updateAllTabCounts() ที่ดูแลการดึงและอัปเดตตัวเลขบนปุ่มแล้ว
@@ -231,11 +241,11 @@ export class ComfirmShutterComponent implements OnInit, OnDestroy {
       rejectionReasons: newStatus === 3 ? rejectionReasons : [] // ส่งเหตุผลไปให้ Backend เพื่อใช้ในอีเมล
     };
 
-    console.log('Sending payload to backend:', payload);
+    // console.log('Sending payload to backend:', payload);
 
     try {
       await this.http.put(url, payload).toPromise(); // ใช้ toPromise() เพื่อรอให้เสร็จสิ้น
-      console.log('Status updated successfully for user:', userId);
+      // console.log('Status updated successfully for user:', userId);
 
       const message = newStatus === 2 ? 'อนุมัติช่างภาพสำเร็จ' : 'ปฏิเสธช่างภาพสำเร็จ';
       this.snackBar.open(message, 'ปิด', { duration: 2000 , verticalPosition: 'top'});
@@ -270,7 +280,7 @@ export class ComfirmShutterComponent implements OnInit, OnDestroy {
       // 1. Check if chat room exists, if not, create it with initial unread counts
       const roomSnapshot = await get(chatRoomRef);
       if (!roomSnapshot.exists()) {
-        console.log(`[System Message] Creating new chat room ${roomId} for system admin (${SYSTEM_ADMIN_ID}) and photographer ${photographerId}.`);
+        // console.log(`[System Message] Creating new chat room ${roomId} for system admin (${SYSTEM_ADMIN_ID}) and photographer ${photographerId}.`);
         await set(chatRoomRef, {
           user1: SYSTEM_ADMIN_ID,
           user2: photographerId,
@@ -290,7 +300,7 @@ export class ComfirmShutterComponent implements OnInit, OnDestroy {
         isRead: false, // Mark as unread for the photographer (recipient)
         type: 'text'
       });
-      console.log(`[System Message] Message sent to room ${roomId}.`);
+      // console.log(`[System Message] Message sent to room ${roomId}.`);
 
       // 3. Update chat room's last message, time, sender, and increment unread count for photographer
       const photographerUnreadCountKey = `unreadCount_${photographerId}`;
@@ -300,7 +310,7 @@ export class ComfirmShutterComponent implements OnInit, OnDestroy {
         lastMessageSenderId: SYSTEM_ADMIN_ID, // ตั้งค่าผู้ส่งข้อความล่าสุดเป็น SYSTEM_ADMIN_ID
         [photographerUnreadCountKey]: 1 // Increment unread count for the recipient
       });
-      console.log(`[System Message] Chat room ${roomId} updated with new last message and unread count for ${photographerId}.`);
+      // console.log(`[System Message] Chat room ${roomId} updated with new last message and unread count for ${photographerId}.`);
 
     } catch (error) {
       console.error(`[System Message] Error sending system message to photographer ${photographerId}:`, error);
@@ -317,7 +327,7 @@ export class ComfirmShutterComponent implements OnInit, OnDestroy {
   const rejectionRef = ref(this.db, `${this.rejectionReasonsPath}/${userId}`);
   try {
     await set(rejectionRef, null);
-    console.log(`Cleared rejection reasons from Firebase (frontend) for user ${userId} before approving.`);
+    // console.log(`Cleared rejection reasons from Firebase (frontend) for user ${userId} before approving.`);
   } catch (error) {
     console.error('Error clearing rejection reasons before approval:', error);
     this.snackBar.open('เกิดข้อผิดพลาดในการล้างเหตุผลการปฏิเสธเก่า', 'ปิด', { duration: 3000 , verticalPosition: 'top'});
@@ -340,7 +350,7 @@ export class ComfirmShutterComponent implements OnInit, OnDestroy {
 
   // ฟังก์ชันอนุมัติช่างภาพ - จะเรียก openApproveMessagePreviewModal แทน
   approveUser(userId: number): void {
-    console.log(`Approving user ${userId}`);
+    // console.log(`Approving user ${userId}`);
     this.openApproveMessagePreviewModal(userId); // เรียกเปิด Modal ตัวอย่างข้อความแชท
   }
 
@@ -363,7 +373,7 @@ export class ComfirmShutterComponent implements OnInit, OnDestroy {
   // ฟังก์ชันสลับการเลือกเหตุผลการปฏิเสธ
   toggleReasonSelection(subCriterionId: string): void {
     this.selectedRejectionReasons[subCriterionId] = !this.selectedRejectionReasons[subCriterionId];
-    console.log('Selected reasons:', this.selectedRejectionReasons);
+    // console.log('Selected reasons:', this.selectedRejectionReasons);
   }
 
   // ฟังก์ชันยืนยันการปฏิเสธจาก Modal เหตุผล (บันทึก Firebase และเปิด Modal ตัวอย่างข้อความแชท)
@@ -390,7 +400,7 @@ async confirmRejectUser(): Promise<void> {
   try {
     const rejectionRef = ref(this.db, `${this.rejectionReasonsPath}/${this.selectedUserToReject}`);
     await set(rejectionRef, reasons);
-    console.log(`บันทึกเหตุผลการปฏิเสธลง Firebase จาก Frontend สำหรับผู้ใช้ ${this.selectedUserToReject}:`, reasons);
+    // console.log(`บันทึกเหตุผลการปฏิเสธลง Firebase จาก Frontend สำหรับผู้ใช้ ${this.selectedUserToReject}:`, reasons);
 
     const photographer = this.datafilterUsers.find(u => u.user_id === this.selectedUserToReject);
     const username = photographer ? photographer.username : 'ช่างภาพ';

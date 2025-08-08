@@ -113,14 +113,14 @@ ngOnInit(): void {
   if (String(currentUser.type_user) === '3' && photographerIdFromState) {
     // --- กรณีแอดมินดูโปรไฟล์ช่างภาพ ---
     const photographerId = +photographerIdFromState; // แปลง ID เป็น number
-    console.log(`Admin view: Fetching data for photographer ID: ${photographerId}`);
+    // console.log(`Admin view: Fetching data for photographer ID: ${photographerId}`);
     this.dataAdmin = [currentUser]; // ใช้ข้อมูลของแอดมิน
     this.getdatauser(photographerId);
     this.listenForUnreadMessages(photographerId); // เรียกใช้ listener ด้วย ID ของช่างภาพ
 
   } else {
     // --- กรณีผู้ใช้ทั่วไปดูโปรไฟล์ตัวเอง หรือ แอดมินดูโปรไฟล์ตัวเอง ---
-    console.log(`Self view: Displaying data for logged-in user ID: ${currentUser.user_id}`);
+    // console.log(`Self view: Displaying data for logged-in user ID: ${currentUser.user_id}`);
     this.data = [currentUser]; // ใช้ข้อมูลของคนที่ล็อกอินอยู่ได้เลย
     
     // เรียกใช้ฟังก์ชันต่างๆ ด้วย ID ของตัวเอง
@@ -134,11 +134,11 @@ ngOnInit(): void {
 
 // ฟังก์ชัน getdatauser (ควรมีลักษณะนี้)
 getdatauser(id: number): void {
-  console.log('Fetching user data via API for id:', id);
+  // console.log('Fetching user data via API for id:', id);
   const url = `${this.Constants.API_ENDPOINT}/read/${id}`; // ตัวอย่าง URL
   this.http.get<DataMembers[]>(url).subscribe((response: any) => {
     this.data = response;
-    console.log("API response for User:", this.data);
+    // console.log("API response for User:", this.data);
 
     if (this.data && this.data.length > 0) {
       const photographer = this.data[0];
@@ -219,24 +219,24 @@ getdatauser(id: number): void {
     this.hoverRating = star;
   }
   getwork(id : number){ //เพิ่มเอาคนที่ถูกใจออกมาด้วย
-    console.log('id',id);
+    // console.log('id',id);
     const url = this.Constants.API_ENDPOINT+'/get/workAndPack_for1/'+id;
     this.http.get(url).subscribe((response: any) => {
       this.datawork = response; 
-      console.log("datawork :",this.datawork); 
+      // console.log("datawork :",this.datawork); 
       
     });
   }
 
   //ข้อมูลการถูกใจ (likes) ของ portfolio
 getLike(portfolio_id: string | number) {
-  console.log('id', portfolio_id);
+  // console.log('id', portfolio_id);
   const url = `${this.Constants.API_ENDPOINT}/get/likes/` + portfolio_id;
   this.http.get(url).subscribe((response: any) => {
     this.datalike = response;
     this.selectedPortfolioId = portfolio_id.toString(); // เก็บ ID ของ portfolio ที่ถูกเลือก
     this.showLikeModal = true;
-    console.log("data datalike :", this.datalike); 
+    // console.log("data datalike :", this.datalike); 
   });
 }
 
@@ -257,7 +257,7 @@ get likerNames(): string {
     const url = this.Constants.API_ENDPOINT+'/get/likes/'+portfolio_id;
     this.http.get(url).subscribe((response: any) => {
       this.datapackages = response; 
-      console.log("datapackages :",this.datapackages); 
+      // console.log("datapackages :",this.datapackages); 
       
     });
   }
@@ -271,7 +271,7 @@ get likerNames(): string {
     const url = this.Constants.API_ENDPOINT+'/get/review/'+id;
     this.http.get(url).subscribe((response: any) => {
       this.datareview = response; 
-      console.log("datareview :",this.datareview); 
+      // console.log("datareview :",this.datareview); 
        // คำนวณคะแนนเฉลี่ย ทั้งหมด/จำนวนรีวิว
       const total = this.datareview.reduce((sum, r) => sum + r.rating, 0);
       this.averageRating = parseFloat((total / this.datareview.length).toFixed(1));
@@ -300,21 +300,21 @@ get likerNames(): string {
   }
 
   getpackages(id : number){
-    console.log('id',id);
+    // console.log('id',id);
     const url = this.Constants.API_ENDPOINT+'/get/packages/'+id;
     this.http.get(url).subscribe((response: any) => {
       this.datapackages = response; 
-      console.log("datapackages :",this.datapackages); 
+      // console.log("datapackages :",this.datapackages); 
       
     });
   }
 
   getFollower(id : number){
-    console.log('id',id);
+    // console.log('id',id);
     const url = this.Constants.API_ENDPOINT+'/get/Follower/'+id;
     this.http.get(url).subscribe((response: any) => {
       this.datafollower = response; 
-      console.log("datafollower :",this.datafollower); 
+      // console.log("datafollower :",this.datafollower); 
    
     });
   }
@@ -444,11 +444,11 @@ closeList() {
         user_id: userId
       };
 
-      console.log('Delete request body:', requestBody);
+      // console.log('Delete request body:', requestBody);
 
       this.http.delete(url, { body: requestBody }).subscribe({
         next: (response) => {
-          console.log('Portfolio deleted successfully:', response);
+          // console.log('Portfolio deleted successfully:', response);
           this.showSnackBar('ลบผลงานสำเร็จ');
           // รีเฟรชข้อมูลหลังจากลบสำเร็จ
           this.getwork(userId);
@@ -475,7 +475,7 @@ closeList() {
   }
 
   showprofile(id: number ){
-    console.log("main sent id:",id);
+    // console.log("main sent id:",id);
        this.router.navigate(['/profileuser'], { 
         state: { 
           // datauser: this.datauser[0], 
