@@ -27,7 +27,7 @@
 
                 <img src="/assets/images/PIXEL (7).png" alt="Logo" class="logo-image">
             </div>
-            <form (ngSubmit)="login()" [formGroup]="loginForm" style="width: 50%;">
+            <form (ngSubmit)="login()" [formGroup]="loginForm" class="login-form">
                 <div class="form-section">
 
                     <div class="form-group">
@@ -41,7 +41,7 @@
                     </div>
                 </div>
 
-         <div class="form-group" style="position: relative;">
+            <div class="form-group" style="position: relative;">
               <label class="label">รหัสผ่าน<span style="color: red;">*</span></label>
               <div class="password-container">
                 <input
@@ -64,11 +64,41 @@
                 <span *ngIf="loginForm.get('Password')?.errors?.['whitespace']">*รหัสผ่านไม่สามารถเป็นช่องว่างได้</span>
               </div>
             </div>
-                    <a href="/forgot" class="forgot-password">ลืมรหัสผ่าน</a>
+                    <!-- <a href="/forgot" class="forgot-password">ลืมรหัสผ่าน</a>
                     <div class="form-buttons">
                         <button type="button" class="register-btn" (click)="goToRegister()">สมัครสมาชิก</button>
                         <button type="submit" class="login-btn">เข้าสู่ระบบ</button>
                     </div>
+
+                    <div style="text-align: center; margin: 1rem 0; color: #888;">หรือ</div>
+
+                   <button type="button" class="google-login-btn" (click)="signInWithGoogle()" 
+                            style="background-color: aliceblue; border: none; padding: 10px; text-align: center; display: inline-flex; align-items: center; justify-content: center; font-size: 15px; cursor: pointer; border-radius: 4px; width: 100%; font-weight: 500;">
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo" style="margin-right: 10px; background-color: white; padding: 2px; border-radius: 2px; height: 18px; width: 18px;">
+                        เข้าสู่ระบบด้วย Google
+                    </button> -->
+
+                    <div style="display: flex; align-items: center; margin-bottom: 1rem; gap: 1rem;">
+                        <a href="/forgot" class="forgot-password" style="margin-bottom: 0; width: 50%; text-align: left;">ลืมรหัสผ่าน</a>
+                        <button type="submit" class="login-btn" style="width: 50%;">เข้าสู่ระบบ</button>
+                    </div>
+
+                    <!-- Divider -->
+                    <div style="text-align: center; margin: 1rem 0; color: #888;">หรือ</div>
+
+                    <!-- Google Button with inline style -->
+                    <button type="button" (click)="signInWithGoogle()" 
+                            style="background-color: #ffffff; color: #000000; border: 1px solid #cccccc; padding: 10px; text-align: center; display: inline-flex; align-items: center; justify-content: center; font-size: 15px; cursor: pointer; border-radius: 8px; width: 100%; font-weight: 500; font-family: 'Kanit', sans-serif; transition: background-color 0.2s;">
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo" style="margin-right: 10px; height: 18px; width: 18px;">
+                        เข้าสู่ระบบด้วย Google
+                    </button>
+
+                    <!-- New Register Link -->
+                    <div class="register-link" style="text-align: center; margin-top: 1rem; font-size: 14px;">
+                        <span style="color: #6c757d;">ยังไม่มีบัญชีผู้ใช้? </span>
+                        <a (click)="goToRegister()" style="color: #007bff; text-decoration: none; font-weight: 500; cursor: pointer; ">สมัครสมาชิก</a>
+                    </div>
+
                 </div>
             </form>
         </div>
@@ -112,18 +142,5 @@
   </div>
 </div>
     
-    <script>
-            // สำหรับการเปิด/ปิดรหัสผ่าน
-            const togglePassword = document.querySelector("#togglePassword");
-            const password = document.querySelector("#password");
-
-            togglePassword.addEventListener("click", function () {
-                const type = password.getAttribute("type") === "password" ? "text" : "password";
-                password.setAttribute("type", type);
-                this.classList.toggle("bi-eye");
-                this.classList.toggle("bi-eye-slash");
-            });
-
-        </script>
 </body>
 </html>

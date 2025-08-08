@@ -324,13 +324,61 @@ get likerNames(): string {
   }
   @ViewChild('wrapper', { static: false }) wrapper!: ElementRef;
 
-  scrollLeft() {
-    this.wrapper.nativeElement.scrollLeft -= 200; // ปรับระยะการเลื่อน
-  }
+  isDown = false;
+  startX = 0;
+  scrollLeftValue = 0;
 
-  scrollRight() {
-    this.wrapper.nativeElement.scrollLeft += 200;
-  }
+scrollLeft(element: HTMLElement) {
+  element.scrollBy({ left: -300, behavior: 'smooth' }); // ใช้ scrollBy เพื่อการเลื่อนที่นุ่มนวล
+}
+
+scrollRight(element: HTMLElement) {
+  element.scrollBy({ left: 300, behavior: 'smooth' });
+}
+
+// --- เพิ่มฟังก์ชันสำหรับจัดการ Mouse Events (ลากเพื่อเลื่อน) ---
+onMouseDown(e: MouseEvent, element: HTMLElement) {
+  this.isDown = true;
+  element.classList.add('active'); // เพิ่ม class เพื่อเปลี่ยน cursor (optional)
+  this.startX = e.pageX - element.offsetLeft;
+  this.scrollLeftValue = element.scrollLeft;
+}
+
+onMouseLeave(element: HTMLElement) {
+  this.isDown = false;
+  element.classList.remove('active');
+}
+
+onMouseUp(element: HTMLElement) {
+  this.isDown = false;
+  element.classList.remove('active');
+}
+
+onMouseMove(e: MouseEvent, element: HTMLElement) {
+  if (!this.isDown) return;
+  e.preventDefault();
+  const x = e.pageX - element.offsetLeft;
+  const walk = (x - this.startX) * 2; // *2 เพื่อให้เลื่อนเร็วขึ้น
+  element.scrollLeft = this.scrollLeftValue - walk;
+}
+
+// --- เพิ่มฟังก์ชันสำหรับจัดการ Touch Events (ปัดเพื่อเลื่อน) ---
+onTouchStart(e: TouchEvent, element: HTMLElement) {
+    this.isDown = true;
+    this.startX = e.touches[0].pageX - element.offsetLeft;
+    this.scrollLeftValue = element.scrollLeft;
+}
+
+onTouchMove(e: TouchEvent, element: HTMLElement) {
+    if (!this.isDown) return;
+    const x = e.touches[0].pageX - element.offsetLeft;
+    const walk = (x - this.startX) * 2;
+    element.scrollLeft = this.scrollLeftValue - walk;
+}
+
+// --- เพิ่มฟังก์ชันสำหรับจัดการ Touch End ---
+//เลื่อรูปภาพ
+
 
 scrollTopack() {
     const rankElement = document.getElementById('second');

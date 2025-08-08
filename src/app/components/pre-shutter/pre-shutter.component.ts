@@ -34,7 +34,7 @@ export class PreShutterComponent implements OnInit,OnDestroy{
   currentImageIndex: number = 0;
   touchStartX: number = 0;
   touchEndX: number = 0;
-showButton = false; 
+  showButton = false; 
  modalImageUrls: string[] = [];
  modalSlideIndex: number = 0;
 

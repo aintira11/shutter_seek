@@ -74,7 +74,7 @@
                     class="delete-image-btn"
                     (click)="removeImage(i)"
                     matTooltip="ลบรูปภาพ">
-                    <mat-icon>delete</mat-icon>
+                    <mat-icon >delete</mat-icon>
                   </button>
                 </div>
               </div>
@@ -87,8 +87,8 @@
                 #fileInput 
                 (change)="onCategoryImageSelected($event, selectedCategoryIndex || 0)"
                 accept="image/*" 
-                style="display: none;">
-              
+                style="display: none;" multiple >
+               
               <button 
                 mat-raised-button 
                 color="primary" 

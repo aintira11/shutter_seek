@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
 import { DataMembers } from '../../model/models';
@@ -11,6 +11,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../service/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { user } from '@angular/fire/auth';
+// --- Firebase Imports ---
+import { Auth, signInWithPopup, GoogleAuthProvider } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-login',
@@ -27,6 +29,8 @@ export class LoginComponent {
 
   hidePassword = true;
   hideConfirmPassword = true;
+  // --- ใช้ inject function สำหรับ Firebase Auth ---
+  private auth: Auth = inject(Auth);
 
   constructor(
     private constants: Constants,
@@ -41,6 +45,59 @@ export class LoginComponent {
       username: ['', [Validators.required]],
       password: ['', Validators.required],
     });
+  }
+
+  async signInWithGoogle(): Promise<void> {
+    const provider = new GoogleAuthProvider();
+    
+    // *** เพิ่มส่วนนี้เพื่อบังคับให้แสดงหน้าต่างเลือกบัญชีทุกครั้ง ***
+    provider.setCustomParameters({
+      prompt: 'select_account' 
+    });
+
+    try {
+      // 1. เปิดหน้าต่างล็อกอินของ Google ผ่าน Firebase
+      const result = await signInWithPopup(this.auth, provider);
+      const userEmail = result.user.email;
+
+      if (!userEmail) {
+        this.showSnackBar('ไม่สามารถดึงข้อมูลอีเมลจาก Google ได้');
+        return;
+      }
+
+      // 2. ส่งอีเมลไปตรวจสอบกับ Backend 
+      const url = this.constants.API_ENDPOINT + '/auth/google-check';
+      const body = { email: userEmail };
+      
+      // ใช้ lastValueFrom เพื่อรอผลลัพธ์จาก API
+      const responseData = await lastValueFrom(
+        this.http.post<DataMembers[]>(url, body)
+      );
+
+      // 3. ถ้าสำเร็จ (เจอผู้ใช้) 
+      this.dataLogin = responseData;
+      if (this.dataLogin.length > 0) {
+        const user = this.dataLogin[0];
+        const userType = Number(user.type_user);
+
+        if (userType === 4) {
+          this.isModelOpen = true; // แสดง Modal ให้เลือกโหมด
+        } else {
+          this.getFullUserDataAsync(user.user_id, userType); 
+        }
+      }
+
+    } catch (error: any) {
+      // 4. จัดการข้อผิดพลาด
+      if (error.status === 404) {
+        // Backend แจ้งว่าไม่พบอีเมลนี้
+        this.showSnackBar('ไม่พบอีเมลนี้ในระบบ กรุณาสมัครสมาชิกก่อน');
+      } else if (error.code !== 'auth/popup-closed-by-user') {
+        // ข้อผิดพลาดอื่นๆ (ยกเว้นกรณีผู้ใช้ปิดหน้าต่างเอง)
+        console.error('Google Sign-In Failed:', error);
+        this.showSnackBar('การเข้าสู่ระบบด้วย Google ล้มเหลว');
+      }
+    }
   }
 
   goToRegister(): void {
@@ -201,5 +258,8 @@ getUserOptions(): any[] {
 back(){
     this.router.navigate(['']);
   }
+
+
+
 
 }

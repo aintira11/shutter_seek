@@ -159,25 +159,34 @@
                     display: block;
                   }
 
-                  .delete-image-btn {
-                    position: absolute;
-                    top: 8px;
-                    right: 8px;
-                    background: rgba(244, 67, 54, 0.9);
-                    color: white;
-                    width: 36px;
-                    height: 36px;
-                    border-radius: 50%;
-                    transition: background-color 0.2s ease;
+.delete-image-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(244, 67, 54, 0.9);
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
 
-                    &:hover {
-                      background: rgba(244, 67, 54, 1);
-                    }
+  &:hover {
+    background: rgba(244, 67, 54, 1);
+  }
 
-                    mat-icon {
-                      font-size: 20px;
-                    }
-                  }
+  mat-icon {
+    font-size: 20px;
+    line-height: 1;
+    margin-left: -4px;
+    
+    // --- เพิ่ม 2 บรรทัดนี้ ---
+    width: 20px;
+    height: 20px;
+  }
+}
                 }
               }
             }

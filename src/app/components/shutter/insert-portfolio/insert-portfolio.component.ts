@@ -285,6 +285,10 @@ cancelEdit() {
         this.showSnackBar('กรุณาระบุชื่อผลงาน');
         return;
       }
+       if (!categoryToUpdate.image_urls || categoryToUpdate.image_urls.length < 5) {
+        this.showSnackBar('กรุณาเลือกรูปภาพ อย่างน้อย 5 รูป');
+        return;
+      }
       
       const url = `${this.Constants.API_ENDPOINT}/update/portfolio`;
       const formData = {
@@ -325,13 +329,28 @@ cancelEdit() {
     this.dataWork[catIndex].name_work = event.target.value;
   }
 
-  onCategoryImageSelected(event: any, catIndex: number) {
-    const files = event.target.files;
-    if (files && files.length > 0) {
-      const file = files[0];
-      this.uploadImage(file, catIndex);
+async onCategoryImageSelected(event: any, catIndex: number): Promise<void> {
+  const files = event.target.files;
+  if (files && files.length > 0) {
+    this.isUploading = true; // เริ่มสถานะกำลังอัปโหลด
+
+    // วนลูปเพื่อจัดการทุกไฟล์ที่ผู้ใช้เลือก
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      try {
+        // เรียกใช้ฟังก์ชันอัปโหลดของคุณสำหรับแต่ละไฟล์
+        // สมมติว่า uploadImage เป็น async function
+        await this.uploadImage(file, catIndex);
+      } catch (error) {
+        console.error(`Failed to upload ${file.name}:`, error);
+        // สามารถเพิ่มการแจ้งเตือนผู้ใช้ตรงนี้ได้
+      }
     }
+
+    this.isUploading = false; // สิ้นสุดสถานะกำลังอัปโหลด
   }
+}
+
     
   addCategory() {
      const user_id = Array.isArray(this.data) && this.data.length > 0 ? this.data[0].user_id : null;

@@ -157,9 +157,9 @@ export class EditSelectWorkComponent implements OnInit {
       console.log('Packages loaded from portfolio:', this.packages);
       
       // ถ้าไม่มี packages เลย ให้สร้างแพ็กเกจเปล่าเพื่อเพิ่มใหม่
-      if (this.packages.length === 0) {
-        this.addNewPackage();
-      }
+      // if (this.packages.length === 0) {
+      //   this.addNewPackage();
+      // }
     } else {
       this.packages = [];
       this.addNewPackage();
@@ -357,13 +357,29 @@ removePackage(index: number): void {
     console.log('Current tag ID:', this.selectedTagId);
   }
 
-  onCategoryImageSelected(event: any, catIndex: number) {
-    const files = event.target.files;
-    if (files && files.length > 0) {
-      const file = files[0];
-      this.uploadImage(file, catIndex);
+async onCategoryImageSelected(event: any, catIndex: number): Promise<void> {
+  // event.target.files จะเป็น FileList ที่มีหลายไฟล์
+  const files = event.target.files; 
+  
+  if (files && files.length > 0) {
+    this.isUploading = true; // เริ่มสถานะ "กำลังอัปโหลด"
+
+    // วนลูป (loop) เพื่ออัปโหลดทีละไฟล์
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      try {
+        // เรียกใช้ฟังก์ชันอัปโหลดของคุณสำหรับแต่ละไฟล์
+        // สมมติว่า uploadImage เป็น async function
+        await this.uploadImage(file, catIndex);
+      } catch (error) {
+        console.error(`อัปโหลดไฟล์ ${file.name} ไม่สำเร็จ:`, error);
+        this.showSnackBar('อัปโหลดไฟล์ไม่สำเร็จ');
+      }
     }
+
+    this.isUploading = false; // สิ้นสุดสถานะ "กำลังอัปโหลด"
   }
+}
 
   showSnackBar(message: string) {
     this.snackBar.open(message, 'ปิด', {
@@ -382,6 +398,11 @@ removePackage(index: number): void {
     // บันทึกข้อมูลผลงาน
     if (this.isEditCategory) {
       const categoryToUpdate = this.dataWork[this.selectedCategoryIndex!];
+
+      if (!categoryToUpdate.image_urls || categoryToUpdate.image_urls.length < 5) {
+        this.showSnackBar('กรุณาเลือกรูปภาพ อย่างน้อย 5 รูป');
+        return;
+      }
       
       const url = `${this.Constants.API_ENDPOINT}/update/portfolio`;
       const formData = {
@@ -424,6 +445,11 @@ removePackage(index: number): void {
     // บันทึกข้อมูลผลงาน
     if (this.isEditCategory) {
       const categoryToUpdate = this.dataWork[this.selectedCategoryIndex!];
+
+       if (!categoryToUpdate.image_urls || categoryToUpdate.image_urls.length < 5) {
+        this.showSnackBar('กรุณาเลือกรูปภาพ อย่างน้อย 5 รูป');
+        return;
+      }
       
       const url = `${this.Constants.API_ENDPOINT}/update/portfolio`;
       const formData = {
@@ -549,6 +575,11 @@ removePackage(index: number): void {
   // บันทึกข้อมูลผลงาน
   if (this.isEditCategory) {
     const categoryToUpdate = this.dataWork[this.selectedCategoryIndex!];
+
+    if (!categoryToUpdate.image_urls || categoryToUpdate.image_urls.length < 5) {
+      this.showSnackBar('กรุณาเลือกรูปภาพ อย่างน้อย 5 รูป');
+      return;
+    }
     
     const url = `${this.Constants.API_ENDPOINT}/update/portfolio`;
     const formData = {

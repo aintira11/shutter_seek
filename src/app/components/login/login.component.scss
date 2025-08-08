@@ -7,6 +7,10 @@ body {
   overflow: hidden; /* Prevent scrollbars if the card overflows */
 }
 
+ .google-login-btn:hover {
+        opacity: 0.9;
+      }
+
 //ปุ่มกลับ
 /* From Uiverse.io by AmIt-DasIT */ 
 .box {
@@ -408,7 +412,7 @@ input {
 .forgot-password {
   display: block;
   text-align: right;
-  font-size: 12px;
+  font-size: 15px;
   color: #999999;
   text-decoration: none;
   margin-top: 5px;
@@ -458,11 +462,22 @@ input {
 button:hover {
   opacity: 0.95;
 }
+.login-form{
+  width: 50%;
+}
+
 
 @media (max-width: 768px) {
   .login-box {
     flex-direction: column; /* Stack logo + form */
     padding: 20px;
+  }
+  .login-form{
+  width: 90%;
+}
+.register-link {
+    text-align: center; /* จัดกึ่งกลาง */
+    margin-bottom: 1.5rem;
   }
 
   .content {
@@ -486,6 +501,7 @@ button:hover {
   }
 
   .register-btn, .login-btn {
+    
     width: 100%; /* Full width ปุ่ม */
   }
 

@@ -59,13 +59,13 @@
               </div>
               
             
-            <div class="sidebar-footer">
-              <!-- <a href="#" class="nav-link"> -->
+            <!-- <div class="sidebar-footer">
+              
                 <div class="nav-link">
                 <mat-icon style="margin-top: 5px;">help</mat-icon>
                 <span style="font-size: 20px;padding: 5px;">ช่วยเหลือ</span>
             </div>
-            </div>
+            </div> -->
           </mat-sidenav>
 
         <!-- Main Content -->
@@ -282,24 +282,37 @@
   </div>
 </div>
     
-    <!-- แสดงรูปภาพ -->
-    <div class="image-gallery">
-      <button mat-icon-button class="nav-btn nav-left" (click)="scrollLeft()" >
-        <mat-icon>chevron_left</mat-icon>
-      </button>
+<!-- แสดงรูปภาพ -->
+<div class="image-gallery">
+  <!-- 1. ส่ง #imageContainer เข้าไปในฟังก์ชัน -->
+  <button mat-icon-button class="nav-btn nav-left" (click)="scrollLeft(imageContainer)">
+    <mat-icon>chevron_left</mat-icon>
+  </button>
+  
+  <!-- 2. สร้าง Template Reference Variable ใหม่ และเพิ่ม Event Bindings -->
+  <div 
+    class="image-container" 
+    #imageContainer 
+    (mousedown)="onMouseDown($event, imageContainer)"
+    (mouseleave)="onMouseLeave(imageContainer)"
+    (mouseup)="onMouseUp(imageContainer)"
+    (mousemove)="onMouseMove($event, imageContainer)"
+    (touchstart)="onTouchStart($event, imageContainer)"
+    (touchend)="onMouseUp(imageContainer)"
+    (touchmove)="onTouchMove($event, imageContainer)">
       
-      <div class="image-container" #wrapper>
-        <div class="image-track">
-          <div *ngFor="let imgUrl of dataW.image_urls" class="image-item">
-            <img [src]="imgUrl" alt="งานตัวอย่าง" class="work-image">
-          </div>
-        </div>
+    <div class="image-track">
+      <div *ngFor="let imgUrl of dataW.image_urls" class="image-item">
+        <img [src]="imgUrl" alt="งานตัวอย่าง" class="work-image">
       </div>
-      
-      <button mat-icon-button class="nav-btn nav-right" (click)="scrollRight()" >
-        <mat-icon>chevron_right</mat-icon>
-      </button>
     </div>
+  </div>
+  
+  <!-- 3. ส่ง #imageContainer เข้าไปในฟังก์ชัน -->
+  <button mat-icon-button class="nav-btn nav-right" (click)="scrollRight(imageContainer)">
+    <mat-icon>chevron_right</mat-icon>
+  </button>
+</div>
 
     <!-- ส่วนแพ็กเกจ -->
     <div class="packages-section">
@@ -450,6 +463,8 @@
 
 
 </div>
+
+
 </mat-sidenav-content>
 </mat-sidenav-container>
       
