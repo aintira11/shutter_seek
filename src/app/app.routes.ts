@@ -40,7 +40,7 @@ export const routes: Routes = [
     {path: 'createacc',component: CreateAccountComponent},
     {path: 'creatfro',component: CreateProfileComponent},
     {path: 'base',component: BaseShuttComponent},
-    {path: 'base2_1',component: BShutter21Component},
+    {path: 'foot',component: BShutter21Component},
     {path: 'base2_2',component: BShutter22Component},
     {path: 'base2_3',component: BShutter23Component},
     {path: 'base3',component: BShutter3Component},

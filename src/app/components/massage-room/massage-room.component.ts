@@ -975,11 +975,11 @@ private reestablishMessagesListener(targetRoomId: string): void {
     const type = typeuser;
     console.log("[Navigation] ค่าของ type:", type, "| ประเภท:", typeof type);
     if (type === '2') {
-      this.router.navigate(['/'], { state: { data: this.data } }); // ถ้าเป็นช่างภาพอาจจะนำทางไปหน้าหลักหรือหน้าที่เหมาะสม
+      this.router.navigate(['/mainshutter'], ); 
     }else if (type === '3'){
           this.router.navigate(['/admin'],); }
     else {
-      this.router.navigate(['/profile'], { state: { data: this.data } });
+      this.router.navigate(['/profile'],  );
     }
   }
 

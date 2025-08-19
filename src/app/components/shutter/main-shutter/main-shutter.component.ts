@@ -448,21 +448,11 @@ closeList() {
 
   chat(id_shutter: number){
       // console.log("📤 Sending datauser:", this.data);
-    
-      if (id_shutter ) {
-         this.router.navigate(['/roomchat'], { 
-        state: { 
-          // datauser: this.data, 
-          idshutter: id_shutter 
-        } 
-      });
-      }else{
         this.router.navigate(['/roomchat'], { 
         // state: { 
         //   datauser: this.data, 
         // } 
       });
-      }
     
       
      }

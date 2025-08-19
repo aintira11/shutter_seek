@@ -31,7 +31,7 @@
             <div class="button-container" >
               <!-- <button class="btn btn-outline-primary me-2" routerLink="/register">ลงทะเบียน</button> -->
               <button class="btn btn-primary btn-sm" (click)="logout()">ออกจากระบบ</button>
-              <button mat-button class="circle-button" >
+              <button mat-button class="circle-button" style="border-radius: 100%; object-fit: cover;">
                 <img src="{{ data.image_profile }}" alt="" class="rounded-circle" title="{{ data.username }}"(click)="profile(data.type_user)" style="border-radius: 100%; object-fit: cover;">
               </button>
               </div>
@@ -218,8 +218,7 @@
                                 <span class="favorite-count" style="margin-top: 7px;">
                                     ถูกใจ {{ photographer.like_count || 0 }} คน
                                 </span>
-                            
-                          
+                     
                         </div>
                     </div>
                 </div>
@@ -367,62 +366,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
  <!-- Enhanced Footer -->
-    <footer class="enhanced-footer" id="about">
-        <div class="container">
-            <!-- Logo Section -->
-            <div class="footer-logo-section">
-                <img src="/assets/images/PIXEL (8).png" 
-                     alt="Shutter Seek Logo" class="footer-logo">
-                <!-- <h2 class="footer-brand-name">SHUTTER SEEK</h2> -->
-                <p class="footer-tagline">เก็บทุกช่วงเวลาสำคัญ ด้วยภาพถ่ายที่สมบูรณ์แบบ</p>
-            </div>
-
-            <!-- Footer Content -->
-            <div class="footer-content">
-                <!-- About Section -->
-                <div class="footer-section">
-                    <h4><i class="fas fa-info-circle"></i> เกี่ยวกับเรา</h4>
-                    <p>
-                        เว็บไซต์ของเราเป็นพื้นที่กลางสำหรับลูกค้าและช่างภาพที่ต้องการเชื่อมต่อกัน 
-                        ด้วยระบบค้นหา โปรไฟล์ และรีวิวที่โปร่งใส
-                    </p>
-                    <p>
-                        มุ่งมั่นในการให้บริการที่ปลอดภัยและเชื่อถือได้ สำหรับทุกโอกาสสำคัญในชีวิตของคุณ
-                    </p>
-                </div>
-
-                <!-- Contact Information -->
-                <div class="footer-section">
-                    <h4><i class="fas fa-address-book"></i> ติดต่อเรา</h4>
-                    <div class="contact-item">
-                        <i class="fas fa-envelope"></i>
-                        <span>support&#64;shutterseek.com</span>
-                    </div>
-                    <!-- <div class="contact-item">
-                        <i class="fab fa-line"></i>
-                        <span>&#64;shutterseek</span>
-                    </div> -->
-                    <div class="contact-item">
-                        <i class="fas fa-phone"></i>
-                        <span>02-XXX-XXXX</span>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>กรุงเทพมหานคร, ประเทศไทย</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Footer Bottom -->
-            <!-- <div class="footer-bottom">
-                <p>
-                    &copy; 2025 Shutter Seek. สงวนลิขสิทธิ์ทุกประการ | 
-                    Made with <span class="heart">❤️</span> in Thailand
-                </p>
-            </div> -->
-        </div>
-    </footer>
-
+<app-b-shutter2-1 id="about"></app-b-shutter2-1>
        <button *ngIf="showButton" class="scroll-to-top" (click)="scrollToTop()">
     ⬆ เลื่อนขึ้น
   </button>

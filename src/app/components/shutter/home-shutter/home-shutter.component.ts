@@ -13,6 +13,7 @@ import {MatMenuModule} from '@angular/material/menu';
 import { AuthService } from '../../../service/auth.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { BShutter21Component } from '../b-shutter2-1/b-shutter2-1.component';
 
 declare var bootstrap: any;
 @Component({
@@ -24,7 +25,8 @@ declare var bootstrap: any;
     MatMenuModule, 
     MatIconModule,
   MatSnackBarModule,
-MatProgressSpinnerModule],
+MatProgressSpinnerModule,
+BShutter21Component],
   templateUrl: './home-shutter.component.html',
   styleUrl: './home-shutter.component.scss'
 })

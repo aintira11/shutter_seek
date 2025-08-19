@@ -41,7 +41,7 @@
         <div class="column">
             <img [src]="imagePreview" alt="User Profile" class="imag" id="profileImage">
             <input type="file" id="fileInput" style="display: none;" (change)="onFileSelected($event)">
-            <button class="btn-profile" style="margin-top: 10px;" (click)="triggerFileInput()">เปลี่ยนรูป Profile</button>
+            <button class="btn-profile" style="margin-top: 10px;" (click)="triggerFileInput()">เลือกรูป Profile</button>
         </div>
         <div  style="width:100%;">
         <div >
@@ -107,7 +107,7 @@
                 </div>
             
                 <div class="form-group">
-                <label class="label">จังหวัดของคุณ</label>
+                <label class="label">จังหวัดของคุณ <span style="color: red;">*</span> </label>
                 <select class="input-style" formControlName="province">
                   <option value="">-- เลือกจังหวัด --</option>
                   <option *ngFor="let thai of thaijson" [value]="thai.name_th" >
@@ -147,7 +147,7 @@
             </div>
 
             <div class="form-group" style="position: relative;">
-                <label class="label">ยืนยันรหัสผ่าน</label>
+                <label class="label">ยืนยันรหัสผ่าน <span style="color: red;">*</span> </label>
                  <div class="password-container">
                     <input
                       [type]="hideConfirmPassword ? 'password' : 'text'"

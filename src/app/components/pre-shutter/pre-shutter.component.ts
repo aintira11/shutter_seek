@@ -7,6 +7,7 @@ import { Constants } from '../../config/constants';
 import { AuthService } from '../../service/auth.service';
 import { DataLike, DataMembers, DataPortfolioByPID } from '../../model/models';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { BShutter21Component } from '../shutter/b-shutter2-1/b-shutter2-1.component';
 
 declare var bootstrap: any;
 
@@ -16,7 +17,8 @@ declare var bootstrap: any;
   imports: [RouterModule,
       HttpClientModule,
     CommonModule
-  ,MatSnackBarModule],
+  ,MatSnackBarModule,
+BShutter21Component],
   templateUrl: './pre-shutter.component.html',
   styleUrl: './pre-shutter.component.scss'
 })

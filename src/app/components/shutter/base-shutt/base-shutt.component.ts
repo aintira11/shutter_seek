@@ -37,6 +37,9 @@ export class BaseShuttComponent {
   isPersonalInfoSubmitting = false;
   isPortfolioInfoSubmitting = false;
   isUploading = false;
+
+  isLoading: boolean = false;
+  uploadProgressMessage: string = 'กำลังเตรียมข้อมูล...';
   
   portfolioSaved = false;
   
@@ -160,6 +163,13 @@ export class BaseShuttComponent {
     if (!input.files || input.files.length === 0) {
       return;
     }
+
+     // ป้องกันการเลือกไฟล์ขณะกำลังอัปโหลด
+    if (this.isUploading) {
+      this.showAlert('กำลังอัปโหลดข้อมูล กรุณารอสักครู่');
+      input.value = '';
+      return;
+    }
     
     // Check if adding these files would exceed the limit
     const totalFiles = this.files.length + input.files.length;
@@ -200,6 +210,12 @@ export class BaseShuttComponent {
   removeFile(index: number): void {
     this.files.splice(index, 1);
   }
+
+   // เพิ่มฟังก์ชันแสดงข้อความความคืบหน้า
+  private updateProgressMessage(message: string): void {
+    this.uploadProgressMessage = message;
+    console.log(message); // สำหรับ debug
+  }
   
   // Upload images
   async uploadImages(): Promise<void> {
@@ -227,12 +243,14 @@ export class BaseShuttComponent {
       this.showAlert('กรุณากรอกข้อมูลผลงานให้ครบถ้วน');
       return;
     }
-
+    // เริ่มต้นการอัปโหลด - แสดง loading overlay
     this.isUploading = true;
+    this.updateProgressMessage('กำลังเตรียมข้อมูล...');
 
     try {
       // ขั้นตอนที่ 1: บันทึกข้อมูลส่วนตัว
       this.showAlert('กำลังบันทึกข้อมูลส่วนตัว...', false);
+      this.updateProgressMessage('กำลังบันทึกข้อมูลส่วนตัว...');
       
       const personalInfoUrl = this.constants.API_ENDPOINT + '/updateline/' + this.currentUser.user_id;
       const personalInfoData = this.photographerForm.value;
@@ -242,6 +260,7 @@ export class BaseShuttComponent {
 
       // ขั้นตอนที่ 2: บันทึกข้อมูลผลงาน
       this.showAlert('กำลังบันทึกข้อมูลผลงาน...', false);
+      this.updateProgressMessage('กำลังบันทึกข้อมูลผลงาน...');
       
       const portfolioUrl = this.constants.API_ENDPOINT + '/add/Portfolio';
       const portfolioData = {
@@ -291,21 +310,34 @@ export class BaseShuttComponent {
       }
 
       // ตรวจสอบผลลัพธ์
+      this.updateProgressMessage('กำลังสรุปผลการบันทึก...');
+      
       if (successCount === this.files.length) {
-        this.showAlert('บันทึกข้อมูลและอัปโหลดรูปทั้งหมดสำเร็จ');
-        this.navigateToNextStep(portfolioResponse.last_idx);
+         this.updateProgressMessage('บันทึกข้อมูลสำเร็จ กำลังเปลี่ยนหน้า...');
+        
+        // หน่วงเวลาเล็กน้อยเพื่อให้ผู้ใช้เห็นข้อความสำเร็จ
+        setTimeout(() => {
+          this.navigateToNextStep(portfolioResponse.last_idx);
+        }, 1000);
       } else if (successCount > 0) {
+        // this.showAlert(`บันทึกข้อมูลสำเร็จ อัปโหลดรูปสำเร็จ ${successCount} จาก ${this.files.length} รูป`);
+        // this.navigateToNextStep(portfolioResponse.last_idx);
         this.showAlert(`บันทึกข้อมูลสำเร็จ อัปโหลดรูปสำเร็จ ${successCount} จาก ${this.files.length} รูป`);
-        this.navigateToNextStep(portfolioResponse.last_idx);
+        setTimeout(() => {
+          this.navigateToNextStep(portfolioResponse.last_idx);
+        }, 1000);
       } else {
         this.showAlert('บันทึกข้อมูลสำเร็จ แต่ไม่สามารถอัปโหลดรูปได้ กรุณาลองใหม่อีกครั้ง');
       }
     } catch (error: any) {
       console.error('Error during complete save process:', error);
       this.showAlert(error.message || 'เกิดข้อผิดพลาดระหว่างการบันทึกข้อมูล กรุณาลองใหม่อีกครั้ง');
-    } finally {
+      // ปิด loading overlay เมื่อเกิดข้อผิดพลาด
       this.isUploading = false;
-    }
+    } 
+    // finally {
+    //   this.isUploading = false;
+    // }
   }
 
   // Navigation - ส่ง user_id, tags_id, portfolio_id ไปหน้าถัดไป
@@ -321,6 +353,7 @@ export class BaseShuttComponent {
       portfolio_id: portfolioId
     };
 
+    this.isUploading = false;
     this.router.navigate(['/base3'], { state: { data: navigationData } });
   }
   

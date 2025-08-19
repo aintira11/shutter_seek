@@ -20,8 +20,16 @@
         <div class="logo-wrapper">
             <img src="/assets/images/PIXEL (7).png" alt="Logo" class="logo-img" /> 
         </div>
+
+ <!-- Loading Overlay สำหรับการอัปโหลด -->
+        <div class="loading-overlay" *ngIf="isUploading">
+            <svg viewBox="25 25 50 50">
+                <circle r="20" cy="50" cx="50"></circle>
+            </svg>
+            <p class="loading-text">{{ uploadProgressMessage }}</p>
+        </div>
         
-        <div class="content-container">
+        <div class="content-container" *ngIf="!isLoading ">
             <div class="page-title">
                 <h2>ขั้นตอนที่ 2</h2>
                 <h3>ข้อมูลเบื้องต้นสำหรับช่างภาพ</h3>
@@ -121,8 +129,8 @@
         </div>
 
         <!-- ปุ่มเดียวสำหรับบันทึกทุกอย่าง -->
-        <div class="button-container final-step">
-            <button type="button" class="back-button" (click)="goBack()">ย้อนกลับ</button>
+        <div class="button-container">
+            <!-- <button type="button" class="back-button" (click)="goBack()">ย้อนกลับ</button> -->
             <button type="button" class="save-button" (click)="uploadImages()" [disabled]="!isUploadButtonEnabled()">
                 <span *ngIf="!isUploading">บันทึกข้อมูลทั้งหมดและไปต่อ</span>
                 <span *ngIf="isUploading">กำลังดำเนินการ...</span>

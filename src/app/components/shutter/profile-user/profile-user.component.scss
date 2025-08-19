@@ -3,7 +3,7 @@ body {
   padding: 0;
   background-color: #f8f8f8;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -13,8 +13,10 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  height: 100vh;
+  width: 50%;
+  min-height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .profile-card {
@@ -23,14 +25,11 @@ body {
   justify-content: flex-start;
   background-color: #0046ad;
   border-radius: 24px;
-  padding: 50px 60px;
+  padding: 40px 50px;
   color: #fff;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
-
-  width: 90%;
+  width: 100%;
   max-width: 900px;
-  height: 300px;
-
   gap: 40px;
 }
 
@@ -40,26 +39,26 @@ body {
   border-radius: 50%;
   object-fit: cover;
   border: 6px solid white;
+  flex-shrink: 0;
 }
 
 .profile-info {
   display: flex;
   flex-direction: column;
   gap: 16px;
-
-  .username {
-    font-size: 32px;
-    font-weight: bold;
-    margin: 0;
-  }
-
-  .follow-info,
-  .member-since {
-    font-size: 18px;
-    margin: 0;
-  }
 }
 
+.username {
+  font-size: 32px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.follow-info,
+.member-since {
+  font-size: 18px;
+  margin: 0;
+}
 
 /* ปุ่มกลับ */
 .box {
@@ -111,16 +110,67 @@ body {
   animation: anima 0.6s ease;
 }
 
-/* Optional: Responsive */
+/* Responsive สำหรับ Tablet */
+@media screen and (max-width: 992px) {
+  .profile-card {
+    gap: 20px;
+    padding: 30px 25px;
+  }
+  .username {
+    font-size: 28px;
+  }
+  .follow-info,
+  .member-since {
+    font-size: 16px;
+  }
+}
+
+/* Responsive สำหรับ Mobile */
 @media screen and (max-width: 768px) {
   .profile-card {
     flex-direction: column;
     align-items: center;
     text-align: center;
     padding: 30px 20px;
+    gap: 20px;
   }
 
   .profile-image {
-    margin-bottom: 20px;
+    width: 140px;
+    height: 140px;
+  }
+
+  .username {
+    font-size: 24px;
+  }
+
+  .follow-info,
+  .member-since {
+    font-size: 14px;
+  }
+  
+  .profile-container {
+    width: 100%;
+  }
+}
+
+/* Responsive สำหรับจอเล็กมาก (เช่น iPhone SE) */
+@media screen and (max-width: 480px) {
+  .profile-card {
+    padding: 20px 15px;
+  }
+
+  .profile-image {
+    width: 110px;
+    height: 110px;
+  }
+
+  .username {
+    font-size: 20px;
+  }
+
+  .follow-info,
+  .member-since {
+    font-size: 12px;
   }
 }

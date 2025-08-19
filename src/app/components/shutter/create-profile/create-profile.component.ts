@@ -62,13 +62,13 @@ export class CreateProfileComponent implements OnInit {
             Name: ['', [Validators.required, this.noWhitespaceValidator]],
             LastName: ['', [Validators.required, this.noWhitespaceValidator]],
             address: [''],
-            province: ['',],
+            province: ['',[Validators.required]],
             Password: [
   '',
   [
     Validators.required,
     this.noWhitespaceValidator,
-    Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
+    Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#._:;])[A-Za-z\d@$!%*?&#._:;]{8,}$/)
   ]
 ],
             confirmPassword: ['', [Validators.required, this.noWhitespaceValidator]],

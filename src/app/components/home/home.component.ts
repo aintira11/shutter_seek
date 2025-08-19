@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
-import { RouterModule,Router } from '@angular/router';
+import { RouterModule,Router, RouterOutlet } from '@angular/router';
 import { DataLike, DataMembers, DataPortfolio, DataSreach, DataTegs, DataTopten } from '../../model/models';
 import { Constants } from '../../config/constants';
 import { ActivatedRoute  } from '@angular/router';
@@ -10,6 +10,7 @@ import jsonData from '../../../assets/thai_provinces.json'
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../service/auth.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { BShutter21Component } from '../shutter/b-shutter2-1/b-shutter2-1.component';
 
 declare var bootstrap: any;
 @Component({
@@ -20,6 +21,7 @@ declare var bootstrap: any;
     CommonModule,
     ReactiveFormsModule,
     MatSnackBarModule,
+  BShutter21Component
     ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
@@ -330,6 +332,9 @@ getPrev(portfolioIndex: number) {
       this.currentPage = page;
       this.updatePaginatedData();
     }
+  }
+    goToRegister(): void {
+    this.router.navigate(['/register']);
   }
 
   // ฟังก์ชันสำหรับสร้าง array ของหมายเลขหน้า

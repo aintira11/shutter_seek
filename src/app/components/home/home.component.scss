@@ -7,6 +7,8 @@ body {
     box-sizing: border-box;
 }
 
+
+
 //โหลดดิ้ง
 /* From Uiverse.io by barisdogansutcu */ 
 .loading-container svg,
@@ -185,10 +187,10 @@ body {
 }
 #third {
     border-radius: 15px; /* Slightly more rounded */
-    padding: 3% 2%; /* Increased padding for more breathing room */
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Softer gradient */
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); /* More prominent shadow */
-    margin-top: 30px;
+    // padding: 3% 2%; /* Increased padding for more breathing room */
+    // background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Softer gradient */
+    // box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); /* More prominent shadow */
+    // margin-top: 15px;
     color: #fff; /* Text color for this section */
 }
 
@@ -196,7 +198,8 @@ body {
     text-align: center; 
     margin-bottom: 30px;
     font-size: 2rem;
-    color: #fff;
+    // color: #fff;
+    color: rgb(14, 80, 213);
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
 }
 
@@ -206,6 +209,7 @@ body {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     background-color: #fff; /* Ensure card background is white */
     height: 100%; /* ให้เต็ม column เท่ากัน */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
 
 #third .card:hover {
@@ -577,7 +581,7 @@ user-select: none;
 
 /* Container & Header */
 .container.mt-4 {
-    margin-top: 50px !important;
+    margin-top: 20px !important;
     padding: 0 20px;
 }
 
@@ -609,15 +613,15 @@ user-select: none;
 /* Main Card Styling */
 .container.mt-4 .card {
     background: linear-gradient(135deg, 
-        rgba(102, 126, 234, 0.95) 0%, 
+        rgba(44, 79, 237, 0.769) 0%, 
         rgba(118, 75, 162, 0.95) 50%, 
-        rgba(64, 93, 230, 0.95) 100%);
+        rgba(35, 70, 243, 0.71) 100%);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     color: #fff;
     border-radius: 25px;
-    padding: 35px;
-    margin-bottom: 35px;
+    padding: 20px;
+    margin-bottom: 20px;
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 
         0 20px 40px rgba(0, 0, 0, 0.15),
@@ -1126,234 +1130,6 @@ h1, h2, h3, h4, h5, h6, p, a, button, select, input, label, li {
         right: 10px;
     }
 }
-
- /* Content wrapper to push footer down */
-
- 
-        .content-wrapper {
-            min-height: calc(100vh - 200px);
-            padding: 50px 0;
-        }
-
-        /* Enhanced Footer Styles */
-        .enhanced-footer {
-            // background: linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #2c3e50 100%);
-            color: #ecf0f1;
-            padding: 50px 0 30px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .enhanced-footer::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            // background: linear-gradient(90deg, #0e51d5, #3b82f6, #06b6d4, #0e51d5);
-            background-size: 300% 100%;
-            animation: gradientShift 3s ease-in-out infinite;
-        }
-
-        @keyframes gradientShift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-
-        .footer-logo-section {
-            text-align: center;
-            margin-bottom: 40px;
-            position: relative;
-        }
-
-        .footer-logo {
-            width: 300px;
-            // height: 80px;
-            border-radius: 20px;
-            // box-shadow: 0 10px 30px rgba(14, 81, 213, 0.3);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            margin-bottom: 15px;
-            border: 3px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .footer-logo:hover {
-            transform: translateY(-5px) scale(1.05);
-            box-shadow: 0 15px 40px rgba(14, 81, 213, 0.5);
-        }
-
-        .footer-brand-name {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #0e51d5;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgb(0, 0, 0);
-        }
-
-        .footer-tagline {
-            font-size: 1.1rem;
-            color: #000000;
-            font-weight: 300;
-            margin-bottom: 0;
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 40px;
-            margin-bottom: 40px;
-        }
-
-        .footer-section {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 30px;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .footer-section:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-        }
-
-        .footer-section h4 {
-            color: #0e51d5;
-            font-size: 1.3rem;
-            font-weight: 600;
-            margin-bottom: 20px;
-            position: relative;
-            padding-bottom: 10px;
-        }
-
-        .footer-section h4::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 50px;
-            height: 3px;
-            background: linear-gradient(90deg, #0e51d5, #3b82f6);
-            border-radius: 2px;
-        }
-
-        .footer-section p {
-            color: #000000;
-            line-height: 1.6;
-            margin-bottom: 15px;
-        }
-        .footer-section {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 30px;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .footer-section:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-        }
-
-        .footer-section h4 {
-            color: #0e51d5;
-            font-size: 1.3rem;
-            font-weight: 600;
-            margin-bottom: 20px;
-            position: relative;
-            padding-bottom: 10px;
-        }
-
-        .footer-section h4::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 50px;
-            height: 3px;
-            background: linear-gradient(90deg, #0e51d5, #3b82f6);
-            border-radius: 2px;
-        }
-
-
-
-        .contact-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-            color: #000000;
-        }
-
-        .contact-item i {
-            color: #0e51d5;
-            margin-right: 15px;
-            width: 20px;
-            font-size: 1.1rem;
-        }
-
-
-        .footer-bottom {
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 30px;
-            text-align: center;
-        }
-
-
-        .footer-bottom .heart {
-            color: #e74c3c;
-            animation: heartbeat 1.5s ease-in-out infinite;
-        }
-
-        @keyframes heartbeat {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .footer-content {
-                grid-template-columns: 1fr;
-                gap: 30px;
-            }
-            
-            .footer-section {
-                padding: 25px;
-            }
-            
-            .footer-brand-name {
-                font-size: 1.5rem;
-            }
-            
-            .social-icons {
-                justify-content: center;
-            }
-        }
-
-                .footer-bottom p {
-            color: #0000007b;
-            margin: 0;
-            font-size: 0.9rem;
-        }
-
-        /* Demo content styles */
-        .demo-content {
-            text-align: center;
-            color: white;
-            padding: 50px 20px;
-        }
-
-        .demo-content h1 {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .demo-content p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
 
 
 /* Custom Pagination Styles */

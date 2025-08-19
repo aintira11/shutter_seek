@@ -214,6 +214,43 @@
   </mat-sidenav-content>
   <!-- </ng-template> -->
   </mat-sidenav-container>
+
+  <!-- Popup Overlay -->
+<div class="modal-overlay" *ngIf="openmodel" (click)="closeModal($event)">
+  <div class="alert-modal" (click)="$event.stopPropagation()">
+    <!-- Header -->
+    <div class="modal-header">
+      <button class="close-btn" (click)="closeModal()" type="button">
+        <mat-icon>close</mat-icon>
+      </button>
+      <div class="warning-icon">
+        <mat-icon class="warning-icon-text">warning</mat-icon>
+      </div>
+      <h2 class="modal-title">แจ้งเตือนสำคัญ!</h2>
+      <p class="modal-subtitle">เกี่ยวกับการตั้งค่าผลงานของคุณ</p>
+    </div>
+
+    <!-- Content -->
+    <div class="modal-content">
+      <div class="alert-message">
+        <strong>คุณยังไม่ได้สร้างแพ็กเกจสำหรับผลงานนี้</strong><br><br>
+        <span class="highlight-text">ลูกค้าอาจค้นหาคุณไม่เจอหากกรองตามราคา</span><br>
+        เพื่อเพิ่มโอกาสในการเข้าถึงลูกค้า เราแนะนำให้สร้างแพ็กเกจราคาเพื่อแสดงบริการของคุณ
+      </div>
+
+      <div class="modal-actions">
+        <button mat-raised-button color="primary" class="create-package-btn" 
+                (click)="creatPackage()">
+          <mat-icon>card_giftcard</mat-icon>
+          สร้างแพ็กเกจเลย
+        </button>
+        <button mat-button class="skip-btn" (click)="skipPackageCreation()">
+          ข้ามไปก่อน
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
   
 </body>
 </html>

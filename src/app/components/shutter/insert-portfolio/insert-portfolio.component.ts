@@ -62,7 +62,7 @@ export class InsertPortfolioComponent {
   Tags: DataTegs[] = [];
 
   selectedTagId: number = 0;
-   
+  openmodel : boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -220,6 +220,8 @@ cancelEdit() {
     }
   }
 
+
+  lastCreatedPortfolioId: number = 0;
   savePortfolio() {
     if (this.selectedCategoryIndex === null && !this.isAddingNewCategory) {
       this.showSnackBar('ไม่พบข้อมูลที่จะบันทึก');
@@ -262,13 +264,18 @@ cancelEdit() {
       // console.log('Form data for adding portfolio:', formData);
       
       this.http.post(url, formData).subscribe({
-        next: (response) => {
+        next: (response:any) => {
           console.log('Portfolio added - API response:', response);
           this.showSnackBar('เพิ่มผลงานสำเร็จ');
           this.selectedCategoryIndex = null;
           this.isAddingNewCategory = false;
           this.selectedTagId = 0; // รีเซ็ตค่า
           this.getdataWork(userId);
+          
+          // เก็บ ID ของผลงานที่เพิ่งสร้าง
+        this.lastCreatedPortfolioId = response.portfolio_id;
+        this.openmodel = true;
+          // this.creatPackage(response.last_idx); // ส่ง ID ของผลงานที่เพิ่มใหม่ไปยังฟังก์ชัน creatPackage
         },
         error: (error) => {
           console.error('Add portfolio error - Full error object:', error);
@@ -460,5 +467,36 @@ deleteCategory(catIndex: number) {
     this.router.navigate(['/mainshutter']);
     // this.router.navigate(['/mainshutter'], { state: { data: this.data } });
   }
+
+  
+// ฟังก์ชันปิดโมเดล
+closeModal(event?: Event): void {
+  if (event) {
+    event.preventDefault();
+  }
+  this.openmodel = false;
+}
+
+// ฟังก์ชันสร้างแพ็กเกจ 
+creatPackage() {
+  this.openmodel = false; 
+  
+  // ใช้ id ที่ส่งมา หรือใช้ lastCreatedPortfolioId
+  const portfolioId =  this.lastCreatedPortfolioId;
+  
+  if (portfolioId) {
+    this.router.navigate(['/editwork'], { 
+      state: { 
+        idshutter: portfolioId
+      } 
+    });
+  }
+}
+
+// ฟังก์ชันข้ามการสร้างแพ็กเกจ
+skipPackageCreation(): void {
+  this.openmodel = false;
+  this.showSnackBar('คุณสามารถสร้างแพ็กเกจได้ในภายหลัง');
+}
   
 }

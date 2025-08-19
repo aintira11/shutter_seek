@@ -166,7 +166,7 @@
     //left: 0;
     width: 70%;
     display: flex;
-    justify-content: space-between; /* ทำให้ปุ่มทั้งสองอยู่ที่ซ้ายและขวา */
+    justify-content: center; /* ทำให้ปุ่มทั้งสองอยู่ที่ซ้ายและขวา */
     padding: 30px;
     //background-color: #fff; /* ตั้งค่าพื้นหลังให้กับแถบปุ่ม */
     //border-top: 1px solid #ddd; /* ขอบด้านบน */
@@ -174,17 +174,17 @@
     text-align: center;
   }
   
-  .button-container .back-button {
-    background-color: rgb(255, 196, 0); /* สีเหลือง */
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer
-  }
-  .button-container .back-button:hover {
-    background-color: rgb(255, 187, 0);
-}
+//   .button-container .back-button {
+//     background-color: rgb(255, 196, 0); /* สีเหลือง */
+//     padding: 10px 20px;
+//     border: none;
+//     border-radius: 5px;
+//     font-size: 16px;
+//     cursor: pointer
+//   }
+//   .button-container .back-button:hover {
+//     background-color: rgb(255, 187, 0);
+// }
   
   .button-container .save-button {
     background-color: #003ebb;
@@ -286,74 +286,118 @@
   
 /* สไตล์สำหรับโมเดล */
 .modal {
-  display: block;
+  display: flex; /* ใช้ flex ให้อยู่กลางแนวตั้งและแนวนอน */
+  align-items: center;
+  justify-content: center;
   position: fixed;
-  z-index: 1;
+  z-index: 9999;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
   overflow: auto;
   background-color: rgba(0, 0, 0, 0.5);
-  }
-  
-  /* สไตล์สำหรับเนื้อหาในโมเดล */
+}
+
+/* สไตล์สำหรับเนื้อหาในโมเดล */
+.modal-content {
+  background-color: #ffffff;
+  color: black;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;       /* ค่า default บนจอเล็ก */
+  max-width: 500px; /* กำหนดขนาดสูงสุด */
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+/* ปุ่มปิด */
+.close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #666;
+  cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+}
+
+/* checkbox list */
+.checkbox-list {
+  margin: 15px 0;
+}
+
+.checkbox-list label {
+  display: flex;
+  align-items: flex-start;
+  font-size: 15px;
+  color: #333333;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.checkbox-list input[type="checkbox"] {
+  margin-right: 10px;
+  accent-color: #003ebb;
+  transform: scale(1.2);
+}
+
+/* ปุ่มยืนยัน */
+.confirm-button {
+  background-color: #003ebb;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%; /* ให้เต็มบรรทัดบนมือถือ */
+}
+
+.confirm-button:hover {
+  background-color: #002a99;
+}
+
+/* Responsive ปรับขนาด font บนมือถือ */
+@media (max-width: 480px) {
+
   .modal-content {
-    background-color: #ffffff;
-    color: black;
-    margin: 10% auto;
-    padding: 20px;
-    //border: 2px solid #000000; /* เส้นขอบสีดำ */
-    border-radius: 8px; /* มุมโค้งมน */
-    width: 30%;
-    text-align: center; /* จัดข้อความให้อยู่กึ่งกลาง */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* เงา */
-    // display: flex;
-    // flex-direction: column; 
-  }
-  .close:hover,
-  .close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
+    padding: 15px;
   }
 
-  .checkbox-list {
-    text-align: center;
-    margin: 0px 0;
-    // margin-left: 25%;
-    
+  .modal-content h3 {
+    font-size: 20px;
   }
-  
+
   .checkbox-list label {
-    display: flex;
-    align-items: center;
-    font-size: 15px;
-    color: #333333;
-    margin-bottom: 10px;
+    font-size: 14px;
   }
-  
-  .checkbox-list input[type="checkbox"] {
-    margin-right: 10px;
-    accent-color: #003ebb; /* สีของกล่องเช็ค */
-    transform: scale(1.5); /* ขยายขนาดของ checkbox */
-  }
-  
+
   .confirm-button {
-    background-color: #003ebb;
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    font-size: 14px;
+    padding: 8px 15px;
   }
-  
-  .confirm-button:hover {
-    background-color: #002a99;
-  }
-  
+  .modal-content {
+  background-color: #ffffff;
+  color: black;
+  margin: 5% auto;
+  padding: 15px;
+  border-radius: 8px;
+  width: 80%;           /* จอเล็ก = กินพื้นที่ 90% */
+  max-width: 500px;     /* จอใหญ่สุดไม่เกิน 500px */
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+}
+
 
   /* Media Queries สำหรับทำให้ Responsive */
   @media screen and (max-width: 768px) {
@@ -373,11 +417,6 @@
         font-size: 15px;
       }
 
-       .modal-content {
-    width: 90%;
-    margin-top: 30%;
-  }
-
   .card {
     width: 95%;
     margin-left: auto;
@@ -391,7 +430,7 @@
   .button-container {
     flex-direction: column;
     align-items: center;
-    width: 100%;
+    // width: 100%;
     gap: 10px;
   }
     }

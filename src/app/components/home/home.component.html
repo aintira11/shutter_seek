@@ -22,7 +22,7 @@
             <img src="/assets/images/PIXEL (8).png" alt="SHUTTER seek" class="logo">
             <nav class="ms-3">
                 <a href="/" class="nav-link">หน้าแรก</a>
-                <a href="#" class="nav-link" (click)="scroll()">เกี่ยวกับเรา</a>
+                <a  class="nav-link" (click)="scroll()">เกี่ยวกับเรา</a>
                 <a (click)="interresShutter()" class="nav-link" >สนใจเป็นช่างภาพ</a>
             </nav>
             <div class="d-flex align-items-center">
@@ -52,7 +52,7 @@
         </nav>
     </div>
     <div class="d-flex">
-      <button class="btn btn-outline-primary btn-sm me-2" routerLink="/login">สมัครสมาชิก</button>
+      <button class="btn btn-outline-primary btn-sm me-2" (click)="goToRegister()">สมัครสมาชิก</button>
 <button class="btn btn-primary btn-sm" routerLink="/login">เข้าสู่ระบบ</button>
 
     </div>
@@ -70,7 +70,7 @@
 </svg>
 </div>
 
-<ng-template #content>
+<ng-template #content >
   <!-- การแยกส่วนของเนื้อหาออกเป็น 3 ส่วน -->
 <section id="first" class="position-relative">
   <div class="background-image"></div>
@@ -125,6 +125,7 @@
   </form>
 </section>
 
+<!-- <hr> -->
  <div *ngIf="dataSreach.length == 0 ; else aaaa " >
             <section id="third">
                 <h4>ช่างภาพแนะนำ</h4>
@@ -165,7 +166,7 @@
 
 
                                 <div class="d-flex align-items-center justify-content-between mt-2 px-2">
-                                    <img [src]="photographer.image_profile" class="rounded-circle border border-primary" style="object-fit: cover; border-radius: 100%;"
+                                    <img [src]="photographer.image_profile" class="rounded-circle border border-primary" style=" object-fit: cover; border-radius: 100%; "
                                         alt="profile" (click)="toShutter(photographer.portfolio_id)">
                                     
                                     <div class="text-center flex-grow-1">
@@ -364,61 +365,8 @@
 </div>
 
 <!-- Enhanced Footer -->
-    <footer class="enhanced-footer" id="about">
-        <div class="container">
-            <!-- Logo Section -->
-            <div class="footer-logo-section">
-                <img src="/assets/images/PIXEL (8).png" 
-                     alt="Shutter Seek Logo" class="footer-logo">
-                <!-- <h2 class="footer-brand-name">SHUTTER SEEK</h2> -->
-                <p class="footer-tagline">เก็บทุกช่วงเวลาสำคัญ ด้วยภาพถ่ายที่สมบูรณ์แบบ</p>
-            </div>
-
-            <!-- Footer Content -->
-            <div class="footer-content">
-                <!-- About Section -->
-                <div class="footer-section">
-                    <h4><i class="fas fa-info-circle"></i> เกี่ยวกับเรา</h4>
-                    <p>
-                        เว็บไซต์ของเราเป็นพื้นที่กลางสำหรับลูกค้าและช่างภาพที่ต้องการเชื่อมต่อกัน 
-                        ด้วยระบบค้นหา โปรไฟล์ และรีวิวที่โปร่งใส
-                    </p>
-                    <p>
-                        มุ่งมั่นในการให้บริการที่ปลอดภัยและเชื่อถือได้ สำหรับทุกโอกาสสำคัญในชีวิตของคุณ
-                    </p>
-                </div>
-
-                <!-- Contact Information -->
-                <div class="footer-section">
-                    <h4><i class="fas fa-address-book"></i> ติดต่อเรา</h4>
-                    <div class="contact-item">
-                        <i class="fas fa-envelope"></i>
-                        <span>support&#64;shutterseek.com</span>
-                    </div>
-                    <!-- <div class="contact-item">
-                        <i class="fab fa-line"></i>
-                        <span>&#64;shutterseek</span>
-                    </div> -->
-                    <div class="contact-item">
-                        <i class="fas fa-phone"></i>
-                        <span>02-XXX-XXXX</span>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>กรุงเทพมหานคร, ประเทศไทย</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Footer Bottom -->
-            <!-- <div class="footer-bottom">
-                <p>
-                    &copy; 2025 Shutter Seek. สงวนลิขสิทธิ์ทุกประการ | 
-                    Made with <span class="heart">❤️</span> in Thailand
-                </p>
-            </div> -->
-        </div>
-    </footer>
+<!-- <hr> -->
+    <app-b-shutter2-1 id="about"></app-b-shutter2-1>
 </ng-template>
 
 <!-- ส่วนแสดงผลการค้นหา  -->
@@ -432,7 +380,10 @@
 
 
  <ng-template #aaaa >
-  <div *ngIf="hasSearched && dataSreach.length > 0" id="search">
+  <div *ngIf="hasSearched && dataSreach.length > 0" id="search" >
+            <!-- <div class="container">
+                <h4 class="mb-4 text-primary"><i class="bi bi-search"></i> ผลการค้นหา</h4>
+            </div> -->
 
            <div class="container mt-4" >
                 <h4 class="mb-4 text-primary"><i class="bi bi-search"></i> ผลการค้นหา</h4>
