@@ -194,7 +194,17 @@
             <p style="margin-left: 10%;margin-bottom: 5%;"> เบอร์โทร : {{data[0].phone}} </p>
             <p style="margin-left: 10%;margin-bottom: 5%;"> Line ID : {{data[0].lineID}} </p>
             <p style="margin-left: 10%;margin-bottom: 5%;"> Email : {{data[0].email}} </p>
-            <p style="margin-left: 10%;margin-bottom: 5%;"> เว็บไซต์ : {{data[0].facebook}} </p>
+          <p style="margin-left: 10%; margin-bottom: 5%;">
+  เว็บไซต์ :
+  <a [href]="getFacebookLink()" target="_blank" rel="noopener noreferrer">
+    {{ data[0]?.facebook }}
+  </a>
+</p>
+
+
+
+
+            <!-- <p style="margin-left: 10%;margin-bottom: 5%;"> เว็บไซต์ : {{data[0].facebook}} </p> -->
             <p style="margin-left: 10%;" *ngIf="dataAdmin.length  == 1 "> จังหวัด : {{data[0].province}} </p>
             <p style="margin-left: 10%;" *ngIf="dataAdmin.length  == 1 "> ที่อยู่ : {{data[0].address}} </p>
           </div>

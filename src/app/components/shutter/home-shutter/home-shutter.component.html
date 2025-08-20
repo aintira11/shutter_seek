@@ -112,7 +112,16 @@
             <p style="margin-left: 10%;margin-bottom: 5%;"> เบอร์โทร : {{datauser[0].phone}} </p>
             <p style="margin-left: 10%;margin-bottom: 5%;"> Line ID : {{datauser[0].lineID}} </p>
             <p style="margin-left: 10%;margin-bottom: 5%;"> Email : {{datauser[0].email}} </p>
-            <p style="margin-left: 10%;margin-bottom: 5%;"> เว็บไซต์ : {{datauser[0].facebook}} </p>
+          <p style="margin-left: 10%; margin-bottom: 5%;">
+  เว็บไซต์ :
+  <a [href]="getFacebookLink()" target="_blank" rel="noopener noreferrer">
+    {{ datauser[0]?.facebook }}
+  </a>
+</p>
+
+
+
+
             <!-- <p style="margin-left: 10%;"> พื้นที่ที่รับงาน : {{datauser[0].first_name}} </p> -->
           </div>
           <!-- aboub me --> 

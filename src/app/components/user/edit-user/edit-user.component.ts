@@ -75,7 +75,7 @@ export class EditUserComponent implements OnInit{
     });
 
     this.formChangePassword = this.fb.group({
-    old_password: ['', [Validators.required, this.noWhitespaceValidator]],
+    old_password: ['', [Validators.required]],
     new_password: ['',[
     Validators.required,
     this.noWhitespaceValidator,
@@ -122,65 +122,60 @@ export class EditUserComponent implements OnInit{
 
 async save() {
   if (!this.data || !this.data.user_id) {
-    console.error("User ID is missing!");
-    alert("ไม่พบข้อมูลผู้ใช้");
+    this.showSnackBar("ไม่พบข้อมูลผู้ใช้");
     return;
   }
 
-  let image = this.data?.image_profile || ""; // ใช้ค่าเริ่มต้น
-  let hasImageChanged = false;
-
-  // ถ้ามีไฟล์ใหม่ อัปโหลดก่อน
-  if (this.selectedFile) {
-    try {
-      const response: any = await this.imageUploadService.uploadImage(this.selectedFile).toPromise();
-      image = response.data.url; // ใช้ URL รูปใหม่
-      hasImageChanged = true;
-    } catch (error) {
-      console.error("Upload error:", error);
-      alert("เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ");
-      return;
-    }
-  }
-
-  const formData = {
+  // สร้าง formData สำหรับเช็คการเปลี่ยนแปลงของข้อมูลฟอร์ม (ไม่รวมรูป)
+  const formDataForCheck = {
     username: this.fromreister.value.UserName,
     first_name: this.fromreister.value.Name,
     last_name: this.fromreister.value.LastName,
     phone: this.fromreister.value.Phone,
-    image_profile: image,
     address: this.fromreister.value.address,
   };
 
-  // ตรวจสอบค่าว่างหรือ whitespace
-  for (const [key, value] of Object.entries(formData)) {
-    if (key !== 'address' && typeof value === 'string' && value.trim() === '') {
-      this.showSnackBar(`กรุณากรอกข้อมูล ${key}`);
-      return;
-    }
-  }
+  // เช็คการเปลี่ยนแปลงของข้อมูลฟอร์มและรูปภาพแยกกัน
+  const hasFormDataChanged = this.checkFormDataChanges(formDataForCheck);
+  const hasImageChanged = this.selectedFile !== undefined;
 
-  // เช็คการเปลี่ยนแปลงข้อมูล
-  const hasDataChanged = this.checkDataChanges(formData, hasImageChanged);
-  
-  if (!hasDataChanged) {
+  if (!hasFormDataChanged && !hasImageChanged) {
     this.showSnackBar('ไม่มีการเปลี่ยนแปลงข้อมูล');
     return;
   }
 
-  const url = `${this.Constants.API_ENDPOINT}/edit/${this.data.user_id}`;
-  
   this.isLoading = true;
+  let image = this.data?.image_profile || "";
+
+  // อัปโหลดรูปเฉพาะเมื่อมีการเลือกไฟล์ใหม่
+  if (hasImageChanged && this.selectedFile) {
+    try {
+      const response: any = await this.imageUploadService.uploadImage(this.selectedFile).toPromise();
+      image = response.data.url;
+    } catch (error) {
+      console.error("Upload error:", error);
+      this.showSnackBar("เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ");
+      this.isLoading = false;
+      return;
+    }
+  }
+
+  // สร้าง formData สำหรับส่ง API (รวมรูป)
+  const formData = {
+    ...formDataForCheck,
+    image_profile: image,
+  };
+
+  const url = `${this.Constants.API_ENDPOINT}/edit/${this.data.user_id}`;
 
   this.http.post(url, formData).subscribe({
-    next: (response) => {
-      const updatedUser = { ...this.data, ...formData };  // 🔁 รวมข้อมูลเดิมกับใหม่
-      this.authService.setUser(updatedUser);              // ✅ อัปเดตใน AuthService
-      this.data = updatedUser;                            // ✅ อัปเดตในตัวแปร local ด้วย
-      
-      // console.log("Update success:", response);
+    next: () => {
+      const updatedUser = { ...this.data, ...formData };
+      this.authService.setUser(updatedUser);
+      this.data = updatedUser;
+      this.selectedFile = undefined; // รีเซ็ตไฟล์ที่เลือก
       this.showSnackBar("บันทึกข้อมูลเรียบร้อย!");
-      this.router.navigate(['/profile'], { state: { data: updatedUser } }); // ส่งข้อมูลล่าสุดไปด้วย
+      this.router.navigate(['/profile'], { state: { data: updatedUser } });
     },
     error: (error) => {
       console.error("Update error:", error);
@@ -192,60 +187,47 @@ async save() {
   });
 }
 
-// ฟังก์ชันเช็คการเปลี่ยนแปลงข้อมูล
-private checkDataChanges(newData: any, hasImageChanged: boolean): boolean {
-  // เช็ครูปภาพก่อน
-  if (hasImageChanged) {
-    return true;
-  }
+// แยก method สำหรับเช็คข้อมูลฟอร์ม (ไม่รวมรูป)
+private checkFormDataChanges(newData: any): boolean {
+  // เปรียบเทียบกับข้อมูลเริ่มต้นในฟอร์ม ไม่ใช่ this.data ปัจจุบัน
+  const originalFormValues = {
+    username: this.data.username,
+    first_name: this.data.first_name,
+    last_name: this.data.last_name, 
+    phone: this.data.phone,
+    address: this.data.address || ''
+  };
 
-  // เช็คข้อมูลอื่นๆ โดยเข้าถึง property โดยตรง
-  const formValues = this.fromreister.value;
-  
-  // เปรียบเทียบทีละฟิลด์
-  if ((formValues.UserName || '').trim() !== (this.data.username || '').trim()) {
-    console.log('Username changed:', {
-      original: this.data.username,
-      new: formValues.UserName
-    });
-    return true;
-  }
+  const keys: (keyof typeof originalFormValues)[] = [
+    "username",
+    "first_name", 
+    "last_name",
+    "phone", 
+    "address"
+  ];
 
-  if ((formValues.Name || '').trim() !== (this.data.first_name || '').trim()) {
-    console.log('First name changed:', {
-      original: this.data.first_name,
-      new: formValues.Name
-    });
-    return true;
-  }
+  for (const key of keys) {
+    const oldVal = this.normalizeValue(originalFormValues[key]);
+    const newVal = this.normalizeValue(newData[key]);
 
-  if ((formValues.LastName || '').trim() !== (this.data.last_name || '').trim()) {
-    console.log('Last name changed:', {
-      original: this.data.last_name,
-      new: formValues.LastName
-    });
-    return true;
-  }
+    console.log(`Checking ${key}:`, { oldVal, newVal });
 
-  if ((formValues.Phone || '').trim() !== (this.data.phone || '').trim()) {
-    console.log('Phone changed:', {
-      original: this.data.phone,
-      new: formValues.Phone
-    });
-    return true;
-  }
-
-  if ((formValues.address || '').trim() !== (this.data.address || '').trim()) {
-    console.log('Address changed:', {
-      original: this.data.address,
-      new: formValues.address
-    });
-    return true;
+    if (oldVal !== newVal) {
+      console.log(`✅ ${key} changed`);
+      return true;
+    }
   }
 
   return false;
 }
 
+// เพิ่ม method helper สำหรับ normalize ค่า
+private normalizeValue(value: any): string {
+  if (value === null || value === undefined) {
+    return "";
+  }
+  return value.toString().trim();
+}
 
 change_password(){
     if (this.formChangePassword.invalid) return;

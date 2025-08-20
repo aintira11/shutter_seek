@@ -175,7 +175,7 @@
                                         <p style="color: #0e51d5; font-size: 13px;">ราคาเริ่มต้น {{photographer.min_price| number:'1.0-0' }} บาท</p>
                                     </div>
 
-                                    <div class="container heart-container">
+                                    <div class="container heart-container" *ngIf="datauser.length > 0">
                                         <label>
                                             <input type="checkbox"
                                             [checked]="isLiked(photographer.portfolio_id)"
@@ -252,7 +252,7 @@
           </div>
           
           <!-- ไอคอนหัวใจ -->
-          <div class="container heart-container">
+          <div class="container heart-container"  *ngIf="datauser.length > 0">
             <label>
               <input type="checkbox"
                      [checked]="isLiked(photographer.portfolio_id)"

@@ -1,3 +1,83 @@
+// Page Header Styles
+.her1{
+  width: 80%; margin: 0 auto;
+}
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  color: white;
+}
+
+.header-content {
+  flex: 1;
+}
+.page-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+}
+
+.title-icon {
+  font-size: 2rem !important;
+}
+.page-subtitle {
+  font-size: 1rem;
+  opacity: 0.9;
+  margin: 0;
+  line-height: 1.5;
+}
+.photographer-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255,255,255,0.2);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  backdrop-filter: blur(10px);
+}
+.empty-icon mat-icon {
+  font-size: 4rem !important;
+  width: 4rem !important;
+  height: 4rem !important;
+  color: #ddd;
+}
+/* Desktop: แนวนอน */
+.page-header { flex-direction: row; }
+.stats-container { flex-direction: row; }
+.button-container { flex-direction: row; }
+
+/* Mobile: แนวตั้ง */
+@media (max-width: 768px) {
+  .page-header { flex-direction: column; }
+  .stats-container { flex-direction: column; }
+  .button-container { 
+    flex-direction: column;
+  }
+  .button-container button { 
+    width: 100%; 
+  }
+  .her1{
+  width: 100%; margin: 0 auto;
+}
+.page-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: 400;
+  margin: 0 0 0.5rem 0;
+}
+}
+
 //slide bar
 .menu-button {
     //   position: fixed; /* ให้อยู่กับที่ */

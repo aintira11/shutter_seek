@@ -12,6 +12,7 @@ import { Constants } from '../../../config/constants';
 import { HttpClient } from '@angular/common/http';
 import { DataMembers } from '../../../model/models';
 import { AuthService } from '../../../service/auth.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-edit-shutter',
@@ -53,7 +54,8 @@ constructor(
   ,private Constants: Constants
   , private http: HttpClient,
   private cdRef: ChangeDetectorRef,
-  private authService: AuthService
+  private authService: AuthService,
+  private snackBar: MatSnackBar,
   ){
  // Initialize forms
   this.initForms();
@@ -65,13 +67,13 @@ constructor(
 ngOnInit(): void {
   const user = this.authService.getUser();
   if (!user) {
-      console.error("ไม่พบข้อมูลผู้ใช้ใน AuthService");
+      console.error("ไม่พบข้อมูลผู้ใช้ใน AuthService"); 
       return;
     }
     this.data = [user];
 
     this.photographerForm = this.fb.group({
-    first_name: [this.data[0].first_name, Validators.required],
+    first_name: [this.data[0].first_name, Validators.required,, this.noWhitespaceValidator],
     last_name: [this.data[0].last_name, Validators.required],
     username: [this.data[0].username, Validators.required],
     phone: [this.data[0].phone, Validators.required],
@@ -145,7 +147,13 @@ ngOnInit(): void {
     }
   }
   
-
+  showSnackBar(message: string) {
+    this.snackBar.open(message, 'ปิด', {
+      duration: 3000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+    });
+  }
   
   async savePersonalInfo() {
   const userId = this.data[0].user_id || this.data[0]?.user_id;
@@ -157,6 +165,15 @@ ngOnInit(): void {
 
   let image = this.data[0]?.image_profile || this.data[0].image_profile || "";
   let hasImageChanged = false;
+
+   // ตรวจสอบค่าว่างหรือ whitespace
+  for (const [key, value] of Object.entries(this.photographerForm.value)) {
+    if (key !== 'address' && typeof value === 'string' && value.trim() === '') {
+      this.showSnackBar(`กรุณากรอกข้อมูล ${key}`);
+      return;
+    }
+  }
+  
 
   // ถ้ามีไฟล์ใหม่ อัปโหลดก่อน
   if (this.selectedFile) {
@@ -249,6 +266,8 @@ ngOnInit(): void {
     });
   }
 }
+
+
 
 // ฟังก์ชันตรวจสอบการเปลี่ยนแปลงข้อมูล
 private hasDataChanged(newData: any, originalData: any): boolean {

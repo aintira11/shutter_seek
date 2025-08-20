@@ -91,8 +91,14 @@
       <!-- ส่วนแสดงผล -->
       <main class="content">
         <div class="portfolio-container">
-          <div class="portfolio-header">
-            <h2>จัดการผลงาน</h2>
+          <div class="portfolio-header" >
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+  <h2 >จัดการผลงาน</h2>
+  <div class="photographer-badge" style="display: flex; align-items: center; gap: 4px;margin-left: 10px;">
+    <mat-icon>verified</mat-icon>
+    <span>ช่างภาพ</span>
+  </div>
+</div>
             <button class="add-work-btn" (click)="addCategory()">+ เพิ่มผลงาน</button>
           </div>
           

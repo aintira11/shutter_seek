@@ -14,12 +14,12 @@ declare var bootstrap: any;
 
 // *** เพิ่ม Interface สำหรับ ChatRoom ที่จะแสดงผล ***
 interface ChatRoomDisplay {
-  roomId: string;
-  partnerId: number;
-  lastMessage: string;
+  roomId: string;  // รหัสห้อง เช่น "room_1_25"
+  partnerId: number;   // ID ของคู่สนทนา
+  lastMessage: string;   // ข้อความล่าสุด
   lastMessageTime: string; // หรือ Date ถ้าคุณจะแปลงเป็น Date object ทันที
-  hasUnreadMessages: boolean; 
-   lastMessageSenderId?: number;
+  hasUnreadMessages: boolean;  // มีข้อความที่ยังไม่อ่านหรือไม่
+  lastMessageSenderId?: number;  // ผู้ส่งข้อความล่าสุด
 }
 
 @Component({
@@ -35,9 +35,9 @@ export class MassageRoomComponent implements OnInit, AfterViewChecked, OnDestroy
   private imageBootstrapModal: any;
 
   private db: Database = inject(Database);
-  myId: number = 0;
+  myId: number = 0; // ID ที่ใช้ในการแชท
   myActualId: number = 0; // เก็บ ID จริงของผู้ใช้ (สำหรับแอดมิน)
-  myUserType: string | null = null;
+  myUserType: string | null = null; // ประเภทผู้ใช้ (1=ลูกค้า, 2=ช่างภาพ, 3=แอดมิน, 4=อื่นๆ)
   chatRooms: ChatRoomDisplay[] = []; // ใช้ ChatRoomDisplay interface
   messages: any[] = [];
   selectedRoomId: string | null = null;
@@ -362,6 +362,7 @@ private touchStartPosition: { x: number, y: number } = { x: 0, y: 0 };
     }
   }
 
+  // Firebase listener สำหรับตรวจสอบห้องแชทที่เกี่ยวข้อง
   loadChatRooms(): void {
     const chatRoomsRef = ref(this.db, 'chatRooms');
     console.log('[Firebase Listener] Setting up chatRooms listener...');
@@ -376,6 +377,7 @@ private touchStartPosition: { x: number, y: number } = { x: 0, y: 0 };
       // console.log('My Actual ID:', this.myActualId);
       // console.log('All rooms from Firebase (raw):', allRooms);
 
+      // วนดูทุกห้อง
       for (const roomId in allRooms) {
         const roomData = allRooms[roomId];
         // ตรวจสอบโครงสร้างข้อมูลพื้นฐานของห้อง
@@ -384,7 +386,7 @@ private touchStartPosition: { x: number, y: number } = { x: 0, y: 0 };
             continue;
         }
 
-        // ใช้ myId (ซึ่งสำหรับแอดมินจะเป็น 1) ในการตรวจสอบห้องแชท
+        // ตรวจสอบว่าผู้ใช้เป็นสมาชิกของห้องนี้หรือไม่
         if (roomData.user1 === this.myId || roomData.user2 === this.myId) {
           const partnerId = (roomData.user1 === this.myId) ? roomData.user2 : roomData.user1;
 
@@ -613,6 +615,7 @@ private sendTextMessage(text: string): void {
   console.log(`[Send Text] Sending to Partner ID: ${targetPartnerId}, Room ID: ${targetRoomId}`);
 
   const now = new Date().toISOString();
+  // 1. สร้างข้อความ
   const msg = {
     senderId: this.myId,
     messageText: text,
@@ -815,6 +818,7 @@ private sendTextMessage(text: string): void {
     }
   }
 
+  //1. อัปโหลดรูปภาพผ่าน ImageUploadService
 async uploadAndSendImage(): Promise<void> {
   if (this.files.length === 0 || !this.selectedRoomId || this.selectedPartnerId === null) {
     this.showAlert('กรุณาเลือกรูปภาพและเลือกห้องแชท');

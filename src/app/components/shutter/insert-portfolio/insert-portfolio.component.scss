@@ -984,3 +984,20 @@ max-width: 1200px;
     width: 100% !important;
   }
 }
+.photographer-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(9, 96, 234, 0.532);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  backdrop-filter: blur(10px);
+}
+.empty-icon mat-icon {
+  font-size: 4rem !important;
+  width: 4rem !important;
+  height: 4rem !important;
+  color: #ddd;
+}
+

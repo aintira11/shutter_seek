@@ -283,6 +283,7 @@ getPrev(portfolioIndex: number) {
 
   getPortfolioIfId(id: number) {
     // console.log('id:', id);
+    this.currentPage = 1;
     const url = this.Constants.API_ENDPOINT + '/get/portfolio/' + id;
     this.http.get(url).subscribe((response: any) => {
       this.PortfolioID = response;
@@ -354,10 +355,10 @@ sreach() {
     
     // [1] ตั้งค่าสถานะต่างๆ ก่อนเริ่มค้นหา
     this.isSearching = true;
-    this.hasSearched = true; // <-- อย่าลืมบรรทัดนี้ เพื่อให้ HTML ทำงานถูกต้อง
+    this.hasSearched = true; 
     this.dataSreach = [];
 
-    // [2] ส่วนของการสร้าง URL สำหรับเรียก API (โค้ดส่วนนี้ของคุณถูกต้องแล้ว)
+    // [2] ส่วนของการสร้าง URL สำหรับเรียก API 
     const params: any = {};
     const tags_id = this.form.value.tags_id;
     const province = this.form.value.province;
@@ -432,7 +433,7 @@ isLiked(portfolioId: number | null): boolean {
   return this.Like.some(like => like.portfolio_id === portfolioId);
 }
 
-// method สำหรับการกดถูกใจ (ปรับปรุงจาก method เดิมของคุณ)
+// method สำหรับการกดถูกใจ 
 Liked(portfolioId: number | null) {
   const validPortfolioId = portfolioId ?? 0;
   if (validPortfolioId === 0) {
@@ -458,7 +459,7 @@ Liked(portfolioId: number | null) {
   });
 }
 
-// method ดึงข้อมูลที่ถูกใจ (ปรับปรุงจาก method เดิมของคุณ)
+// method ดึงข้อมูลที่ถูกใจ 
 getMyLike(id: number) {
   const url = this.Constants.API_ENDPOINT + '/get/like/' + id;
   this.http.get(url).subscribe((response: any) => {

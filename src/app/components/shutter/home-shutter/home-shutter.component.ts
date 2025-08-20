@@ -124,6 +124,14 @@ export class HomeShutterComponent implements OnInit{
   back(){
   
   }
+
+getFacebookLink(): string {
+  if (!this.datauser || this.datauser.length === 0) return '#';
+  const fb = (this.datauser[0].facebook || '').trim();
+  return fb.startsWith('http://') || fb.startsWith('https://') ? fb : 'https://' + fb;
+}
+
+
 forfollow(shutterId: number) {
   const userId = this.data[0].user_id;
   const url = this.Constants.API_ENDPOINT + '/Follow/' + userId + '/' + shutterId;

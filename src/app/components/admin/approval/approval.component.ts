@@ -98,7 +98,6 @@ export class ApprovalComponent implements OnInit{
     }
   }
 
-  // *** ลบเมธอด loadMockCriteria() ออกไปทั้งหมด ***
   // เนื่องจากเราไม่ต้องการใช้ข้อมูลจำลองแล้ว
 
   toggleSubCriterion(categoryId: string, subCriterionId: string): void {

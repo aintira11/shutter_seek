@@ -446,12 +446,20 @@ closeList() {
     this.isModelOpen = false;
 }
 
+getFacebookLink(): string {
+  if (!this.data || this.data.length === 0) return '#';
+  const fb = (this.data[0].facebook || '').trim();
+  return fb.startsWith('http://') || fb.startsWith('https://') ? fb : 'https://' + fb;
+}
+
+
   chat(id_shutter: number){
       // console.log("📤 Sending datauser:", this.data);
         this.router.navigate(['/roomchat'], { 
-        // state: { 
-        //   datauser: this.data, 
-        // } 
+        state: { 
+          // datauser: this.data, 
+          idshutter: id_shutter 
+        } 
       });
     
       

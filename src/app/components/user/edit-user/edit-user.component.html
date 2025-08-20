@@ -36,57 +36,60 @@
       <form [formGroup]="fromreister" (ngSubmit)="save()" class="register-form">
         <div class="form-section">
           <div class="form-group">
-            <label>ชื่อ<span style="color: red;">*</span></label>
-            <input type="text" [(ngModel)]="data.first_name" formControlName="Name" />
-          <div *ngIf="fromreister.get('Name')?.invalid && fromreister.get('Name')?.touched" class="error-message">
-                        <span *ngIf="fromreister.get('Name')?.errors?.['required']"style="color: red; font-size: smaller;">*กรุณากรอกชื่อ</span>
-                        <span *ngIf="fromreister.get('Name')?.errors?.['whitespace']"style="color: red; font-size: smaller;">*ชื่อไม่สามารถเป็นช่องว่างได้</span>
-                    </div>
-                  </div>
-          
+  <label>ชื่อ<span style="color: red;">*</span></label>
+  <!-- เอา [(ngModel)]="data.first_name" ออก -->
+  <input type="text" formControlName="Name" />
+  <div *ngIf="fromreister.get('Name')?.invalid && fromreister.get('Name')?.touched" class="error-message">
+    <span *ngIf="fromreister.get('Name')?.errors?.['required']"style="color: red; font-size: smaller;">*กรุณากรอกชื่อ</span>
+    <span *ngIf="fromreister.get('Name')?.errors?.['whitespace']"style="color: red; font-size: smaller;">*ชื่อไม่สามารถเป็นช่องว่างได้</span>
+  </div>
+</div>
 
-          <div class="form-group">
-            <label>นามสกุล<span style="color: red;">*</span></label>
-            <input type="text" [(ngModel)]="data.last_name" formControlName="LastName"/>
-          <div *ngIf="fromreister.get('LastName')?.invalid && fromreister.get('LastName')?.touched" class="error-message">
-                        <span *ngIf="fromreister.get('LastName')?.errors?.['required']"style="color: red; font-size: smaller;">*กรุณากรอกนามสกุล</span>
-                        <span *ngIf="fromreister.get('LastName')?.errors?.['whitespace']"style="color: red; font-size: smaller;">*นามสกุลไม่สามารถเป็นช่องว่างได้</span>
-                    </div>
-          </div>
-          <div class="form-group">
-            <label>ชื่อผู้ใช้<span style="color: red;">*</span></label>
-            <input type="text" [(ngModel)]="data.username" formControlName="UserName"/>
-          <div *ngIf="fromreister.get('UserName')?.invalid && fromreister.get('UserName')?.touched" class="error-message">
-                        <span *ngIf="fromreister.get('UserName')?.errors?.['required']" style="color: red; font-size: smaller;">*กรุณากรอก ชื่อผู้ใช้</span>
-                        <span *ngIf="fromreister.get('UserName')?.errors?.['whitespace']" style="color: red; font-size: smaller;">*ชื่อผู้ใช้ ไม่สามารถเป็นช่องว่างได้</span>
-                    </div>
-          </div>
-        </div>
+<div class="form-group">
+  <label>นามสกุล<span style="color: red;">*</span></label>
+  <!-- เอา [(ngModel)]="data.last_name" ออก -->
+  <input type="text" formControlName="LastName"/>
+  <div *ngIf="fromreister.get('LastName')?.invalid && fromreister.get('LastName')?.touched" class="error-message">
+    <span *ngIf="fromreister.get('LastName')?.errors?.['required']"style="color: red; font-size: smaller;">*กรุณากรอกนามสกุล</span>
+    <span *ngIf="fromreister.get('LastName')?.errors?.['whitespace']"style="color: red; font-size: smaller;">*นามสกุลไม่สามารถเป็นช่องว่างได้</span>
+  </div>
+</div>
 
-        <div class="form-section">
-          <h2>ข้อมูลติดต่อ</h2>
-          <div class="form-group">
+<div class="form-group">
+  <label>ชื่อผู้ใช้<span style="color: red;">*</span></label>
+  <!-- เอา [(ngModel)]="data.username" ออก -->
+  <input type="text" formControlName="UserName"/>
+  <div *ngIf="fromreister.get('UserName')?.invalid && fromreister.get('UserName')?.touched" class="error-message">
+    <span *ngIf="fromreister.get('UserName')?.errors?.['required']" style="color: red; font-size: smaller;">*กรุณากรอก ชื่อผู้ใช้</span>
+    <span *ngIf="fromreister.get('UserName')?.errors?.['whitespace']" style="color: red; font-size: smaller;">*ชื่อผู้ใช้ ไม่สามารถเป็นช่องว่างได้</span>
+  </div>
+</div>
+
+<div class="form-group">
   <label>อีเมล์<span style="color: red;">*</span></label>
+  <!-- เอา [(ngModel)]="data.email" ออก -->
   <input type="email" 
-         [(ngModel)]="data.email" 
          formControlName="Email" 
          readonly
          style="background-color: #f5f5f5; cursor: not-allowed; color: #666;"/>
-
 </div>
-          <div class="form-group">
-            <label>เบอร์โทรศัพท์<span style="color: red;">*</span></label>
-            <input type="tel" [(ngModel)]="data.phone" formControlName="Phone"/>
-            <div *ngIf="fromreister.get('Phone')?.invalid && fromreister.get('Phone')?.touched" class="error-message">
-                        <span *ngIf="fromreister.get('Phone')?.errors?.['required']"style="color: red; font-size: smaller;">*กรุณากรอกหมายเลขโทรศัพท์</span>
-                        <span *ngIf="fromreister.get('Phone')?.errors?.['pattern']"style="color: red; font-size: smaller;">*หมายเลขโทรศัพท์ต้องเป็นตัวเลข 10 หลัก</span>
-                        <span *ngIf="fromreister.get('Phone')?.errors?.['whitespace']"style="color: red; font-size: smaller;">*หมายเลขโทรศัพท์ไม่สามารถเป็นช่องว่างได้</span>
-                    </div>
-          </div>
-          <div class="form-group">
-            <label>ที่อยู่</label>
-            <input type="text" [(ngModel)]="data.address" formControlName="address"/>
-          </div>
+
+<div class="form-group">
+  <label>เบอร์โทรศัพท์<span style="color: red;">*</span></label>
+  <!-- เอา [(ngModel)]="data.phone" ออก -->
+  <input type="tel" formControlName="Phone"/>
+  <div *ngIf="fromreister.get('Phone')?.invalid && fromreister.get('Phone')?.touched" class="error-message">
+    <span *ngIf="fromreister.get('Phone')?.errors?.['required']"style="color: red; font-size: smaller;">*กรุณากรอกหมายเลขโทรศัพท์</span>
+    <span *ngIf="fromreister.get('Phone')?.errors?.['pattern']"style="color: red; font-size: smaller;">*หมายเลขโทรศัพท์ต้องเป็นตัวเลข 10 หลัก</span>
+    <span *ngIf="fromreister.get('Phone')?.errors?.['whitespace']"style="color: red; font-size: smaller;">*หมายเลขโทรศัพท์ไม่สามารถเป็นช่องว่างได้</span>
+  </div>
+</div>
+
+<div class="form-group">
+  <label>ที่อยู่</label>
+  <!-- เอา [(ngModel)]="data.address" ออก -->
+  <input type="text" formControlName="address"/>
+</div>
         </div>
         <div>
           <u  (click)="showModal = true">เปลี่ยนรหัสผ่าน</u>

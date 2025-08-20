@@ -45,7 +45,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }
 
     this.data = [user];
-    // console.log("🔐 ผู้ใช้:", this.data);
+    console.log("🔐 ผู้ใช้:", this.data);
 
     this.getMyLike(this.data[0].user_id);
     this.getFollow(this.data[0].user_id);
