@@ -119,7 +119,9 @@
        pattern="^[0-9]+$"
        #packagePrice="ngModel"
        class="price-input" 
-       placeholder="5,999" />
+       placeholder="5999"
+       min="0"
+       type="number" />
 
 <div *ngIf="packagePrice.invalid && packagePrice.touched" class="error">
   <small *ngIf="packagePrice.errors?.['required']">กรุณากรอกราคาแพ็กเกจ</small>

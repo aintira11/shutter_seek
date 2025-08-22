@@ -47,7 +47,18 @@
   </nav>
 </header>
 
+<div  class="loading-container" *ngIf="isLoading; else content">
+  <!-- แสดง Loading Spinner หรือข้อความ Loading ตามต้องการ -->
 
+  <!-- <img src="/assets/images/Loading Stage ・ Animation.gif" alt="" style="width: 30%;"> -->
+
+<svg viewBox="25 25 50 50">
+  <circle r="20" cy="50" cx="50"></circle>
+</svg>
+</div>
+
+
+<ng-template #content >
 <!-- ปุ่มรายงาน -->
 <div class="menu-wrapper">
   <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="เปิดเมนู">
@@ -67,7 +78,7 @@
         <!-- Profile Section -->
         <div class="profile-header" >
           <img
-          *ngIf="datauser[0].image_profile" [src]="datauser[0].image_profile"
+           [src]="datauser[0].image_profile"
             alt="Profile"
             class="profile-image"
           />
@@ -115,7 +126,7 @@
           <p style="margin-left: 10%; margin-bottom: 5%;">
   เว็บไซต์ :
   <a [href]="getFacebookLink()" target="_blank" rel="noopener noreferrer">
-    {{ datauser[0]?.facebook }}
+    {{ datauser[0].facebook }}
   </a>
 </p>
 
@@ -168,11 +179,18 @@
     </div>
 
     <div class="portfolio-container">
-        <section class="container mt-5">
-            <div class="portfolio-grid" *ngIf="datawork.length > 0">
-                <div class="portfolio-item" *ngFor="let photographer of datawork; let portfolioIndex = index">
-                    <div class="portfolio-card">
-                        <div class="carousel-container">
+         <section class="container mt-3" *ngIf="datawork.length > 0">
+
+      <!-- loop แต่ละหมวดหมู่ -->
+      <div *ngFor="let category of (groupedWorks | keyvalue)">
+        <h3 class="mb-2 mt-2">หมวดหมู่ : {{ category.key }}</h3> <!-- ชื่อหมวดหมู่ -->
+
+        <div class="portfolio-grid">
+          <div class="portfolio-item" *ngFor="let photographer of category.value; let portfolioIndex = index">
+            
+            <div class="portfolio-card mb-2">
+              <!-- carousel แสดงภาพ -->
+             <div class="carousel-container">
                             <div class="carousel slide"
                                  [attr.id]="'carousel' + photographer.portfolio_id"
                                  [attr.data-bs-interval]="false"
@@ -206,33 +224,23 @@
                             </div>
                         </div>
 
-                        <div class="portfolio-info">
-                            <div class="portfolio-content">
-                                <p class="portfolio-tags">{{ photographer.name_tags }}</p>
-                                <p class="portfolio-name">{{ photographer.name_work }}</p>
-                            </div>
-
-                            <div class="container heart-container" >
-                                <label >
-                                    <input type="checkbox"
-                                           [checked]="isLiked(photographer.portfolio_id)"
-                                           (change)="Liked(photographer.portfolio_id)">
-                                    <svg id="Layer_1" version="1.0" viewBox="0 0 24 24" xml:space="preserve"
-                                                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                                                <path d="M16.4,4C14.6,4,13,4.9,12,6.3C11,4.9,9.4,4,7.6,4C4.5,4,2,6.5,2,9.6C2,14,12,22,12,22s10-8,10-12.4C22,6.5,19.5,4,16.4,4z"></path>
-                                            </svg>
-                                </label>
-                            </div>
-                            
-                                <span class="favorite-count" style="margin-top: 7px;">
-                                    ถูกใจ {{ photographer.like_count || 0 }} คน
-                                </span>
-                     
-                        </div>
-                    </div>
+              <div class="portfolio-info"> 
+                <div class="portfolio-content"> 
+                  <p class="portfolio-tags">{{ photographer.name_tags }}</p> 
+                  <p class="portfolio-name">{{ photographer.name_work }}</p> 
+                </div> <div class="container heart-container" > <label > 
+                  <input type="checkbox" [checked]="isLiked(photographer.portfolio_id)" 
+                  (change)="Liked(photographer.portfolio_id)"> 
+                  <svg id="Layer_1" version="1.0" viewBox="0 0 24 24" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <path d="M16.4,4C14.6,4,13,4.9,12,6.3C11,4.9,9.4,4,7.6,4C4.5,4,2,6.5,2,9.6C2,14,12,22,12,22s10-8,10-12.4C22,6.5,19.5,4,16.4,4z"></path> </svg> </label> </div> 
+                  <span class="favorite-count" style="margin-top: 7px;"> ถูกใจ {{ photographer.like_count || 0 }} คน </span> 
                 </div>
             </div>
-        </section>
+
+          </div>
+        </div>
+      </div>
+
+    </section>
     </div>  <br>
     <div class="divider"></div>
 </section>
@@ -379,6 +387,6 @@
        <button *ngIf="showButton" class="scroll-to-top" (click)="scrollToTop()">
     ⬆ เลื่อนขึ้น
   </button>
-
+</ng-template>
 </body>
 </html>

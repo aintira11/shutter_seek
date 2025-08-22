@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder,Validators,FormGroup, ValidationErrors, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Constants } from '../../../config/constants';
@@ -8,6 +8,32 @@ import { ImageUploadService } from '../../../services_image/image-upload.service
 import { CommonModule } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { AuthService } from '../../../service/auth.service';
+import { DataMembers } from '../../../model/models';
+
+export function passwordValidator(control: AbstractControl): ValidationErrors | null {
+  const value = control.value || '';
+
+  const errors: any = {};
+
+  if (!/[0-9]/.test(value)) {
+    errors.number = true; // ไม่มีตัวเลข
+  }
+  if (!/[A-Z]/.test(value)) {
+    errors.uppercase = true; // ไม่มีตัวพิมพ์ใหญ่
+  }
+  if (!/[a-z]/.test(value)) {
+    errors.lowercase = true; // ไม่มีตัวพิมพ์เล็ก
+  }
+  if (!/[!@#$%^&*(),.?":{}|<>]/.test(value)) {
+    errors.special = true; // ไม่มีอักขระพิเศษ
+  }
+  if (value.length < 8) {
+    errors.minlength = true; // สั้นเกินไป
+  }
+
+  return Object.keys(errors).length ? errors : null;
+}
 
 @Component({
   selector: 'app-register',
@@ -16,40 +42,67 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit{
   fromreister: FormGroup;
   selectedFile?: File; // เก็บไฟล์รูปภาพที่เลือก
   files: { file: File; preview: string; newName?: string }[] = [];
   hidePassword = true;
   hideConfirmPassword = true;
+  datauser: DataMembers[] = [];
 
   constructor(private Constants :Constants ,
     private http:HttpClient ,
     private fromBuilder : FormBuilder ,
     private router : Router,
     private readonly imageUploadService: ImageUploadService,
-  private snackBar: MatSnackBar,)
+  private snackBar: MatSnackBar,
+private authService: AuthService,)
   {
     this.fromreister = this.fromBuilder.group({
       Email: ['', [Validators.required, Validators.email, this.noWhitespaceValidator, this.StrictEmailValidator]],
       Password: [
-  '',
-  [
-    Validators.required,
-    this.noWhitespaceValidator,
-    Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#._:;])[A-Za-z\d@$!%*?&#._:;]{8,}$/)
-  ]
+  '',[passwordValidator],
+  // [
+  //   Validators.required,
+  //   this.noWhitespaceValidator,
+  //   Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#._:;])[A-Za-z\d@$!%*?&#._:;]{8,}$/)
+  // ]
 ],
       confirmPassword: ['', [Validators.required, this.noWhitespaceValidator]],
       UserName: ['', [Validators.required, this.noWhitespaceValidator]],
       Name: ['', [Validators.required, this.noWhitespaceValidator]],
       LastName: ['', [Validators.required, this.noWhitespaceValidator]],
       address: ['', ],
-      Phone: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/), this.noWhitespaceValidator]]
+      Phone: ['', [Validators.required]]
     });
   
     
   }
+
+    ngOnInit(){
+    // ดึงข้อมูลจาก AuthService
+  const user = this.authService.getUser();
+     if (user) {
+     this.datauser = [user];
+
+     // เติมค่าเข้าไปในฟอร์ม
+    this.fromreister.patchValue({
+      Email: user.email || '',
+      UserName: user.username || '',
+      Name: user.first_name || '',
+      LastName: user.last_name || '',
+      Phone: user.phone || '',
+      address: user.address || '',
+      // ไม่ควร patch password / confirmPassword จาก backend มาลง
+      image_profile : user.image_profile || ''
+
+    });
+    this.imagePreview = user.image_profile ;
+  } else {
+    console.warn(" No user found in AuthService. Redirecting to login...");
+    return;
+  }
+}
 
   imagePreview: string = '/assets/images/user.png';
   
@@ -63,6 +116,13 @@ export class RegisterComponent {
     return isValid ? null : { 'whitespace': true };
   }
 
+onlyNumber(event: KeyboardEvent) {
+  const charCode = event.which ? event.which : event.keyCode;
+  // อนุญาตแค่ตัวเลข 0-9
+  if (charCode < 48 || charCode > 57) {
+    event.preventDefault();
+  }
+}
 
 
   goToLogin(): void {
@@ -145,7 +205,7 @@ isRegistering = false;
         }
 
         // 5. อัปโหลดรูปภาพ (ถ้ามี)
-        let imageUrl = 'https://cdn-icons-png.flaticon.com/512/18469/18469518.png'; // รูปเริ่มต้น
+        let imageUrl = this.imagePreview; // รูปเริ่มต้น
         if (this.selectedFile) {
             const response: any = await this.imageUploadService.uploadImage(this.selectedFile).toPromise();
             imageUrl = response.data.url;

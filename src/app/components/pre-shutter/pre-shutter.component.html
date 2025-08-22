@@ -33,7 +33,17 @@
   </div>
 </header>
 
+<div  class="loading-container" *ngIf="isLoading; else content">
+  <!-- แสดง Loading Spinner หรือข้อความ Loading ตามต้องการ -->
 
+  <!-- <img src="/assets/images/Loading Stage ・ Animation.gif" alt="" style="width: 30%;"> -->
+
+<svg viewBox="25 25 50 50">
+  <circle r="20" cy="50" cx="50"></circle>
+</svg>
+</div>
+
+<ng-template #content >
 <div class="portfolio-layout">
 
   <!-- Image Gallery - Fixed Version -->
@@ -188,5 +198,7 @@
     <button *ngIf="showButton" class="scroll-to-top" (click)="scrollToTop()">
     ⬆ เลื่อนขึ้น
   </button>
+  
+</ng-template>
 </body>
 </html>

@@ -11,6 +11,17 @@
 </head>
 
 <body>
+
+  <div  class="loading-container" *ngIf="isLoading; else content">
+  <!-- แสดง Loading Spinner หรือข้อความ Loading ตามต้องการ -->
+
+  <!-- <img src="/assets/images/Loading Stage ・ Animation.gif" alt="" style="width: 30%;"> -->
+
+<svg viewBox="25 25 50 50">
+  <circle r="20" cy="50" cx="50"></circle>
+</svg>
+</div>
+<ng-template #content>
     <div class="admin-container">
         <header class="admin-header">
             <div class="admin-profile">
@@ -124,7 +135,7 @@
     
         <div class="user-list">
     <div *ngFor="let user of datafilterUsers">
-        <div *ngIf="user.type_user != '5'" class="user-card">
+        <div *ngIf="user.type_user != '5' && user.user_id !== datauser[0].user_id" class="user-card">
             <div class="user-avatar">
                 <img [src]="user.image_profile" alt="User Avatar" class="avatar" />
             </div>
@@ -172,7 +183,7 @@
                     <span>รายละเอียด</span>
                 </button>
                 
-                <button class="btn delete-btn" 
+                <button class="btn delete-btn" *ngIf="user.type_user !== '3'"
                         (click)="deleteUser(user.user_id)">
                     <i class="fa fa-trash"></i>
                 </button>
@@ -203,24 +214,52 @@
             </div>
         </div>
 
-        <!-- Modal รายงาน -->
-        <div class="modal" *ngIf="isModal">
-            <div class="modal-content">
-            <h2>ชื่อผู้ใช้ : <strong>{{ sht_username }}</strong></h2>
-            <hr />
-            <p>รายงานทั้งหมด {{ dataReport.length }} รายการ</p>
-            <div class="report-list"*ngIf="dataReport.length > 0">
-                <div *ngFor="let report of dataReport" class="report-item">
-                <strong>{{ report.reporter_username }}  | เหตุผล : {{report.reason}}</strong>
-                <p style="color: gray; font-size: small;">{{report.date_reported | date:'dd/MM/yyyy'}}</p>
-                <p>{{ report.details }}</p>
-                </div>
-            </div>
-            <div class="modal-actions">
-                <button class="close-btn" (click)="closeModal()">ปิด</button>
-            </div>
-            </div>
+<!-- Modal รายงาน -->
+<div class="modal" *ngIf="isModal">
+  <div class="modal-content">
+    <h2>ชื่อผู้ใช้ : <strong>{{ sht_username }}</strong></h2>
+    <hr />
+    <p>รายงานทั้งหมด {{ dataReport.length }} รายการ</p>
+
+    <div class="report-list" *ngIf="dataReport.length > 0">
+      <div *ngFor="let report of dataReport" class="report-item">
+
+        <!-- ส่วนหัวข้อหลัก -->
+<div class="d-flex align-items-center">
+  <strong>
+    {{ report.reporter_username }} | เหตุผล: {{ report.reason }}
+    <span [ngStyle]="{'color': report.status_read == '2' ? 'green' : 'red'}">
+      ({{ report.status_read == '2' ? 'อ่านแล้ว' : 'ยังไม่อ่าน' }})
+    </span>
+  </strong>
+
+  <button class="btn btn-link btn-sm detail-btn" (click)="toggleDetail(report)" style=" margin-left: auto; ">
+    {{ report.showDetail ? 'ซ่อนรายละเอียด' : 'ดูรายละเอียด' }}
+  </button>
+</div>
+
+
+        <p style="color: gray; font-size: small;">
+          {{ report.date_reported | date:'dd/MM/yyyy' }}
+        </p>
+
+        <!-- ส่วนรายละเอียด -->
+        <div *ngIf="report.showDetail" class="report-detail">
+          <p>{{ report.details || 'ไม่มีรายละเอียดเพิ่มเติม' }}</p>
         </div>
+
+        <!-- <hr /> -->
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="close-btn" (click)="closeModal()">ปิด</button>
+    </div>
+  </div>
+</div>
+
+
+
 
         <!-- model profile -->
          <div class="modal" *ngIf="isModalprofile">
@@ -257,6 +296,6 @@
       <i class="bi bi-chat-dots-fill fixed-chat-icon"></i>
       <span *ngIf="hasUnreadMessages" class="notification-badge"></span>
     </div>
-
+</ng-template>
 </body>
 </html>

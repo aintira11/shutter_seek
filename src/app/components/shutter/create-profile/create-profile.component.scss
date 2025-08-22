@@ -290,11 +290,13 @@ form {
   margin-top: 5px;
 }
 
-.error-message::before,
-.error-message-absolute::before {
-  content: '⚠';
+.error-message span::before,
+.error-message-absolute span::before {
+  content: '⚠ ';
   font-size: 14px;
-}  
+  color: red;
+}
+ 
    .input-style {
             width: 100%;
             padding: 12px 16px;

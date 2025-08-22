@@ -229,6 +229,15 @@ private normalizeValue(value: any): string {
   return value.toString().trim();
 }
 
+onlyNumber(event: KeyboardEvent) {
+  const charCode = event.which ? event.which : event.keyCode;
+  // อนุญาตแค่ตัวเลข 0-9
+  if (charCode < 48 || charCode > 57) {
+    event.preventDefault();
+  }
+}
+
+
 change_password(){
     if (this.formChangePassword.invalid) return;
 

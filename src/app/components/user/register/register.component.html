@@ -76,12 +76,16 @@
             
                 <div class="form-group">
                     <label class="label">เบอร์โทรศัพท์ <span style="color: red;">*</span></label>
-                    <input type="tel" class="input-style" 
-                           [class.error]="fromreister.get('Phone')?.invalid && fromreister.get('Phone')?.touched"
-                           placeholder="ระบุหมายเลขโทรศัพท์ 10 หลัก" formControlName="Phone">
+                    <input 
+  type="text"
+  maxlength="10"
+  class="input-style" 
+  placeholder="ระบุหมายเลขโทรศัพท์ 10 หลัก"
+  formControlName="Phone"
+  (keypress)="onlyNumber($event)">
                     <div *ngIf="fromreister.get('Phone')?.invalid && fromreister.get('Phone')?.touched" class="error-message">
                         <span *ngIf="fromreister.get('Phone')?.errors?.['required']"style="color: red; font-size: smaller;">*กรุณากรอกหมายเลขโทรศัพท์</span>
-                        <span *ngIf="fromreister.get('Phone')?.errors?.['pattern']"style="color: red; font-size: smaller;">*หมายเลขโทรศัพท์ต้องเป็นตัวเลข 10 หลัก</span>
+                        <!-- <span *ngIf="fromreister.get('Phone')?.errors?.['pattern']"style="color: red; font-size: smaller;">*หมายเลขโทรศัพท์ต้องเป็นตัวเลข 10 หลัก</span> -->
                         <span *ngIf="fromreister.get('Phone')?.errors?.['whitespace']"style="color: red; font-size: smaller;">*หมายเลขโทรศัพท์ไม่สามารถเป็นช่องว่างได้</span>
                     </div>
                 </div>
@@ -108,12 +112,13 @@
               </div>
           
               <!-- ข้อความแจ้ง error -->
-              <div *ngIf="fromreister.get('Password')?.invalid && fromreister.get('Password')?.touched"
-                   class="error-message-absolute">
-                <span *ngIf="fromreister.get('Password')?.errors?.['required']">*กรุณากรอกรหัสผ่าน</span>
-                <span *ngIf="fromreister.get('Password')?.errors?.['whitespace']">*รหัสผ่านไม่สามารถเป็นช่องว่างได้</span>
-                <span *ngIf="fromreister.get('Password')?.errors?.['pattern']"> *รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร และมีทั้งตัวอักษรพิมพ์ใหญ่,พิมพ์เล็ก,ตัวเลข และ อักขระพิเศษ อย่างน้อย 1 ตัว</span>
-              </div>
+              <div *ngIf="fromreister.get('Password')?.touched" class="error-message-absolute">
+    <span *ngIf="fromreister.get('Password')?.errors?.['minlength']">, รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร</span>
+    <span *ngIf="fromreister.get('Password')?.errors?.['number']">, ต้องมีตัวเลขอย่างน้อย 1 ตัว</span>
+    <span *ngIf="fromreister.get('Password')?.errors?.['uppercase']">, ต้องมีตัวพิมพ์ใหญ่อย่างน้อย 1 ตัว</span>
+    <span *ngIf="fromreister.get('Password')?.errors?.['lowercase']">, ต้องมีตัวพิมพ์เล็กอย่างน้อย 1 ตัว</span>
+    <span *ngIf="fromreister.get('Password')?.errors?.['special']">, ต้องมีอักขระพิเศษอย่างน้อย 1 ตัว </span>
+  </div>
             </div>
 
             <div class="form-group" style="position: relative;">

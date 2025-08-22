@@ -66,11 +66,22 @@ export class HomeComponent implements OnInit , AfterViewInit{
     private router : Router,
     private authService: AuthService,
     private snackBar: MatSnackBar,){
-    this.form = this.fb.group({
+
+     this.form = this.fb.group({
       tags_id: [''],
       province: [''],
-      price: [''],
+      priceType: ['max'], // default เป็น 'ไม่เกิน'
+      minPrice: [''],
+      maxPrice: [''],
       search: ['']
+    });
+    
+    // เมื่อเปลี่ยนประเภทการค้นหา ให้ล้างค่าราคา
+    this.form.get('priceType')?.valueChanges.subscribe(value => {
+      this.form.patchValue({
+        minPrice: '',
+        maxPrice: ''
+      });
     });
 }
 
@@ -351,25 +362,57 @@ getPrev(portfolioIndex: number) {
   return { start, end, total };
 }
     
-sreach() {
-    
+ sreach() {
+  
     // [1] ตั้งค่าสถานะต่างๆ ก่อนเริ่มค้นหา
     this.isSearching = true;
-    this.hasSearched = true; 
+    this.hasSearched = true;
     this.dataSreach = [];
 
-    // [2] ส่วนของการสร้าง URL สำหรับเรียก API 
+
+    // [2] ส่วนของการสร้าง URL สำหรับเรียก API
     const params: any = {};
     const tags_id = this.form.value.tags_id;
     const province = this.form.value.province;
-    const price = this.form.value.price;
+    // const priceType = this.form.value.priceType;
+    // const minPrice = this.form.value.minPrice;
+    // const maxPrice = this.form.value.maxPrice;
     const search = this.form.value.search;
-    
+
+      let { priceType, minPrice, maxPrice } = this.form.value;
+
+  // ตรวจสอบเมื่อเลือก "ระหว่าง"
+  if (priceType === 'range' && minPrice && maxPrice) {
+    if (Number(minPrice) > Number(maxPrice)) {
+      // swap ค่ากัน
+      [minPrice, maxPrice] = [maxPrice, minPrice];
+
+      // อัปเดตกลับไปที่ form
+      this.form.patchValue({
+        minPrice,
+        maxPrice
+      });
+    }
+  }
+
     if (tags_id) params.tags_id = tags_id;
     if (province) params.province = province;
-    if (price) params.price = price;
     if (search) params.search = search;
-    
+
+    // จัดการพารามิเตอร์ราคาตามประเภทที่เลือก
+    if (priceType && (minPrice || maxPrice)) {
+      params.priceType = priceType;
+      
+      if (priceType === 'max' && maxPrice) {
+        params.maxPrice = maxPrice;
+      } else if (priceType === 'min' && minPrice) {
+        params.minPrice = minPrice;
+      } else if (priceType === 'range' && minPrice && maxPrice) {
+        params.minPrice = minPrice;
+        params.maxPrice = maxPrice;
+      }
+    }
+
     const queryString = new URLSearchParams(params).toString();
     const url = `${this.Constants.API_ENDPOINT}/search/photographers?${queryString}`;
 
@@ -379,7 +422,6 @@ sreach() {
         // ทำงานเมื่อ API ส่งข้อมูลกลับมาสำเร็จ
         this.dataSreach = response;
         // console.log("ผลลัพธ์ที่ค้นหา:", response);
-  
       },
       error: (err) => {
         // ทำงานเมื่อเกิดข้อผิดพลาด
@@ -387,33 +429,33 @@ sreach() {
         this.showSnackBar('เกิดข้อผิดพลาดในการค้นหา');
         this.isSearching = false; // <-- ซ่อน Loading แม้จะเกิด error
       },
-    complete: () => {
-      setTimeout(() => {
-    this.isSearching = false;
-    if (this.dataSreach.length > 0) {
-      this.showSnackBar('พบผลลัพธ์ ' + this.dataSreach.length + ' รายการ');
-      // ให้ Angular วาดผลลัพธ์เสร็จก่อน แล้วค่อยเลื่อน
-      setTimeout(() => {
-        const rankElement = document.getElementById('search');
-        if (rankElement) {
-          rankElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 100); // ดีเลย์ 0.1 วินาที
-    } else {
-      this.showSnackBar('ไม่พบผลลัพธ์ที่ค้นหา');
-      setTimeout(() => {
-        const rankElement = document.getElementById('third');
-        if (rankElement) {
-          rankElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 100);
-    }
-  }, 1000);
-  console.log('การค้นหาเสร็จสิ้น');
-}
-      
+      complete: () => {
+        setTimeout(() => {
+          this.isSearching = false;
+          if (this.dataSreach.length > 0) {
+            this.showSnackBar('พบผลลัพธ์ ' + this.dataSreach.length + ' รายการ');
+            // ให้ Angular วาดผลลัพธ์เสร็จก่อน แล้วค่อยเลื่อน
+            setTimeout(() => {
+              const rankElement = document.getElementById('search');
+              if (rankElement) {
+                rankElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }
+            }, 100); // ดีเลย์ 0.1 วินาที
+          } else {
+            this.showSnackBar('ไม่พบผลลัพธ์ที่ค้นหา');
+            setTimeout(() => {
+              const rankElement = document.getElementById('third');
+              if (rankElement) {
+                rankElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }
+            }, 100);
+          }
+        }, 1000);
+        console.log('การค้นหาเสร็จสิ้น');
+      }
     });
-}
+  }
+
 
     profile(typeuser : string){
       const type = typeuser;
@@ -448,16 +490,98 @@ Liked(portfolioId: number | null) {
     return;
   }
 
+  // *** เช็คสถานะปัจจุบันก่อนที่จะทำอะไร ***
+  const isCurrentlyLiked = this.isLiked(validPortfolioId);
+  const newLikedState = !isCurrentlyLiked; // สถานะใหม่ที่จะเป็น
+  
+  console.log(`Portfolio ${validPortfolioId}: Currently liked: ${isCurrentlyLiked}, Will be: ${newLikedState}`);
+  
+  // อัปเดต UI ทันทีตามสถานะใหม่
+  this.updateLikeStatusLocally(validPortfolioId, newLikedState);
+
   const url = `${this.Constants.API_ENDPOINT}/like/${validPortfolioId}/${userId}`;
   this.http.post(url, {}).subscribe({
     next: () => {
       console.log("Like/Unlike success");
-      // หลังจากเรียก API สำเร็จ ให้โหลดข้อมูล Like ใหม่
-      this.getMyLike(userId);
+      // อัปเดตข้อมูล Like array ตามสถานะใหม่
+      this.updateLikeArrayAfterAPI(validPortfolioId, newLikedState, userId);
     },
-    error: (error) => console.error("Like/Unlike error:", error)
+    error: (error) => {
+      console.error("Like/Unlike error:", error);
+      // หาก API ล้มเหลว ให้ revert กลับไปสถานะเดิม
+      this.updateLikeStatusLocally(validPortfolioId, isCurrentlyLiked);
+      this.showSnackBar('เกิดข้อผิดพลาดในการกดไลค์');
+    }
   });
 }
+
+
+// *** เพิ่ม method สำหรับอัปเดต like_count และ isLiked status ใน Portfolio array ***
+private updateLikeStatusLocally(portfolioId: number, isLiked: boolean): void {
+  console.log(`Updating like status locally: Portfolio ${portfolioId}, isLiked: ${isLiked}`);
+  
+  // อัปเดต Portfolio array
+  const photographerIndex = this.Portfolio.findIndex(p => p.portfolio_id === portfolioId);
+  if (photographerIndex !== -1) {
+    if (isLiked) {
+      // ถ้าจะไลค์ ให้เพิ่ม
+      this.Portfolio[photographerIndex].like_count += 1;
+      console.log(`Portfolio like count increased to: ${this.Portfolio[photographerIndex].like_count}`);
+    } else {
+      // ถ้าจะเลิกไลค์ ให้ลด
+      this.Portfolio[photographerIndex].like_count = Math.max(0, this.Portfolio[photographerIndex].like_count - 1);
+      console.log(`Portfolio like count decreased to: ${this.Portfolio[photographerIndex].like_count}`);
+    }
+  }
+
+  // *** อัปเดต paginatedPortfolio array เพื่อให้ UI แสดงผลทันที ***
+  const paginatedIndex = this.paginatedPortfolio.findIndex(p => p.portfolio_id === portfolioId);
+  if (paginatedIndex !== -1) {
+    if (isLiked) {
+      // ถ้าจะไลค์ ให้เพิ่ม
+      this.paginatedPortfolio[paginatedIndex].like_count += 1;
+      console.log(`Paginated like count increased to: ${this.paginatedPortfolio[paginatedIndex].like_count}`);
+    } else {
+      // ถ้าจะเลิกไลค์ ให้ลด
+      this.paginatedPortfolio[paginatedIndex].like_count = Math.max(0, this.paginatedPortfolio[paginatedIndex].like_count - 1);
+      console.log(`Paginated like count decreased to: ${this.paginatedPortfolio[paginatedIndex].like_count}`);
+    }
+  }
+}
+
+// *** เพิ่ม method สำหรับอัปเดต Like array หลังจาก API สำเร็จ ***
+private updateLikeArrayAfterAPI(portfolioId: number, isLiked: boolean, userId: number): void {
+  if (isLiked) {
+    // เพิ่มรายการเข้า Like array
+    const photographerData = this.Portfolio.find(p => p.portfolio_id === portfolioId);
+    if (photographerData) {
+      const newLikeItem: DataLike = {
+        user_id: userId,
+        email: this.datauser[0]?.email || '',
+        image_profile: this.datauser[0]?.image_profile || '',
+        portfolio_id: portfolioId,
+        name_work: photographerData.name_work,
+        tags_id: photographerData.tags_id,
+        name_tags: photographerData.name_tags,
+        image_urls: photographerData.image_urls,
+        date_likes: new Date(),
+        isLiked: true
+      };
+      
+      // เช็คว่าไม่มีรายการนี้อยู่แล้วใน Like array
+      const existingIndex = this.Like.findIndex(like => like.portfolio_id === portfolioId);
+      if (existingIndex === -1) {
+        this.Like.push(newLikeItem);
+      } else {
+        this.Like[existingIndex] = newLikeItem;
+      }
+    }
+  } else {
+    // ลบรายการออกจาก Like array
+    this.Like = this.Like.filter(like => like.portfolio_id !== portfolioId);
+  }
+}
+
 
 // method ดึงข้อมูลที่ถูกใจ 
 getMyLike(id: number) {
@@ -465,10 +589,19 @@ getMyLike(id: number) {
   this.http.get(url).subscribe((response: any) => {
     this.Like = response.map((item: any) => ({
       ...item,
-      isLiked: true  // เพิ่ม isLiked = true
+      isLiked: true
     }));
-    // console.log("data Like :", this.Like);
+    console.log("data Like :", this.Like);
   }); 
+}
+
+// เรียกใช้หลังจากที่มีการเปลี่ยนแปลงข้อมูล Portfolio
+private updatePaginatedPortfolio(): void {
+  // สมมติว่าคุณมี method สำหรับ pagination อยู่แล้ว
+  // ถ้าไม่มี ให้เพิ่มโค้ดนี้
+  const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+  const endIndex = startIndex + this.itemsPerPage;
+  this.paginatedPortfolio = this.Portfolio.slice(startIndex, endIndex);
 }
 
     toShutter(id_shutter: number | null) {

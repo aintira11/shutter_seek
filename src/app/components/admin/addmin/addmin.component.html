@@ -95,7 +95,7 @@
                       <div class="input-container">
                         <input type="tel" class="input-style" 
                                [class.error]="fromaddmin.get('Phone')?.invalid && fromaddmin.get('Phone')?.touched"
-                               placeholder="ระบุหมายเลขโทรศัพท์ 10 หลัก" formControlName="Phone">
+                               placeholder="ระบุหมายเลขโทรศัพท์ 10 หลัก" formControlName="Phone"   maxlength="10"   (keypress)="onlyNumber($event)">
                         <div *ngIf="fromaddmin.get('Phone')?.invalid && fromaddmin.get('Phone')?.touched" class="error-message">
                             <span *ngIf="fromaddmin.get('Phone')?.errors?.['required']" style="color: red; font-size: smaller;">*กรุณากรอกหมายเลขโทรศัพท์</span>
                             <span *ngIf="fromaddmin.get('Phone')?.errors?.['pattern']" style="color: red; font-size: smaller;">*หมายเลขโทรศัพท์ต้องเป็นตัวเลข 10 หลัก</span>

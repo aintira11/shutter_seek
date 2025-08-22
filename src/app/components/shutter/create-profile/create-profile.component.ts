@@ -15,6 +15,30 @@ import { AuthService } from '../../../service/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
+export function passwordValidator(control: AbstractControl): ValidationErrors | null {
+  const value = control.value || '';
+
+  const errors: any = {};
+
+  if (!/[0-9]/.test(value)) {
+    errors.number = true; // ไม่มีตัวเลข
+  }
+  if (!/[A-Z]/.test(value)) {
+    errors.uppercase = true; // ไม่มีตัวพิมพ์ใหญ่
+  }
+  if (!/[a-z]/.test(value)) {
+    errors.lowercase = true; // ไม่มีตัวพิมพ์เล็ก
+  }
+  if (!/[!@#$%^&*(),.?":{}|<>]/.test(value)) {
+    errors.special = true; // ไม่มีอักขระพิเศษ
+  }
+  if (value.length < 8) {
+    errors.minlength = true; // สั้นเกินไป
+  }
+
+  return Object.keys(errors).length ? errors : null;
+}
+
 @Component({
   selector: 'app-create-profile',
   standalone: true,
@@ -57,43 +81,47 @@ export class CreateProfileComponent implements OnInit {
 
      this.fromreister = this.fb.group({
             email: ['', [Validators.required, Validators.email, this.noWhitespaceValidator, this.StrictEmailValidator]],
-            phone: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]], // เบอร์โทร 10 หลัก
+            phone: ['', [Validators.required,]], // เบอร์โทร 10 หลัก
             UserName: ['', [Validators.required, this.noWhitespaceValidator]],
             Name: ['', [Validators.required, this.noWhitespaceValidator]],
             LastName: ['', [Validators.required, this.noWhitespaceValidator]],
             address: [''],
             province: ['',[Validators.required]],
             Password: [
-  '',
-  [
-    Validators.required,
-    this.noWhitespaceValidator,
-    Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#._:;])[A-Za-z\d@$!%*?&#._:;]{8,}$/)
-  ]
+  '', [passwordValidator],
+  // [
+  //   Validators.required,
+  //   this.noWhitespaceValidator,
+  //   Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/)
+  // ]
 ],
             confirmPassword: ['', [Validators.required, this.noWhitespaceValidator]],
           });
   }
   
   ngOnInit(){
-    // // รับข้อมูลจากหน้าที่ส่งมา
-    // this.route.paramMap.subscribe(() => {
-    //     // ตรวจสอบว่า state มีข้อมูลหรือไม่
-    //     if (window.history.state && window.history.state.data) {
-    //         this.data = window.history.state.data;
+    // ดึงข้อมูลจาก AuthService
+  const user = this.authService.getUser();
+     if (user) {
+     this.datauser = [user];
 
-    //         console.log('Response:', this.data);
+     // เติมค่าเข้าไปในฟอร์ม
+    this.fromreister.patchValue({
+      email: user.email || '',
+      UserName: user.username || '',
+      Name: user.first_name || '',
+      LastName: user.last_name || '',
+      phone: user.phone || '',
+      address: user.address || '',
+      // ไม่ควร patch password / confirmPassword จาก backend มาลง
+      image_profile : user.image_profile || ''
 
-    //         // ตรวจสอบว่ามี last_idx หรือไม่ก่อนใช้งาน
-    //         if (this.data.last_idx) {
-    //             this.getdatauser(this.data.last_idx); // ส่ง last_idx ไปยังฟังก์ชัน
-    //         } else {
-    //             console.error('last_idx is missing in data:', this.data);
-    //         }
-    //     } else {
-    //         console.error('No data found in history state');
-    //     }
-    // });
+    });
+    this.imagePreview = user.image_profile ;
+  } else {
+    console.warn(" No user found in AuthService. Redirecting to login...");
+    return;
+  }
 }
 
 getdatauser(id: number) {
@@ -129,6 +157,8 @@ getdatauser(id: number) {
     const isValid = !isWhitespace;
     return isValid ? null : { 'whitespace': true };
   }
+
+  
 
   StrictEmailValidator(control: AbstractControl): ValidationErrors | null {
   const email = control.value;
@@ -226,10 +256,19 @@ isRegistering = false;
   } else {
     // ไม่มีรูปภาพ ใช้รูป default
     console.log('No image selected, using default');
-    const defaultImage = 'https://cdn-icons-png.flaticon.com/512/954/954560.png';
-    this.submitRegistration(url, defaultImage);
+    // const defaultImage = 'https://cdn-icons-png.flaticon.com/512/954/954560.png';
+    this.submitRegistration(url, this.imagePreview);
   }
 }
+
+onlyNumber(event: KeyboardEvent) {
+  const charCode = event.which ? event.which : event.keyCode;
+  // อนุญาตแค่ตัวเลข 0-9
+  if (charCode < 48 || charCode > 57) {
+    event.preventDefault();
+  }
+}
+
 
 private submitRegistration(url: string, imageUrl: string) {
   // ตรวจสอบอีกครั้งก่อน submit และเพิ่มการป้องกันเพิ่มเติม
@@ -237,6 +276,7 @@ private submitRegistration(url: string, imageUrl: string) {
     console.log('Registration process was cancelled');
     return;
   }
+  
 
   console.log('Submitting registration...');
   

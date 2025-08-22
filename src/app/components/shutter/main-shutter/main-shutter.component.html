@@ -16,6 +16,16 @@
 </head>
 
 <body >
+  <div  class="loading-container" *ngIf="isLoading; else content">
+  <!-- แสดง Loading Spinner หรือข้อความ Loading ตามต้องการ -->
+
+  <!-- <img src="/assets/images/Loading Stage ・ Animation.gif" alt="" style="width: 30%;"> -->
+
+<svg viewBox="25 25 50 50">
+  <circle r="20" cy="50" cx="50"></circle>
+</svg>
+</div>
+<ng-template #content>
     <mat-sidenav-container class="sidenav-container" >
         <!-- Sidebar -->
         <mat-sidenav #sidenav mode="side" [(opened)]="opened" class="sidebar"*ngIf="dataAdmin.length < 1">
@@ -97,14 +107,14 @@
         <img src="/assets/images/PIXEL (8).png" alt="SHUTTER seek" class="logo">
         <nav class="ms-3">
           <a href="/mainshutter" class="nav-link" style="color: black;">หน้าแรก</a>
-          <a (click)="chat(1)" class="nav-link" style="color: black;">ติดต่อเรา</a>
+          <a (click)="chat(1)" class="nav-link" style="color: black;" *ngIf="dataAdmin.length === 0">ติดต่อแอดมิน</a>
           <!-- <a href="/shutter" class="nav-link" style="color: black;">กล่องข้อความ</a> -->
+           <a class="nav-link" (click)="goToRegister()" *ngIf="dataAdmin.length === 0" style="color: black;">สมัครสมาชิก</a>
         </nav>
       </div>
   
       <!-- ด้านขวา: ปุ่มเข้าสู่ระบบ / ออกจากระบบ -->
       <div class="d-flex align-items-center">
-        <button class="btn btn-outline-primary btn-sm me-2" (click)="logout()">ลงทะเบียน</button>
         <button class="btn btn-primary me-2" (click)="logout()">ออกจากระบบ</button>
 
          <button mat-button class="circle-button"  (click)="profile()" *ngIf="dataAdmin.length > 0">
@@ -477,6 +487,6 @@
 
 </mat-sidenav-content>
 </mat-sidenav-container>
-      
+</ng-template>
 </body>
 </html>

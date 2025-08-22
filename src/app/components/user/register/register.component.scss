@@ -72,11 +72,12 @@ body {
   margin-top: 5px;
 }
 
-.error-message::before,
-.error-message-absolute::before {
-  content: '⚠';
+.error-message span::before,
+.error-message-absolute span::before {
+  content: '⚠ ';
   font-size: 14px;
-}  
+  color: red;
+}
 
 
 //ปุ่มกลับ

@@ -200,7 +200,13 @@ export class AddminComponent {
       verticalPosition: 'top',
     });
   }
-
+onlyNumber(event: KeyboardEvent) {
+  const charCode = event.which ? event.which : event.keyCode;
+  // อนุญาตแค่ตัวเลข 0-9
+  if (charCode < 48 || charCode > 57) {
+    event.preventDefault();
+  }
+}
   cancel() {
     if (confirm('คุณต้องการยกเลิกหรือไม่?')) {
       this.fromaddmin.reset();

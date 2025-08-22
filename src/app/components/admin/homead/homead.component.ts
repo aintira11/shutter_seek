@@ -51,6 +51,7 @@ export class HomeadComponent implements OnInit, OnDestroy { // เพิ่ม O
 
     selectedTab: string = 'all';
     showButton = false; 
+    isLoading: boolean = false;
 
     hasUnreadMessages = false;
     private chatRoomListenerUnsubscribe?: () => void;
@@ -86,6 +87,7 @@ export class HomeadComponent implements OnInit, OnDestroy { // เพิ่ม O
     this.filterUsers(0); // โหลดข้อมูลเริ่มต้นสำหรับแท็บ "ทั้งหมด"
 
     this.listenForUnreadMessages(user.user_id);
+  
   }
    @HostListener('window:scroll', [])
           onScroll() {
@@ -111,7 +113,7 @@ export class HomeadComponent implements OnInit, OnDestroy { // เพิ่ม O
   // *** แก้ไขสำหรับ Admin: ใช้ userId = 1 ในการฟังข้อความ ***
   const chatUserId = this.datauser[0].type_user === '3' ? 1 : userId;
   
-  console.log(`[Admin Unread] Original userId: ${userId}, Chat userId: ${chatUserId}, User type: ${this.datauser[0].type_user}`);
+  // console.log(`[Admin Unread] Original userId: ${userId}, Chat userId: ${chatUserId}, User type: ${this.datauser[0].type_user}`);
 
   // Listen for changes in the list of chat rooms
   this.chatRoomListenerUnsubscribe = onValue(chatRoomsRef, (snapshot) => {
@@ -125,7 +127,7 @@ export class HomeadComponent implements OnInit, OnDestroy { // เพิ่ม O
 
     const updateGlobalUnreadStatus = () => {
       this.hasUnreadMessages = Object.values(unreadStatusByRoom).some(status => status);
-      console.log(`[Admin Unread] Global unread status updated: ${this.hasUnreadMessages}`);
+      // console.log(`[Admin Unread] Global unread status updated: ${this.hasUnreadMessages}`);
     };
 
     // *** ใช้ chatUserId แทน userId ในการกรองห้องแชท ***
@@ -133,7 +135,7 @@ export class HomeadComponent implements OnInit, OnDestroy { // เพิ่ม O
       roomData.user1 === chatUserId || roomData.user2 === chatUserId
     );
 
-    console.log(`[Admin Unread] Found ${userRooms.length} rooms for user ${chatUserId}`);
+    // console.log(`[Admin Unread] Found ${userRooms.length} rooms for user ${chatUserId}`);
 
     if (userRooms.length === 0) {
       this.hasUnreadMessages = false;
@@ -158,7 +160,7 @@ export class HomeadComponent implements OnInit, OnDestroy { // เพิ่ม O
         }
         
         unreadStatusByRoom[roomId] = roomHasUnread;
-        console.log(`[Admin Unread] Room ${roomId} has ${unreadCount} unread messages, roomHasUnread: ${roomHasUnread}`);
+        // console.log(`[Admin Unread] Room ${roomId} has ${unreadCount} unread messages, roomHasUnread: ${roomHasUnread}`);
         updateGlobalUnreadStatus();
       });
       this.messageListenersUnsubscribe.push(messageListener);
@@ -166,14 +168,14 @@ export class HomeadComponent implements OnInit, OnDestroy { // เพิ่ม O
   });
 }
 
-debugUnreadMessages(): void {
-  console.log('=== DEBUG UNREAD MESSAGES ===');
-  console.log('User data:', this.datauser[0]);
-  console.log('User type:', this.datauser[0]?.type_user);
-  console.log('User ID:', this.datauser[0]?.user_id);
-  console.log('Has unread messages:', this.hasUnreadMessages);
-  console.log('Chat user ID (for listening):', this.datauser[0]?.type_user === '3' ? 1 : this.datauser[0]?.user_id);
-}
+// debugUnreadMessages(): void {
+//   console.log('=== DEBUG UNREAD MESSAGES ===');
+//   console.log('User data:', this.datauser[0]);
+//   console.log('User type:', this.datauser[0]?.type_user);
+//   console.log('User ID:', this.datauser[0]?.user_id);
+//   console.log('Has unread messages:', this.hasUnreadMessages);
+//   console.log('Chat user ID (for listening):', this.datauser[0]?.type_user === '3' ? 1 : this.datauser[0]?.user_id);
+// }
 
 // นับจำนวนผู้ใช้ตามประเภท
 countUsersByType() {
@@ -231,6 +233,7 @@ filterUsers(type: number) {
 
     // console.log("data datafilterUsers :", this.datafilterUsers);
   });
+
 }
 
 // ฟังก์ชันค้นหาผู้ใช้
@@ -405,16 +408,35 @@ gotohome(){
   isModalprofile:boolean = false;
 
   // เปิด modal เมื่อกดปุ่ม "รายงาน"
-  openReportDialog(user: number, username: string): void {
+openReportDialog(user: number, username: string): void {
   this.sht_username = username;
   const url = this.Constants.API_ENDPOINT + '/getreport/' + user;
+
   this.http.get(url).subscribe((response: any) => {
-    this.dataReport = response;
-    // console.log("data dataReport:", this.dataReport);
+    // เพิ่ม field showDetail = false
+    this.dataReport = response.map((r: any) => ({
+      ...r,
+      showDetail: false
+    }));
   });
 
   this.isModal = true;
 }
+
+toggleDetail(report: any): void {
+  report.showDetail = !report.showDetail;
+
+  // ถ้าเพิ่งเปิด และยังไม่อ่าน → ยิง API update
+  if (report.showDetail && report.status_read != '2') {
+    const url = this.Constants.API_ENDPOINT + '/updateReportStatus/' + report.report_id;
+    this.http.post(url, {}).subscribe({
+      next: () => report.status_read = '2',
+      error: (err) => console.error("อัปเดตสถานะไม่สำเร็จ:", err)
+    });
+  }
+}
+
+
 
 
   // ปิด modal

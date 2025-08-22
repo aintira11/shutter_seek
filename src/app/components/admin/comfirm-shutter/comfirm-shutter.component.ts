@@ -61,29 +61,25 @@ export class ComfirmShutterComponent implements OnInit, OnDestroy {
   // สถานะ Modal สำหรับปฏิเสธ
   public isRejectModalOpen: boolean = false; // สถานะสำหรับ Modal เหตุผลการปฏิเสธ
 
-  // สถานะ Modal สำหรับแสดงเหตุผลการปฏิเสธ
-  public isViewReasonsModalOpen: boolean = false;
+  
+  public isViewReasonsModalOpen: boolean = false;// สถานะ Modal สำหรับแสดงเหตุผลการปฏิเสธ
   public reasonsToDisplay: { categoryTitle: string; reasonText: string; }[] = [];
 
-  // สถานะ Modal สำหรับแสดงตัวอย่างข้อความแชท 
-  public isChatMessagePreviewModalOpen: boolean = false;
-  // เนื้อหาข้อความแชทสำหรับแสดงตัวอย่าง 
-  public chatMessagePreviewContent: string = '';
-  // หัวข้อ Modal (เช่น "ตัวอย่างข้อความอนุมัติ/ปฏิเสธ") 
-  public chatMessagePreviewTitle: string = '';
-  // Flag เพื่อระบุว่าเป็นข้อความอนุมัติหรือปฏิเสธ 
-  public isApprovalMessage: boolean = false;
-
+ 
+  public isChatMessagePreviewModalOpen: boolean = false; // สถานะ Modal สำหรับแสดงตัวอย่างข้อความแชท 
+  public chatMessagePreviewContent: string = '';// เนื้อหาข้อความแชทสำหรับแสดงตัวอย่าง 
+  public chatMessagePreviewTitle: string = '';  // หัวข้อ Modal (เช่น "ตัวอย่างข้อความอนุมัติ/ปฏิเสธ") 
+  public isApprovalMessage: boolean = false;  // Flag เพื่อระบุว่าเป็นข้อความอนุมัติหรือปฏิเสธ 
   // ตัวแปรสำหรับเก็บ user_id ของช่างภาพที่กำลังจะถูกปฏิเสธ/แสดงเหตุผล/อนุมัติ
   public selectedUserToReject: number | null = null;
   public selectedUserToViewReasons: number | null = null;
   public selectedUserToApprove: number | null = null; // เพิ่มตัวแปรสำหรับผู้ใช้ที่จะอนุมัติ
 
-  // Key คือ subCriterion.id, Value คือ true/false (ถูกเลือกหรือไม่)
-  public selectedRejectionReasons: { [subCriterionId: string]: boolean } = {};
-
-  // ตัวแปรสำหรับเก็บ interval ของ countdown 
-  private countdownIntervals: { [userId: number]: any } = {};
+  public selectedRejectionReasons: { [subCriterionId: string]: boolean } = {};// Key คือ subCriterion.id, Value คือ true/false (ถูกเลือกหรือไม่)
+  private countdownIntervals: { [userId: number]: any } = {};// ตัวแปรสำหรับเก็บ interval ของ countdown
+  
+  private originalMessageContent: string = ''; // เก็บข้อความต้นฉบับ
+  public isMessageEdited: boolean = false; // เช็คว่าข้อความถูกแก้ไขหรือไม่
 
   constructor(
     private ngZone: NgZone,
@@ -319,34 +315,38 @@ export class ComfirmShutterComponent implements OnInit, OnDestroy {
   }
 
   // *** ฟังก์ชันใหม่: เปิด Modal ตัวอย่างข้อความแชทสำหรับอนุมัติ (เปลี่ยนชื่อจาก openApproveEmailPreviewModal) ***
-  async openApproveMessagePreviewModal(userId: number): Promise<void> {
-  this.selectedUserToApprove = userId;
-  this.isApprovalMessage = true; // ตั้งค่าเป็นข้อความอนุมัติ
+async openApproveMessagePreviewModal(userId: number): Promise<void> {
+    this.selectedUserToApprove = userId;
+    this.isApprovalMessage = true;
 
-  // เคลียร์เหตุผลการปฏิเสธเก่า (หากมี) เมื่อกำลังจะอนุมัติ
-  const rejectionRef = ref(this.db, `${this.rejectionReasonsPath}/${userId}`);
-  try {
-    await set(rejectionRef, null);
-    // console.log(`Cleared rejection reasons from Firebase (frontend) for user ${userId} before approving.`);
-  } catch (error) {
-    console.error('Error clearing rejection reasons before approval:', error);
-    this.snackBar.open('เกิดข้อผิดพลาดในการล้างเหตุผลการปฏิเสธเก่า', 'ปิด', { duration: 3000 , verticalPosition: 'top'});
+    // เคลียร์เหตุผลการปฏิเสธเก่า (หากมี) เมื่อกำลังจะอนุมัติ
+    const rejectionRef = ref(this.db, `${this.rejectionReasonsPath}/${userId}`);
+    try {
+      await set(rejectionRef, null);
+    } catch (error) {
+      console.error('Error clearing rejection reasons before approval:', error);
+      this.snackBar.open('เกิดข้อผิดพลาดในการล้างเหตุผลการปฏิเสธเก่า', 'ปิด', { duration: 3000, verticalPosition: 'top' });
+    }
+
+    // เตรียมเนื้อหาข้อความแชทสำหรับแสดงตัวอย่าง
+    const photographer = this.datafilterUsers.find(u => u.user_id === this.selectedUserToApprove);
+    const username = photographer ? photographer.username : 'ช่างภาพ';
+
+    this.chatMessagePreviewTitle = 'ตัวอย่างข้อความแจ้งอนุมัติ (สามารถแก้ไขได้)';
+
+    // ข้อความแชทสำหรับอนุมัติ
+    const defaultApprovalMessage =
+      `ยินดีด้วยคุณ${username}! 🎉\n\n` +
+      `การสมัครช่างภาพของคุณได้รับการอนุมัติแล้ว คุณสามารถเข้าสู่ระบบและเริ่มใช้งานแพลตฟอร์ม Shutter Seek ได้ทันที\n\n` +
+      `หากมีข้อสงสัยโปรดติดต่อเรา`;
+
+    // เก็บข้อความต้นฉบับและตั้งค่าข้อความที่จะแสดง
+    this.originalMessageContent = defaultApprovalMessage;
+    this.chatMessagePreviewContent = defaultApprovalMessage;
+    this.isMessageEdited = false;
+
+    this.isChatMessagePreviewModalOpen = true;
   }
-
-  // เตรียมเนื้อหาข้อความแชทสำหรับแสดงตัวอย่าง
-  const photographer = this.datafilterUsers.find(u => u.user_id === this.selectedUserToApprove);
-  const username = photographer ? photographer.username : 'ช่างภาพ';
-
-  this.chatMessagePreviewTitle = 'ตัวอย่างข้อความแจ้งอนุมัติ';
-
-  // ข้อความแชทสำหรับอนุมัติ (ใช้ \n เพื่อขึ้นบรรทัดใหม่)
-  this.chatMessagePreviewContent =
-    `ยินดีด้วยคุณ${username}! 🎉\n\n` + // ขึ้นบรรทัดใหม่ 2 ครั้ง
-    `การสมัครช่างภาพของคุณได้รับการอนุมัติแล้ว คุณสามารถเข้าสู่ระบบและเริ่มใช้งานแพลตฟอร์ม Shutter Seek ได้ทันที\n\n` + // ขึ้นบรรทัดใหม่ 2 ครั้ง
-    `หากมีข้อสงสัยโปรดติดต่อเรา`;
-
-  this.isChatMessagePreviewModalOpen = true; // เปิด Modal ตัวอย่างข้อความแชท
-}
 
   // ฟังก์ชันอนุมัติช่างภาพ - จะเรียก openApproveMessagePreviewModal แทน
   approveUser(userId: number): void {
@@ -377,81 +377,94 @@ export class ComfirmShutterComponent implements OnInit, OnDestroy {
   }
 
   // ฟังก์ชันยืนยันการปฏิเสธจาก Modal เหตุผล (บันทึก Firebase และเปิด Modal ตัวอย่างข้อความแชท)
-async confirmRejectUser(): Promise<void> {
-  if (this.selectedUserToReject === null) {
-    this.snackBar.open('ไม่พบผู้ใช้ที่ต้องการปฏิเสธ', 'ปิด', { duration: 3000 , verticalPosition: 'top'});
-    return;
-  }
-
-  const reasons: string[] = [];
-  this.approvalCategories.forEach(category => {
-    category.subCriteria.forEach(sub => {
-      if (sub.isEnabled && this.selectedRejectionReasons[sub.id]) {
-        reasons.push(sub.text);
-      }
-    });
-  });
-
-  if (reasons.length === 0) {
-    this.snackBar.open('กรุณาเลือกเหตุผลการปฏิเสธอย่างน้อยหนึ่งข้อ', 'ปิด', { duration: 3000 , verticalPosition: 'top'});
-    return;
-  }
-
-  try {
-    const rejectionRef = ref(this.db, `${this.rejectionReasonsPath}/${this.selectedUserToReject}`);
-    await set(rejectionRef, reasons);
-    // console.log(`บันทึกเหตุผลการปฏิเสธลง Firebase จาก Frontend สำหรับผู้ใช้ ${this.selectedUserToReject}:`, reasons);
-
-    const photographer = this.datafilterUsers.find(u => u.user_id === this.selectedUserToReject);
-    const username = photographer ? photographer.username : 'ช่างภาพ';
-
-    this.chatMessagePreviewTitle = 'ตัวอย่างข้อความแจ้งปฏิเสธ';
-    let reasonsList = '';
-
-    if (reasons.length > 0) {
-      reasonsList = 'เนื่องจากเหตุผลดังนี้:\n';
-      reasons.forEach(reason => {
-        reasonsList += `• ${reason}\n`;
-      });
-    } else {
-      reasonsList = `ไม่พบเหตุผลที่เฉพาะเจาะจง โปรดติดต่อทีมงาน Shutter Seek เพื่อสอบถามข้อมูลเพิ่มเติม`;
+ async confirmRejectUser(): Promise<void> {
+    if (this.selectedUserToReject === null) {
+      this.snackBar.open('ไม่พบผู้ใช้ที่ต้องการปฏิเสธ', 'ปิด', { duration: 3000, verticalPosition: 'top' });
+      return;
     }
 
-    this.chatMessagePreviewContent =
-      `เรียนคุณ${username},\n\n` +
-      `ขออภัยที่แจ้งให้ทราบว่า การสมัครช่างภาพของคุณยังไม่ได้รับการอนุมัติในขณะนี้\n\n` +
-      `${reasonsList}\n\n` +
-      `คุณสามารถแก้ไขข้อมูลและยื่นใบสมัครใหม่ได้ หากมีข้อสงสัยเพิ่มเติมโปรดติดต่อทีมงาน Shutter Seek`;
+    const reasons: string[] = [];
+    this.approvalCategories.forEach(category => {
+      category.subCriteria.forEach(sub => {
+        if (sub.isEnabled && this.selectedRejectionReasons[sub.id]) {
+          reasons.push(sub.text);
+        }
+      });
+    });
 
-    // this.cancelReject(); // 
+    if (reasons.length === 0) {
+      this.snackBar.open('กรุณาเลือกเหตุผลการปฏิเสธอย่างน้อยหนึ่งข้อ', 'ปิด', { duration: 3000, verticalPosition: 'top' });
+      return;
+    }
 
-    this.isApprovalMessage = false;
-    this.isChatMessagePreviewModalOpen = true; // เปิด Modal ตัวอย่างข้อความแชท
+    try {
+      const rejectionRef = ref(this.db, `${this.rejectionReasonsPath}/${this.selectedUserToReject}`);
+      await set(rejectionRef, reasons);
 
-    // ** สำคัญ: ปิด Modal เลือกเหตุผลหลังจากเปิด Modal ตัวอย่างข้อความแชท **
-    // เราจะปิด Modal เลือกเหตุผลตรงนี้ แทนที่จะใช้ cancelReject()
-    this.isRejectModalOpen = false;
-    this.selectedRejectionReasons = {}; // เคลียร์การเลือกเหตุผลเก่าไปเลย
+      const photographer = this.datafilterUsers.find(u => u.user_id === this.selectedUserToReject);
+      const username = photographer ? photographer.username : 'ช่างภาพ';
 
-  } catch (error) {
-    console.error('เกิดข้อผิดพลาดในการบันทึกเหตุผลลง Firebase หรือเตรียมตัวอย่างข้อความแชท:', error);
-    this.snackBar.open('เกิดข้อผิดพลาดในการดำเนินการปฏิเสธ', 'ปิด', { duration: 3000 , verticalPosition: 'top'});
+      this.chatMessagePreviewTitle = 'ตัวอย่างข้อความแจ้งปฏิเสธ (สามารถแก้ไขได้)';
+      
+      let reasonsList = '';
+      if (reasons.length > 0) {
+        reasonsList = 'เนื่องจากเหตุผลดังนี้:\n';
+        reasons.forEach(reason => {
+          reasonsList += `• ${reason}\n`;
+        });
+      } else {
+        reasonsList = `ไม่พบเหตุผลที่เฉพาะเจาะจง โปรดติดต่อทีมงาน Shutter Seek เพื่อสอบถามข้อมูลเพิ่มเติม`;
+      }
+
+      const defaultRejectionMessage =
+        `เรียนคุณ${username},\n\n` +
+        `ขออภัยที่แจ้งให้ทราบว่า การสมัครช่างภาพของคุณยังไม่ได้รับการอนุมัติในขณะนี้\n\n` +
+        `${reasonsList}\n\n` +
+        `คุณสามารถแก้ไขข้อมูลและยื่นใบสมัครใหม่ได้ หากมีข้อสงสัยเพิ่มเติมโปรดติดต่อทีมงาน Shutter Seek`;
+
+      // เก็บข้อความต้นฉบับและตั้งค่าข้อความที่จะแสดง
+      this.originalMessageContent = defaultRejectionMessage;
+      this.chatMessagePreviewContent = defaultRejectionMessage;
+      this.isMessageEdited = false;
+
+      this.isApprovalMessage = false;
+      this.isChatMessagePreviewModalOpen = true;
+
+      // ปิด Modal เลือกเหตุผล
+      this.isRejectModalOpen = false;
+      this.selectedRejectionReasons = {};
+
+    } catch (error) {
+      console.error('เกิดข้อผิดพลาดในการบันทึกเหตุผลลง Firebase หรือเตรียมตัวอย่างข้อความแชท:', error);
+      this.snackBar.open('เกิดข้อผิดพลาดในการดำเนินการปฏิเสธ', 'ปิด', { duration: 3000, verticalPosition: 'top' });
+    }
   }
-}
 
-  // ฟังก์ชันสำหรับส่งข้อความแชทและยืนยันสถานะ (เรียกจาก Modal ตัวอย่างข้อความแชท)
-  async sendChatAndConfirmStatus(): Promise<void> { // เปลี่ยนชื่อจาก sendEmailAndConfirmStatus
+    // ฟังก์ชันตรวจสอบว่าข้อความถูกแก้ไขหรือไม่
+  checkIfMessageEdited(): void {
+    this.isMessageEdited = this.chatMessagePreviewContent.trim() !== this.originalMessageContent.trim();
+  }
+
+  // *** อัปเดตฟังก์ชันส่งข้อความ ***
+  async sendChatAndConfirmStatus(): Promise<void> {
     const userIdToSend = this.isApprovalMessage ? this.selectedUserToApprove : this.selectedUserToReject;
 
     if (userIdToSend === null) {
-      this.snackBar.open('ไม่พบผู้ใช้ที่ต้องการส่งข้อความ', 'ปิด', { duration: 3000 , verticalPosition: 'top'});
+      this.snackBar.open('ไม่พบผู้ใช้ที่ต้องการส่งข้อความ', 'ปิด', { duration: 3000, verticalPosition: 'top' });
+      return;
+    }
+
+    // ตรวจสอบว่าข้อความไม่ว่าง
+    if (!this.chatMessagePreviewContent.trim()) {
+      this.snackBar.open('กรุณาใส่ข้อความที่จะส่ง', 'ปิด', { duration: 3000, verticalPosition: 'top' });
       return;
     }
 
     try {
       // 1. Change user status in backend
       const newStatus = this.isApprovalMessage ? 2 : 3;
-      const reasons: string[] = []; // รวบรวมเหตุผลถ้าเป็นกรณีปฏิเสธ
+      const reasons: string[] = [];
+      
       if (!this.isApprovalMessage) {
         this.approvalCategories.forEach(category => {
           category.subCriteria.forEach(sub => {
@@ -461,38 +474,49 @@ async confirmRejectUser(): Promise<void> {
           });
         });
       }
-      await this.changeUserStatus(userIdToSend, newStatus, reasons); // ส่งเหตุผลไป Backend ด้วย
+      
+      await this.changeUserStatus(userIdToSend, newStatus, reasons);
 
-      // 2. Send approval/rejection message via chat
+      // 2. Send approval/rejection message via chat (ใช้ข้อความที่แก้ไขแล้ว)
       await this.sendSystemMessageToPhotographer(userIdToSend, this.chatMessagePreviewContent);
+      
       this.filterUsers(1); // รีเฟรชข้อมูลผู้ใช้หลังจากส่งข้อความ
 
-      // 3. Navigate to chat room after sending message and updating status
-      // this.ngZone.run(() => {
-      //   this.router.navigate(['/roomchat'], {
-      //     state: {
-      //       idshutter: userIdToSend
-      //     }
-      //   });
-      // });
+      // แสดงข้อความแจ้งเตือนว่าส่งสำเร็จ
+      const actionText = this.isApprovalMessage ? 'อนุมัติ' : 'ปฏิเสธ';
+      const editedText = this.isMessageEdited ? ' (ข้อความแก้ไขแล้ว)' : '';
+      this.snackBar.open(`${actionText}ช่างภาพและส่งข้อความแจ้งเตือนสำเร็จ${editedText}`, 'ปิด', { 
+        duration: 3000, 
+        verticalPosition: 'top' 
+      });
 
     } catch (error) {
       console.error('เกิดข้อผิดพลาดในการส่งข้อความแชทและอัปเดตสถานะ:', error);
-      this.snackBar.open('เกิดข้อผิดพลาดในการส่งข้อความและอัปเดตสถานะ', 'ปิด', { duration: 3000 , verticalPosition: 'top'});
+      this.snackBar.open('เกิดข้อผิดพลาดในการส่งข้อความและอัปเดตสถานะ', 'ปิด', { duration: 3000, verticalPosition: 'top' });
     }
-    // ปิด Modal หลังจากส่งและนำทาง
-    this.closeChatMessagePreviewModal(); // เปลี่ยนชื่อฟังก์ชัน
+    
+    // ปิด Modal หลังจากส่ง
+    this.closeChatMessagePreviewModal();
   }
 
-  // ฟังก์ชันปิด Modal ตัวอย่างข้อความแชท (เปลี่ยนชื่อจาก closeEmailPreviewModal)
-closeChatMessagePreviewModal(): void {
-  this.isChatMessagePreviewModalOpen = false;
-  this.chatMessagePreviewContent = '';
-  this.chatMessagePreviewTitle = '';
-  this.isApprovalMessage = false;
-  this.selectedUserToReject = null;   
-  this.selectedUserToApprove = null;  
-}
+  // *** อัปเดตฟังก์ชันปิด Modal ***
+  closeChatMessagePreviewModal(): void {
+    this.isChatMessagePreviewModalOpen = false;
+    this.chatMessagePreviewContent = '';
+    this.chatMessagePreviewTitle = '';
+    this.originalMessageContent = '';
+    this.isApprovalMessage = false;
+    this.isMessageEdited = false;
+    this.selectedUserToReject = null;
+    this.selectedUserToApprove = null;
+  }
+
+  // ฟังก์ชันรีเซ็ตข้อความกลับเป็นค่าเริ่มต้น (เสริม)
+  resetMessageToDefault(): void {
+    this.chatMessagePreviewContent = this.originalMessageContent;
+    this.isMessageEdited = false;
+  }
+
 
 
   // ฟังก์ชันเปิด Modal แสดงเหตุผลการปฏิเสธ

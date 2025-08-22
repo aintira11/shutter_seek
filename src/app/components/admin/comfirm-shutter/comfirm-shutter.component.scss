@@ -2,6 +2,87 @@
 *, *::before, *::after {
   box-sizing: border-box;
 }
+
+/* เพิ่มสไตล์ CSS สำหรับ Modal ที่แก้ไขได้ */
+.message-edit-section {
+  margin: 20px 0;
+}
+
+.message-edit-section label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #333;
+}
+
+.message-textarea {
+  width: 100%;
+  min-height: 200px;
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  resize: vertical;
+  background-color: #fafafa;
+  transition: all 0.3s ease;
+}
+
+.message-textarea:focus {
+  border-color: #2196f3;
+  background-color: #fff;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+}
+
+.message-info {
+  margin-top: 8px;
+}
+
+.message-info small {
+  color: #666;
+  font-style: italic;
+}
+
+.modal-content {
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.modal-actions button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* เพิ่มสไตล์สำหรับปุ่มรีเซ็ต (เสริม) */
+.reset-message-btn {
+  background: none;
+  border: 1px solid #ddd;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  color: #666;
+  margin-left: auto;
+  margin-right: 8px;
+}
+
+.reset-message-btn:hover {
+  background-color: #f5f5f5;
+  color: #333;
+}
+
 /* General Styling */
 body, html {
     margin: 0;

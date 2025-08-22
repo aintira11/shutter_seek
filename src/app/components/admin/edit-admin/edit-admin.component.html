@@ -64,7 +64,7 @@
       
             <div class="form-group">
                 <label for="phone">เบอร์โทรศัพท์: <span>*</span></label>
-               <input type="tel" [(ngModel)]="datauser[0].phone" formControlName="Phone"/>
+               <input type="tel" [(ngModel)]="datauser[0].phone" formControlName="Phone"    maxlength="10" (keypress)="onlyNumber($event)"/>
             <div *ngIf="fromadmin.get('Phone')?.invalid && fromadmin.get('Phone')?.touched" class="error-message">
                         <span *ngIf="fromadmin.get('Phone')?.errors?.['required']"style="color: red; font-size: smaller;">*กรุณากรอกหมายเลขโทรศัพท์</span>
                         <span *ngIf="fromadmin.get('Phone')?.errors?.['pattern']"style="color: red; font-size: smaller;">*หมายเลขโทรศัพท์ต้องเป็นตัวเลข 10 หลัก</span>

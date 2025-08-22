@@ -154,6 +154,14 @@ ngOnInit(): void {
       verticalPosition: 'top',
     });
   }
+
+  onlyNumber(event: KeyboardEvent) {
+  const charCode = event.which ? event.which : event.keyCode;
+  // อนุญาตแค่ตัวเลข 0-9
+  if (charCode < 48 || charCode > 57) {
+    event.preventDefault();
+  }
+}
   
   async savePersonalInfo() {
   const userId = this.data[0].user_id || this.data[0]?.user_id;

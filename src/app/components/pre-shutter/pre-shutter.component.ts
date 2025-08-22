@@ -31,6 +31,7 @@ export class PreShutterComponent implements OnInit,OnDestroy{
   PortfolioID: number | null = null; // ID ของ portfolio
   datalike: any[] = []; // ข้อมูลการถูกใจ (likes) ของ portfolio
   Like :DataLike[]=[]; // ข้อมูลการถูกใจของ user ปัจจุบัน
+  isLoading: boolean = false;
 
   // Gallery properties
   currentImageIndex: number = 0;
@@ -93,6 +94,7 @@ export class PreShutterComponent implements OnInit,OnDestroy{
 
     getdatashutter(portfolio_id : string){
     // console.log('id',portfolio_id);
+    this.isLoading = true;
     const url = `${this.Constants.API_ENDPOINT}/get/portfolioByportfolio_id/`+portfolio_id;
     this.http.get(url).subscribe((response: any) => {
       this.portfolioData = response; 
@@ -101,6 +103,9 @@ export class PreShutterComponent implements OnInit,OnDestroy{
       // โหลดข้อมูล Like ของ portfolio นี้
       this.getLike(portfolio_id);
     });
+     setTimeout(() => {
+    this.isLoading = false;
+  }, 2000);
   }
 
   

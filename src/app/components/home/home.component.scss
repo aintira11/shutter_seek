@@ -129,6 +129,7 @@ body {
   text-decoration: none;
   color: black;
   margin-right: 15px;
+  white-space: nowrap;
 }
 .nav-link:hover {
   color: #007bff; /* เปลี่ยนสีเมื่อเมาส์ชี้ */
@@ -845,6 +846,10 @@ nav .nav-link:hover {
     background: rgba(102, 126, 234, 0.1);
     transform: translateY(-2px);
 }
+//   .nav-link {
+//     font-size: 14px;
+//     padding: 0 8px;
+//   }
 
 nav {
     overflow-x: auto;
@@ -1316,3 +1321,5 @@ h1, h2, h3, h4, h5, h6, p, a, button, select, input, label, li {
     transform: translateY(0);
   }
 }
+
+//search form

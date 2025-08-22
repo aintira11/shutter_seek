@@ -75,7 +75,7 @@ export interface DataSreach {
     tags_id:       number;
     name_tags:     string;
     price:         number;
-     min_price:     number | null;
+    min_price:     number | null;
     image_urls:    string[];
 }
 
@@ -231,5 +231,7 @@ export interface DataReport {
     photographer_username: string;
     photographer_email:    string;
     photographer_image:    string;
+    status_read: string;
+    showDetail?: boolean; // ใช้สำหรับการแสดงรายละเอียดใน UI
 }
 

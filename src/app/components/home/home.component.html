@@ -23,7 +23,8 @@
             <nav class="ms-3">
                 <a href="/" class="nav-link">หน้าแรก</a>
                 <a  class="nav-link" (click)="scroll()">เกี่ยวกับเรา</a>
-                <a (click)="interresShutter()" class="nav-link" >สนใจเป็นช่างภาพ</a>
+                <!-- <a (click)="interresShutter()" class="nav-link" >สนใจเป็นช่างภาพ</a> -->
+                 <a  href="/shutter" class="nav-link" >สนใจเป็นช่างภาพ</a>
             </nav>
             <div class="d-flex align-items-center">
             <div class="button-container">
@@ -53,7 +54,7 @@
     </div>
     <div class="d-flex">
       <button class="btn btn-outline-primary btn-sm me-2" (click)="goToRegister()">สมัครสมาชิก</button>
-<button class="btn btn-primary btn-sm" routerLink="/login">เข้าสู่ระบบ</button>
+      <button class="btn btn-primary btn-sm" routerLink="/login">เข้าสู่ระบบ</button>
 
     </div>
     </ng-template>
@@ -83,41 +84,80 @@
   </div>
 </section>
 <section id="second">
- 
   <form [formGroup]="form" (ngSubmit)="sreach()">
     <section style="padding: 1%;">
       <h4>ค้นหาช่างภาพของคุณ</h4>
       <div class="row g-2 align-items-center">
         <!-- เลือก Tags -->
         <div class="col-lg-2 col-md-6">
-          <select class="form-select" formControlName="tags_id" style="border-radius: 10px; border-color:#0e51d5;">
-            <option value="">-- หมวดหมู่ผลงาน --</option>
+          <select class="form-select" formControlName="tags_id" style="border-radius: 10px; border-color: #0e51d5;">
+            <option value="">- หมวดหมู่ผลงาน -</option>
             <option *ngFor="let data of Tags" [value]="data.tags_id">
               {{ data.name_tags }}
             </option>
           </select>
         </div>
-  
+ 
         <!-- เลือกจังหวัด -->
-        <div class="col-lg-3 col-md-6">
-          <select class="form-select" formControlName="province" style="border-radius: 10px; border-color:#0e51d5;">
-            <option value="">-- เลือกจังหวัดของช่างภาพ --</option>
+        <div class="col-lg-2 col-md-6">
+          <select class="form-select" formControlName="province" style="border-radius: 10px; border-color: #0e51d5;">
+            <option value="">- จังหวัดของช่างภาพ -</option>
             <option *ngFor="let thai of thaijson" [value]="thai.name_th">
               {{ thai.name_th }}
             </option>
           </select>
         </div>
-  
-        <!-- งบประมาณ -->
-        <div class="col-lg-2 col-md-6">
-          <input type="number" class="form-control" formControlName="price" placeholder="งบประมาณ (ราคา)" style="border-radius: 10px; border-color:#0e51d5;">
+ 
+        <!-- ตัวเลือกราคา -->
+        <div class="col-lg-4 col-md-12">
+          <div class="row g-1">
+            <!-- เลือกประเภทการค้นหาราคา -->
+            <div class="col-4">
+              <select class="form-select form-select-sm" formControlName="priceType" 
+                      style="border-radius: 10px 0 0 10px; border-color: #0e51d5; font-size: 0.9rem;">
+                <option value="max">ไม่เกิน</option>
+                <option value="min">ตั้งแต่</option>
+                <option value="range">ระหว่าง</option>
+              </select>
+            </div>
+            
+            <!-- ช่องกรอกราคา -->
+            <div class="col-8" [ngSwitch]="form.value.priceType">
+              <!-- สำหรับ ไม่เกิน และ ตั้งแต่ -->
+              <div *ngSwitchCase="'max'">
+                <input type="number" class="form-control form-control-sm" 
+                       formControlName="maxPrice" placeholder="ราคาสูงสุด" min="0"
+                       style="border-radius: 0 10px 10px 0; border-color: #0e51d5;">
+              </div>
+              
+              <div *ngSwitchCase="'min'">
+                <input type="number" class="form-control form-control-sm" 
+                       formControlName="minPrice" placeholder="ราคาต่ำสุด"  min="0"
+                       style="border-radius: 0 10px 10px 0; border-color: #0e51d5;">
+              </div>
+              
+              <!-- สำหรับ ระหว่าง -->
+              <div *ngSwitchCase="'range'" class="d-flex">
+                <input type="number" class="form-control form-control-sm" 
+                       formControlName="minPrice" placeholder="ต่ำสุด"  min="0"
+                       style="border-radius: 0; border-color: #0e51d5; border-right: none;">
+                <span class="input-group-text px-1" style="background: white; border-color: #0e51d5; font-size: 0.8rem;">-</span>
+                <input type="number" class="form-control form-control-sm" 
+                       formControlName="maxPrice" placeholder="สูงสุด" min="0"
+                       style="border-radius: 0 10px 10px 0; border-color: #0e51d5; border-left: none;">
+              </div>
+            </div>
+          </div>
         </div>
-  
+ 
         <!-- ค้นหาช่างภาพ -->
-        <div class="col-lg-5 col-md-12 d-flex">
-          <input type="text" class="form-control" formControlName="search" placeholder="ค้นหาช่างภาพ" style="border-radius: 10px 0 0 10px; border-color:#0e51d5;">
-          <button class="btn btn-primary ms-2" type="submit" style="border-radius: 0 10px 10px 0;">
-            <span class="material-symbols-outlined">ค้นหา</span>
+        <div class="col-lg-4 col-md-12 d-flex">
+          <input type="text" class="form-control" formControlName="search" 
+                 placeholder="ค้นหาช่างภาพ" 
+                 style="border-radius: 10px 0 0 10px; border-color: #0e51d5;">
+          <button class="btn btn-primary ms-2" type="submit" 
+                  style="border-radius: 0 10px 10px 0;">
+            <span class="material-symbols-outlined">search</span>
           </button>
         </div>
       </div>
@@ -127,72 +167,81 @@
 
 <!-- <hr> -->
  <div *ngIf="dataSreach.length == 0 ; else aaaa " >
-            <section id="third">
-                <h4>ช่างภาพแนะนำ</h4>
-                <section class="container mt-5">
-                    <div class="row justify-content-center"   *ngIf="Portfolio.length > 0">
-                        <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-4 px-2" *ngFor="let photographer of Portfolio; let portfolioIndex = index">
-                            <div class="card border-0 text-center p-2 shadow-sm">
-                                <div class="carousel slide rounded"
-                                   [attr.id]="'carousel' + photographer.portfolio_id"
-                                   [attr.data-bs-interval]="false"
-                                   [attr.data-bs-ride]="null"
-                                   (mouseenter)="startAutoSlide(photographer.portfolio_id)"
-                                   (mouseleave)="stopAutoSlide(photographer.portfolio_id)">
-                                                          
-                                <div class="carousel-inner">
-                                  <div *ngFor="let image of photographer.image_urls; let i = index">
-                                    <div class="carousel-item" [class.active]="i === (currentSlideIndex[portfolioIndex] || 0)">
-                                      <img [src]="image"
-                                           class="d-block w-100 rounded img-fluid"
-                                           alt="portfolio image"
-                                           style="cursor: pointer; object-fit: cover;"
-                                           (click)="openImageModal(photographer.image_urls, i)">
-      </div>
-    </div>
-  </div>
-
-  <button class="carousel-control-prev" type="button"
-          [attr.data-bs-target]="'#carousel' + photographer.portfolio_id" 
-          (click)="getPrev(portfolioIndex)">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-  </button>
-  <button class="carousel-control-next" type="button"
-          [attr.data-bs-target]="'#carousel' + photographer.portfolio_id" 
-          (click)="getNext(portfolioIndex)">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-  </button>
-</div>
-
-
-                                <div class="d-flex align-items-center justify-content-between mt-2 px-2">
-                                    <img [src]="photographer.image_profile" class="rounded-circle border border-primary" style=" object-fit: cover; border-radius: 100%; "
-                                        alt="profile" (click)="toShutter(photographer.portfolio_id)">
-                                    
-                                    <div class="text-center flex-grow-1">
-                                        <p class="mb-0 text-muted">{{ photographer.name_tags }}</p>
-                                        <p class="fw-bold mb-0">{{ photographer.name_work }}</p>
-                                        <p style="color: #0e51d5; font-size: 13px;">ราคาเริ่มต้น {{photographer.min_price| number:'1.0-0' }} บาท</p>
-                                    </div>
-
-                                    <div class="container heart-container" *ngIf="datauser.length > 0">
-                                        <label>
-                                            <input type="checkbox"
-                                            [checked]="isLiked(photographer.portfolio_id)"
-                                            (change)="Liked(photographer.portfolio_id)">
-                                            <svg id="Layer_1" version="1.0" viewBox="0 0 24 24" xml:space="preserve"
-                                                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                                                <path d="M16.4,4C14.6,4,13,4.9,12,6.3C11,4.9,9.4,4,7.6,4C4.5,4,2,6.5,2,9.6C2,14,12,22,12,22s10-8,10-12.4C22,6.5,19.5,4,16.4,4z"></path>
-                                            </svg>
-                                        </label>
-                                    </div>
+<section id="third">
+    <h4>ช่างภาพแนะนำ</h4>
+    <section class="container mt-5">
+        <div class="row justify-content-center" *ngIf="Portfolio.length > 0">
+            <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-4 px-2" *ngFor="let photographer of Portfolio; let portfolioIndex = index">
+                <div class="card border-0 text-center p-2 shadow-sm">
+                    <div class="carousel slide rounded"
+                       [attr.id]="'carousel' + photographer.portfolio_id"
+                       [attr.data-bs-interval]="false"
+                       [attr.data-bs-ride]="null"
+                       (mouseenter)="startAutoSlide(photographer.portfolio_id)"
+                       (mouseleave)="stopAutoSlide(photographer.portfolio_id)">
+                                      
+                        <div class="carousel-inner">
+                            <div *ngFor="let image of photographer.image_urls; let i = index">
+                                <div class="carousel-item" [class.active]="i === (currentSlideIndex[portfolioIndex] || 0)">
+                                    <img [src]="image"
+                                         class="d-block w-100 rounded img-fluid"
+                                         alt="portfolio image"
+                                         style="cursor: pointer; object-fit: cover;"
+                                         (click)="openImageModal(photographer.image_urls, i)">
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </section>
-            </section>
 
+                        <button class="carousel-control-prev" type="button"
+                                [attr.data-bs-target]="'#carousel' + photographer.portfolio_id" 
+                                (click)="getPrev(portfolioIndex)">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        </button>
+                        <button class="carousel-control-next" type="button"
+                                [attr.data-bs-target]="'#carousel' + photographer.portfolio_id" 
+                                (click)="getNext(portfolioIndex)">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        </button>
+                    </div>
+
+                    <!-- รวมแสดงจำนวนไลค์และปุ่มหัวใจที่กดได้ -->
+                    <div class="d-flex justify-content-end align-items-center mt-2 px-2">
+                        <div class="like-count-display d-flex align-items-center">
+                            <span class="fw-bold text-muted" style="font-size: 16px;">{{ photographer.like_count | number:'1.0-0' }} Like</span>
+                        </div>
+                        
+                        <div class="heart-container" *ngIf="datauser.length > 0">
+                            <label style="padding: 8px; margin-right: 10px; margin-left: 8px; cursor: pointer;" >
+                                <input type="checkbox" style="display: none;"
+                                       [checked]="isLiked(photographer.portfolio_id)"
+                                       (change)="Liked(photographer.portfolio_id)">
+                                <svg id="Layer_1" version="1.0" viewBox="0 0 24 24" xml:space="preserve"
+                                     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                     width="28" height="28" style="transition: all 0.2s ease;">
+                                    <path d="M16.4,4C14.6,4,13,4.9,12,6.3C11,4.9,9.4,4,7.6,4C4.5,4,2,6.5,2,9.6C2,14,12,22,12,22s10-8,10-12.4C22,6.5,19.5,4,16.4,4z"></path>
+                                </svg>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center justify-content-between px-2">
+                        <img [src]="photographer.image_profile" 
+                             class="rounded-circle border border-primary" 
+                             style="object-fit: cover; border-radius: 100%;" 
+                             alt="profile" 
+                             (click)="toShutter(photographer.portfolio_id)">
+                        
+                        <div class="text-center flex-grow-1">
+                            <p class="mb-0 text-muted">{{ photographer.name_tags }}</p>
+                            <p class="fw-bold mb-0">{{ photographer.name_work }}</p>
+                            <p style="color: #0e51d5; font-size: 13px;">ราคาเริ่มต้น {{ photographer.min_price | number:'1.0-0' }} บาท</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</section>
 
 <section id="four">
 <footer class="text-center p-3 mt-5 border-top">
@@ -236,9 +285,29 @@
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
           </button>
         </div>
+
+         <!-- รวมแสดงจำนวนไลค์และปุ่มหัวใจที่กดได้ -->
+                    <div class="d-flex justify-content-end align-items-center mt-2 px-2">
+                        <div class="like-count-display d-flex align-items-center">
+                            <span class="fw-bold text-muted" style="font-size: 16px;">{{ photographer.like_count | number:'1.0-0' }} Like</span>
+                        </div>
+                        
+                        <div class="heart-container" *ngIf="datauser.length > 0">
+                            <label style="padding: 8px; margin-right: 10px; margin-left: 8px; cursor: pointer;">
+                                <input type="checkbox" style="display: none;"
+                                       [checked]="isLiked(photographer.portfolio_id)"
+                                       (change)="Liked(photographer.portfolio_id)">
+                                <svg id="Layer_1" version="1.0" viewBox="0 0 24 24" xml:space="preserve"
+                                     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                     width="28" height="28" style="transition: all 0.2s ease;">
+                                    <path d="M16.4,4C14.6,4,13,4.9,12,6.3C11,4.9,9.4,4,7.6,4C4.5,4,2,6.5,2,9.6C2,14,12,22,12,22s10-8,10-12.4C22,6.5,19.5,4,16.4,4z"></path>
+                                </svg>
+                            </label>
+                        </div>
+                    </div>
         
         <!-- ส่วนข้อมูลช่างภาพ -->
-        <div class="d-flex align-items-center justify-content-between mt-2 px-2">
+        <div class="d-flex align-items-center justify-content-between  px-2">
           <!-- รูปโปรไฟล์ -->
           <img [src]="photographer.image_profile" class="rounded-circle border border-primary" 
                style="border-radius: 100%; object-fit: cover;"
@@ -252,7 +321,7 @@
           </div>
           
           <!-- ไอคอนหัวใจ -->
-          <div class="container heart-container"  *ngIf="datauser.length > 0">
+          <!-- <div class="container heart-container"  *ngIf="datauser.length > 0">
             <label>
               <input type="checkbox"
                      [checked]="isLiked(photographer.portfolio_id)"
@@ -262,7 +331,7 @@
                 <path d="M16.4,4C14.6,4,13,4.9,12,6.3C11,4.9,9.4,4,7.6,4C4.5,4,2,6.5,2,9.6C2,14,12,22,12,22s10-8,10-12.4C22,6.5,19.5,4,16.4,4z"></path>
               </svg>
             </label>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -399,7 +468,7 @@
                             >
                             <div>
                                 <h5 class="fw-bold mb-1">
-                                    <i class="bi bi-person-circle text-warning"></i>ชื่อผู้ใช้ : {{ photographer.username }}
+                                    <i class="bi bi-person-circle text-warning"></i>ช่างภาพ : {{ photographer.username }}
                                 </h5>
                                 <small class="text-light">
                                     <i class="bi bi-tag"></i> ราคาเริ่มต้น <span class="fw-bold text-warning">{{ photographer.min_price| number:'1.0-0'

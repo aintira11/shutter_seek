@@ -134,6 +134,7 @@ ngOnInit(): void {
 
 // ฟังก์ชัน getdatauser (ควรมีลักษณะนี้)
 getdatauser(id: number): void {
+  this.isLoading = true;
   // console.log('Fetching user data via API for id:', id);
   const url = `${this.Constants.API_ENDPOINT}/read/${id}`; // ตัวอย่าง URL
   this.http.get<DataMembers[]>(url).subscribe((response: any) => {
@@ -146,6 +147,11 @@ getdatauser(id: number): void {
       this.getwork(photographer.user_id);
       this.getFollower(photographer.user_id);
       this.getreview(photographer.user_id);
+
+       setTimeout(() => {
+    this.isLoading = false;
+  }, 2000);
+  
     } else {
       console.error("No data returned from API for the given photographer ID.");
     }
@@ -534,6 +540,9 @@ getFacebookLink(): string {
           this.router.navigate(['/admin'],);
       
     }
+    goToRegister(): void {
+    this.router.navigate(['/register']);
+  }
 
      logout(): void {
       this.authService.logout();

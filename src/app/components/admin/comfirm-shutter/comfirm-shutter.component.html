@@ -77,9 +77,13 @@
         <i class="fa fa-check-circle"></i>
         <span>อนุมัติ</span>
     </button>
-    <button class="btn reject-btn" (click)="openRejectModal(user.user_id)" *ngIf="selectedTab === 2 || selectedTab === 1">
+    <button class="btn reject-btn" (click)="openRejectModal(user.user_id)" *ngIf="selectedTab === 1">
         <i class="fa fa-times-circle"></i>
         <span>ปฏิเสธ</span>
+    </button>
+    <button class="btn reject-btn" (click)="openRejectModal(user.user_id)" *ngIf="selectedTab === 2 ">
+        <i class="fa fa-times-circle"></i>
+        <span>ระงับ</span>
     </button>
     <button class="btn reason-btn" (click)="openViewReasonsModal(user.user_id)" *ngIf="selectedTab === 3">
         <i class="fa fa-eye"></i>
@@ -123,7 +127,7 @@
     </div>
   </div>
 
-  <div class="modal-overlay" *ngIf="isViewReasonsModalOpen">
+    <div class="modal-overlay" *ngIf="isViewReasonsModalOpen">
     <div class="modal-content">
       <h2>เหตุผลการปฏิเสธ</h2>
       <div class="reasons-list">
@@ -142,7 +146,40 @@
     </div>
   </div>
 
-  <div class="modal-overlay" *ngIf="isChatMessagePreviewModalOpen">
+ <!-- ส่วน Modal ตัวอย่างข้อความแชท - เพิ่มความสามารถในการแก้ไข -->
+<div class="modal-overlay" *ngIf="isChatMessagePreviewModalOpen">
+  <div class="modal-content">
+    <h3>{{ chatMessagePreviewTitle }}</h3>
+
+    <!-- เพิ่มส่วนแก้ไขข้อความ -->
+    <div class="message-edit-section">
+      <label for="messageEditor">แก้ไขข้อความ:</label>
+      <textarea 
+        id="messageEditor"
+        [(ngModel)]="chatMessagePreviewContent" 
+        class="message-textarea"
+        rows="8"
+        placeholder="แก้ไขข้อความที่จะส่ง...">
+      </textarea>
+      <div class="message-info">
+        <small>คุณสามารถแก้ไขข้อความได้ตามต้องการ</small>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button mat-button (click)="closeChatMessagePreviewModal()">ยกเลิก</button>
+      <button 
+        mat-raised-button 
+        color="primary" 
+        (click)="sendChatAndConfirmStatus()"
+        [disabled]="!chatMessagePreviewContent.trim()">
+        ยืนยันและส่งข้อความ
+      </button>
+    </div>
+  </div>
+</div>
+
+  <!-- <div class="modal-overlay" *ngIf="isChatMessagePreviewModalOpen">
     <div class="modal-content">
       <h3>{{ chatMessagePreviewTitle }}</h3>
 
@@ -157,7 +194,7 @@
         </button>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <button *ngIf="showButton" class="scroll-to-top" (click)="scrollToTop()">
     ⬆ เลื่อนขึ้น

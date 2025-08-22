@@ -57,6 +57,15 @@ export class UserFollowComponent implements OnInit{
   back(){
     this.router.navigate(['/profile'],{ state: { data: this.data } });
   }
+  goToProfile(id_shutter?: number){
+    
+     this.router.navigate(['/homeshutter'], { 
+        state: { 
+          // datauser: this.datauser[0], 
+          idshutter: id_shutter 
+        } 
+      });
+  }
 
   unfollow(id : number){
     const userId = this.data?.[0]?.user_id ?? 0;

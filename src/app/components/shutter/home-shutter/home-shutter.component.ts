@@ -39,6 +39,7 @@ export class HomeShutterComponent implements OnInit{
   datareview:DataReview[]=[];
   idshutter : number = 0 ;
   Like :DataLike[]=[];
+  isLoading: boolean = false;
 
   rating: number = 0; // ค่าเริ่มต้นของการให้คะแนน
   hoverRating = 0;
@@ -154,6 +155,7 @@ forfollow(shutterId: number) {
 
   getdatashutter(id : string){
     // console.log('id',id);
+    this.isLoading = true;
     const url = this.Constants.API_ENDPOINT+'/read/'+id;
     this.http.get(url).subscribe((response: any) => {
       this.datauser = response; 
@@ -163,6 +165,9 @@ forfollow(shutterId: number) {
       this.getFollower(this.datauser[0].user_id);
       this.getreview(this.datauser[0].user_id);
     });
+     setTimeout(() => {
+    this.isLoading = false;
+  }, 2000);
   }
   
   getLikework(portfolio_id:number){
@@ -183,15 +188,24 @@ forfollow(shutterId: number) {
     });
   }
 
-  getwork(id : number){ //เพิ่มเอาคนที่ถูกใจออกมาด้วย
-    // console.log('id',id);
-    const url = this.Constants.API_ENDPOINT+'/get/workAndPack/'+id;
-    this.http.get(url).subscribe((response: any) => {
-      this.datawork = response; 
-      // console.log("datawork :",this.datawork); 
-      
-    });
-  }
+groupedWorks: { [key: string]: DataShowWork[] } = {};
+
+
+getwork(id: number) {
+  const url = this.Constants.API_ENDPOINT + '/get/workAndPack/' + id;
+  this.http.get(url).subscribe((response: any) => {
+    this.datawork = response;
+
+    // จัดกลุ่มตาม name_tags
+    this.groupedWorks = response.reduce((acc: any, work: any) => {
+      if (!acc[work.name_tags]) {
+        acc[work.name_tags] = [];
+      }
+      acc[work.name_tags].push(work);
+      return acc;
+    }, {});
+  });
+}
 
   isFollowing = false;
   getFollower(id : number){
@@ -300,9 +314,10 @@ postreview() {
         console.error('Error:', err);
       if (err.status === 409) {
        this.snackBar.open('คุณได้รีวิวช่างภาพคนนี้ไปแล้ว ไม่สามารถรีวิวซ้ำได้', 'ปิด', { duration: 3000 , verticalPosition: 'top'});
-
+        this.isModelOpen = false;
     } else {
        this.snackBar.open('เกิดข้อผิดพลาดในการส่งรีวิว กรุณาลองใหม่อีกครั้ง', 'ปิด', { duration: 3000 , verticalPosition: 'top'});
+       this.isModelOpen = false;
     }
       },
       complete: () => {

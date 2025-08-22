@@ -78,61 +78,68 @@ private touchStartPosition: { x: number, y: number } = { x: 0, y: 0 };
     private router: Router,
   ) { }
 
-  ngOnInit(): void {
-    this.route.paramMap.subscribe(() => {
-      setTimeout(() => {
-        this.data = this.authService.getUser();
-        this.initialPartnerId = window.history.state.idshutter || null;
+ngOnInit(): void {
+  this.route.paramMap.subscribe(() => {
+    setTimeout(() => {
+      this.data = this.authService.getUser();
+      this.initialPartnerId = window.history.state.idshutter || null;
 
-        if (!this.data || !this.data.user_id || !this.data.type_user) {
-          console.error("[OnInit] Error: ไม่พบข้อมูลผู้ใช้ที่ล็อกอิน (datauser), user_id หรือ type_user ขาดหายไป");
-           alert("ไม่พบข้อมูลผู้ใช้ กรุณาเข้าสู่ระบบอีกครั้ง");
-      this.router.navigate(['/login']);
-      return;
-        }
+      if (!this.data || !this.data.user_id || !this.data.type_user) {
+        console.error("[OnInit] Error: ไม่พบข้อมูลผู้ใช้ที่ล็อกอิน (datauser), user_id หรือ type_user ขาดหายไป");
+        alert("ไม่พบข้อมูลผู้ใช้ กรุณาเข้าสู่ระบบอีกครั้ง");
+        this.router.navigate(['/login']);
+        return;
+      }
 
-        this.myActualId = this.data.user_id; // เก็บ ID จริงของผู้ใช้
-        this.myUserType = this.data.type_user;
+      this.myActualId = this.data.user_id; // เก็บ ID จริงของผู้ใช้
+      this.myUserType = this.data.type_user;
 
-        // *** สำหรับแอดมิน (type_user = 3) ให้ใช้ ID = 1 ในการแชท ***
-        if (this.myUserType === '3') {
-          this.myId = 1; // ใช้ ID = 1 สำหรับแอดมินทุกคน
-          console.log('[OnInit] Admin detected. Using shared admin ID: 1');
-        } else {
-          this.myId = this.data.user_id; // ใช้ ID จริงสำหรับผู้ใช้ทั่วไป
-        }
+      // *** สำหรับแอดมิน (type_user = 3) ให้ใช้ ID = 1 ในการแชท ***
+      if (this.myUserType === '3') {
+        this.myId = 1; // ใช้ ID = 1 สำหรับแอดมินทุกคน
+        console.log('[OnInit] Admin detected. Using shared admin ID: 1');
+      } else {
+        this.myId = this.data.user_id; // ใช้ ID จริงสำหรับผู้ใช้ทั่วไป
+      }
 
-        // console.log('[OnInit] ID ผู้ใช้จริง (myActualId):', this.myActualId);
-        // console.log('[OnInit] ID ที่ใช้ในแชท (myId):', this.myId);
-        // console.log('[OnInit] ประเภทผู้ใช้ของฉัน (myUserType):', this.myUserType);
-        // console.log('[OnInit] ได้รับข้อมูลผู้ใช้ที่ล็อกอินแล้ว:', this.data);
-        // console.log('[OnInit] ได้รับ ID คู่สนทนาเริ่มต้น (initialPartnerId):', this.initialPartnerId);
+      // --- แก้ไข: Online Status Management สำหรับ Admin ---
+      // *** สำหรับ Admin: ตั้งสถานะออนไลน์ทั้ง ID จริงและ ID แชท (1) ***
+      if (this.myUserType === '3') {
+        // ตั้งสถานะออนไลน์สำหรับ ID จริงของ Admin
+        this.setOnlineStatus(this.myActualId);
+        // ตั้งสถานะออนไลน์สำหรับ ID แชท (1) ด้วย
+        this.setOnlineStatus(1);
+        console.log(`[Online Status] Admin online status set for both actual ID (${this.myActualId}) and chat ID (1)`);
+      } else {
+        // สำหรับผู้ใช้ทั่วไป ใช้ ID เดียวกัน
+        this.setOnlineStatus(this.myId);
+        console.log(`[Online Status] Regular user online status set for ID: ${this.myId}`);
+      }
 
-        // --- Online Status Management (ใช้ myActualId สำหรับสถานะออนไลน์) ---
-        if (this.myActualId) {
-          const userStatusRef = ref(this.db, `users/${this.myActualId}/onlineStatus`);
-          const connectedRef = ref(this.db, '.info/connected');
+      // โหลดห้องแชทสำหรับผู้ใช้ที่ล็อกอิน (ใช้ myId ในการค้นหาห้อง)
+      this.loadChatRooms();
 
-          onValue(connectedRef, (snapshot) => {
-            if (snapshot.val() === true) {
-              set(userStatusRef, 'online').catch(e => console.error("[Online Status] Error setting online status:", e));
-              onDisconnect(userStatusRef).set('offline');
-              // console.log(`[Online Status] User ${this.myActualId} is now online.`);
-            } else {
-              console.log(`[Online Status] Not connected to Firebase.`);
-            }
-          });
-        }
-        // --- End of Online Status Management ---
+      // initialPartnerId จะถูกจัดการใน loadChatRooms's subscribe เพื่อให้แน่ใจว่า partnersData มีข้อมูลแล้ว
+    }, 100);
+  });
+}
 
-        // โหลดห้องแชทสำหรับผู้ใช้ที่ล็อกอิน (ใช้ myId ในการค้นหาห้อง)
-        this.loadChatRooms();
 
-        // initialPartnerId จะถูกจัดการใน loadChatRooms's subscribe เพื่อให้แน่ใจว่า partnersData มีข้อมูลแล้ว
-      }, 100);
-    });
-  }
+// เพิ่มเมธอดใหม่สำหรับตั้งสถานะออนไลน์
+private setOnlineStatus(userId: number): void {
+  const userStatusRef = ref(this.db, `users/${userId}/onlineStatus`);
+  const connectedRef = ref(this.db, '.info/connected');
 
+  onValue(connectedRef, (snapshot) => {
+    if (snapshot.val() === true) {
+      set(userStatusRef, 'online').catch(e => console.error(`[Online Status] Error setting online status for user ${userId}:`, e));
+      onDisconnect(userStatusRef).set('offline');
+      console.log(`[Online Status] User ${userId} is now online.`);
+    } else {
+      console.log(`[Online Status] Not connected to Firebase for user ${userId}.`);
+    }
+  });
+}
   isSidebarCollapsed: boolean = false;
 
   toggleSidebar() {
@@ -252,25 +259,38 @@ private touchStartPosition: { x: number, y: number } = { x: 0, y: 0 };
   }
 
   ngOnDestroy(): void {
-    console.log('[Lifecycle] MassageRoomComponent ngOnDestroy called.');
-    if (this.messagesUnsubscribe) {
-      this.messagesUnsubscribe();
-      console.log('[Firebase] Messages listener unsubscribed.');
-    }
-    for (const partnerId in this.partnerStatusUnsubscribe) {
-      if (this.partnerStatusUnsubscribe.hasOwnProperty(partnerId)) {
-        this.partnerStatusUnsubscribe[partnerId]();
-        // console.log(`[Firebase] Partner status listener for ${partnerId} unsubscribed.`);
-      }
-    }
-    // เมื่อ Component ถูกทำลาย ให้ตั้งค่าสถานะผู้ใช้เป็น 'offline' (ใช้ myActualId)
-    if (this.myActualId) {
-      const userStatusRef = ref(this.db, `users/${this.myActualId}/onlineStatus`);
-      set(userStatusRef, 'offline')
-        .then(() => console.log(`[Firebase] User ${this.myActualId} status set to offline on destroy.`))
-        .catch(e => console.error(`[Firebase] Error setting user ${this.myActualId} offline on destroy:`, e));
+  console.log('[Lifecycle] MassageRoomComponent ngOnDestroy called.');
+  if (this.messagesUnsubscribe) {
+    this.messagesUnsubscribe();
+    console.log('[Firebase] Messages listener unsubscribed.');
+  }
+  for (const partnerId in this.partnerStatusUnsubscribe) {
+    if (this.partnerStatusUnsubscribe.hasOwnProperty(partnerId)) {
+      this.partnerStatusUnsubscribe[partnerId]();
     }
   }
+
+  // *** แก้ไข: เมื่อ Component ถูกทำลาย ให้ตั้งค่าสถานะผู้ใช้เป็น 'offline' ***
+  if (this.myUserType === '3') {
+    // สำหรับ Admin: ตั้งสถานะออฟไลน์ทั้ง ID จริงและ ID แชท
+    this.setOfflineStatus(this.myActualId);
+    this.setOfflineStatus(1);
+    console.log(`[Firebase] Admin status set to offline for both actual ID (${this.myActualId}) and chat ID (1)`);
+  } else {
+    // สำหรับผู้ใช้ทั่วไป
+    this.setOfflineStatus(this.myId);
+    console.log(`[Firebase] Regular user ${this.myId} status set to offline`);
+  }
+}
+
+// เพิ่มเมธอดใหม่สำหรับตั้งสถานะออฟไลน์
+private setOfflineStatus(userId: number): void {
+  const userStatusRef = ref(this.db, `users/${userId}/onlineStatus`);
+  set(userStatusRef, 'offline')
+    .then(() => console.log(`[Firebase] User ${userId} status set to offline.`))
+    .catch(e => console.error(`[Firebase] Error setting user ${userId} offline:`, e));
+}
+
 
   ngAfterViewChecked(): void {
     if (this.shouldScroll) {
